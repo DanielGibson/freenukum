@@ -1,10 +1,10 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Test for Messagebox Drawing functions
- * $Id: fn_test_msgbox.c 13 2006-06-10 16:01:24Z sttereo3 $
  *******************************************************************/
 
 #include <SDL/SDL.h>
+#include <stdlib.h>
 
 /* --------------------------------------------------------------- */
 
@@ -26,27 +26,8 @@ int main(int argc, char ** argv)
     int res;
     int quit = 0;
     SDL_Event event;
-
-    if (argc != 2)
-    {
-        fprintf(stderr, "\nTests the output of a messagebox using "
-                "original Duke Nukem graphics files.\n");
-        fprintf(stderr, "Usage: %s <GRAPHICSDIR>\n", argv[0]);
-        fprintf(stderr, "GRAPHICSDIR is the directory where the "
-                "original game data can be found.\n\n");
-        return -1;
-    }
-
-    char * directory = argv[1];
-
-    fn_tilecache_init(&tc, pixelsize);
-
-    res = fn_tilecache_loadtiles(&tc, directory);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        return -1;
-    }
+    char * homedir;
+    char tilespath[1024];
 
     char * msg[] = {
         " FREENUKUM MAIN MENU",
@@ -65,6 +46,25 @@ int main(int argc, char ** argv)
         "Q)it to DOS",
         0
     };
+
+    homedir = getenv("HOME");
+
+    if (homedir == NULL) {
+      printf("%s\n", "HOME directory path not set.");
+      exit(1);
+    }
+
+    snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/duke/");
+
+    fn_tilecache_init(&tc, pixelsize);
+
+    res = fn_tilecache_loadtiles(&tc, tilespath);
+    if (res == -1)
+    {
+        printf("Could not load tiles.\n");
+        printf("Copy the original game files to %s.\n", tilespath);
+        exit(1);
+    }
 
 
     fn_msgbox_init(&mb, pixelsize, width, height);

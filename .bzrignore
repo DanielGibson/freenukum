@@ -10,3 +10,8 @@ src/fn_test_picture
 src/fn_test_settings
 src/fn_test_tile
 src/fn_test_tilecache
+src/freenukum
+src/fn_test_picture_splash
+src/fn_test_mainmenu
+apidoc/html
+apidoc/latex

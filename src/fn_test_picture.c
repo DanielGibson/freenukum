@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Test for Picture Drawing functions
- * $Id: fn_test_picture.c 13 2006-06-10 16:01:24Z sttereo3 $
  *******************************************************************/
 
 #include <sys/stat.h>

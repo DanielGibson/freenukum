@@ -1,0 +1,5 @@
+This directory should contain the api documentation
+in the subdirectories called "html" and "latex". If
+the two directories do not exist you can generate the
+documentation from the source code by running
+'doxygen Doxyfile' from the parent directory.

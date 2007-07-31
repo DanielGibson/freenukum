@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Test for Drop (Level Background) loader
- * $Id: fn_test_drop.c 14 2006-07-02 11:02:37Z sttereo3 $
  *******************************************************************/
 
 #include <sys/stat.h>
