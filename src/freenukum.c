@@ -15,6 +15,7 @@
 #include "fn_error.h"
 #include "fn_picture_splash.h"
 #include "fn_mainmenu.h"
+#include "fn_infobox.h"
 
 /* --------------------------------------------------------------- */
 
@@ -29,7 +30,7 @@ int main(int argc, char ** argv)
 
   int res; /* results are stored here */
 
-  int choice; /* choice of the main menu */
+  int choice = 0; /* choice of the main menu */
 
   char * homedir; /* home directory of the user */
   char tilespath[1024]; /* path to the original game data */
@@ -77,8 +78,55 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
-  choice = fn_mainmenu(&tilecache, pixelsize, screen, wallpaper);
-  printf("choice: %d\n", choice);
+  while (choice != FN_MENUCHOICE_QUIT) {
+    choice = fn_mainmenu(&tilecache, pixelsize, screen);
+    switch(choice) {
+      case FN_MENUCHOICE_START:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Gameplay not implemented yet.");
+        break;
+      case FN_MENUCHOICE_RESTORE:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Restore not implemented yet.");
+        break;
+      case FN_MENUCHOICE_INSTRUCTIONS:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Instructions not implemented yet.");
+        break;
+      case FN_MENUCHOICE_ORDERINGINFO:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Orderinginfo not implemented yet.");
+        break;
+      case FN_MENUCHOICE_SETUP:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Setup not implemented yet.");
+        break;
+      case FN_MENUCHOICE_HIGHSCORES:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Highscores not implemented yet.");
+        break;
+      case FN_MENUCHOICE_PREVIEWS:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Previews not implemented yet.");
+        break;
+      case FN_MENUCHOICE_VIEWUSERDEMO:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Userdemo not implemented yet.");
+        break;
+      case FN_MENUCHOICE_TITLESCREEN:
+        res = fn_picture_splash_show(tilespath,
+            "DN.DN1",
+            &wallpaper,
+            screen);
+        break;
+      case FN_MENUCHOICE_CREDITS:
+        fn_infobox_show(pixelsize, &tilecache, screen,
+            "Credits not implemented yet.");
+        break;
+      default:
+        break;
+    }
+  }
 
   SDL_FreeSurface(wallpaper);
   return 0;

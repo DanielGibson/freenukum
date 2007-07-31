@@ -10,10 +10,10 @@
 
 int fn_mainmenu(fn_tilecache_t * tilecache,
     Uint8 pixelsize,
-    SDL_Surface * screen,
-    SDL_Surface * wallpaper)
+    SDL_Surface * screen)
 {
   SDL_Surface * msgbox;
+  SDL_Surface * temp;
   SDL_Rect dstrect;
 
   Uint8 width = 13; /* the width of the menu (two letters is one unit) */
@@ -49,6 +49,14 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
 
   dstrect.x = ((screen->w)-(msgbox->w))/2;
   dstrect.y = ((screen->h)-(msgbox->h))/2;
+  dstrect.w = msgbox->w;
+  dstrect.h = msgbox->h;
+
+  temp = SDL_CreateRGBSurface(SDL_SWSURFACE,
+      dstrect.w, dstrect.h,
+      FN_COLOR_DEPTH,
+      0, 0, 0, 0);
+  SDL_BlitSurface(screen, &dstrect, temp, NULL);
 
   SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
   SDL_FreeSurface(msgbox);
@@ -106,5 +114,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
       }
     }
   }
+  SDL_BlitSurface(temp, NULL, screen, &dstrect);
+  SDL_FreeSurface(temp);
   return choice;
 }

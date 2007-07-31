@@ -32,7 +32,6 @@
  * @param  tilecache   The tilecache from which the tiles are loaded.
  * @param  pixelsize   The pixel size on the screen.
  * @param  screen      The screen on which the menu is shown.
- * @param  wallpaper   The wallpaper that is shown in the background.
  *
  * @return The choice that the user made. This is one of the
  *         FN_MENUCHOICE_* defined values.
@@ -40,8 +39,7 @@
 int fn_mainmenu(
     fn_tilecache_t * tilecache,
     Uint8 pixelsize,
-    SDL_Surface * screen,
-    SDL_Surface * wallpaper);
+    SDL_Surface * screen);
 
 /* --------------------------------------------------------------- */
 
