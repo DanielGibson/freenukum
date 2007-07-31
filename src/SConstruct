@@ -1,0 +1,29 @@
+env = Environment(CCFLAGS = ['-Wall'], LDFLAGS = [])
+
+env.ParseConfig('sdl-config --cflags')
+env.ParseConfig('sdl-config --libs')
+
+if ARGUMENTS.get('coverage', 0):
+    env.Append(CCFLAGS = ['-fprofile-arcs','-ftest-coverage'])
+    env.Append(LIBS = ['gcov'])
+
+if ARGUMENTS.get('debug', 0):
+    env.Append(CCFLAGS = ['-ggdb'])
+
+env.Program('fn_test_draw', ['fn_test_draw.c','fn_draw.c'])
+
+env.Program('fn_test_drop', ['fn_test_drop.c','fn_drop.c','fn_tile.c','fn_draw.c'])
+
+env.Program('fn_test_tile', ['fn_test_tile.c','fn_tile.c','fn_draw.c'])
+
+env.Program('fn_test_picture', ['fn_test_picture.c','fn_picture.c','fn_draw.c'])
+
+env.Program('fn_test_tilecache', ['fn_test_tilecache.c','fn_tilecache.c','fn_draw.c','fn_tile.c'])
+
+env.Program('fn_test_level', ['fn_test_level.c','fn_tilecache.c','fn_draw.c','fn_tile.c','fn_level.c'])
+
+env.Program('fn_test_msgbox', ['fn_test_msgbox.c','fn_msgbox.c','fn_draw.c','fn_tile.c','fn_tilecache.c'])
+
+env.Program('fn_test_settings', ['fn_test_settings.c','fn_settings.c'])
+
+env.Program('fn_test_error', ['fn_error.c','fn_test_error.c'])
