@@ -1,0 +1,195 @@
+/*******************************************************************
+ * Project: FreeNukum 2D Jump'n Run
+ * File:    Settings functions
+ * $Id: fn_settings.h 14 2006-07-02 11:02:37Z sttereo3 $
+ *******************************************************************/
+
+#ifndef FN_SETTINGS_H
+#define FN_SETTINGS_H
+
+/* --------------------------------------------------------------- */
+
+#include <stdio.h>
+
+/* --------------------------------------------------------------- */
+
+#define FN_EXPAND_SETTINGS   100
+
+/* --------------------------------------------------------------- */
+
+/**
+ * A structure containing an option.
+ */
+typedef struct fn_settings_option_t {
+
+    /**
+     * The name of the option.
+     */
+    char * name;
+
+    /**
+     * The value of the option.
+     */
+    char * value;
+
+    /**
+     * The next option
+     */
+    struct fn_settings_option_t * next;
+
+} fn_settings_option_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * A structure containing a set of options.
+ */
+typedef struct fn_settings_t {
+
+    /**
+     * An array of pointers to options.
+     */
+    fn_settings_option_t * options;
+
+    /**
+     * A pointer to the last option.
+     */
+    fn_settings_option_t * end;
+
+} fn_settings_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Default initialization function for fn_settings_t.
+ *
+ * @return A newly created fn_settings_t struct.
+ *
+ * @see    fn_settings_free fn_settings_store fn_settings_new_from_file
+ */
+fn_settings_t * fn_settings_new(void);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Initialization function for fn_settings_t loading from file.
+ *
+ * @param  path  The path from which the settings are loaded.
+ *
+ * @return A newly created fn_settings_t struct. If the file could
+ *         not be read NULL is returned.
+ *
+ * @see    fn_settings_free fn_settings_store fn_settings_new
+ */
+fn_settings_t * fn_settings_new_from_file(char * path);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Clean up a fn_settings_t struct.
+ *
+ * @param  s      The fn_settings_t struct to clean up.
+ */
+void fn_settings_free(fn_settings_t * s);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Store the settings to a file.
+ *
+ * @param  s      The fn_settings_t struct to store.
+ * @param  path   The path of the file.
+ *
+ * @return 1 on success, otherwise 0.
+ */
+int fn_settings_store(fn_settings_t * s, char * path);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get a bool value from the settings.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  target  The memory where the value is copied to.
+ *
+ * @return 1 if the value could be found, otherwise 0.
+ */
+int fn_settings_get_bool(fn_settings_t * s,
+    char * name,
+    int * target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get a long integer value from the settings.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  target  The memory where the value is copied to.
+ *
+ * @return 1 if the value could be found, otherwise 0.
+ */
+int fn_settings_get_longint(fn_settings_t * s,
+    char * name,
+    long int * target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get a string value from the settings.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  target  A pointer to the char array. This is allocated
+ *                 inside this function and has to be freed by the
+ *                 caller afterwards.
+ *
+ * @return 1 if the value could be found, otherwise 0.
+ */
+int fn_settings_get_string(fn_settings_t * s,
+    char * name,
+    char ** target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set a bool value in the settings.
+ *
+ * @param  s        The fn_settings_t struct.
+ * @param  name     The name of the option.
+ * @param  source   The new value of the option.
+ */
+void fn_settings_set_bool(fn_settings_t * s,
+    char * name,
+    int source);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set a integer value in the settings.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  source  The new value of the option.
+ */
+void fn_settings_set_longint(fn_settings_t * s,
+    char * name,
+    long int source);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set a string value in the settings.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  source  The new value of the option.
+ */
+void fn_settings_set_string(fn_settings_t * s,
+    char * name,
+    char * source);
+
+/* --------------------------------------------------------------- */
+
+#endif // FN_SETTINGS_H

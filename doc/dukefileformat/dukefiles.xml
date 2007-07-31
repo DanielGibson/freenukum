@@ -1,0 +1,407 @@
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+    <!-- $Id:$ -->
+    <articleinfo>
+        <title>The Duke Nukem file format</title>
+        <author>
+            <personname>
+                <firstname>Wolfgang</firstname>
+                <surname>Silbermayr</surname>
+            </personname>
+            <email>wosi@gmx.at</email>
+        </author>
+    </articleinfo>
+    <para>
+        This document describes the information that I could
+        find out about the file format of the original Duke
+        Nukem game files. For reverse engineering the file
+        formats, I only used the shareware version of the game
+        because I don't have any other version of it. This
+        version can be downloaded from
+        <ulink url="http://www.apogee1.com/">http://www.apogee1.com/</ulink>.
+    </para>
+
+    <sect1>
+        <title>The files</title>
+        <para>
+            The following files are contained in the original shareware
+            version of the game:
+            <variablelist>
+                <varlistentry>
+                    <term><filename>ANIM0.DN1</filename></term>
+                    <term><filename>ANIM1.DN1</filename></term>
+                    <term><filename>ANIM2.DN1</filename></term>
+                    <term><filename>ANIM3.DN1</filename></term>
+                    <term><filename>ANIM4.DN1</filename></term>
+                    <term><filename>ANIM5.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The animated sprites of the opponents in the
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>BACK0.DN1</filename></term>
+                    <term><filename>BACK1.DN1</filename></term>
+                    <term><filename>BACK2.DN1</filename></term>
+                    <term><filename>BACK3.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The background sprites of the levels in the
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>BADGUY.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The graphic shoing the opponent before starting the game
+                            in the <link linkend="PictureFileFormat">Picture File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>BORDER.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The graphics of which the borders consist in the
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>CREDITS.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The graphic showing the credits in the
+                            <link linkend="PictureFileFormat">Picture File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DN1.EXE</filename></term>
+                    <listitem>
+                        <para>
+                            The game executable in DOS EXE format.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DN.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The background image of the main menu. In
+                            <link linkend="PictureFileFormat">Picture File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DROP0.DN1</filename></term>
+                    <term><filename>DRPP1.DN1</filename></term>
+                    <term><filename>DROP2.DN1</filename></term>
+                    <term><filename>DROP3.DN1</filename></term>
+                    <term><filename>DROP5.DN1</filename></term>
+                    <term><filename>DROP7.DN1</filename></term>
+                    <term><filename>DROP9.DN1</filename></term>
+                    <term><filename>DROP11.DN1</filename></term>
+                    <term><filename>DROP13.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The background graphics in the
+                            <link linkend="BackdropFileFormat">Backdrop File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DUKE1-B.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            Don't know much about this file yet, but it seems to contain some
+                            settings like if the sound is on, the highscore and so on.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DUKE1.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            Don't know much about this file either, but it also seems to contain
+                            some configuration information, maybe key configuration and so on.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>DUKE.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The image of Duke's face that is shown before entering
+                            level 1. In <link linkend="PictureFileFormat">Picture File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>END.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The image shown when you finish the game.
+                            In <link linkend="PictureFileFormat">Picture File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>FONT1.DN1</filename></term>
+                    <term><filename>FONT2.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The fonts that are used inside the game to display
+                            messages and other text in
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>MAN0.DN1</filename></term>
+                    <term><filename>MAN1.DN1</filename></term>
+                    <term><filename>MAN2.DN1</filename></term>
+                    <term><filename>MAN3.DN1</filename></term>
+                    <term><filename>MAN4.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The files containing the animations of Duke himself
+                            in <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>MY_DEMO.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The file containing the original recorded demo.
+                            Didn't check anything about the file format yet.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>NUKUM.TXT</filename></term>
+                    <listitem>
+                        <para>
+                            A text file containing some information about the
+                            name of the Duke Nukem game.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>NUMBERS.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The numbers that indicate the sores in the game as well
+                            as the boxes showing the bonuses you got inside a level
+                            in <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>OBJECT0.DN1</filename></term>
+                    <term><filename>OBJECT1.DN1</filename></term>
+                    <term><filename>OBJECT2.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            Several active and passive objects like the
+                            key switches, rockets, flames, chicken,
+                            shots, elevators, boxes etc. in
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>ORDER.FRM</filename></term>
+                    <listitem>
+                        <para>
+                            A Fax form for ordering games from Apogee.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>SOLID0.DN1</filename></term>
+                    <term><filename>SOLID1.DN1</filename></term>
+                    <term><filename>SOLID2.DN1</filename></term>
+                    <term><filename>SOLID3.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The solid parts of the levels in
+                            <link linkend="SpritesFileFormat">Sprites File Format</link>.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>VENDOR.DOC</filename></term>
+                    <listitem>
+                        <para>
+                            A text file containing the information about
+                            redistributing the files.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><filename>WORLDAL1.DN1</filename></term>
+                    <term><filename>WORLDAL2.DN1</filename></term>
+                    <term><filename>WORLDAL3.DN1</filename></term>
+                    <term><filename>WORLDAL4.DN1</filename></term>
+                    <term><filename>WORLDAL5.DN1</filename></term>
+                    <term><filename>WORLDAL6.DN1</filename></term>
+                    <term><filename>WORLDAL7.DN1</filename></term>
+                    <term><filename>WORLDAL8.DN1</filename></term>
+                    <term><filename>WORLDAL9.DN1</filename></term>
+                    <term><filename>WORLDALA.DN1</filename></term>
+                    <term><filename>WORLDALB.DN1</filename></term>
+                    <term><filename>WORLDALC.DN1</filename></term>
+                    <listitem>
+                        <para>
+                            The levels in
+                            <link linkend="LevelFileFormat">Level File Format</link>
+                            Be careful here, the numeration is not straight-forward.
+                            <filename>WORLDAL1.DN1</filename> contains the first level,
+                            <filename>WORLDAL2.DN1</filename> contains the short level
+                            that is shown between two usual levels. From
+                            <filename>WORLDAL3.DN1</filename> to
+                            <filename>WORLDALB.DN1</filename> there are the levels
+                            from 2 to 10. The file <filename>WORLDALC.DN1</filename>
+                            contains the level that is shown in the demo.
+                        </para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </para>
+    </sect1>
+
+    <!-- ****************************************************************** -->
+
+    <sect1>
+        <title id="PictureFileFormat">The Picture File Format</title>
+        <para>
+            The Picture File Format is rather simple. It consists of three
+            parts: one for the blue components, one for the green components
+            and one for the red components and one for the brightening
+            component. Each of them has a length of 9600
+            Bytes. Each color contains 320x240 pixels, stored in 40x320 Bytes.
+            The lines are stored one after the other, with a Byte for 8 Pixels.
+        </para>
+    </sect1>
+
+    <!-- ****************************************************************** -->
+
+    <sect1>
+        <title id="SpritesFileFormat">The Sprites File Format</title>
+        <para>
+            The Sprite files consist of three main parts described
+            as follows.
+        </para>
+
+            <sect2>
+                <title>Header</title>
+                <para>
+                    The header only consists of three bytes:
+                    The first byte contains the number of sprites (in the following
+                    called <emphasis>NumSprites</emphasis>) that are stored in the
+                    file. The second byte contains the width of the sprites in pixels/8
+                    (in the following called <emphasis>SpriteWidth</emphasis>) and the
+                    third byte contains the height of the sprites in pixels (in the
+                    following called <emphasis>SpriteHeight</emphasis>).
+                </para>
+            </sect2>
+
+            <sect2>
+                <title>Body</title>
+                <para>
+                    The body contains <emphasis>NumSprites</emphasis> sprites.
+                    A sprite contains of <emphasis>SpriteWidth</emphasis> *
+                    <emphasis>SpriteHeight</emphasis> parts. Each part has
+                    5 bytes. These represent eight pixels in a row which is
+                    composed of one bit at the same position of each of the
+                    5 bytes.
+                    <variablelist>
+                        <varlistentry>
+                            <term>Transparency</term>
+                            <listitem>
+                                <para>
+                                    If this bit has value 1, the pixel is visible,
+                                    otherwise it is transparent. This bit is ignored
+                                    for solid sprites and background sprites.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Blue</term>
+                            <listitem>
+                                <para>
+                                    If this bit has value 1, the blue component
+                                    is on, otherwise it is off.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Green</term>
+                            <listitem>
+                                <para>
+                                    If this bit has value 1, the green component
+                                    is on, otherwise it is off.
+                                 </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Red</term>
+                            <listitem>
+                                <para>
+                                    If this bit has value 1, the red component
+                                    is on, otherwise it is off.
+                                 </para>
+                            </listitem>
+                        </varlistentry>
+                        <varlistentry>
+                            <term>Brightness</term>
+                            <listitem>
+                                <para>
+                                    If this bit has value 1, the pixel is
+                                    brightened, otherwise it keeps the dark color.
+                                </para>
+                            </listitem>
+                        </varlistentry>
+                    </variablelist>
+                </para>
+            </sect2>
+
+            <sect2>
+                <title>Footer</title>
+                <para>
+                    <!-- TODO -->
+                    I don't know what yet what data is stored here.
+                </para>
+            </sect2>
+    </sect1>
+
+    <!-- ****************************************************************** -->
+
+    <sect1>
+        <title id="BackdropFileFormat">The Backdrop File
+            Format</title>
+        <para>
+            <!-- TODO -->
+            To be written...
+        </para>
+    </sect1>
+
+    <!-- ****************************************************************** -->
+
+    <sect1>
+        <title id="LevelFileFormat">The Level File Format</title>
+        <para>
+            <!-- TODO -->
+            To be written...
+        </para>
+    </sect1>
+
+</article>
+

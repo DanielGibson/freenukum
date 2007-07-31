@@ -1,0 +1,12 @@
+**/.svn
+src/.sconsign.dblite
+src/core
+src/fn_test_draw
+src/fn_test_drop
+src/fn_test_error
+src/fn_test_level
+src/fn_test_msgbox
+src/fn_test_picture
+src/fn_test_settings
+src/fn_test_tile
+src/fn_test_tilecache
