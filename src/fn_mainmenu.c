@@ -69,6 +69,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
         case SDL_KEYDOWN:
           switch(event.key.keysym.sym) {
             case SDLK_s:
+            case SDLK_RETURN:
               choice = FN_MENUCHOICE_START;
               break;
             case SDLK_r:
@@ -99,6 +100,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
               choice = FN_MENUCHOICE_CREDITS;
               break;
             case SDLK_q:
+            case SDLK_ESCAPE:
               choice = FN_MENUCHOICE_QUIT;
               break;
             default:
