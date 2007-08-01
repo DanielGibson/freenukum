@@ -22,6 +22,7 @@
 #include "fn_mainmenu.h"
 #include "fn_infobox.h"
 #include "fn_settings.h"
+#include "fn_game.h"
 
 /* --------------------------------------------------------------- */
 
@@ -148,8 +149,11 @@ int main(int argc, char ** argv)
     choice = fn_mainmenu(&tilecache, (Uint8)pixelsize, screen);
     switch(choice) {
       case FN_MENUCHOICE_START:
-        fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Gameplay not implemented yet.");
+        fn_game_start((Uint8)pixelsize, &tilecache, screen);
+        res = fn_picture_splash_show(datapath,
+            "DN.DN1",
+            (Uint8)pixelsize,
+            screen);
         break;
       case FN_MENUCHOICE_RESTORE:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
