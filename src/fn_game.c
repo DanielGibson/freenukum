@@ -19,23 +19,19 @@ void fn_game_start(
   int res;
 
   char * msg1[] = {
-    "Hello Proton!",
+    "So you're the pitiful",
+    "hero they sent to stop",
+    "me.  I, Dr. Proton, will",
+    "soon rule the world!",
     0
   };
   char * msg2[] = {
-    "Hi Duke.",
+    "You're wrong, Proton",
+    "breath.  I'll be done",
+    "with you and still have",
+    "time to watch Oprah!",
     0
   };
-
-  res = fn_picture_splash_show_with_message(
-      datapath,
-      "DUKE.DN1",
-      (Uint8)pixelsize,
-      screen,
-      tilecache,
-      msg1,
-      100,
-      100);
 
   res = fn_picture_splash_show_with_message(
       datapath,
@@ -43,9 +39,19 @@ void fn_game_start(
       (Uint8)pixelsize,
       screen,
       tilecache,
+      msg1,
+      0,
+      120);
+
+  res = fn_picture_splash_show_with_message(
+      datapath,
+      "DUKE.DN1",
+      (Uint8)pixelsize,
+      screen,
+      tilecache,
       msg2,
       100,
-      100);
+      120);
 
   SDL_FillRect(screen, NULL, 0);
   fn_borders_blit(

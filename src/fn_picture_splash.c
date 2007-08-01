@@ -83,15 +83,16 @@ int fn_picture_splash_show_with_message(char * datapath,
     int width=0, height=0;
 
     while (*walker != NULL) {
-      width = MAX(strlen(*walker),width);
+      width = MAX(strlen(*walker)/2+2,width);
       height++;
       walker++;
     }
+    height = height/2+2;
     
     fn_msgbox_init(&mb, pixelsize, width, height);
     fn_msgbox_settext(&mb, message);
 
-    msgbox = fn_msgbox_getsurface(&mb, &tilecache);
+    msgbox = fn_msgbox_getsurface(&mb, tilecache);
     dstrect.x = x * pixelsize;
     dstrect.y = y * pixelsize;
 
