@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Settings functions
- * $Id: fn_settings.h 14 2006-07-02 11:02:37Z sttereo3 $
  *******************************************************************/
 
 #ifndef FN_SETTINGS_H

@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Picture Drawing functions
- * $Id: fn_picture.c 8 2006-06-04 11:26:48Z sttereo3 $
  *******************************************************************/
 
 #include <stdlib.h>

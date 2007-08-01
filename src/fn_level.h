@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Level loading functions
- * $Id: fn_level.h 11 2006-06-10 12:20:52Z sttereo3 $
  *******************************************************************/
 
 #ifndef FN_LEVEL_H

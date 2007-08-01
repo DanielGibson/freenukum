@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Pixel Drawing functions
- * $Id: fn_draw.h 8 2006-06-04 11:26:48Z sttereo3 $
  *******************************************************************/
 
 #ifndef FN_DRAW
