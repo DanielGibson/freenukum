@@ -20,10 +20,7 @@
  * @param  datapath   The directory where the data files are stored.
  * @param  filename   The filename of the picture to show.
  *                    Usually one of: BADGUY.DN1, CREDITS.DN1, DN.DN1, DUKE.DN1
- * @param  picture    The surface that is used for loading the picture.
- *                    This stays stored there and can be used as background
- *                    later on. The caller of this function must manually
- *                    call SDL_FreeSurface() for this variable.
+ * @param  pixelsize  The pixel size.
  * @param  screen     The surface to which the image is finally blitted.
  *
  * @return 1 on success, otherwise 0 (if for example the file could not be
@@ -31,7 +28,7 @@
  */
 int fn_picture_splash_show(char * datapath,
     char * filename,
-    SDL_Surface ** picture,
+    Uint8 pixelsize,
     SDL_Surface * screen);
 
 /* --------------------------------------------------------------- */

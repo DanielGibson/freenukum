@@ -122,6 +122,22 @@ int fn_settings_get_bool(fn_settings_t * s,
 /* --------------------------------------------------------------- */
 
 /**
+ * Get a bool value from the settings and set it to a default value
+ * if it is not yet stored.
+ *
+ * @param  s        The fn_settings_t struct.
+ * @param  name     The name of the option.
+ * @param  target   The memory where the value is copied to.
+ * @param  defval   The default value.
+ */
+void fn_settings_get_bool_with_default(fn_settings_t * s,
+    char * name,
+    int * target,
+    int defval);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Get a long integer value from the settings.
  *
  * @param  s       The fn_settings_t struct.
@@ -133,6 +149,22 @@ int fn_settings_get_bool(fn_settings_t * s,
 int fn_settings_get_longint(fn_settings_t * s,
     char * name,
     long int * target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get a long integer value from the settings and set it to a default
+ * value if it is not yet stored.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  target  The memory where the value is copied to.
+ * @param  defval  The default value.
+ */
+void fn_settings_get_longint_with_default(fn_settings_t * s,
+    char * name,
+    long int * target,
+    long int defval);
 
 /* --------------------------------------------------------------- */
 
@@ -150,6 +182,24 @@ int fn_settings_get_longint(fn_settings_t * s,
 int fn_settings_get_string(fn_settings_t * s,
     char * name,
     char ** target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get a string value from the settings and set it to a default value
+ * if it is not yet stored.
+ *
+ * @param  s       The fn_settings_t struct.
+ * @param  name    The name of the option.
+ * @param  target  A pointer to the char array. This is allocated
+ *                 inside this function and has to be freed by the
+ *                 caller afterwards.
+ * @param  defval  The default value.
+ */
+void fn_settings_get_string_with_default(fn_settings_t * s,
+    char * name,
+    char ** target,
+    char * defval);
 
 /* --------------------------------------------------------------- */
 

@@ -21,7 +21,6 @@ int main(int argc, char ** argv)
   char * homedir;
   char tilespath[1024];
   SDL_Surface * screen;
-  SDL_Surface * picture;
 
   fn_error_set_handler(fn_error_print_commandline);
 
@@ -51,7 +50,7 @@ int main(int argc, char ** argv)
 
   res = fn_picture_splash_show(tilespath,
       "DN.DN1",
-      &picture,
+      (Uint8) pixelsize,
       screen);
   
   return 0;

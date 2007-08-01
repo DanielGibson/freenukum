@@ -228,6 +228,19 @@ int fn_settings_get_bool(fn_settings_t * s,
 
 /* --------------------------------------------------------------- */
 
+void fn_settings_get_bool_with_default(fn_settings_t * s,
+    char * name,
+    int * target,
+    int defval)
+{
+  if (!fn_settings_get_bool(s, name, target)) {
+    fn_settings_set_bool(s, name, defval);
+    *target = defval;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 int fn_settings_get_longint(fn_settings_t * s,
     char * name,
     long int * target)
@@ -247,6 +260,19 @@ int fn_settings_get_longint(fn_settings_t * s,
 
 /* --------------------------------------------------------------- */
 
+void fn_settings_get_longint_with_default(fn_settings_t * s,
+    char * name,
+    long int * target,
+    long int defval)
+{
+  if (!fn_settings_get_longint(s, name, target)) {
+    fn_settings_set_longint(s, name, defval);
+    *target = defval;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 int fn_settings_get_string(fn_settings_t * s,
     char * name,
     char ** target)
@@ -260,6 +286,20 @@ int fn_settings_get_string(fn_settings_t * s,
     return 1;
   }
   return 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_settings_get_string_with_default(fn_settings_t * s,
+    char * name,
+    char ** target,
+    char * defval)
+{
+  if (!fn_settings_get_string(s, name, target)) {
+    fn_settings_set_string(s, name, defval);
+    *target = malloc(strlen(name)+1);
+    strcpy(*target, name);
+  }
 }
 
 /* --------------------------------------------------------------- */

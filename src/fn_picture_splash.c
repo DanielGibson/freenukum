@@ -23,14 +23,14 @@
 
 int fn_picture_splash_show(char * datapath,
     char * filename,
-    SDL_Surface ** picture,
+    Uint8 pixelsize,
     SDL_Surface * screen)
 {
   char * path;
   int fd;
-  Uint8 pixelsize = 2;
   int res;
   SDL_Event event;
+  SDL_Surface * picture;
 
   path = malloc(strlen(datapath) + strlen(filename) + 1);
   sprintf(path, "%s%s", datapath, filename);
@@ -44,10 +44,11 @@ int fn_picture_splash_show(char * datapath,
   }
   free(path);
 
-  *picture = fn_picture_load(fd, pixelsize);
+  picture = fn_picture_load(fd, pixelsize);
 
-  SDL_BlitSurface(*picture, NULL, screen, NULL);
+  SDL_BlitSurface(picture, NULL, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
+  SDL_FreeSurface(picture);
 
   while (1) {
     res = SDL_PollEvent(&event);
