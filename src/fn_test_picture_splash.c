@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
-  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/duke/");
+  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());

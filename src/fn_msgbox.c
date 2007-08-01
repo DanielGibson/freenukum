@@ -1,7 +1,6 @@
 /*******************************************************************
  * Project: FreeNukum 2D Jump'n Run
  * File:    Messagebox Drawing functions
- * $Id: fn_msgbox.c 12 2006-06-10 14:04:44Z sttereo3 $
  *******************************************************************/
 
 #include "fn.h"

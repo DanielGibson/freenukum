@@ -34,4 +34,6 @@ env.Program('fn_test_picture_splash', ['fn_picture_splash.c','fn_picture.c','fn_
 
 env.Program('fn_test_infobox', ['fn_test_infobox.c','fn_infobox.c','fn_msgbox.c','fn_tilecache.c','fn_tile.c','fn_draw.c'])
 
+env.Program('fn_test_borders', ['fn_test_borders.c','fn_borders.c','fn_tilecache.c','fn_tile.c','fn_error.c','fn_error_cmdline.c','fn_draw.c'])
+
 env.Program('freenukum', ['fn_picture_splash.c','fn_picture.c','freenukum.c','fn_draw.c','fn_msgbox.c','fn_tile.c','fn_tilecache.c','fn_error_cmdline.c','fn_error.c','fn_mainmenu.c','fn_infobox.c','fn_settings.c'])
