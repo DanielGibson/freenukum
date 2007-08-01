@@ -5,6 +5,11 @@
 
 #include <SDL/SDL.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/stat.h>
 
 /* --------------------------------------------------------------- */
 
@@ -16,6 +21,7 @@
 #include "fn_picture_splash.h"
 #include "fn_mainmenu.h"
 #include "fn_infobox.h"
+#include "fn_settings.h"
 
 /* --------------------------------------------------------------- */
 
@@ -32,45 +38,98 @@ int main(int argc, char ** argv)
 
   int choice = 0; /* choice of the main menu */
 
-  char * homedir; /* home directory of the user */
-  char tilespath[1024]; /* path to the original game data */
+  char * homepath; /* home directory of the user */
+  char configpath[1024]; /* path to the settings directory */
+  char datapath[1024]; /* path to the original game data */
+  char configfilepath[1024]; /* path to the config file */
+
+  DIR * configdir; /* directory pointer to the config directory */
+  DIR * datadir; /* directory pointer to the data directory */
+
+  fn_settings_t * settings; /* the settings struct */
 
   fn_error_set_handler(fn_error_print_commandline);
 
-  homedir = getenv("HOME");
-  if (homedir == NULL) {
+  /* retrieve home directory path */
+  homepath = getenv("HOME");
+  if (homepath == NULL) {
     fn_error_print("$HOME environment variable is not set.");
     exit(1);
   }
 
-  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/duke/");
+  snprintf(configpath, 1024, "%s%s", homepath, "/.freenukum");
+  snprintf(datapath, 1024, "%s%s", configpath, "/data/");
+  snprintf(configfilepath, 1024, "%s%s", configpath, "/config");
 
+  /* check if .freenukum directory exists and create it if
+   * it does not exist yet */
+  configdir = opendir(configpath);
+  if (configdir == NULL) {
+    res = mkdir(configpath, S_IRUSR | S_IWUSR | S_IXUSR
+        | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+    if (res) {
+      fn_error_printf(1024, "Could not create the directory %s: %s",
+          configpath, strerror(errno));
+      exit(1);
+    }
+  }
+  closedir(configdir);
+
+  /* check if data directory exists and create it if
+   * it does not exist yet */
+  datadir = opendir(datapath);
+  if (datadir == NULL) {
+    res = mkdir(datapath, S_IRUSR | S_IWUSR | S_IXUSR
+        | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+    if (res) {
+      fn_error_printf(1024, "Could not create the directory %s: %s",
+          datapath, strerror(errno));
+      exit(1);
+    }
+  }
+  closedir(datadir);
+
+  /* load the settings from the config file and
+   * create the file if it does not exist */
+  settings = fn_settings_new_from_file(configfilepath);
+  if (settings == NULL) {
+    settings = fn_settings_new();
+    res = fn_settings_store(settings, configfilepath);
+    if (!res) {
+      fn_error_printf(1024, "Could not create the settings file %s: %s",
+          configfilepath, strerror(errno));
+      exit(1);
+    }
+  }
+
+  /* initialize the tile cache */
   fn_tilecache_init(&tilecache, pixelsize);
-
-  res = fn_tilecache_loadtiles(&tilecache, tilespath);
+  res = fn_tilecache_loadtiles(&tilecache, datapath);
   if (res == -1) {
     fn_error_printf(1024, "Could not load tiles.\n"
-        "Copy the original game files to %s." , tilespath);
+        "Copy the original game files to %s" , datapath);
     exit(1);
   }
 
+  /* initialize SDL */
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
     exit(1);
   }
 
+  /* initialize SDL window */
   screen = SDL_SetVideoMode(
       FN_WINDOW_WIDTH * pixelsize,
       FN_WINDOW_HEIGHT * pixelsize,
       FN_COLOR_DEPTH,
       SDL_SWSURFACE);
-
   if (screen == NULL) {
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
     exit(1);
   }
 
-  res = fn_picture_splash_show(tilespath,
+  /* show the splash screen */
+  res = fn_picture_splash_show(datapath,
       "DN.DN1",
       &wallpaper,
       screen);
@@ -78,6 +137,7 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
+  /* show the main menu */
   while (choice != FN_MENUCHOICE_QUIT) {
     choice = fn_mainmenu(&tilecache, pixelsize, screen);
     switch(choice) {
@@ -114,7 +174,7 @@ int main(int argc, char ** argv)
             "Userdemo not implemented yet.");
         break;
       case FN_MENUCHOICE_TITLESCREEN:
-        res = fn_picture_splash_show(tilespath,
+        res = fn_picture_splash_show(datapath,
             "DN.DN1",
             &wallpaper,
             screen);
