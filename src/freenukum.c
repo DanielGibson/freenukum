@@ -149,7 +149,7 @@ int main(int argc, char ** argv)
     choice = fn_mainmenu(&tilecache, (Uint8)pixelsize, screen);
     switch(choice) {
       case FN_MENUCHOICE_START:
-        fn_game_start((Uint8)pixelsize, &tilecache, screen);
+        fn_game_start((Uint8)pixelsize, &tilecache, screen, datapath);
         res = fn_picture_splash_show(datapath,
             "DN.DN1",
             (Uint8)pixelsize,

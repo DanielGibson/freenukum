@@ -5,16 +5,47 @@
 
 #include "fn_game.h"
 #include "fn_borders.h"
+#include "fn_picture_splash.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
-    SDL_Surface * screen)
+    SDL_Surface * screen,
+    char * datapath)
 {
   SDL_Event event;
   int res;
+
+  char * msg1[] = {
+    "Hello Proton!",
+    0
+  };
+  char * msg2[] = {
+    "Hi Duke.",
+    0
+  };
+
+  res = fn_picture_splash_show_with_message(
+      datapath,
+      "DUKE.DN1",
+      (Uint8)pixelsize,
+      screen,
+      tilecache,
+      msg1,
+      100,
+      100);
+
+  res = fn_picture_splash_show_with_message(
+      datapath,
+      "BADGUY.DN1",
+      (Uint8)pixelsize,
+      screen,
+      tilecache,
+      msg2,
+      100,
+      100);
 
   SDL_FillRect(screen, NULL, 0);
   fn_borders_blit(

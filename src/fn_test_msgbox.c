@@ -66,10 +66,6 @@ int main(int argc, char ** argv)
         exit(1);
     }
 
-
-    fn_msgbox_init(&mb, pixelsize, width, height);
-    fn_msgbox_settext(&mb, msg);
-
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
     {
         fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
@@ -87,6 +83,9 @@ int main(int argc, char ** argv)
         fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
         return -1;
     }
+
+    fn_msgbox_init(&mb, pixelsize, width, height);
+    fn_msgbox_settext(&mb, msg);
 
     msgbox = fn_msgbox_getsurface(&mb, &tc);
 

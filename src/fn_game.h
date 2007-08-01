@@ -19,7 +19,8 @@
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
-    SDL_Surface * screen);
+    SDL_Surface * screen,
+    char * datapath);
 
 /* --------------------------------------------------------------- */
 
