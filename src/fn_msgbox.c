@@ -26,33 +26,117 @@
  *
  *******************************************************************/
 
+#include <SDL/SDL.h>
+
+/* --------------------------------------------------------------- */
+
 #include "fn.h"
 #include "fn_msgbox.h"
 
 /* --------------------------------------------------------------- */
 
-int fn_msgbox_init(
-        fn_msgbox_t * mb,
-        Uint8 pixelsize,
-        Uint8 w,
-        Uint8 h)
-{
-    mb->pixelsize = pixelsize;
-    mb->w = w;
-    mb->h = h;
-    mb->text = 0;
-    return 0;
-}
+#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
 
 /* --------------------------------------------------------------- */
 
-int fn_msgbox_settext(
-        fn_msgbox_t * mb,
-        char ** msg
-        )
+void fn_msgbox_printletter(SDL_Surface * msgbox,
+        SDL_Rect * r,
+        fn_tilecache_t * tc,
+        char c);
+
+/* --------------------------------------------------------------- */
+
+SDL_Surface * fn_msgbox(
+    Uint8 pixelsize,
+    fn_tilecache_t * tilecache,
+    char * text
+    )
 {
-    mb->text = msg;
-    return 0;
+  char * walker;
+  Uint8 columns = 0;
+  Uint8 rows = 0;
+  char * mytext;
+  char * linemarker;
+  SDL_Surface * msgbox;
+  Uint8 i, j;
+  int tilenr;
+  SDL_Rect r;
+
+  mytext = malloc(strlen(text)+1);
+  strcpy(mytext, text);
+  walker = mytext;
+
+  linemarker = walker;
+
+  while (*walker != '\0') {
+    if (*walker == '\n') {
+      *walker = '\0';
+      columns = MAX(strlen(linemarker), columns);
+      linemarker = walker + 1;
+      rows++;
+    }
+    walker++;
+  }
+
+  msgbox = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_FONT_WIDTH * pixelsize * (columns + 2),
+      FN_FONT_HEIGHT * pixelsize * (rows + 2),
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0
+      );
+  r.w = pixelsize * FN_PART_WIDTH;
+  r.h = pixelsize * FN_PART_HEIGHT;
+
+  for (i = 0; i <= rows; i++) {
+    for (j = 0; j <= columns; j++) {
+
+      if      (i == 0      && j == 0)       tilenr = BORD_BLUE_TOPLEFT;
+      else if (i == 0      && j == columns) tilenr = BORD_BLUE_TOPRIGHT;
+      else if (i == rows   && j == 0)       tilenr = BORD_BLUE_BOTTOMLEFT;
+      else if (i == rows   && j == columns) tilenr = BORD_BLUE_BOTTOMRIGHT;
+      else if (i == 0      && j % 2 == 0)   tilenr = BORD_BLUE_TOP;
+      else if (i % 2 == 0  && j == 0)       tilenr = BORD_BLUE_LEFT;
+      else if (i == rows   && j % 2 == 0)   tilenr = BORD_BLUE_BOTTOM;
+      else if (i % 2 == 0  && j == columns) tilenr = BORD_BLUE_RIGHT;
+      else if (i % 2 == 0  && j % 2 == 0)   tilenr = BORD_BLUE_MIDDLE;
+      else continue;
+      r.x = j * pixelsize * FN_FONT_WIDTH;
+      r.y = i * pixelsize * FN_FONT_HEIGHT;
+      SDL_BlitSurface(
+          fn_tilecache_gettile(tilecache, tilenr),
+          NULL,
+          msgbox,
+          &r);
+    }
+  }
+
+  i = 1;
+  j = 1;
+  r.w = pixelsize * FN_FONT_WIDTH;
+  r.h = pixelsize * FN_FONT_HEIGHT;
+  
+  for (walker = mytext; walker < linemarker; walker++) {
+    if (*walker == '\0') {
+      j = 0;
+      i++;
+    } else {
+      r.x = j * pixelsize * FN_FONT_WIDTH;
+      r.y = i * pixelsize * FN_FONT_HEIGHT;
+      fn_msgbox_printletter(msgbox,
+          &r,
+          tilecache,
+          *walker);
+    }
+    j++;
+  }
+
+  free(mytext);
+
+  return msgbox;
 }
 
 /* --------------------------------------------------------------- */
@@ -77,119 +161,6 @@ void fn_msgbox_printletter(SDL_Surface * msgbox,
             NULL,
             msgbox,
             r);
-}
-
-/* --------------------------------------------------------------- */
-
-SDL_Surface * fn_msgbox_getsurface(
-        fn_msgbox_t * mb,
-        fn_tilecache_t * tc)
-{
-    SDL_Surface * msgbox;
-    SDL_Rect r;
-    size_t i = 0;
-    size_t j = 0;
-    int tilenr;
-
-    msgbox = SDL_CreateRGBSurface(
-            SDL_SWSURFACE,
-            FN_PART_WIDTH * mb->pixelsize * mb->w,
-            FN_PART_HEIGHT * mb->pixelsize * mb->h,
-            FN_COLOR_DEPTH,
-            0,
-            0,
-            0,
-            0
-            );
-
-    r.x = 0;
-    r.y = 0;
-    r.w = FN_PART_WIDTH * mb->pixelsize;
-    r.h = FN_PART_HEIGHT * mb->pixelsize;
-
-    for (i = 0; i != mb->w; i++)
-    {
-        for (j = 0; j != mb->h; j++)
-        {
-            r.x = i * mb->pixelsize * FN_PART_WIDTH;
-            r.y = j * mb->pixelsize * FN_PART_HEIGHT;
-            if (i == 0 && j == 0)
-            {
-                /* top left corner */
-                tilenr = BORD_BLUE_TOPLEFT;
-            }
-            else if (i == 0 && j == mb->h-1)
-            {
-                /* bottom left corner */
-                tilenr = BORD_BLUE_BOTTOMLEFT;
-            }
-            else if (i == mb->w - 1 && j == 0)
-            {
-                /* top right corner */
-                tilenr = BORD_BLUE_TOPRIGHT;
-            }
-            else if (i == mb->w - 1 && j == mb->h - 1)
-            {
-                /* bottom right corner */
-                tilenr = BORD_BLUE_BOTTOMRIGHT;
-            }
-            else if (i == 0)
-            {
-                /* left border */
-                tilenr = BORD_BLUE_LEFT;
-            }
-            else if (i == mb->w - 1)
-            {
-                /* right border */
-                tilenr = BORD_BLUE_RIGHT;
-            }
-            else if (j == 0)
-            {
-                /* top border */
-                tilenr = BORD_BLUE_TOP;
-            }
-            else if (j == mb->h - 1)
-            {
-                /* bottom border */
-                tilenr = BORD_BLUE_BOTTOM;
-            }
-            else
-            {
-                /* central piece */
-                tilenr = BORD_BLUE_MIDDLE;
-            }
-            SDL_BlitSurface(
-                    fn_tilecache_gettile(tc, tilenr),
-                    NULL,
-                    msgbox,
-                    &r
-                    );
-
-        }
-    }
-
-    i = 0;
-    j = 0;
-
-    r.w = FN_PART_WIDTH / 2 * mb->pixelsize;
-    r.h = FN_PART_HEIGHT / 2 * mb->pixelsize;
-    r.y = FN_PART_HEIGHT * mb->pixelsize;
-    while (mb->text[i] != 0)
-    {
-        r.x = FN_PART_WIDTH * mb->pixelsize;
-        while (mb->text[i][j] != 0)
-        {
-            fn_msgbox_printletter(msgbox, &r, tc, mb->text[i][j]);
-            r.x += FN_PART_WIDTH / 2 * mb->pixelsize;
-            j++;
-        }
-        r.y += FN_PART_HEIGHT / 2 * mb->pixelsize;
-        j = 0;
-        i++;
-    }
-
-
-    return msgbox;
 }
 
 /* --------------------------------------------------------------- */

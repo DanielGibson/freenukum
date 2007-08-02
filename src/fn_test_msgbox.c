@@ -41,7 +41,6 @@ int main(int argc, char ** argv)
 {
     SDL_Surface * screen;
     SDL_Surface * msgbox;
-    fn_msgbox_t mb;
     Uint8 width = 13;
     Uint8 height = 9;
     Uint8 pixelsize = 2;
@@ -52,23 +51,21 @@ int main(int argc, char ** argv)
     char * homedir;
     char tilespath[1024];
 
-    char * msg[] = {
-        " FREENUKUM MAIN MENU",
-        " ------------------- ",
-        "",
-        "S)tart a new game",
-        "R)estore an old game",
-        "I)nstructions",
-        "O)rdering information",
-        "G)ame setup",
-        "H)igh scores",
-        "P)reviews/Main Demo!",
-        "V)iew user demo",
-        "T)itle screen",
-        "C)redits",
-        "Q)it to DOS",
-        0
-    };
+    char * msg =
+        " FREENUKUM MAIN MENU\n"
+        " ------------------- \n"
+        "\n"
+        "S)tart a new game\n"
+        "R)estore an old game\n"
+        "I)nstructions\n"
+        "O)rdering information\n"
+        "G)ame setup\n"
+        "H)igh scores\n"
+        "P)reviews/Main Demo!\n"
+        "V)iew user demo\n"
+        "T)itle screen\n"
+        "C)redits\n"
+        "Q)it to DOS\n";
 
     homedir = getenv("HOME");
 
@@ -77,7 +74,7 @@ int main(int argc, char ** argv)
       exit(1);
     }
 
-    snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/duke/");
+    snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
     fn_tilecache_init(&tc, pixelsize);
 
@@ -107,12 +104,12 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    fn_msgbox_init(&mb, pixelsize, width, height);
-    fn_msgbox_settext(&mb, msg);
-
-    msgbox = fn_msgbox_getsurface(&mb, &tc);
+    msgbox = fn_msgbox(pixelsize,
+        &tc,
+        msg);
 
     SDL_BlitSurface(msgbox, NULL, screen, NULL);
+    SDL_FreeSurface(msgbox);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
 
     while (quit == 0)

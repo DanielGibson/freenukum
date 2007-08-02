@@ -72,7 +72,8 @@ int fn_picture_splash_show(char * datapath,
  * @param  screen     The surface to which the image is finally blitted.
  * @param  tilecache  The tilecache from which the fonts are loaded.
  *                    If this is NULL, no message will be displayed.
- * @param  message    A NULL-terminated array of strings to display.
+ * @param  message    A string containing the message. Must have a
+ *                    trailing \n otherwise the last line will be omitted.
  *                    If this is NULL, no message will be displayed.
  * @param  x          The x offset of the message (in pixels).
  * @param  y          The y offset of the message (in pixels).
@@ -85,7 +86,7 @@ int fn_picture_splash_show_with_message(char * datapath,
     Uint8 pixelsize,
     SDL_Surface * screen,
     fn_tilecache_t * tilecache,
-    char ** message,
+    char * message,
     Uint8 x,
     Uint8 y);
 

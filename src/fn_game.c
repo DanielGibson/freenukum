@@ -41,20 +41,16 @@ void fn_game_start(
   SDL_Event event;
   int res;
 
-  char * msg1[] = {
-    "So you're the pitiful",
-    "hero they sent to stop",
-    "me.  I, Dr. Proton, will",
-    "soon rule the world!",
-    0
-  };
-  char * msg2[] = {
-    "You're wrong, Proton",
-    "breath.  I'll be done",
-    "with you and still have",
-    "time to watch Oprah!",
-    0
-  };
+  char * msg1 =
+    "So you're the pitiful\n"
+    "hero they sent to stop\n"
+    "me.  I, Dr. Proton, will\n"
+    "soon rule the world!\n";
+  char * msg2 =
+    "You're wrong, Proton\n"
+    "breath.  I'll be done\n"
+    "with you and still have\n"
+    "time to watch Oprah!\n";
 
   res = fn_picture_splash_show_with_message(
       datapath,

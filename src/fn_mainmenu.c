@@ -39,36 +39,27 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
   SDL_Surface * temp;
   SDL_Rect dstrect;
 
-  Uint8 width = 13; /* the width of the menu (two letters is one unit) */
-  Uint8 height = 9; /* the height of the menu (two letters is one unit) */
-
-  fn_msgbox_t mb;
   int res = 0;
   int choice = 0;
-  char * msg[] = {
-    " FREENUKUM MAIN MENU",
-    " ------------------- ",
-    "",
-    "S)tart a new game",
-    "R)estore an old game",
-    "I)nstructions",
-    "O)rdering information",
-    "G)ame setup",
-    "H)igh scores",
-    "P)reviews/Main Demo!",
-    "V)iew user demo",
-    "T)itle screen",
-    "C)redits",
-    "Q)it to DOS",
-    0
-  };
+  char * msg =
+    " FREENUKUM MAIN MENU\n"
+    " ------------------- \n"
+    "\n"
+    "S)tart a new game\n"
+    "R)estore an old game\n"
+    "I)nstructions\n"
+    "O)rdering information\n"
+    "G)ame setup\n"
+    "H)igh scores\n"
+    "P)reviews/Main Demo!\n"
+    "V)iew user demo\n"
+    "T)itle screen\n"
+    "C)redits\n"
+    "Q)it to DOS\n";
 
   SDL_Event event;
 
-  fn_msgbox_init(&mb, pixelsize, width, height);
-  fn_msgbox_settext(&mb, msg);
-
-  msgbox = fn_msgbox_getsurface(&mb, tilecache);
+  msgbox = fn_msgbox(pixelsize, tilecache, msg);
 
   dstrect.x = ((screen->w)-(msgbox->w))/2;
   dstrect.y = ((screen->h)-(msgbox->h))/2;
