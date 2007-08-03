@@ -17,3 +17,6 @@ apidoc/html
 apidoc/latex
 src/fn_test_infobox
 src/fn_test_borders
+src/*.gcov
+src/*.gcda
+src/*.gcno
