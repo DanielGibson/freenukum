@@ -37,6 +37,7 @@
 #include "fn.h"
 #include "fn_tile.h"
 #include "fn_tilecache.h"
+#include "fn_object.h"
 
 /* --------------------------------------------------------------- */
 
@@ -53,13 +54,40 @@ int sumuntil(Uint8 * ar, size_t s)
 
 /* --------------------------------------------------------------- */
 
+void blithex(SDL_Surface * target,
+    SDL_Rect * r,
+    fn_tilecache_t * tc,
+    int x,
+    Uint8 pixelsize)
+{
+  int tilenr;
+  char dst[3];
+  snprintf(dst, 3, "%02X", x);
+  int i;
+
+  for (i = 0; i < strlen(dst); i++) {
+    if(dst[i] >= ' ' && dst[i] <= 'Z')
+      tilenr = dst[i] - ' ' + FONT_ASCII_UPPERCASE;
+    else
+      tilenr = dst[i] - 'a' + FONT_ASCII_LOWERCASE;
+    SDL_BlitSurface(
+        fn_tilecache_gettile(tc, tilenr),
+        NULL,
+        target,
+        r);
+    r->x += (pixelsize * FN_FONT_WIDTH);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 int main(int argc, char ** argv)
 {
     SDL_Surface * screen;
     fn_tilecache_t tc;
     size_t i = 0;
     size_t j = 0;
-    int pixelsize = 2;
+    int pixelsize = 1;
     int res;
     int quit = 0;
     SDL_Event event;
@@ -122,8 +150,8 @@ int main(int argc, char ** argv)
     }
 
     screen = SDL_SetVideoMode(
-            FN_PART_WIDTH * pixelsize * 50,
-            FN_PART_HEIGHT * pixelsize * 26,
+            FN_PART_WIDTH * pixelsize * (50+1),
+            FN_PART_HEIGHT * pixelsize * (26+1),
             FN_COLOR_DEPTH,
             SDL_SWSURFACE);
 
@@ -138,13 +166,33 @@ int main(int argc, char ** argv)
     r.y = 0;
     r.w = FN_PART_WIDTH * pixelsize;
     r.h = FN_PART_HEIGHT * pixelsize;
+
+    for (i = 0; i != 26; i++) {
+      r.x = 0;
+      r.y = (i+1) * FN_PART_HEIGHT * pixelsize;
+      blithex(screen,
+          &r,
+          &tc,
+          i,
+          pixelsize);
+    }
+
+    for (i = 0; i != 50; i++) {
+      r.x = (i+1) * FN_PART_WIDTH * pixelsize;
+      r.y = 0;
+      blithex(screen,
+          &r,
+          &tc,
+          i,
+          pixelsize);
+    }
     
     for (j = 0; j != 26; j++)
     {
         for(i = 0; i != size[j]; i++)
         {
-            r.x = i * FN_PART_WIDTH * pixelsize;
-            r.y = j * FN_PART_HEIGHT * pixelsize;
+            r.x = (i+1) * FN_PART_WIDTH * pixelsize;
+            r.y = (j+1) * FN_PART_HEIGHT * pixelsize;
             SDL_BlitSurface(fn_tilecache_gettile(&tc, sumuntil(size, j)+i), NULL, 
                     screen, &r);
         }
