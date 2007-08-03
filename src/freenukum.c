@@ -180,31 +180,31 @@ int main(int argc, char ** argv)
         break;
       case FN_MENUCHOICE_RESTORE:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Restore not implemented yet.");
+            "Restore not implemented yet.\n");
         break;
       case FN_MENUCHOICE_INSTRUCTIONS:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Instructions not implemented yet.");
+            "Instructions not implemented yet.\n");
         break;
       case FN_MENUCHOICE_ORDERINGINFO:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Orderinginfo not implemented yet.");
+            "Orderinginfo not implemented yet.\n");
         break;
       case FN_MENUCHOICE_SETUP:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Setup not implemented yet.");
+            "Setup not implemented yet.\n");
         break;
       case FN_MENUCHOICE_HIGHSCORES:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Highscores not implemented yet.");
+            "Highscores not implemented yet.\n");
         break;
       case FN_MENUCHOICE_PREVIEWS:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Previews not implemented yet.");
+            "Previews not implemented yet.\n");
         break;
       case FN_MENUCHOICE_VIEWUSERDEMO:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Userdemo not implemented yet.");
+            "Userdemo not implemented yet.\n");
         break;
       case FN_MENUCHOICE_TITLESCREEN:
         res = fn_picture_splash_show(datapath,
@@ -214,7 +214,7 @@ int main(int argc, char ** argv)
         break;
       case FN_MENUCHOICE_CREDITS:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Credits not implemented yet.");
+            "Credits not implemented yet.\n");
         break;
       default:
         break;
