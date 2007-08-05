@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Global defines for FreeNukum
+ * File:    Text Drawing functions
  *
  * *****************************************************************
  *
@@ -26,42 +26,34 @@
  *
  *******************************************************************/
 
-#ifndef FN_H
-#define FN_H
+#ifndef FN_TEXT_H
+#define FN_TEXT_H
 
 /* --------------------------------------------------------------- */
 
-#define FN_DROP_WIDTH       13
-#define FN_DROP_HEIGHT      10
-
-#define FN_FONT_WIDTH        8
-#define FN_FONT_HEIGHT       8
-
-#define FN_PART_WIDTH       16
-#define FN_PART_HEIGHT      16
-
-#define FN_COLOR_DEPTH      24
-
-#define FN_WINDOW_WIDTH    320
-#define FN_WINDOW_HEIGHT   200
-
-#define FN_PICTURE_WIDTH    40
-#define FN_PICTURE_HEIGHT  200
-
-#define FN_TILECACHE_SIZE 1300
-
-#define FN_LEVEL_HEIGHT     90
-#define FN_LEVEL_WIDTH     128
+#include <SDL/SDL.h>
 
 /* --------------------------------------------------------------- */
 
-#define FN_DEFAULT_PIXELSIZE     2
+#include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
 
-#define FN_NUM_MAXLIFE       8
-#define FN_SCORE_DIGITS      8
+void fn_text_printletter(
+    SDL_Surface * target,
+    SDL_Rect * r,
+    fn_tilecache_t * tc,
+    char c);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_H
+void fn_text_print(
+    SDL_Surface * target,
+    SDL_Rect * r,
+    fn_tilecache_t * tc,
+    char * text,
+    Uint8 pixelsize);
+
+/* --------------------------------------------------------------- */
+
+#endif /* FN_TEXT_H */

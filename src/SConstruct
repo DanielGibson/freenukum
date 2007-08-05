@@ -24,7 +24,8 @@ freenukum = env.Program('freenukum', [
   'fn_infobox.c',
   'fn_settings.c',
   'fn_game.c',
-  'fn_borders.c'])
+  'fn_borders.c',
+  'fn_text.c'])
 
 env.Install('/usr/local/bin', freenukum)
 env.Alias('install', '/usr/local/bin')
@@ -68,7 +69,8 @@ if ARGUMENTS.get('tests', 0):
     'fn_msgbox.c',
     'fn_draw.c',
     'fn_tile.c',
-    'fn_tilecache.c'])
+    'fn_tilecache.c',
+    'fn_text.c'])
 
   env.Program('fn_test_settings', [
     'fn_test_settings.c',
@@ -83,7 +85,8 @@ if ARGUMENTS.get('tests', 0):
     'fn_msgbox.c',
     'fn_tilecache.c',
     'fn_tile.c',
-    'fn_draw.c'])
+    'fn_draw.c',
+    'fn_text.c'])
 
   env.Program('fn_test_picture_splash', [
     'fn_picture_splash.c',
@@ -94,7 +97,8 @@ if ARGUMENTS.get('tests', 0):
     'fn_draw.c',
     'fn_msgbox.c',
     'fn_tilecache.c',
-    'fn_tile.c'])
+    'fn_tile.c',
+    'fn_text.c'])
 
   env.Program('fn_test_infobox', [
     'fn_test_infobox.c',
@@ -102,7 +106,8 @@ if ARGUMENTS.get('tests', 0):
     'fn_msgbox.c',
     'fn_tilecache.c',
     'fn_tile.c',
-    'fn_draw.c'])
+    'fn_draw.c',
+    'fn_text.c'])
 
   env.Program('fn_test_borders', [
     'fn_test_borders.c',
@@ -111,5 +116,6 @@ if ARGUMENTS.get('tests', 0):
     'fn_tile.c',
     'fn_error.c',
     'fn_error_cmdline.c',
-    'fn_draw.c'])
+    'fn_draw.c',
+    'fn_text.c'])
 

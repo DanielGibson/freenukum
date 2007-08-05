@@ -33,6 +33,7 @@
 #include "fn.h"
 #include "fn_borders.h"
 #include "fn_object.h"
+#include "fn_text.h"
 
 /* --------------------------------------------------------------- */
 
@@ -228,3 +229,46 @@ void fn_borders_blit_life(
 
   SDL_BlitSurface(lifesurface, NULL, screen, &dstrect);
 }
+
+/* --------------------------------------------------------------- */
+
+void fn_borders_blit_score(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint32 score)
+{
+  SDL_Surface * scoresurface;
+  SDL_Rect dstrect;
+
+  char scoretext[FN_SCORE_DIGITS+1];
+
+  sprintf(scoretext, "%08d", score);
+
+  scoresurface = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_FONT_WIDTH * pixelsize * FN_SCORE_DIGITS,
+      FN_FONT_HEIGHT * pixelsize,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
+  fn_text_print(
+      scoresurface,
+      NULL,
+      tc,
+      scoretext,
+      pixelsize
+      );
+
+  dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
+  dstrect.y = 3 * pixelsize * FN_FONT_HEIGHT;
+  dstrect.w = FN_NUM_MAXLIFE * FN_FONT_WIDTH * pixelsize;
+  dstrect.h = FN_PART_HEIGHT * pixelsize;
+
+  SDL_BlitSurface(scoresurface, NULL, screen, &dstrect);
+}
+
+/* --------------------------------------------------------------- */

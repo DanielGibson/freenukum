@@ -32,6 +32,7 @@
 
 /* --------------------------------------------------------------- */
 
+Uint8  health = FN_NUM_MAXLIFE;
 Uint8  firepower = 1;
 Uint8  inventory = 0;
 Uint32 score = 0;
@@ -89,7 +90,14 @@ void fn_game_start(
       screen,
       tilecache,
       pixelsize,
-      life
+      health
+      );
+
+  fn_borders_blit_score(
+      screen,
+      tilecache,
+      pixelsize,
+      score
       );
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);

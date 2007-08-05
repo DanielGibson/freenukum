@@ -32,17 +32,11 @@
 
 #include "fn.h"
 #include "fn_msgbox.h"
+#include "fn_text.h"
 
 /* --------------------------------------------------------------- */
 
 #define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
-
-/* --------------------------------------------------------------- */
-
-void fn_msgbox_printletter(SDL_Surface * msgbox,
-        SDL_Rect * r,
-        fn_tilecache_t * tc,
-        char c);
 
 /* --------------------------------------------------------------- */
 
@@ -72,6 +66,7 @@ SDL_Surface * fn_msgbox(
     if (*walker == '\n') {
       *walker = '\0';
       columns = MAX(strlen(linemarker), columns);
+      *walker = '\n';
       linemarker = walker + 1;
       rows++;
     }
@@ -114,53 +109,20 @@ SDL_Surface * fn_msgbox(
     }
   }
 
-  i = 1;
-  j = 1;
   r.w = pixelsize * FN_FONT_WIDTH;
   r.h = pixelsize * FN_FONT_HEIGHT;
-  
-  for (walker = mytext; walker < linemarker; walker++) {
-    if (*walker == '\0') {
-      j = 0;
-      i++;
-    } else {
-      r.x = j * pixelsize * FN_FONT_WIDTH;
-      r.y = i * pixelsize * FN_FONT_HEIGHT;
-      fn_msgbox_printletter(msgbox,
-          &r,
-          tilecache,
-          *walker);
-    }
-    j++;
-  }
+  r.x = pixelsize * FN_FONT_WIDTH;
+  r.y = pixelsize * FN_FONT_HEIGHT;
 
+  fn_text_print(msgbox,
+      &r,
+      tilecache,
+      mytext,
+      pixelsize);
+  
   free(mytext);
 
   return msgbox;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_msgbox_printletter(SDL_Surface * msgbox,
-        SDL_Rect * r,
-        fn_tilecache_t * tc,
-        char c)
-{
-    int tilenr;
-
-    if (c >= ' ' && c <= 'Z')
-    {
-        tilenr = c - ' ' + FONT_ASCII_UPPERCASE;
-    }
-    else
-    {
-        tilenr = c - 'a' + FONT_ASCII_LOWERCASE;
-    }
-    SDL_BlitSurface(
-            fn_tilecache_gettile(tc, tilenr),
-            NULL,
-            msgbox,
-            r);
 }
 
 /* --------------------------------------------------------------- */

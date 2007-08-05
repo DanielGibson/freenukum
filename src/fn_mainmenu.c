@@ -42,20 +42,22 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
   int res = 0;
   int choice = 0;
   char * msg =
-    " FREENUKUM MAIN MENU\n"
-    " ------------------- \n"
     "\n"
-    "S)tart a new game\n"
-    "R)estore an old game\n"
-    "I)nstructions\n"
-    "O)rdering information\n"
-    "G)ame setup\n"
-    "H)igh scores\n"
-    "P)reviews/Main Demo!\n"
-    "V)iew user demo\n"
-    "T)itle screen\n"
-    "C)redits\n"
-    "Q)it to DOS\n";
+    "  FREENUKUM MAIN MENU \n"
+    "  ------------------- \n"
+    "\n"
+    " S)tart a new game \n"
+    " R)estore an old game \n"
+    " I)nstructions \n"
+    " O)rdering information \n"
+    " G)ame setup \n"
+    " H)igh scores \n"
+    " P)reviews/Main Demo! \n"
+    " V)iew user demo \n"
+    " T)itle screen \n"
+    " C)redits \n"
+    " Q)uit to DOS \n"
+    "\n";
 
   SDL_Event event;
 
