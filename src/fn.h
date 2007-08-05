@@ -61,6 +61,7 @@
 
 #define FN_NUM_MAXLIFE       8
 #define FN_SCORE_DIGITS      8
+#define FN_NUM_MAXFIREPOWER  4
 
 /* --------------------------------------------------------------- */
 

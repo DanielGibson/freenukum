@@ -272,3 +272,52 @@ void fn_borders_blit_score(
 }
 
 /* --------------------------------------------------------------- */
+
+void fn_borders_blit_firepower(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint8 firepower)
+{
+  SDL_Surface * firepowersurface;
+  SDL_Rect dstrect;
+
+  int i;
+
+  /* height of 4,
+   * width of 2*FN_NUM_MAXFIREPOWER */
+  int firepowertiles[FN_NUM_MAXFIREPOWER * 2 * 4] = {
+    -1, -1, -1, OBJ_GUN, -1, -1, -1, -1,
+    -1, -1, -1,      -1, -1, -1, -1, -1,
+    -1, -1, -1,      -1, -1, -1, -1, -1,
+    -1, -1, -1,      -1, -1, -1, -1, -1
+  };
+
+  for (i = 0; i < firepower; i++) {
+    *(firepowertiles + FN_NUM_MAXFIREPOWER * 4 + i*2) = OBJ_SHOT;
+  }
+
+  firepowersurface = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_NUM_MAXFIREPOWER,
+      FN_PART_HEIGHT * pixelsize * 2,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
+  fn_borders_blit_array(
+      firepowersurface, tc, pixelsize, firepowertiles,
+      FN_NUM_MAXFIREPOWER * 2, 4, 0
+      );
+
+  dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
+  dstrect.y = 12 * pixelsize * FN_FONT_HEIGHT;
+  dstrect.w = FN_NUM_MAXFIREPOWER * FN_PART_WIDTH * pixelsize;
+  dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
+
+  SDL_BlitSurface(firepowersurface, NULL, screen, &dstrect);
+}
+
+/* --------------------------------------------------------------- */

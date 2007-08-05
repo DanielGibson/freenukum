@@ -100,6 +100,12 @@ void fn_game_start(
       score
       );
 
+  fn_borders_blit_firepower(
+      screen,
+      tilecache,
+      pixelsize,
+      firepower);
+
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while(1) {

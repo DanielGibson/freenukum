@@ -57,3 +57,11 @@ void fn_borders_blit_score(
     Uint32 score);
 
 /* --------------------------------------------------------------- */
+
+void fn_borders_blit_firepower(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint8 firepower);
+
+/* --------------------------------------------------------------- */
