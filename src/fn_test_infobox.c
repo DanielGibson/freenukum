@@ -50,7 +50,7 @@ int main(int argc, char ** argv) {
     printf("%s\n", "HOME directory path not set.");
     exit(1);
   }
-  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/duke/");
+  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
   fn_tilecache_init(&tilecache, pixelsize);
 
@@ -77,9 +77,9 @@ int main(int argc, char ** argv) {
     return -1;
   }
 
-  fn_infobox_show(pixelsize, &tilecache, screen, "This is...");
-  fn_infobox_show(pixelsize, &tilecache, screen, "...the great\nInfobox test case.");
-  fn_infobox_show(pixelsize, &tilecache, screen, "now\nwith\neven\nmore\nlines.");
+  fn_infobox_show(pixelsize, &tilecache, screen, "This is...\n");
+  fn_infobox_show(pixelsize, &tilecache, screen, "...the great\nInfobox test case.\n");
+  fn_infobox_show(pixelsize, &tilecache, screen, "now\nwith\neven\nmore\nlines.\n");
   
   return 0;
 }
