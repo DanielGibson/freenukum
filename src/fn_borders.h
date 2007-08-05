@@ -39,3 +39,13 @@ void fn_borders_blit(
     SDL_Surface * screen,
     fn_tilecache_t * tc,
     Uint8 pixelsize);
+
+/* --------------------------------------------------------------- */
+
+void fn_borders_blit_life(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint8 life);
+
+/* --------------------------------------------------------------- */

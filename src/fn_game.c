@@ -32,6 +32,12 @@
 
 /* --------------------------------------------------------------- */
 
+Uint8  firepower = 1;
+Uint8  inventory = 0;
+Uint32 score = 0;
+
+/* --------------------------------------------------------------- */
+
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
@@ -73,10 +79,19 @@ void fn_game_start(
       120);
 
   SDL_FillRect(screen, NULL, 0);
+
   fn_borders_blit(
       screen,
       tilecache,
       pixelsize);
+
+  fn_borders_blit_life(
+      screen,
+      tilecache,
+      pixelsize,
+      life
+      );
+
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while(1) {
