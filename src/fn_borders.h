@@ -65,3 +65,11 @@ void fn_borders_blit_firepower(
     Uint8 firepower);
 
 /* --------------------------------------------------------------- */
+
+void fn_borders_blit_inventory(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint8 inventory);
+
+/* --------------------------------------------------------------- */

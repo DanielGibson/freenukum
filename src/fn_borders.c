@@ -321,3 +321,65 @@ void fn_borders_blit_firepower(
 }
 
 /* --------------------------------------------------------------- */
+
+void fn_borders_blit_inventory(
+    SDL_Surface * screen,
+    fn_tilecache_t * tc,
+    Uint8 pixelsize,
+    Uint8 inventory)
+{
+  SDL_Surface * inventorysurface;
+  SDL_Rect dstrect;
+
+  int i;
+
+  int inventorytiles[FN_SIZE_INVENTORY * 2 * 2] = {
+    -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1
+  };
+
+  for (i = 0; i < FN_SIZE_INVENTORY; i++) {
+    if (inventory & FN_INVENTORY_KEY_RED)
+      inventorytiles[0] = OBJ_KEY_RED;
+    if (inventory & FN_INVENTORY_KEY_GREEN)
+      inventorytiles[2] = OBJ_KEY_GREEN;
+    if (inventory & FN_INVENTORY_KEY_BLUE)
+      inventorytiles[4] = OBJ_KEY_BLUE;
+    if (inventory & FN_INVENTORY_KEY_PINK)
+      inventorytiles[6] = OBJ_KEY_PINK;
+    if (inventory & FN_INVENTORY_BOOT)
+      inventorytiles[16] = OBJ_BOOT;
+    if (inventory & FN_INVENTORY_ROBOHAND)
+      inventorytiles[18] = OBJ_ROBOHAND;
+    if (inventory & FN_INVENTORY_CLAMP)
+      inventorytiles[20] = OBJ_CLAMP;
+    if (inventory & FN_INVENTORY_ACCESS_CARD)
+      inventorytiles[22] = OBJ_ACCESS_CARD;
+  }
+
+  inventorysurface = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_SIZE_INVENTORY/2,
+      FN_PART_HEIGHT * pixelsize * 2,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
+  fn_borders_blit_array(
+      inventorysurface, tc, pixelsize, inventorytiles,
+      FN_NUM_MAXFIREPOWER * 2, 4, 0
+      );
+
+  dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
+  dstrect.y = 18 * pixelsize * FN_FONT_HEIGHT;
+  dstrect.w = FN_NUM_MAXFIREPOWER * FN_PART_WIDTH * pixelsize;
+  dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
+
+  SDL_BlitSurface(inventorysurface, NULL, screen, &dstrect);
+}
+
+/* --------------------------------------------------------------- */

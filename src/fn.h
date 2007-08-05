@@ -62,6 +62,18 @@
 #define FN_NUM_MAXLIFE       8
 #define FN_SCORE_DIGITS      8
 #define FN_NUM_MAXFIREPOWER  4
+#define FN_SIZE_INVENTORY    8
+
+/* --------------------------------------------------------------- */
+
+#define FN_INVENTORY_KEY_RED     (0x01 << 7)
+#define FN_INVENTORY_KEY_GREEN   (0x01 << 6)
+#define FN_INVENTORY_KEY_BLUE    (0x01 << 5)
+#define FN_INVENTORY_KEY_PINK    (0x01 << 4)
+#define FN_INVENTORY_BOOT        (0x01 << 3)
+#define FN_INVENTORY_ROBOHAND    (0x01 << 2)
+#define FN_INVENTORY_CLAMP       (0x01 << 1)
+#define FN_INVENTORY_ACCESS_CARD (0x01 << 0)
 
 /* --------------------------------------------------------------- */
 
