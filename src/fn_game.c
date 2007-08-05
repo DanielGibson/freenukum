@@ -29,6 +29,7 @@
 #include "fn_game.h"
 #include "fn_borders.h"
 #include "fn_picture_splash.h"
+#include "fn_infobox.h"
 
 /* --------------------------------------------------------------- */
 
@@ -45,7 +46,6 @@ void fn_game_start(
     SDL_Surface * screen,
     char * datapath)
 {
-  SDL_Event event;
   int res;
 
   char * msg1 =
@@ -114,26 +114,10 @@ void fn_game_start(
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
-  while(1) {
-    res = SDL_PollEvent(&event);
-    if (res == 1) {
-      switch(event.type) {
-        case SDL_KEYDOWN:
-          switch(event.key.keysym.sym) {
-            case SDLK_ESCAPE:
-              return;
-              break;
-            default:
-              /* ignore other keys */
-              break;
-          }
-        case SDL_VIDEOEXPOSE:
-          SDL_UpdateRect(screen, 0, 0, 0, 0);
-          break;
-        default:
-          /* ignore other events */
-          break;
-      }
-    }
-  }
+  fn_infobox_show(pixelsize,
+      tilecache,
+      screen,
+      "Sorry, gameplay is\n"
+      "not implemented yet.\n");
+
 }
