@@ -135,7 +135,20 @@
 
 /* --------------------------------------------------------------- */
 
-#define MAN_START                 (OBJ_START  +    150)
+#define HERO_START                (OBJ_START  +    150)
+
+#define HERO_NUM_ANIM_WALKING     (4)
+#define HERO_WALKING_LEFT         (HERO_START +      0)
+#define HERO_WALKING_RIGHT        (HERO_START +   0x10)
+#define HERO_NUM_ANIM_JUMPING     (1)
+#define HERO_JUMPING_LEFT         (HERO_START +   0x20)
+#define HERO_JUMPING_RIGHT        (HERO_START +   0x24)
+#define HERO_NUM_ANIM_FALLING     (1)
+#define HERO_FALLING_LEFT         (HERO_START +   0x28)
+#define HERO_FALLING_RIGHT        (HERO_START +   0x2C)
+#define HERO_NUM_ANIM_STANDING    (1)
+#define HERO_STANDING_LEFT        (HERO_START +   0x30)
+#define HERO_STANDING_RIGHT       (HERO_START +   0x34)
 
 /* --------------------------------------------------------------- */
 

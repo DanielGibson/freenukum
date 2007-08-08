@@ -38,6 +38,8 @@
 #include "fn_tile.h"
 #include "fn_tilecache.h"
 #include "fn_object.h"
+#include "fn_error.h"
+#include "fn_error_cmdline.h"
 
 /* --------------------------------------------------------------- */
 
@@ -92,21 +94,22 @@ int main(int argc, char ** argv)
     int quit = 0;
     SDL_Event event;
 
-    if (argc != 2)
-    {
-        fprintf(stderr, "\nShows all the tiles that can be found "
-                "in an original Duke Nukem game.\n");
-        fprintf(stderr, "Usage: %s <DIRECTORY>\n", argv[0]);
-        fprintf(stderr, "DIRECTORY is the directory where the original "
-                "game data can be found.\n\n");
-        return -1;
+    char * homedir;
+    char datapath[1024];
+
+    fn_error_set_handler(fn_error_print_commandline);
+
+    homedir = getenv("HOME");
+    if (homedir == NULL) {
+      fn_error_print("$HOME environment variable is not set.");
+      exit(1);
     }
 
-    char * directory = argv[1];
+    snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
     fn_tilecache_init(&tc, pixelsize);
 
-    res = fn_tilecache_loadtiles(&tc, directory);
+    res = fn_tilecache_loadtiles(&tc, datapath);
     if (res == -1)
     {
         printf("Could not load tiles.\n");
