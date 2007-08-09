@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
 
     while (quit == 0)
     {
-        res = SDL_PollEvent(&event);
+        res = SDL_WaitEvent(&event);
         if (res == 1)
         {
             int multiplier = 1;

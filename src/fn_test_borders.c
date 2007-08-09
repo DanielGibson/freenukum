@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
 
   while (1)
   {
-    res = SDL_PollEvent(&event);
+    res = SDL_WaitEvent(&event);
     if (res == 1)
     {
       switch(event.type) {

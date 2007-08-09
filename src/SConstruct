@@ -123,6 +123,7 @@ if ARGUMENTS.get('tests', 0):
 
   env.Program('fn_test_hero', [
     'fn_test_hero.c',
+    'fn_hero.c',
     'fn_error.c',
     'fn_error_cmdline.c',
     'fn_tilecache.c',

@@ -115,7 +115,7 @@ int fn_picture_splash_show_with_message(char * datapath,
   SDL_FreeSurface(picture);
 
   while (1) {
-    res = SDL_PollEvent(&event);
+    res = SDL_WaitEvent(&event);
     if (res == 1) {
       switch(event.type) {
         case SDL_QUIT:

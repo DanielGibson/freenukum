@@ -79,7 +79,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (!choice) {
-    res = SDL_PollEvent(&event);
+    res = SDL_WaitEvent(&event);
     if (res == 1) {
       switch(event.type) {
         case SDL_KEYDOWN:

@@ -68,7 +68,7 @@ void fn_infobox_show(
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (1) {
-    res = SDL_PollEvent(&event);
+    res = SDL_WaitEvent(&event);
     if (res == 1) {
       switch(event.type) {
         case SDL_KEYDOWN:
