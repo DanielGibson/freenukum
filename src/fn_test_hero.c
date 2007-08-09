@@ -51,7 +51,6 @@ Uint32 animate(Uint32 interval, void * param) {
   userevent.user.data1 = NULL;
   userevent.user.data2 = NULL;
   SDL_PushEvent(&userevent);
-  printf("Called animate.\n");
   return interval;
 }
 
