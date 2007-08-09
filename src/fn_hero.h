@@ -60,6 +60,7 @@ typedef struct fn_hero_t {
   Uint8 shooting;
   Uint8 firepower;
   Uint8 counter;
+  int tilenr;
 
   Uint8 animationframe;
   Uint8 num_animationframes;
@@ -83,6 +84,11 @@ void fn_hero_blit(
 /* --------------------------------------------------------------- */
 
 void fn_hero_next_animationframe(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_update_animation(
     fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */

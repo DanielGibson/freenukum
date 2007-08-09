@@ -55,6 +55,7 @@ void fn_hero_init(
   hero->shooting = FN_HERO_SHOOTING_FALSE;
   hero->firepower = 1;
   hero->counter = 0;
+  hero->tilenr = HERO_STANDING_RIGHT;
 
   hero->animationframe = 0;
   hero->num_animationframes = 1;
@@ -70,60 +71,18 @@ void fn_hero_blit(fn_hero_t * hero,
     fn_tilecache_t * tilecache,
     Uint8 pixelsize)
 {
-  int tilenr;
   SDL_Rect dstrect;
   int i;
-
-  if (hero->flying == FN_HERO_FLYING_FALSE) {
-
-    /* hero is standing or walking on ground */
-    if (hero->motion == FN_HERO_MOTION_NONE) {
-
-      /* hero is standing */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
-        tilenr = HERO_STANDING_LEFT;
-      } else {
-        tilenr = HERO_STANDING_RIGHT;
-      }
-
-    } else {
-
-      /* hero is walking */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
-        tilenr = HERO_WALKING_LEFT + 4 * hero->animationframe;
-      } else {
-        tilenr = HERO_WALKING_RIGHT + 4 * hero->animationframe;
-      }
-    }
-
-  } else {
-
-    /* hero is jumping or falling */
-    if (hero->counter > 0) {
-
-      /* hero is jumping */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
-        tilenr = HERO_JUMPING_LEFT;
-      } else {
-        tilenr = HERO_JUMPING_RIGHT;
-      }
-
-    } else {
-
-      /* hero is falling */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
-        tilenr = HERO_FALLING_LEFT;
-      } else {
-        tilenr = HERO_FALLING_RIGHT;
-      }
-
-    }
-  }
+  int tilenr;
 
   dstrect.x = 0;
   dstrect.y = 0;
   dstrect.w = pixelsize * FN_PART_WIDTH;
   dstrect.h = pixelsize * FN_PART_HEIGHT;
+
+  hero->animationframe %= hero->num_animationframes;
+  tilenr = hero->tilenr + 4 * hero->animationframe;
+
   for (i = 0; i < 4; i++) {
     SDL_Surface * tile;
     tile = fn_tilecache_gettile(tilecache, tilenr+i);
@@ -146,11 +105,69 @@ void fn_hero_next_animationframe(
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_update_animation(
+    fn_hero_t * hero)
+{
+  if (hero->flying == FN_HERO_FLYING_FALSE) {
+
+    /* hero is standing or walking on ground */
+    if (hero->motion == FN_HERO_MOTION_NONE) {
+
+      /* hero is standing */
+      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+        hero->tilenr = HERO_STANDING_LEFT;
+      } else {
+        hero->tilenr = HERO_STANDING_RIGHT;
+      }
+      hero->num_animationframes = HERO_NUM_ANIM_STANDING;
+
+    } else {
+
+      /* hero is walking */
+      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+        hero->tilenr = HERO_WALKING_LEFT + 4 * hero->animationframe;
+      } else {
+        hero->tilenr = HERO_WALKING_RIGHT + 4 * hero->animationframe;
+      }
+      hero->num_animationframes = HERO_NUM_ANIM_WALKING;
+    }
+
+  } else {
+
+    /* hero is jumping or falling */
+    if (hero->counter > 0) {
+
+      /* hero is jumping */
+      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+        hero->tilenr = HERO_JUMPING_LEFT;
+      } else {
+        hero->tilenr = HERO_JUMPING_RIGHT;
+      }
+      hero->num_animationframes = HERO_NUM_ANIM_JUMPING;
+
+    } else {
+
+      /* hero is falling */
+      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+        hero->tilenr = HERO_FALLING_LEFT;
+      } else {
+        hero->tilenr = HERO_FALLING_RIGHT;
+      }
+      hero->num_animationframes = HERO_NUM_ANIM_FALLING;
+
+    }
+  }
+
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_set_direction(
     fn_hero_t * hero,
     Uint8 direction)
 {
   hero->direction = direction;
+  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -160,11 +177,7 @@ void fn_hero_set_motion(
     Uint8 motion)
 {
   hero->motion = motion;
-  if (hero->flying == FN_HERO_FLYING_TRUE) {
-    hero->num_animationframes = HERO_NUM_ANIM_WALKING;
-  } else {
-    hero->num_animationframes = HERO_NUM_ANIM_STANDING;
-  }
+  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -174,6 +187,7 @@ void fn_hero_set_flying(
     Uint8 flying)
 {
   hero->flying = flying;
+  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -183,6 +197,7 @@ void fn_hero_set_shooting(
     Uint8 shooting)
 {
   hero->shooting = shooting;
+  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */

@@ -39,6 +39,24 @@
 
 /* --------------------------------------------------------------- */
 
+#define EVENT_CODE_TIMER 1
+
+/* --------------------------------------------------------------- */
+
+Uint32 animate(Uint32 interval, void * param) {
+  SDL_Event userevent;
+
+  userevent.type = SDL_USEREVENT;
+  userevent.user.code = EVENT_CODE_TIMER;
+  userevent.user.data1 = NULL;
+  userevent.user.data2 = NULL;
+  SDL_PushEvent(&userevent);
+  printf("Called animate.\n");
+  return interval;
+}
+
+/* --------------------------------------------------------------- */
+
 int main(int argc, char ** argv)
 {
   SDL_Surface * screen;
@@ -53,6 +71,8 @@ int main(int argc, char ** argv)
   char datapath[1024];
 
   int quit = 0;
+
+  SDL_TimerID timer;
 
   fn_error_set_handler(fn_error_print_commandline);
 
@@ -73,7 +93,7 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
     fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
     exit(1);
   }
@@ -94,6 +114,8 @@ int main(int argc, char ** argv)
   fn_hero_blit(&hero, screen, &tc, pixelsize);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
+  timer = SDL_AddTimer(250, animate, NULL);
+
   while (quit == 0) {
     res = SDL_WaitEvent(&event);
     if (res == 1) {
@@ -101,21 +123,34 @@ int main(int argc, char ** argv)
         case SDL_QUIT:
           quit = 1;
           break;
+        case SDL_USEREVENT:
+          if (event.user.code == EVENT_CODE_TIMER) {
+            fn_hero_next_animationframe(&hero);
+          }
+          SDL_FillRect(screen, NULL, 0);
+          fn_hero_blit(&hero, screen, &tc, pixelsize);
+          SDL_UpdateRect(screen, 0, 0, 0, 0);
+          break;
         case SDL_KEYDOWN:
+        case SDL_KEYUP:
           switch(event.key.keysym.sym) {
             case SDLK_q:
             case SDLK_ESCAPE:
               quit = 1;
               break;
             case SDLK_RIGHT:
-              SDL_FillRect(screen, NULL, 0);
-              fn_hero_set_direction(&hero, FN_HERO_DIRECTION_RIGHT);
-              fn_hero_blit(&hero, screen, &tc, pixelsize);
-              SDL_UpdateRect(screen, 0, 0, 0, 0);
-              break;
             case SDLK_LEFT:
+              if (event.key.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_RIGHT) {
+                  fn_hero_set_direction(&hero, FN_HERO_DIRECTION_RIGHT);
+                } else {
+                  fn_hero_set_direction(&hero, FN_HERO_DIRECTION_LEFT);
+                }
+                fn_hero_set_motion(&hero, FN_HERO_MOTION_WALKING);
+              } else if (event.key.type == SDL_KEYUP) {
+                fn_hero_set_motion(&hero, FN_HERO_MOTION_NONE);
+              }
               SDL_FillRect(screen, NULL, 0);
-              fn_hero_set_direction(&hero, FN_HERO_DIRECTION_LEFT);
               fn_hero_blit(&hero, screen, &tc, pixelsize);
               SDL_UpdateRect(screen, 0, 0, 0, 0);
               break;
