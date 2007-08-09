@@ -20,3 +20,4 @@ src/fn_test_borders
 src/*.gcov
 src/*.gcda
 src/*.gcno
+src/fn_test_hero
