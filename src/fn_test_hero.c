@@ -124,11 +124,12 @@ int main(int argc, char ** argv)
           break;
         case SDL_USEREVENT:
           if (event.user.code == EVENT_CODE_TIMER) {
+            SDL_FillRect(screen, NULL, 0);
+            fn_hero_update_animation(&hero);
             fn_hero_next_animationframe(&hero);
+            fn_hero_blit(&hero, screen, &tc, pixelsize);
+            SDL_UpdateRect(screen, 0, 0, 0, 0);
           }
-          SDL_FillRect(screen, NULL, 0);
-          fn_hero_blit(&hero, screen, &tc, pixelsize);
-          SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -149,6 +150,16 @@ int main(int argc, char ** argv)
               } else if (event.key.type == SDL_KEYUP) {
                 fn_hero_set_motion(&hero, FN_HERO_MOTION_NONE);
               }
+              break;
+            case SDLK_LCTRL:
+            case SDLK_RCTRL:
+              if (event.key.type == SDL_KEYDOWN) {
+                fn_hero_jump(&hero);
+              }
+              break;
+            case SDLK_LALT:
+            case SDLK_RALT:
+              fn_hero_set_flying(&hero, FN_HERO_FLYING_FALSE);
               break;
             default:
               /* do nothing, ignoring other keys. */

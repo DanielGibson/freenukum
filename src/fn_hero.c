@@ -80,8 +80,7 @@ void fn_hero_blit(fn_hero_t * hero,
   dstrect.w = pixelsize * FN_PART_WIDTH;
   dstrect.h = pixelsize * FN_PART_HEIGHT;
 
-  hero->animationframe %= hero->num_animationframes;
-  tilenr = hero->tilenr + 4 * hero->animationframe;
+  tilenr = hero->tilenr;
 
   for (i = 0; i < 4; i++) {
     SDL_Surface * tile;
@@ -101,6 +100,9 @@ void fn_hero_next_animationframe(
 {
   hero->animationframe++;
   hero->animationframe %= hero->num_animationframes;
+  if (hero->counter > 0) {
+    hero->counter--;
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -167,7 +169,6 @@ void fn_hero_set_direction(
     Uint8 direction)
 {
   hero->direction = direction;
-  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -177,7 +178,6 @@ void fn_hero_set_motion(
     Uint8 motion)
 {
   hero->motion = motion;
-  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -187,7 +187,6 @@ void fn_hero_set_flying(
     Uint8 flying)
 {
   hero->flying = flying;
-  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -197,7 +196,6 @@ void fn_hero_set_shooting(
     Uint8 shooting)
 {
   hero->shooting = shooting;
-  fn_hero_update_animation(hero);
 }
 
 /* --------------------------------------------------------------- */
@@ -225,6 +223,15 @@ void fn_hero_set_inventory(
     Uint8 health)
 {
   hero->health = health;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_jump(
+    fn_hero_t * hero)
+{
+  fn_hero_set_counter(hero, 3);
+  fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
 }
 
 /* --------------------------------------------------------------- */
