@@ -228,6 +228,7 @@ void fn_borders_blit_life(
   dstrect.h = FN_PART_HEIGHT * pixelsize;
 
   SDL_BlitSurface(lifesurface, NULL, screen, &dstrect);
+  SDL_FreeSurface(lifesurface);
 }
 
 /* --------------------------------------------------------------- */
@@ -269,6 +270,7 @@ void fn_borders_blit_score(
   dstrect.h = FN_PART_HEIGHT * pixelsize;
 
   SDL_BlitSurface(scoresurface, NULL, screen, &dstrect);
+  SDL_FreeSurface(scoresurface);
 }
 
 /* --------------------------------------------------------------- */
@@ -318,6 +320,7 @@ void fn_borders_blit_firepower(
   dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
 
   SDL_BlitSurface(firepowersurface, NULL, screen, &dstrect);
+  SDL_FreeSurface(firepowersurface);
 }
 
 /* --------------------------------------------------------------- */
@@ -380,6 +383,7 @@ void fn_borders_blit_inventory(
   dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
 
   SDL_BlitSurface(inventorysurface, NULL, screen, &dstrect);
+  SDL_FreeSurface(inventorysurface);
 }
 
 /* --------------------------------------------------------------- */
