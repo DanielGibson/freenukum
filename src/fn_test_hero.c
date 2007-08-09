@@ -149,9 +149,6 @@ int main(int argc, char ** argv)
               } else if (event.key.type == SDL_KEYUP) {
                 fn_hero_set_motion(&hero, FN_HERO_MOTION_NONE);
               }
-              SDL_FillRect(screen, NULL, 0);
-              fn_hero_blit(&hero, screen, &tc, pixelsize);
-              SDL_UpdateRect(screen, 0, 0, 0, 0);
               break;
             default:
               /* do nothing, ignoring other keys. */
