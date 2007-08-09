@@ -113,6 +113,7 @@ int main(int argc, char ** argv)
     if (res == -1)
     {
         printf("Could not load tiles.\n");
+        printf("Copy the original game files to %s.\n", datapath);
         return -1;
     }
 
