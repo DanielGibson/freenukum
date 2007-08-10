@@ -129,3 +129,11 @@ if ARGUMENTS.get('tests', 0):
     'fn_tilecache.c',
     'fn_tile.c',
     'fn_draw.c'])
+
+  env.Program('fn_test_effect', [
+    'fn_test_effect.c',
+    'fn_picture.c',
+    'fn_draw.c',
+    'fn_effect.c',
+    'fn_error.c',
+    'fn_error_cmdline.c'])

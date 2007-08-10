@@ -21,3 +21,4 @@ src/*.gcov
 src/*.gcda
 src/*.gcno
 src/fn_test_hero
+src/fn_test_effect
