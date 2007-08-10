@@ -4,7 +4,7 @@ main:
 	scons -Q
 
 clean:
-	scons -Q -c
+	scons -Q -c debug=1 tests=1
 
 install:
 	scons -Q install

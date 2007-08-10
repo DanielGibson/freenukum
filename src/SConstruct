@@ -1,14 +1,31 @@
-env = Environment(CCFLAGS = ['-Wall'], LDFLAGS = [])
+import os
+
+if (os.environ.has_key('CFLAGS')):
+  cflags = os.environ['CFLAGS'].split()
+else:
+  cflags = ['-Wall']
+
+env = Environment(CCFLAGS = cflags, LDFLAGS = [])
 
 env.ParseConfig('sdl-config --cflags')
 env.ParseConfig('sdl-config --libs')
 
 if ARGUMENTS.get('coverage', 0):
-    env.Append(CCFLAGS = ['-fprofile-arcs','-ftest-coverage'])
-    env.Append(LIBS = ['gcov'])
+  env.Append(CCFLAGS = ['-fprofile-arcs','-ftest-coverage'])
+  env.Append(LIBS = ['gcov'])
 
 if ARGUMENTS.get('debug', 0):
-    env.Append(CCFLAGS = ['-ggdb'])
+  env.Append(CCFLAGS = ['-ggdb'])
+
+if (os.environ.has_key('DESTDIR')):
+  installroot = os.environ['DESTDIR']
+else:
+  installroot = '/'
+
+if (os.environ.has_key('BINPREFIX')):
+  bindir = installroot + os.environ['BINPREFIX']
+else:
+  bindir = installroot + 'usr/local/bin'
 
 freenukum = env.Program('freenukum', [
   'fn_picture_splash.c',
@@ -27,8 +44,8 @@ freenukum = env.Program('freenukum', [
   'fn_borders.c',
   'fn_text.c'])
 
-env.Install('/usr/local/bin', freenukum)
-env.Alias('install', '/usr/local/bin')
+env.Install(bindir, freenukum)
+env.Alias('install', bindir)
 
 if ARGUMENTS.get('tests', 0):
   env.Program('fn_test_draw', [
