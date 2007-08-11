@@ -76,12 +76,12 @@ if ARGUMENTS.get('tests', 0):
     'fn_error.c',
     'fn_error_cmdline.c'])
 
-  env.Program('fn_test_level', [
-    'fn_test_level.c',
+  env.Program('fn_test_level_loader', [
+    'fn_test_level_loader.c',
     'fn_tilecache.c',
     'fn_draw.c',
     'fn_tile.c',
-    'fn_level.c'])
+    'fn_level_loader.c'])
 
   env.Program('fn_test_msgbox', [
     'fn_test_msgbox.c',

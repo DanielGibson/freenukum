@@ -22,3 +22,4 @@ src/*.gcda
 src/*.gcno
 src/fn_test_hero
 src/fn_test_effect
+src/fn_test_level_loader

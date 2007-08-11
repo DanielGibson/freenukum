@@ -26,34 +26,40 @@
  *
  *******************************************************************/
 
-#ifndef FN_LEVEL_H
-#define FN_LEVEL_H
-
-/* --------------------------------------------------------------- */
-
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
-#include <SDL/SDL.h>
 
 /* --------------------------------------------------------------- */
 
-#include "fn.h"
+#include "fn_level_loader.h"
 
 /* --------------------------------------------------------------- */
 
-typedef struct {
-    Uint16 level[FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH];
-} fn_level_t;
+int fn_level_load(fn_level_t * lv, int fd)
+{
+    size_t i = 0;
+    Uint16 tilenr;
+    Uint8 uppertile;
+    Uint8 lowertile;
+    while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
+    {
+        read(fd, &lowertile, 1);
+        read(fd, &uppertile, 1);
+        tilenr = uppertile;
+        tilenr <<= 8;
+        tilenr |= lowertile;
+        lv->level[i] = tilenr;
+        i++;
+    }
+    return 0;
+}
 
 /* --------------------------------------------------------------- */
 
-int fn_level_load(fn_level_t * lv, int fd);
+Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y)
+{
+    return lv->level[y * FN_LEVEL_WIDTH + x];
+}
 
 /* --------------------------------------------------------------- */
 
-Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y);
-
-/* --------------------------------------------------------------- */
-
-#endif // FN_LEVEL_H
