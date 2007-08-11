@@ -230,7 +230,7 @@ void fn_hero_set_inventory(
 void fn_hero_jump(
     fn_hero_t * hero)
 {
-  fn_hero_set_counter(hero, 3);
+  fn_hero_set_counter(hero, 6);
   fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
 }
 
