@@ -32,6 +32,7 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_object.h"
 #include "fn_tile.h"
 #include "fn_draw.h"
 #include "fn.h"
