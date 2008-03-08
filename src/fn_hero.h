@@ -67,6 +67,9 @@ typedef struct fn_hero_t {
 
   Uint8 inventory;
   Uint8 health;
+
+  Uint16 x;
+  Uint16 y;
 } fn_hero_t;
 
 /* --------------------------------------------------------------- */
@@ -94,7 +97,9 @@ void fn_hero_update_animation(
 /* --------------------------------------------------------------- */
 
 void fn_hero_init(
-    fn_hero_t * hero);
+    fn_hero_t * hero,
+    Uint16 x,
+    Uint16 y);
 
 /* --------------------------------------------------------------- */
 

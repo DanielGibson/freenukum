@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
   }
 
   /* here comes the hero!!!!! */
-  fn_hero_init(&hero);
+  fn_hero_init(&hero, 0, 0);
   fn_hero_blit(&hero, screen, &tc, pixelsize);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 

@@ -1,0 +1,44 @@
+/*******************************************************************
+ *
+ * Project: FreeNukum 2D Jump'n Run
+ * File:    Level functions
+ *
+ * *****************************************************************
+ *
+ * Copyright 2007 Wolfgang Silbermayr
+ *
+ * *****************************************************************
+ *
+ * This file is part of Freenukum.
+ * 
+ * Freenukum is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Freenukum is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *******************************************************************/
+
+#ifndef FN_LEVEL_H
+#define FN_LEVEL_H
+
+/* --------------------------------------------------------------- */
+
+#include "fn_hero.h"
+
+/* --------------------------------------------------------------- */
+
+typedef struct fn_level_t {
+  fn_hero_t hero;
+  Uint16 tiles[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
+} fn_level_t;
+/* --------------------------------------------------------------- */
+
+#endif /* FN_LEVEL_H */

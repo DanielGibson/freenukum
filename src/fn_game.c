@@ -30,6 +30,7 @@
 #include "fn_borders.h"
 #include "fn_picture_splash.h"
 #include "fn_infobox.h"
+#include "fn_level.h"
 
 /* --------------------------------------------------------------- */
 

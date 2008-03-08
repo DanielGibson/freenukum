@@ -36,19 +36,14 @@
 
 /* --------------------------------------------------------------- */
 
-//static fn_hero_changed_f handler_direction_changed = NULL;
-//static fn_hero_changed_f handler_motion_changed = NULL;
-//static fn_hero_changed_f handler_flying_changed = NULL;
-//static fn_hero_changed_f handler_shooting_changed = NULL;
-//static fn_hero_changed_f handler_firepower_changed = NULL;
-//static fn_hero_changed_f handler_counter_changed = NULL;
-//static fn_hero_changed_f handler_inventory_changed = NULL;
-
-/* --------------------------------------------------------------- */
-
 void fn_hero_init(
-    fn_hero_t * hero)
+    fn_hero_t * hero,
+    Uint16 x,
+    Uint16 y)
 {
+  hero->x = x;
+  hero->y = y;
+
   hero->direction = FN_HERO_DIRECTION_RIGHT;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;

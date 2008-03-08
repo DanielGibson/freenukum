@@ -31,11 +31,17 @@
 
 /* --------------------------------------------------------------- */
 
-#define SOLID_START                            (4 * 48)
+#define BACKGROUND_START                            (0)
+#define BACKGROUND_END                         (4 * 48)
 
 /* --------------------------------------------------------------- */
 
-#define ANIM_START                             (8 * 48)
+#define SOLID_START                      BACKGROUND_END
+#define SOLID_END                              (8 * 48)
+
+/* --------------------------------------------------------------- */
+
+#define ANIM_START                            SOLID_END
 
 #define ANIM_FLYBOT               (ANIM_START +      0)
 #define ANIM_JUMPBOT              (ANIM_START +     10)
