@@ -42,7 +42,9 @@ freenukum = env.Program('freenukum', [
   'fn_settings.c',
   'fn_game.c',
   'fn_borders.c',
-  'fn_text.c'])
+  'fn_text.c',
+  'fn_bot.c',
+  'fn_bot_robot.c'])
 
 env.Install(bindir, freenukum)
 env.Alias('install', bindir)
