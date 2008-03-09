@@ -41,7 +41,8 @@
 
 /**
  * Loads a backdrop from a file.
- * @param  fd  The file descriptor of the already opened file.
+ * @param  fd         The file descriptor of the already opened file.
+ * @param  pixelsize  The multiplicator how big one pixel is.
  */
 SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize);
 

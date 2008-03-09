@@ -77,4 +77,13 @@
 
 /* --------------------------------------------------------------- */
 
+typedef enum fn_horizontal_direction_e {
+  fn_horizontal_direction_none,
+  fn_horizontal_direction_left,
+  fn_horizontal_direction_right,
+  fn_horizontal_direction_size
+} fn_horizontal_direction_e;
+
+/* --------------------------------------------------------------- */
+
 #endif // FN_H

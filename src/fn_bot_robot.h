@@ -35,6 +35,31 @@
 
 /* --------------------------------------------------------------- */
 
+typedef enum fn_bot_robot_state_e {
+  fn_bot_robot_state_walking,
+  fn_bot_robot_state_disappearing,
+  fn_bot_robot_state_blowup,
+  fn_bot_robot_state_size
+} fn_bot_robot_state_e;
+
+/* --------------------------------------------------------------- */
+
+const size_t
+fn_bot_num_animations[fn_bot_robot_state_size] = {3, 7, 5};
+
+/* --------------------------------------------------------------- */
+
+/**
+ * The struct holding the data for the robot.
+ */
+typedef struct fn_bot_robot_data_t {
+  fn_horizontal_direction_e direction;
+  fn_bot_robot_state_e state;
+  size_t num_animation;
+} fn_bot_robot_data_t;
+
+/* --------------------------------------------------------------- */
+
 /**
  * Create a new robot.
  *
@@ -42,22 +67,53 @@
  */
 fn_bot_t * fn_bot_robot_create(void);
 
+/* --------------------------------------------------------------- */
+
 /**
  * Function that is called when the bot gets hit.
+ *
+ * @param  bot  The bot that got hit.
  */
-void fn_bot_robot_get_hit(void);
+void fn_bot_robot_get_hit(fn_bot_t * bot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Function that is called for animation.
+ *
+ * @param  bot  The bot which is to be animated.
+ */
+void fn_bot_robot_animate(fn_bot_t * bot);
+
+/* --------------------------------------------------------------- */
 
 /**
  * Function that is called for simulation.
  *
+ * @param  bot  The bot which has to be simulated.
+ *
  * @return  Zero if the bot was killed, otherwise non-zero.
  */
-int fn_bot_robot_do_step(void);
+int fn_bot_robot_do_step(fn_bot_t * bot);
+
+/* --------------------------------------------------------------- */
 
 /**
  * Function that blits the robot in its current state to the level.
+ * @param  bot        The bot which is to be blitted.
  * @param  bot_layer  The SDL Surface to which the bots are blitted.
  */
-void fn_bot_robot_blit_to_level(SDL_Surface * bot_layer);
+void fn_bot_robot_blit_to_level(fn_bot_t * bot,
+    SDL_Surface * bot_layer);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Function that deletes the data stored for the bot.
+ * @param  bot  The bot whose data has to be deleted.
+ */
+void fn_bot_robot_delete_bot_data(void * data);
+
+/* --------------------------------------------------------------- */
 
 #endif // FN_BOT_ROBOT_H

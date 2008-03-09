@@ -35,21 +35,36 @@ fn_bot_t * fn_bot_robot_create(void)
   fn_bot_t * bot = malloc(sizeof(fn_bot_t));
   memset(bot, 0, sizeof(fn_bot_t));
   bot->get_hit = fn_bot_robot_get_hit;
+  bot->animate = fn_bot_robot_animate;
   bot->do_step = fn_bot_robot_do_step;
   bot->blit_to_level = fn_bot_robot_blit_to_level;
+  bot->delete_bot_data = fn_bot_robot_delete_bot_data;
+  bot->data = malloc(sizeof(fn_bot_robot_data_t));
+  fn_bot_robot_data_t * data = bot->data;
+  memset(data, 0, sizeof(fn_bot_robot_data_t));
+  data->direction = fn_horizontal_direction_left;
+  data->state = fn_bot_robot_state_walking;
+  data->num_animation = 0;
   return bot;
 }
 
 /* --------------------------------------------------------------- */
 
-void fn_bot_robot_get_hit(void)
+void fn_bot_robot_get_hit(fn_bot_t * bot)
 {
   /* TODO */
 }
 
 /* --------------------------------------------------------------- */
 
-int fn_bot_robot_do_step(void)
+void fn_bot_robot_animate(fn_bot_t * bot)
+{
+  
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_bot_robot_do_step(fn_bot_t * bot)
 {
   /* TODO */
   return 0;
@@ -57,7 +72,16 @@ int fn_bot_robot_do_step(void)
 
 /* --------------------------------------------------------------- */
 
-void fn_bot_robot_blit_to_level(SDL_Surface * bot_layer)
+void fn_bot_robot_blit_to_level(fn_bot_t * bot,
+    SDL_Surface * bot_layer)
 {
   /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_bot_robot_delete_bot_data(void * data)
+{
+  fn_bot_robot_data_t * botdata = data;
+  free(botdata);
 }
