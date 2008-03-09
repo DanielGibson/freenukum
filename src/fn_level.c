@@ -105,6 +105,9 @@ fn_level_t * fn_level_load(int fd,
 
     switch(tilenr) {
       case 0x3000: /* grey box, empty */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3001: /* lift */
@@ -133,21 +136,39 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3009: /* fire burning to the right */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
       case 0x300A: /* fire burning to the left */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
-      case 0x300B: /* flying techbot */
+      case 0x300b: /* flying techbot */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
-      case 0x300C: /* footbot */
+      case 0x300c: /* footbot */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
-      case 0x300D: /* carbot */
+      case 0x300d: /* carbot */
         /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         break;
-      case 0x300E: /* fire wheel bot */
+      case 0x300e: /* fire wheel bot */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x300F: /* grey box with gun inside */
@@ -160,9 +181,15 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3011: /* exit door */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
       case 0x3012: /* grey box with bomb inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3013: /* bot consisting of several white-blue balls */
@@ -172,15 +199,27 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3015: /* red box with soda inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3016: /* crab bot crawling along wall left of him */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
       case 0x3018: /* red box with chicken inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
@@ -196,27 +235,42 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x301d: /* blue box with football insdie */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x301e: /* blue box with joystick inside */
         /* TODO */
         break;
       case 0x301f: /* blue box with disk inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3020: /* grey box with glove inside */
         /* TODO */
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3022: /* helicopter */
         /* TODO */
         break;
       case 0x3023: /* blue box with balloon inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3024: /* camera */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO*/
         break;
       case 0x3025: /* broken wall background */
@@ -242,9 +296,21 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3028: /* window inside background stone wall */
-        /* TODO */
+        lv->tiles[y][x] = 0;
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_STONEWINDOWBG);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         break;
       case 0x3029: /* grey box with full life */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
@@ -254,15 +320,33 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x302b: /* rotating mill that can kill duke on touch */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
-      case 0x302c: /* single sting standing out of the floor */
+      case 0x302c: /* single spike standing out of the floor */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_SPIKE);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x302d: /* blue box with flag inside */
         /* TODO */
         break;
       case 0x302e: /* blue box with radio inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x302f: /* beaming station */
@@ -272,16 +356,30 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3031: /* jumping mines */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3032: /* we found our hero! */
         fn_hero_init(&(lv->hero), x * 2, y * 2);
-        lv->tiles[y][x] = previous_nonsolid;
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         break;
       case 0x3033: /* grey box with the access card inside */
         /* TODO */
         break;
       case 0x3034: /* slot for access card */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_ACCESS_CARD_SLOT);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x3035: /* slot for glove */
@@ -291,18 +389,33 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3037: /* grey box with a D inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3038: /* grey box with a U inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3039: /* grey box with a K inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x303a: /* grey box with a E inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x303b: /* bunny bot */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x303c: /* fire gnome */
@@ -312,84 +425,251 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x303e: /* window - left part */
-        lv->tiles[y][x] = ANIM_WINDOWBG;
+        lv->tiles[y][x] = 0;
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_WINDOWBG);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         break;
       case 0x303f: /* window - right part */
-        lv->tiles[y][x] = ANIM_WINDOWBG + 1;
+        lv->tiles[y][x] = 0;
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_WINDOWBG + 1);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         break;
       case 0x3040: /* the notebook */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_NOTE);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x3041: /* the surveillance screen */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile1 = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_BADGUYSCREEN);
+          SDL_Surface * tile2 = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_BADGUYSCREEN+1);
+          SDL_Surface * tile = SDL_CreateRGBSurface(
+              SDL_SWSURFACE,
+              FN_PART_WIDTH * pixelsize * 2,
+              FN_PART_HEIGHT * pixelsize,
+              FN_COLOR_DEPTH, 0, 0, 0, 0);
+          SDL_Rect r;
+          r.x = FN_PART_WIDTH * pixelsize;
+          r.y = 0;
+          r.w = FN_PART_WIDTH * pixelsize;
+          r.h = FN_PART_HEIGHT * pixelsize;
+          SDL_BlitSurface(tile1, NULL, tile, NULL);
+          SDL_BlitSurface(tile2, NULL, tile, &r);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x3043: /* dr proton -the final opponent */
         /* TODO */
         break;
       case 0x3044: /* red key */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3045: /* green key */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3046: /* blue key */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3047: /* pink key */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3048: /* red keyhole */
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_KEYHOLE_RED);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x3049: /* green keyhole */
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_KEYHOLE_GREEN);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x304a: /* blue keyhole */
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_KEYHOLE_BLUE);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x304b: /* pink keyhole */
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_KEYHOLE_PINK);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x304c: /* red door */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x304d: /* green door */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x304e: /* blue door */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x304f: /* pink door */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3050: /* football on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3051: /* single chicken on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3052: /* soda on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3053: /* a disk on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3054: /* a joystick on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3055: /* a flag on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3056: /* a radio on its own */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3057: /* the red mine lying on the ground */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         /* TODO */
         break;
       case 0x3058: /* spikes showing up */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_SPIKES_UP);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       case 0x3059: /* spikes showing down */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, OBJ_SPIKES_DOWN);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         /* TODO */
         break;
       default:
