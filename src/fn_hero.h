@@ -144,6 +144,13 @@ void fn_hero_update_animation(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Initialize a hero.
+ *
+ * @param  hero  The hero that is to be initialized.
+ * @param  x     The initial x position of our hero (in half-tiles)
+ * @param  y     The initial x position of our hero (in half-tiles)
+ */
 void fn_hero_init(
     fn_hero_t * hero,
     Uint16 x,

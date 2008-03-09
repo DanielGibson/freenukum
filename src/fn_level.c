@@ -27,6 +27,7 @@
  *******************************************************************/
 
 #include "fn_level.h"
+#include "fn_hero.h"
 
 /* --------------------------------------------------------------- */
 
@@ -39,6 +40,9 @@ fn_level_t * fn_level_load(int fd)
   Uint8 lowertile;
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
+    size_t x = i%FN_LEVEL_WIDTH;
+    size_t y = i/FN_LEVEL_WIDTH;
+
     /* we don't only want to run on big-endian systems,
      * so we load the bytes separately.
      */
@@ -46,9 +50,21 @@ fn_level_t * fn_level_load(int fd)
     read(fd, &uppertile, 1);
     tilenr = (uppertile << 8) | lowertile;
 
-    lv->tiles[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] = tilenr;
-    lv->solid[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] =
-      ((tilenr >= 0x1800) && (tilenr <= 0x2fe0));
+    lv->tiles[y][x] = tilenr;
+    lv->solid[y][x] = ((tilenr >= 0x1800) && (tilenr <= 0x2fe0));
+
+    switch(tilenr) {
+      case 0x0000: /* backdrop 1 */
+        break;
+      case 0x3032: /* we found our hero! */
+        fn_hero_init(&(lv->hero), x * 2, y * 2);
+        break;
+      default:
+        fprintf(stderr, "Unknown tile 0x%04x at x: %d, y: %d\n",
+            tilenr, x, y);
+        break;
+    }
+
     i++;
   }
   return lv;

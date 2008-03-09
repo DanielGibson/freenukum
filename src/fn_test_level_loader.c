@@ -198,20 +198,14 @@ int main(int argc, char ** argv)
             && r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
         {
           int tilenr = fn_level_gettile(lv, i, j);
-          if (tilenr < 48*4) {
+          if ((tilenr / 0x20) < 48*4) {
             bg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = bg;
-          } else if (tilenr < 48*8) {
+          } else if ((tilenr / 0x20) < 48*8) {
             fg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = fg;
-          } else if (tilenr < 48*14) {
-            /* we got a bot here. */
-            bg = fn_tilecache_gettile(&tc, tilenr / 0x20);
-            tile = bg;
           } else {
-            /* we got a bot here. */
-            fg = fn_tilecache_gettile(&tc, tilenr / 0x20);
-            tile = fg;
+            tile = fn_tilecache_gettile(&tc, 0);
           }
           SDL_BlitSurface(tile, NULL, level, &r);
         }
