@@ -79,7 +79,7 @@ void fn_hero_blit(fn_hero_t * hero,
 
   for (i = 0; i < 4; i++) {
     SDL_Surface * tile;
-    tile = fn_tilecache_gettile(tilecache, tilenr+i);
+    tile = fn_tilecache_get_tile(tilecache, tilenr+i);
     SDL_BlitSurface(tile, NULL, target, &dstrect);
     dstrect.x += dstrect.w;
     dstrect.x %= dstrect.w * 2;

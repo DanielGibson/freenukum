@@ -39,9 +39,26 @@
  * A struct representing a level.
  */
 typedef struct fn_level_t {
+  /**
+   * Stores our hero.
+   */
   fn_hero_t hero;
+
+  /**
+   * Stores the raw data loaded from the level.
+   */
+  Uint16 raw[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
+
+  /**
+   * Stores if tiles are solid or not.
+   */
   Uint8 solid[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
+  
+  /**
+   * The solid and background tiles.
+   */
   Uint16 tiles[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
+
 } fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -77,7 +94,20 @@ void fn_level_destroy(fn_level_t * level);
  *
  * @return  The tile of the position.
  */
-Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y);
+Uint16 fn_level_get_tile(fn_level_t * lv, size_t x, size_t y);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the raw value of a certain position inside the level.
+ *
+ * @param  lv  The level.
+ * @param  x   The x coordinate.
+ * @param  y   The y coordinate.
+ *
+ * @return  The raw tile number of the position.
+ */
+Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y);
 
 /* --------------------------------------------------------------- */
 

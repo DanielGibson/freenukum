@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
     int quit = 0;
     int res;
     SDL_Surface * screen;
-    SDL_Surface * tile, *fg, *bg;
+    SDL_Surface * tile;
     SDL_Surface * level;
     SDL_Event event;
     char * homedir;
@@ -197,15 +197,11 @@ int main(int argc, char ** argv)
         if (r.x < FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH
             && r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
         {
-          int tilenr = fn_level_gettile(lv, i, j);
-          if ((tilenr / 0x20) < 48*4) {
-            bg = fn_tilecache_gettile(&tc, tilenr / 0x20);
-            tile = bg;
-          } else if ((tilenr / 0x20) < 48*8) {
-            fg = fn_tilecache_gettile(&tc, tilenr / 0x20);
-            tile = fg;
+          int tilenr = fn_level_get_tile(lv, i, j);
+          if ((tilenr) < 48*8) {
+            tile = fn_tilecache_get_tile(&tc, tilenr);
           } else {
-            tile = fn_tilecache_gettile(&tc, 0);
+            tile = fn_tilecache_get_tile(&tc, 0);
           }
           SDL_BlitSurface(tile, NULL, level, &r);
         }
@@ -282,7 +278,7 @@ int main(int argc, char ** argv)
                       tile_x = global_x / FN_PART_WIDTH / pixelsize;
                       tile_y = global_y / FN_PART_HEIGHT / pixelsize;
 
-                      tilenr = fn_level_gettile(lv, tile_x, tile_y);
+                      tilenr = fn_level_get_raw(lv, tile_x, tile_y);
                       is_solid = fn_level_is_solid(lv, tile_x, tile_y);
                       printf("Tile number: 0x%04x; Solid: %s\n",
                           tilenr, (is_solid? "yes" : "no"));

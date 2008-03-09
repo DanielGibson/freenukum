@@ -49,7 +49,7 @@ void fn_text_printletter(
   else
     tilenr = c - 'a' + FONT_ASCII_LOWERCASE;
   SDL_BlitSurface(
-      fn_tilecache_gettile(tc, tilenr),
+      fn_tilecache_get_tile(tc, tilenr),
       NULL,
       target,
       r);

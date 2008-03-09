@@ -72,7 +72,7 @@ void fn_borders_blit_array(
     if ((pos = borders [i]) >= 0) {
       fn_borders_blit_tile(
           screen,
-          fn_tilecache_gettile(tc, tile_base + pos),
+          fn_tilecache_get_tile(tc, tile_base + pos),
           i % width,
           i / width,
           pixelsize);

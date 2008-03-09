@@ -73,7 +73,7 @@ void blithex(SDL_Surface * target,
     else
       tilenr = dst[i] - 'a' + FONT_ASCII_LOWERCASE;
     SDL_BlitSurface(
-        fn_tilecache_gettile(tc, tilenr),
+        fn_tilecache_get_tile(tc, tilenr),
         NULL,
         target,
         r);
@@ -197,7 +197,7 @@ int main(int argc, char ** argv)
         {
             r.x = (i+1) * FN_PART_WIDTH * pixelsize;
             r.y = (j+1) * FN_PART_HEIGHT * pixelsize;
-            SDL_BlitSurface(fn_tilecache_gettile(&tc, sumuntil(size, j)+i), NULL, 
+            SDL_BlitSurface(fn_tilecache_get_tile(&tc, sumuntil(size, j)+i), NULL, 
                     screen, &r);
         }
     }

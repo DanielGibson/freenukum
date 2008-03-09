@@ -75,7 +75,7 @@ void fn_tilecache_destroy(
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_tilecache_gettile(fn_tilecache_t * tc, size_t pos);
+SDL_Surface * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos);
 
 /* --------------------------------------------------------------- */
 
