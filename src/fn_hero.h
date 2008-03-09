@@ -53,22 +53,70 @@
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Our hero.
+ */
 typedef struct fn_hero_t {
+  /**
+   * The direction to which the hero moves.
+   */
   Uint8 direction;
+
+  /**
+   * The motion state (none or walking).
+   */
   Uint8 motion;
+
+  /**
+   * Is the hero going up (flying) or resting (falling/standing)?
+   */
   Uint8 flying;
+
+  /**
+   * Is the hero currently shooting?
+   */
   Uint8 shooting;
+
+  /**
+   * How much firepower does the hero have?
+   */
   Uint8 firepower;
+
+  /**
+   * The counter for actions that take longer than one animation frame.
+   */
   Uint8 counter;
+
+  /**
+   * The tile number that currently represents the hero.
+   */
   int tilenr;
 
+  /**
+   * The current representation of the hero within the tile cache.
+   */
   Uint8 animationframe;
+  /**
+   * The number of frames inside the current animation.
+   */
   Uint8 num_animationframes;
 
+  /**
+   * The inventory (one bit for each key/item)
+   */
   Uint8 inventory;
+  /**
+   * The health of our hero (0 = still alive, 8 = full life).
+   */
   Uint8 health;
 
+  /**
+   * The x position of our hero (in half-tiles).
+   */
   Uint16 x;
+  /**
+   * The y position of our hero (in half-tiles).
+   */
   Uint16 y;
 } fn_hero_t;
 

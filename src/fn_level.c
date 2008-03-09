@@ -30,19 +30,36 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_level_set_tile(fn_level_t * level,
-    Uint16 tilenr,
-    Uint16 x,
-    Uint16 y)
+fn_level_t * fn_level_load(int fd)
 {
-  if (tilenr < BACKGROUND_END) {
-    /* we have a background tile */
-  } else if (tilenr < SOLID_END) {
-    /* we have a solid tile */
-  } else {
-    /* we don't know yet what we have. */
+  size_t i = 0;
+  fn_level_t * lv = malloc(sizeof(fn_level_t));
+  Uint16 tilenr;
+  Uint8 uppertile;
+  Uint8 lowertile;
+  while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
+  {
+    read(fd, &lowertile, 1);
+    read(fd, &uppertile, 1);
+    tilenr = uppertile;
+    tilenr <<= 8;
+    tilenr |= lowertile;
+    lv->tiles[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] = tilenr;
+    i++;
   }
+  return lv;
 }
 
 /* --------------------------------------------------------------- */
 
+void fn_level_destroy(fn_level_t * level)
+{
+  free(level);
+}
+
+/* --------------------------------------------------------------- */
+
+Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y)
+{
+  return lv->tiles[y][x];
+}

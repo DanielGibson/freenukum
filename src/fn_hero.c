@@ -70,8 +70,8 @@ void fn_hero_blit(fn_hero_t * hero,
   int i;
   int tilenr;
 
-  dstrect.x = 0;
-  dstrect.y = 0;
+  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * hero->x;
+  dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * hero->y;
   dstrect.w = pixelsize * FN_PART_WIDTH;
   dstrect.h = pixelsize * FN_PART_HEIGHT;
 

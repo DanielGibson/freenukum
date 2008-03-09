@@ -29,11 +29,12 @@
 #include <SDL/SDL.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
-#include "fn_level_loader.h"
+#include "fn_level.h"
 #include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
@@ -65,7 +66,7 @@ void scroll(
 
 int main(int argc, char ** argv)
 {
-    fn_level_t lv;
+    fn_level_t * lv = NULL;
     int fd;
     fn_tilecache_t tc;
     Uint8 pixelsize = 1;
@@ -112,7 +113,8 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    if (fn_level_load(&lv, fd) != 0)
+    lv = fn_level_load(fd);
+    if (lv == NULL)
     {
         close(fd);
         fprintf(stderr, "Could not load level from file %s\n", file);
@@ -167,7 +169,7 @@ int main(int argc, char ** argv)
         if (r.x < FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH
             && r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
         {
-          int tilenr = fn_level_gettile(&lv, i, j) / 0x20;
+          int tilenr = fn_level_gettile(lv, i, j) / 0x20;
           if (tilenr < 48*4) {
             bg = fn_tilecache_gettile(&tc, tilenr);
             tile = bg;

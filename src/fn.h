@@ -34,6 +34,9 @@
 #define FN_DROP_WIDTH       13
 #define FN_DROP_HEIGHT      10
 
+#define FN_HALFTILE_WIDTH    8
+#define FN_HALFTILE_HEIGHT   8
+
 #define FN_FONT_WIDTH        8
 #define FN_FONT_HEIGHT       8
 
@@ -50,7 +53,13 @@
 
 #define FN_TILECACHE_SIZE 1300
 
+/**
+ * The height of a level (in full tiles)
+ */
 #define FN_LEVEL_HEIGHT     90
+/**
+ * The width of a level (in full tiles)
+ */
 #define FN_LEVEL_WIDTH     128
 
 /* --------------------------------------------------------------- */

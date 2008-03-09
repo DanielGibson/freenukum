@@ -82,8 +82,8 @@ if ARGUMENTS.get('tests', 0):
     'fn_test_level_loader.c',
     'fn_tilecache.c',
     'fn_draw.c',
-    'fn_tile.c',
-    'fn_level_loader.c'])
+    'fn_level.c',
+    'fn_tile.c'])
 
   env.Program('fn_test_msgbox', [
     'fn_test_msgbox.c',
