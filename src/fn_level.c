@@ -39,14 +39,16 @@ fn_level_t * fn_level_load(int fd)
   Uint8 lowertile;
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
+    /* we don't only want to run on big-endian systems,
+     * so we load the bytes separately.
+     */
     read(fd, &lowertile, 1);
     read(fd, &uppertile, 1);
-    tilenr = uppertile;
-    tilenr <<= 8;
-    tilenr |= lowertile;
+    tilenr = (uppertile << 8) | lowertile;
+
     lv->tiles[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] = tilenr;
     lv->solid[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] =
-      ((tilenr <= 0x2fe0) && (tilenr >= 1800));
+      ((tilenr >= 0x1800) && (tilenr <= 0x2fe0));
     i++;
   }
   return lv;
@@ -70,5 +72,5 @@ Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y)
 
 Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y)
 {
-  return lv->solid[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
+  return lv->solid[y][x];
 }

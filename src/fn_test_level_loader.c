@@ -279,6 +279,7 @@ int main(int argc, char ** argv)
                       Uint16 tile_x = 0;
                       Uint16 tile_y = 0;
                       int tilenr = 0;
+                      Uint8 is_solid = 0;
                       click_x = event.button.x;
                       click_y = event.button.y;
 
@@ -288,7 +289,9 @@ int main(int argc, char ** argv)
                       tile_y = global_y / FN_PART_HEIGHT / pixelsize;
 
                       tilenr = fn_level_gettile(lv, tile_x, tile_y);
-                      printf("Tile number: 0x%04x\n", tilenr);
+                      is_solid = fn_level_is_solid(lv, tile_x, tile_y);
+                      printf("Tile number: 0x%04x; Solid: %s\n",
+                          tilenr, (is_solid? "yes" : "no"));
                     }
                     break;
                 case SDL_VIDEOEXPOSE:
