@@ -59,6 +59,20 @@ typedef struct fn_level_t {
    */
   Uint16 tiles[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
 
+  /**
+   * The background layer.
+   */
+  SDL_Surface * layer_background;
+
+  /**
+   * The pixel size.
+   */
+  size_t pixelsize;
+  
+  /**
+   * The tile cache.
+   */
+  fn_tilecache_t * tilecache;
 } fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -67,12 +81,16 @@ typedef struct fn_level_t {
  * Load a level from a file.
  *
  * @param  fd  An already opened file descriptor to the level file.
+ * @param  pixelsize  The size of a single pixel.
+ * @param  tilecache  The tilecache from which to show the tiles.
  *
  * @return  The fully loaded level. If it was not possible to load
  *          the level, NULL is returned. Examine errno in order
  *          to find out what error occured.
  */
-fn_level_t * fn_level_load(int fd);
+fn_level_t * fn_level_load(int fd,
+    size_t pixelsize,
+    fn_tilecache_t * tilecache);
 
 /* --------------------------------------------------------------- */
 
@@ -121,6 +139,21 @@ Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y);
  * @return 1 if solid, else 0.
  */
 Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the current state of the level to an SDL Surface.
+ *
+ * @param  lv         The level to blit.
+ * @param  target     The target SDL Surface.
+ * @param  targetrect The target area to which to blit.
+ * @param  sourcerect The source rectangle.
+ */
+void fn_level_blit_to_surface(fn_level_t * lv,
+    SDL_Surface * target,
+    SDL_Rect * targetrect,
+    SDL_Rect * sourcerect);
 
 /* --------------------------------------------------------------- */
 

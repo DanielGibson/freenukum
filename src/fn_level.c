@@ -32,7 +32,9 @@
 
 /* --------------------------------------------------------------- */
 
-fn_level_t * fn_level_load(int fd)
+fn_level_t * fn_level_load(int fd,
+    size_t pixelsize,
+    fn_tilecache_t * tilecache)
 {
   size_t i = 0;
   fn_level_t * lv = malloc(sizeof(fn_level_t));
@@ -42,6 +44,19 @@ fn_level_t * fn_level_load(int fd)
   Uint8 lowertile;
   Uint16 previous_solid = SOLID_START;
   Uint16 previous_nonsolid = BACKGROUND_START;
+
+  lv->pixelsize = pixelsize;
+  lv->tilecache = tilecache;
+  lv->layer_background = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
     size_t x = i%FN_LEVEL_WIDTH;
@@ -376,4 +391,44 @@ Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y)
 Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y)
 {
   return lv->solid[y][x];
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_level_blit_to_surface(fn_level_t * lv,
+    SDL_Surface * target,
+    SDL_Rect * targetrect,
+    SDL_Rect * sourcerect)
+{
+  int j = 0;
+  int i = 0;
+  SDL_Rect r;
+  SDL_Surface * tile;
+  r.x = 0;
+  r.y = 0;
+  r.w = FN_PART_WIDTH * lv->pixelsize;
+  r.h = FN_PART_HEIGHT * lv->pixelsize;
+  /* load the background tiles */
+  for (j = 0; j != FN_LEVEL_HEIGHT; j++)
+  {
+    for (i = 0; i != FN_LEVEL_WIDTH; i++)
+    {
+      r.x = i * FN_PART_WIDTH * lv->pixelsize;
+      r.y = j * FN_PART_HEIGHT * lv->pixelsize;
+      if (r.x < FN_PART_WIDTH * lv->pixelsize * FN_LEVEL_WIDTH &&
+          r.y < FN_PART_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
+      {
+        int tilenr = fn_level_get_tile(lv, i, j);
+        if (tilenr < (48 * 8)) {
+          tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
+        } else {
+          tile = fn_tilecache_get_tile(lv->tilecache, 0);
+        }
+        SDL_BlitSurface(tile, NULL, lv->layer_background, &r);
+      }
+    }
+  }
+
+  /* blit the whole thing to the caller */
+  SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
 }

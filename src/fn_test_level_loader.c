@@ -70,12 +70,16 @@ int main(int argc, char ** argv)
     int fd;
     fn_tilecache_t tc;
     Uint8 pixelsize = 1;
+    /* currently unused:
     size_t i = 0;
     size_t j = 0;
+    */
     int quit = 0;
     int res;
     SDL_Surface * screen;
-    SDL_Surface * tile;
+    /* currently unused:
+     SDL_Surface * tile;
+     */
     SDL_Surface * level;
     SDL_Event event;
     char * homedir;
@@ -141,7 +145,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    lv = fn_level_load(fd);
+    lv = fn_level_load(fd, pixelsize, &tc);
     if (lv == NULL)
     {
         close(fd);
@@ -185,17 +189,23 @@ int main(int argc, char ** argv)
     SDL_Rect r;
     r.x = 0;
     r.y = 0;
+    /*
     r.w = FN_PART_WIDTH * pixelsize;
     r.h = FN_PART_HEIGHT * pixelsize;
+    */
+    r.w = FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH;
+    r.h = FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT;
 
+    /* load the background tiles */
+    /*
     for (j = 0; j != FN_LEVEL_HEIGHT; j++)
     {
       for (i = 0; i != FN_LEVEL_WIDTH; i++)
       {
         r.x = i * FN_PART_WIDTH * pixelsize;
         r.y = j * FN_PART_HEIGHT * pixelsize;
-        if (r.x < FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH
-            && r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
+        if (r.x < FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH &&
+            r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
         {
           int tilenr = fn_level_get_tile(lv, i, j);
           if ((tilenr) < 48*8) {
@@ -207,6 +217,11 @@ int main(int argc, char ** argv)
         }
       }
     }
+    */
+    fn_level_blit_to_surface(lv,
+        level,
+        &r,
+        &r);
 
     SDL_BlitSurface(level, NULL, screen, NULL);
 
