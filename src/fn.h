@@ -62,6 +62,16 @@
  */
 #define FN_LEVEL_WIDTH     128
 
+/**
+ * The maximum number of animations in a level
+ */
+#define FN_MAX_ANIMATIONS  128
+
+/**
+ * The maximum number of bots in a level
+ */
+#define FN_MAX_BOTS        128
+
 /* --------------------------------------------------------------- */
 
 #define FN_DEFAULT_PIXELSIZE     2

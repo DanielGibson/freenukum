@@ -57,6 +57,16 @@ fn_level_t * fn_level_load(int fd,
       0,
       0);
 
+  lv->layer_animations = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
     size_t x = i%FN_LEVEL_WIDTH;
@@ -195,7 +205,20 @@ fn_level_t * fn_level_load(int fd,
         /* TODO*/
         break;
       case 0x3025: /* broken wall background */
-        lv->tiles[y][x] = ANIM_BROKENWALLBG;
+        /* take the part from one above */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
+        /* add the animation object */
+        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+          SDL_Surface * tile = fn_tilecache_get_tile(
+              lv->tilecache, ANIM_BROKENWALLBG);
+          fn_animation_init(&(lv->animations[lv->num_animations++]),
+              1, /* number of frames */
+              &tile, /* surface(s) */
+              0, /* start frame */
+              x, y, lv->pixelsize);
+        }
         break;
       case 0x3026: /* left end of background stone wall */
         /* TODO */
@@ -404,11 +427,15 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   int i = 0;
   SDL_Rect r;
   SDL_Surface * tile;
+  Uint32 transparent = SDL_MapRGB(lv->layer_background->format, 100, 1, 1);
   r.x = 0;
   r.y = 0;
   r.w = FN_PART_WIDTH * lv->pixelsize;
   r.h = FN_PART_HEIGHT * lv->pixelsize;
+
   /* load the background tiles */
+  SDL_FillRect(lv->layer_background, NULL, transparent);
+  SDL_SetColorKey(lv->layer_background, SDL_SRCCOLORKEY, transparent);
   for (j = 0; j != FN_LEVEL_HEIGHT; j++)
   {
     for (i = 0; i != FN_LEVEL_WIDTH; i++)
@@ -429,6 +456,14 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
+  /* blit the animation objects */
+  SDL_FillRect(lv->layer_animations, NULL, transparent);
+  SDL_SetColorKey(lv->layer_animations, SDL_SRCCOLORKEY, transparent);
+  for (i = 0; i < lv->num_animations; i++) {
+    fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
+  }
+
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
+  SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
 }

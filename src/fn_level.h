@@ -32,6 +32,7 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_hero.h"
+#include "fn_animation.h"
 
 /* --------------------------------------------------------------- */
 
@@ -65,6 +66,11 @@ typedef struct fn_level_t {
   SDL_Surface * layer_background;
 
   /**
+   * The animations layer.
+   */
+  SDL_Surface * layer_animations;
+
+  /**
    * The pixel size.
    */
   size_t pixelsize;
@@ -73,6 +79,17 @@ typedef struct fn_level_t {
    * The tile cache.
    */
   fn_tilecache_t * tilecache;
+
+  /**
+   * The number of animations in this level
+   */
+  size_t num_animations;
+
+  /**
+   * The animations
+   */
+  fn_animation_t animations[FN_MAX_ANIMATIONS];
+
 } fn_level_t;
 
 /* --------------------------------------------------------------- */
