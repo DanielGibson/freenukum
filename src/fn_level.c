@@ -45,6 +45,8 @@ fn_level_t * fn_level_load(int fd)
     tilenr <<= 8;
     tilenr |= lowertile;
     lv->tiles[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] = tilenr;
+    lv->solid[i/FN_LEVEL_WIDTH][i%FN_LEVEL_WIDTH] =
+      ((tilenr <= 0x2fe0) && (tilenr >= 1800));
     i++;
   }
   return lv;
@@ -62,4 +64,11 @@ void fn_level_destroy(fn_level_t * level)
 Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y)
 {
   return lv->tiles[y][x];
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y)
+{
+  return lv->solid[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
 }

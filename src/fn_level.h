@@ -70,8 +70,27 @@ void fn_level_destroy(fn_level_t * level);
 
 /**
  * Get a tile from a certain position inside the level.
+ *
+ * @param  lv  The level.
+ * @param  x   The x coordinate.
+ * @param  y   The y coordinate.
+ *
+ * @return  The tile of the position.
  */
 Uint16 fn_level_gettile(fn_level_t * lv, size_t x, size_t y);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the information wether a tile is solid or not.
+ *
+ * @param  lv  The level.
+ * @param  x   The x coordinate.
+ * @param  y   The y coordinate.
+ *
+ * @return 1 if solid, else 0.
+ */
+Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y);
 
 /* --------------------------------------------------------------- */
 

@@ -197,16 +197,20 @@ int main(int argc, char ** argv)
         if (r.x < FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH
             && r.y < FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT)
         {
-          int tilenr = fn_level_gettile(lv, i, j) / 0x20;
+          int tilenr = fn_level_gettile(lv, i, j);
           if (tilenr < 48*4) {
-            bg = fn_tilecache_gettile(&tc, tilenr);
+            bg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = bg;
           } else if (tilenr < 48*8) {
-            fg = fn_tilecache_gettile(&tc, tilenr);
+            fg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = fg;
           } else if (tilenr < 48*14) {
+            /* we got a bot here. */
+            bg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = bg;
           } else {
+            /* we got a bot here. */
+            fg = fn_tilecache_gettile(&tc, tilenr / 0x20);
             tile = fg;
           }
           SDL_BlitSurface(tile, NULL, level, &r);
@@ -265,6 +269,28 @@ int main(int argc, char ** argv)
                             /* do nothing, ignoring other keys. */
                             break;
                     }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if (event.button.button == SDL_BUTTON_LEFT) {
+                      Uint16 click_x = 0;
+                      Uint16 click_y = 0;
+                      Uint16 global_x = 0;
+                      Uint16 global_y = 0;
+                      Uint16 tile_x = 0;
+                      Uint16 tile_y = 0;
+                      int tilenr = 0;
+                      click_x = event.button.x;
+                      click_y = event.button.y;
+
+                      global_x = (r.x) + (click_x);
+                      global_y = (r.y) + (click_y);
+                      tile_x = global_x / FN_PART_WIDTH / pixelsize;
+                      tile_y = global_y / FN_PART_HEIGHT / pixelsize;
+
+                      tilenr = fn_level_gettile(lv, tile_x, tile_y);
+                      printf("Tile number: 0x%04x\n", tilenr);
+                    }
+                    break;
                 case SDL_VIDEOEXPOSE:
                     SDL_UpdateRect(screen, 0, 0, 0, 0);
                     break;
