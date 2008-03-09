@@ -78,34 +78,62 @@ int main(int argc, char ** argv)
     SDL_Surface * tile, *fg, *bg;
     SDL_Surface * level;
     SDL_Event event;
+    char * homedir;
+    char tilespath[1024];
+    char levelfile[1024];
 
-    if (argc != 3)
+    int argok = 0;
+    char levelnumber;
+
+    if (argc == 2) {
+      if (strlen(argv[1]) == 1) {
+        levelnumber = argv[1][0];
+        if ((levelnumber >= '1' && levelnumber <= '9') ||
+            (levelnumber >= 'A' && levelnumber <= 'C'))
+        {
+          argok = 1;
+        }
+      }
+    }
+
+    if (!argok)
     {
         fprintf(stderr, "\nShows a Duke Nukem original level.\n");
-        fprintf(stderr, "Usage: %s <GRAPHICSDIR> <LEVELFILE>\n", argv[0]);
-        fprintf(stderr, "GRAPHICSDIR is the directory where the data is "
-                "stored.\n"
-                "LEVELFILE is the file containing the level itself.\n"
-                "          This is usually something like WORLDAL1.DN1\n\n");
+        fprintf(stderr, "Usage: %s <LEVELNUMBER>\n", argv[0]);
+        fprintf(stderr,
+                "LEVELNUMBER is the number of the level.\n"
+                "          This is usually a number between 1 and 9\n"
+                "          or one of A, B, C.\n\n");
 
         return -1;
     }
+
+    homedir = getenv("HOME");
+
+    if (homedir == NULL) {
+      printf("%s\n", "HOME directory path not set.");
+      exit(1);
+    }
+
+    snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
+
+    snprintf(levelfile, 1024, "%s/.freenukum/data/WORLDAL%c.DN1",
+        homedir, levelnumber);
+    char * file = argv[2];
 
     printf("Use the arrow keys to navigate through the level\n");
 
-    char * directory = argv[1];
-    char * file = argv[2];
-
     fn_tilecache_init(&tc, pixelsize);
 
-    res = fn_tilecache_loadtiles(&tc, directory);
+    res = fn_tilecache_loadtiles(&tc, tilespath);
     if (res == -1)
     {
         printf("Could not load tiles.\n");
-        return -1;
+        printf("Copy the original game files to %s.\n", tilespath);
+        exit(1);
     }
 
-    fd = open(file, O_RDONLY);
+    fd = open(levelfile, O_RDONLY);
 
     if (fd == -1)
     {
