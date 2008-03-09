@@ -67,8 +67,8 @@ void fn_hero_blit(fn_hero_t * hero,
     Uint8 pixelsize)
 {
   SDL_Rect dstrect;
-  int i;
   int tilenr;
+  SDL_Surface * tile;
 
   dstrect.x = FN_HALFTILE_WIDTH * pixelsize * hero->x;
   dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * hero->y;
@@ -77,6 +77,23 @@ void fn_hero_blit(fn_hero_t * hero,
 
   tilenr = hero->tilenr;
 
+  tile = fn_tilecache_get_tile(tilecache, tilenr);
+  SDL_BlitSurface(tile, NULL, target, &dstrect);
+
+  dstrect.x += dstrect.w;
+  tile = fn_tilecache_get_tile(tilecache, tilenr+1);
+  SDL_BlitSurface(tile, NULL, target, &dstrect);
+
+  dstrect.x -= dstrect.w;
+  dstrect.y += dstrect.h;
+  tile = fn_tilecache_get_tile(tilecache, tilenr+2);
+  SDL_BlitSurface(tile, NULL, target, &dstrect);
+
+  dstrect.x += dstrect.w;
+  tile = fn_tilecache_get_tile(tilecache, tilenr+3);
+  SDL_BlitSurface(tile, NULL, target, &dstrect);
+
+  /*
   for (i = 0; i < 4; i++) {
     SDL_Surface * tile;
     tile = fn_tilecache_get_tile(tilecache, tilenr+i);
@@ -86,6 +103,7 @@ void fn_hero_blit(fn_hero_t * hero,
     if (dstrect.x == 0)
       dstrect.y += dstrect.h;
   }
+  */
 }
 
 /* --------------------------------------------------------------- */

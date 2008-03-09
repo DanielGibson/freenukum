@@ -71,6 +71,11 @@ typedef struct fn_level_t {
   SDL_Surface * layer_animations;
 
   /**
+   * The animations layer.
+   */
+  SDL_Surface * layer_hero;
+
+  /**
    * The pixel size.
    */
   size_t pixelsize;

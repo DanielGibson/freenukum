@@ -57,6 +57,18 @@ fn_level_t * fn_level_load(int fd,
       0,
       0);
 
+  lv->pixelsize = pixelsize;
+  lv->tilecache = tilecache;
+  lv->layer_hero = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
   lv->layer_animations = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
       FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
@@ -142,6 +154,9 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3010: /* robot */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x3011: /* exit door */
@@ -233,6 +248,9 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         /* TODO */
         break;
       case 0x302b: /* rotating mill that can kill duke on touch */
@@ -463,7 +481,16 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
   }
 
+  /* blit the hero */
+  SDL_FillRect(lv->layer_hero, NULL, transparent);
+  SDL_SetColorKey(lv->layer_hero, SDL_SRCCOLORKEY, transparent);
+  fn_hero_blit(&(lv->hero),
+      lv->layer_hero,
+      lv->tilecache,
+      lv->pixelsize);
+
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
+  SDL_BlitSurface(lv->layer_hero, sourcerect, target, targetrect);
 }
