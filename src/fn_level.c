@@ -42,8 +42,6 @@ fn_level_t * fn_level_load(int fd,
   Uint16 tilenr;
   Uint8 uppertile;
   Uint8 lowertile;
-  Uint16 previous_solid = SOLID_START;
-  Uint16 previous_nonsolid = BACKGROUND_START;
 
   lv->pixelsize = pixelsize;
   lv->tilecache = tilecache;
@@ -79,6 +77,16 @@ fn_level_t * fn_level_load(int fd,
       0,
       0);
 
+  lv->layer_items = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
     size_t x = i%FN_LEVEL_WIDTH;
@@ -96,11 +104,6 @@ fn_level_t * fn_level_load(int fd,
     if ((tilenr >= 4) && (tilenr <= 0x2fe0)) {
       lv->tiles[y][x] = tilenr / 0x20;
       lv->solid[y][x] = (tilenr >= 0x1800);
-      if (lv->solid[y][x]) {
-        previous_solid = tilenr;
-      } else {
-        previous_nonsolid = tilenr;
-      }
     }
 
     switch(tilenr) {
@@ -108,7 +111,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_EMPTY, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3001: /* lift */
         /* TODO */
@@ -126,14 +133,28 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3006: /* grey box with boots inside */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_BOOTS, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3007: /* rocket which gets started if shot
                     * and leaves a blue box with a balloon */
         /* TODO */
         break;
       case 0x3008: /* grey box with clamps inside */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_CLAMPS, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3009: /* fire burning to the right */
         if (y > 0) {
@@ -172,7 +193,14 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x300F: /* grey box with gun inside */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_GUN, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3010: /* robot */
         if (x > 0) {
@@ -190,6 +218,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_BOMB, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3013: /* bot consisting of several white-blue balls */
@@ -201,6 +234,11 @@ fn_level_t * fn_level_load(int fd,
       case 0x3015: /* red box with soda inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_RED_SODA, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -220,6 +258,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_RED_CHICKEN, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
@@ -238,18 +281,44 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x301e: /* blue box with joystick inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x301f: /* blue box with disk inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3020: /* grey box with glove inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
@@ -264,6 +333,11 @@ fn_level_t * fn_level_load(int fd,
       case 0x3023: /* blue box with balloon inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -311,7 +385,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
         if (x > 0) {
@@ -341,13 +419,24 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x302d: /* blue box with flag inside */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_FLAG, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x302e: /* blue box with radio inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_BOX_BLUE_RADIO, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x302f: /* beaming station */
         /* TODO */
@@ -596,11 +685,21 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_FOOTBALL, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3051: /* single chicken on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_CHICKEN_SINGLE, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -608,11 +707,21 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_SODA, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3053: /* a disk on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_DISK, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -620,17 +729,32 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_JOYSTICK, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3055: /* a flag on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_FLAG, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3056: /* a radio on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_items < FN_MAX_ITEMS) {
+          lv->items[lv->num_items++] = fn_item_create(
+              FN_ITEM_TYPE_RADIO, lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -761,6 +885,13 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
   }
 
+  /* blit the items */
+  SDL_FillRect(lv->layer_items, NULL, transparent);
+  SDL_SetColorKey(lv->layer_items, SDL_SRCCOLORKEY, transparent);
+  for (i = 0; i < lv->num_items; i++) {
+    fn_item_blit(lv->items[i], lv->layer_items);
+  }
+
   /* blit the hero */
   SDL_FillRect(lv->layer_hero, NULL, transparent);
   SDL_SetColorKey(lv->layer_hero, SDL_SRCCOLORKEY, transparent);
@@ -772,5 +903,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
+  SDL_BlitSurface(lv->layer_items, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_hero, sourcerect, target, targetrect);
 }

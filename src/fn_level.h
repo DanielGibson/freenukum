@@ -33,6 +33,7 @@
 
 #include "fn_hero.h"
 #include "fn_animation.h"
+#include "fn_item.h"
 
 /* --------------------------------------------------------------- */
 
@@ -71,9 +72,14 @@ typedef struct fn_level_t {
   SDL_Surface * layer_animations;
 
   /**
-   * The animations layer.
+   * The hero layer.
    */
   SDL_Surface * layer_hero;
+
+  /**
+   * The items layer.
+   */
+  SDL_Surface * layer_items;
 
   /**
    * The pixel size.
@@ -84,6 +90,16 @@ typedef struct fn_level_t {
    * The tile cache.
    */
   fn_tilecache_t * tilecache;
+
+  /**
+   * The number of items in this level
+   */
+  size_t num_items;
+
+  /**
+   * The items
+   */
+  fn_item_t * items[FN_MAX_ITEMS];
 
   /**
    * The number of animations in this level
