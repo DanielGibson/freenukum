@@ -115,10 +115,25 @@ void fn_game_start(
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
-  fn_infobox_show(pixelsize,
-      tilecache,
-      screen,
-      "Sorry, gameplay is\n"
-      "not implemented yet.\n");
+  { /* start the game itself */
+    int quit = 0;
+
+    fn_infobox_show(pixelsize,
+        tilecache,
+        screen,
+        "Sorry, gameplay is\n"
+        "not implemented yet.\n");
+  }
 
 }
+
+void fn_game_start_in_level(
+    Uint8 level,
+    Uint8 pixelsize,
+    fn_tilecache_t * tilecache,
+    SDL_Surface * screen,
+    char * datapath)
+{
+  /* TODO */
+}
+
