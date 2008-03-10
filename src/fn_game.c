@@ -116,8 +116,11 @@ void fn_game_start(
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   { /* start the game itself */
-    int quit = 0;
-
+    fn_game_start_in_level(0,
+        pixelsize,
+        tilecache,
+        screen,
+        datapath);
     fn_infobox_show(pixelsize,
         tilecache,
         screen,
@@ -128,7 +131,7 @@ void fn_game_start(
 }
 
 void fn_game_start_in_level(
-    Uint8 level,
+    Uint8 levelnumber,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
