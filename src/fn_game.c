@@ -187,7 +187,9 @@ void fn_game_start_in_level(
   dstrect.y = FN_PART_HEIGHT * pixelsize;
   dstrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
   dstrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
+  /* TODO get this dynamically from the hero struct. */
   srcrect.x = 50 * pixelsize * FN_PART_WIDTH;
+  /* TODO get this dynamically from the hero struct. */
   srcrect.y = 0 * pixelsize * FN_PART_HEIGHT;
   srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
