@@ -29,7 +29,7 @@
 #ifndef FN_BOT_ROBOT_H
 #define FN_BOT_ROBOT_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 #include "fn_bot.h"
 

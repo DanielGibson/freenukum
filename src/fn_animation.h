@@ -29,7 +29,7 @@
 #ifndef FN_ANIMATION_H
 #define FN_ANIMATION_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 /* --------------------------------------------------------------- */
 
