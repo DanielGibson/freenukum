@@ -26,6 +26,12 @@
  *
  *******************************************************************/
 
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
+
+/* --------------------------------------------------------------- */
+
 #include "fn_game.h"
 #include "fn_borders.h"
 #include "fn_picture_splash.h"
@@ -116,27 +122,141 @@ void fn_game_start(
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   { /* start the game itself */
-    fn_game_start_in_level(0,
-        pixelsize,
-        tilecache,
-        screen,
-        datapath);
+
+    /* temporarily disabled infobox
     fn_infobox_show(pixelsize,
         tilecache,
         screen,
         "Sorry, gameplay is\n"
         "not implemented yet.\n");
+        */
+
+    fn_game_start_in_level('1',
+        pixelsize,
+        tilecache,
+        screen,
+        datapath);
   }
 
 }
 
 void fn_game_start_in_level(
-    Uint8 levelnumber,
+    char levelnumber,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath)
 {
-  /* TODO */
+  int fd = 0;
+  fn_level_t * lv = 0;
+  SDL_Rect dstrect;
+  SDL_Rect srcrect;
+  SDL_Event event;
+  int res = 0;
+  SDL_Surface * level = SDL_CreateRGBSurface(
+            SDL_SWSURFACE,
+            FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+            FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+            FN_COLOR_DEPTH,
+            0,
+            0,
+            0,
+            0);
+  char levelfile[1024];
+  snprintf(levelfile, 1024, "%s/WORLDAL%c.DN1",
+      datapath, levelnumber);
+  fd = open(levelfile, O_RDONLY);
+
+  if (fd == -1)
+  {
+    fprintf(stderr, "Could not open file %s\n", levelfile);
+    perror("Can't open file");
+    goto cleanup;
+  }
+
+  lv = fn_level_load(fd, pixelsize, tilecache);
+  if (lv == NULL)
+  {
+    close(fd);
+    fprintf(stderr, "Could not load level from file %s\n", levelfile);
+    goto cleanup;
+  }
+  close(fd);
+
+  dstrect.x = FN_PART_WIDTH * pixelsize;
+  dstrect.y = FN_PART_HEIGHT * pixelsize;
+  dstrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
+  dstrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
+  srcrect.x = 50 * pixelsize * FN_PART_WIDTH;
+  srcrect.y = 0 * pixelsize * FN_PART_HEIGHT;
+  srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
+  srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
+
+  /* The mainloop of the level */
+  while (fn_level_keep_on_playing(lv))
+  {
+    /* TODO currently blit everything, later on only blit part */
+    printf("starting blit of level.\n");
+    fn_level_blit_to_surface(lv,
+        level,
+        NULL,
+        NULL);
+    printf("starting blit to screen.\n");
+    SDL_BlitSurface(level, &srcrect, screen, &dstrect);
+    printf("updating screen.\n");
+    SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+    res = SDL_WaitEvent(&event);
+    printf("event occured.\n");
+    if (res == 1) {
+      switch(event.type) {
+        case SDL_QUIT:
+          goto cleanup;
+          break;
+        case SDL_KEYDOWN:
+          switch(event.key.keysym.sym) {
+            case SDLK_q:
+            case SDLK_ESCAPE:
+              goto cleanup;
+              break;
+            case SDLK_DOWN:
+              srcrect.y += pixelsize * FN_PART_WIDTH;
+              printf("y: %d\n", srcrect.y);
+              break;
+            case SDLK_UP:
+              if (srcrect.y > 0) {
+                srcrect.y -= pixelsize * FN_PART_WIDTH;
+              }
+              printf("y: %d\n", srcrect.y);
+              break;
+            case SDLK_LEFT:
+              if (srcrect.x > 0) {
+                srcrect.x -= pixelsize * FN_PART_WIDTH;
+              }
+              printf("x: %d\n", srcrect.x);
+              break;
+            case SDLK_RIGHT:
+              if (srcrect.x > 0) {
+                srcrect.x += pixelsize * FN_PART_WIDTH;
+              }
+              printf("x: %d\n", srcrect.x);
+              break;
+            default:
+              /* do nothing on other key input (yet) */
+              break;
+          }
+          break;
+        case SDL_VIDEOEXPOSE:
+          SDL_UpdateRect(screen, 0, 0, 0, 0);
+          break;
+        default:
+          /* do nothing on any other events. */
+          break;
+      }
+    }
+  }
+
+cleanup:
+  SDL_FreeSurface(level);
 }
 

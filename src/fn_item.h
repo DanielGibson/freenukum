@@ -29,6 +29,7 @@
 #ifndef FN_ITEM_H
 #define FN_ITEM_H
 
+#include "fn_hero.h"
 #include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
@@ -60,7 +61,6 @@ enum fn_item_type_e {
   FN_ITEM_TYPE_BOX_GREY_U,
   FN_ITEM_TYPE_BOX_GREY_K,
   FN_ITEM_TYPE_BOX_GREY_E,
-  FN_ITEM_TYPE_KEY_RED,
   FN_ITEM_TYPE_FOOTBALL,
   FN_ITEM_TYPE_CHICKEN_SINGLE,
   FN_ITEM_TYPE_CHICKEN_DOUBLE,
@@ -125,12 +125,21 @@ fn_item_t * fn_item_create(
 /**
  * Blit the item into the level.
  *
- * @param  item  The item to blit.
- * @param  
+ * @param  item    The item to blit.
+ * @param  target  The target surface.
  */
 void fn_item_blit(
     fn_item_t * item,
     SDL_Surface * target);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Hero touches the item.
+ */
+void fn_item_hero_touch(
+    fn_item_t * item,
+    fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

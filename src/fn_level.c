@@ -43,6 +43,7 @@ fn_level_t * fn_level_load(int fd,
   Uint8 uppertile;
   Uint8 lowertile;
 
+  lv->do_play = 1;
   lv->pixelsize = pixelsize;
   lv->tilecache = tilecache;
   lv->layer_background = SDL_CreateRGBSurface(
@@ -905,4 +906,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_items, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_hero, sourcerect, target, targetrect);
+}
+
+int fn_level_keep_on_playing(fn_level_t * lv) {
+  return lv->do_play;
 }

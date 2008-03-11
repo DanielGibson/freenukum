@@ -111,6 +111,11 @@ typedef struct fn_level_t {
    */
   fn_animation_t animations[FN_MAX_ANIMATIONS];
 
+  /**
+   * As long as this is non-zero, we keep on playing.
+   */
+  int do_play;
+
 } fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -192,6 +197,17 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
     SDL_Rect * sourcerect);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Indicate if we are still playing this level.
+ * 
+ * @param  lv    The level we want to play.
+ * 
+ * @return  non-zero if we are still playing, otherwise zero.
+ */
+int fn_level_keep_on_playing(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 

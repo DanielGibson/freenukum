@@ -51,6 +51,16 @@
 #define FN_PICTURE_WIDTH    40
 #define FN_PICTURE_HEIGHT  200
 
+/**
+ * The number of tiles how wide the level output screen is.
+ */
+#define FN_LEVELWINDOW_WIDTH  13
+
+/**
+ * The number of tiles how high the level output screen is.
+ */
+#define FN_LEVELWINDOW_HEIGHT  10
+
 #define FN_TILECACHE_SIZE 1300
 
 /**

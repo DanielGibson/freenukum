@@ -237,3 +237,17 @@ void fn_item_blit(
       break;
   }
 }
+
+void fn_item_hero_touch(
+    fn_item_t * item,
+    fn_hero_t * hero)
+{
+  switch(item->type) {
+    case FN_ITEM_TYPE_FOOTBALL:
+      /* TODO */
+      break;
+    default:
+      /* TODO */
+      break;
+  }
+}

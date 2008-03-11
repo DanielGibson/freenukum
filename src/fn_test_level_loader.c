@@ -70,16 +70,9 @@ int main(int argc, char ** argv)
     int fd;
     fn_tilecache_t tc;
     Uint8 pixelsize = 1;
-    /* currently unused:
-    size_t i = 0;
-    size_t j = 0;
-    */
     int quit = 0;
     int res;
     SDL_Surface * screen;
-    /* currently unused:
-     SDL_Surface * tile;
-     */
     SDL_Surface * level;
     SDL_Event event;
     char * homedir;
@@ -123,7 +116,6 @@ int main(int argc, char ** argv)
 
     snprintf(levelfile, 1024, "%s/.freenukum/data/WORLDAL%c.DN1",
         homedir, levelnumber);
-    char * file = argv[2];
 
     printf("Use the arrow keys to navigate through the level\n");
 
@@ -149,7 +141,7 @@ int main(int argc, char ** argv)
     if (lv == NULL)
     {
         close(fd);
-        fprintf(stderr, "Could not load level from file %s\n", file);
+        fprintf(stderr, "Could not load level from file %s\n", levelfile);
         return -1;
     }
 
