@@ -102,4 +102,22 @@ void fn_animation_blit(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the x coordinate of the animation.
+ *
+ * @return  The x coordinate.
+ */
+Uint16 fn_animation_get_x(fn_animation_t * anim);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the y coordinate of the animation.
+ *
+ * @return  The y coordinate.
+ */
+Uint16 fn_animation_get_y(fn_animation_t * anim);
+
+/* --------------------------------------------------------------- */
+
 #endif // FN_ANIMATION_H

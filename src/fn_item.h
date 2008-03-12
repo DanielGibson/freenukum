@@ -143,4 +143,20 @@ void fn_item_hero_touch(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the x position of the item.
+ *
+ * @return The x position.
+ */
+size_t fn_item_get_x(fn_item_t * item);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the y position of the item.
+ *
+ * @return The x position.
+ */
+size_t fn_item_get_y(fn_item_t * item);
+
 #endif // FN_ITEM_H

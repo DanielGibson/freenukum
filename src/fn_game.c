@@ -123,13 +123,13 @@ void fn_game_start(
 
   { /* start the game itself */
 
-    /* temporarily disabled infobox
     fn_infobox_show(pixelsize,
         tilecache,
         screen,
         "Sorry, gameplay is\n"
-        "not implemented yet.\n");
-        */
+        "not implemented yet.\n"
+        "You can browse through the level\n"
+        "by pressing the cursor keys though.\n");
 
     fn_game_start_in_level('1',
         pixelsize,
@@ -153,6 +153,7 @@ void fn_game_start_in_level(
   SDL_Rect srcrect;
   SDL_Event event;
   int res = 0;
+  int doupdate = 1;
   SDL_Surface * level = SDL_CreateRGBSurface(
             SDL_SWSURFACE,
             FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
@@ -197,61 +198,83 @@ void fn_game_start_in_level(
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
-    /* TODO currently blit everything, later on only blit part */
-    printf("starting blit of level.\n");
-    fn_level_blit_to_surface(lv,
-        level,
-        NULL,
-        NULL);
-    printf("starting blit to screen.\n");
-    SDL_BlitSurface(level, &srcrect, screen, &dstrect);
-    printf("updating screen.\n");
-    SDL_UpdateRect(screen, 0, 0, 0, 0);
+    if (doupdate) {
+      printf("starting blit of level.\n");
+      printf("srcrect: x %d, y %d, w %d, h %d\n", srcrect.x, srcrect.y,
+          srcrect.w, srcrect.h);
+      fn_level_blit_to_surface(lv,
+          level,
+          &srcrect,
+          &srcrect);
+      printf("starting blit to screen.\n");
+      SDL_BlitSurface(level, &srcrect, screen, &dstrect);
+      printf("updating screen.\n");
+      SDL_UpdateRect(screen, 0, 0, 0, 0);
+      doupdate = 0;
+    }
 
+    printf("waiting for event... ");
     res = SDL_WaitEvent(&event);
     printf("event occured.\n");
     if (res == 1) {
       switch(event.type) {
         case SDL_QUIT:
+          printf("window close desired\n");
           goto cleanup;
           break;
         case SDL_KEYDOWN:
+          printf("key down.\n");
           switch(event.key.keysym.sym) {
             case SDLK_q:
             case SDLK_ESCAPE:
+              printf("quitkey pressed\n");
               goto cleanup;
               break;
             case SDLK_DOWN:
-              srcrect.y += pixelsize * FN_PART_WIDTH;
-              printf("y: %d\n", srcrect.y);
+              if (srcrect.y + srcrect.h
+                  < FN_LEVEL_HEIGHT * pixelsize * FN_PART_HEIGHT) {
+                srcrect.y += pixelsize * FN_PART_HEIGHT;
+              }
+              printf("downkey pressed - y: %d\n", srcrect.y);
+              doupdate = 1;
               break;
             case SDLK_UP:
               if (srcrect.y > 0) {
-                srcrect.y -= pixelsize * FN_PART_WIDTH;
+                srcrect.y -= pixelsize * FN_PART_HEIGHT;
               }
-              printf("y: %d\n", srcrect.y);
+              printf("upkey pressed - y: %d\n", srcrect.y);
+              doupdate = 1;
               break;
             case SDLK_LEFT:
               if (srcrect.x > 0) {
                 srcrect.x -= pixelsize * FN_PART_WIDTH;
               }
-              printf("x: %d\n", srcrect.x);
+              printf("leftkey pressed - x: %d\n", srcrect.x);
+              doupdate = 1;
               break;
             case SDLK_RIGHT:
-              if (srcrect.x > 0) {
+              if (srcrect.x + srcrect.w
+                  < FN_LEVEL_WIDTH * pixelsize * FN_PART_WIDTH) {
                 srcrect.x += pixelsize * FN_PART_WIDTH;
               }
-              printf("x: %d\n", srcrect.x);
+              doupdate = 1;
+              printf("rightkey pressed - x: %d\n", srcrect.x);
               break;
             default:
+              printf("unknown key pressed.\n");
               /* do nothing on other key input (yet) */
               break;
           }
           break;
         case SDL_VIDEOEXPOSE:
+          printf("video expose\n");
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
+        case SDL_MOUSEMOTION:
+          /* we don't do anything on mouse movement */
+          break;
         default:
+          printf("unknown event happened.\n");
           /* do nothing on any other events. */
           break;
       }

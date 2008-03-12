@@ -63,3 +63,16 @@ void fn_animation_blit(
       target, &r);
 }
 
+/* --------------------------------------------------------------- */
+
+Uint16 fn_animation_get_x(fn_animation_t * anim)
+{
+  return anim->x;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint16 fn_animation_get_y(fn_animation_t * anim)
+{
+  return anim->y;
+}

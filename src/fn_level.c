@@ -848,7 +848,39 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 {
   int j = 0;
   int i = 0;
+  int x_start = 0;
+  int x_end = FN_LEVEL_WIDTH;
+  int y_start = 0;
+  int y_end = FN_LEVEL_HEIGHT;
   SDL_Rect r;
+
+  /* calculate the bounds of the area we have to blit. */
+  if (sourcerect) {
+    x_start = (sourcerect->x / FN_PART_WIDTH / lv->pixelsize)
+      - (FN_LEVELWINDOW_WIDTH / 2);
+    if (x_start < 0) {
+      x_start = 0;
+    }
+    x_end = x_start + (sourcerect->w / FN_PART_WIDTH / lv->pixelsize) * 2;
+    if (x_end > FN_LEVEL_WIDTH) {
+      x_end = FN_LEVEL_WIDTH;
+      x_start = x_end - FN_LEVELWINDOW_WIDTH;
+    }
+
+    y_start = (sourcerect->y / FN_PART_HEIGHT / lv->pixelsize)
+      - (FN_LEVELWINDOW_HEIGHT / 2);
+    if (y_start < 0) {
+      y_start = 0;
+    }
+    y_end = y_start + (sourcerect->h / FN_PART_HEIGHT / lv->pixelsize) * 2;
+    if (y_end > FN_LEVEL_HEIGHT) {
+      y_end = FN_LEVEL_HEIGHT;
+      y_start = y_end - FN_LEVELWINDOW_HEIGHT - 6; /* same as above */
+    }
+  }
+  printf("blitting x from %d to %d\n", x_start, x_end);
+  printf("blitting y from %d to %d\n", y_start, y_end);
+
   SDL_Surface * tile;
   Uint32 transparent = SDL_MapRGB(lv->layer_background->format, 100, 1, 1);
   r.x = 0;
@@ -857,11 +889,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   r.h = FN_PART_HEIGHT * lv->pixelsize;
 
   /* load the background tiles */
-  SDL_FillRect(lv->layer_background, NULL, transparent);
+  printf("*** Updating background ***\n");
+  SDL_FillRect(lv->layer_background, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_background, SDL_SRCCOLORKEY, transparent);
-  for (j = 0; j != FN_LEVEL_HEIGHT; j++)
+  for (j = y_start; j != y_end; j++)
   {
-    for (i = 0; i != FN_LEVEL_WIDTH; i++)
+    for (i = x_start; i != x_end; i++)
     {
       r.x = i * FN_PART_WIDTH * lv->pixelsize;
       r.y = j * FN_PART_HEIGHT * lv->pixelsize;
@@ -879,27 +912,42 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
+  printf("*** Updating animation ***\n");
   /* blit the animation objects */
-  SDL_FillRect(lv->layer_animations, NULL, transparent);
+  SDL_FillRect(lv->layer_animations, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_animations, SDL_SRCCOLORKEY, transparent);
   for (i = 0; i < lv->num_animations; i++) {
-    fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
+    Uint16 x = fn_animation_get_x(&(lv->animations[i]));
+    Uint16 y = fn_animation_get_y(&(lv->animations[i]));
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
+    }
   }
 
+  printf("*** Updating items ***\n");
   /* blit the items */
-  SDL_FillRect(lv->layer_items, NULL, transparent);
+  SDL_FillRect(lv->layer_items, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_items, SDL_SRCCOLORKEY, transparent);
   for (i = 0; i < lv->num_items; i++) {
-    fn_item_blit(lv->items[i], lv->layer_items);
+    /*
+    size_t x = fn_item_get_x((lv->items[i])) * 2;
+    size_t y = fn_item_get_y((lv->items[i])) * 2;
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+    */
+      fn_item_blit(lv->items[i], lv->layer_items);
+    /* } */
   }
 
+  printf("*** Updating hero ***\n");
   /* blit the hero */
-  SDL_FillRect(lv->layer_hero, NULL, transparent);
+  SDL_FillRect(lv->layer_hero, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_hero, SDL_SRCCOLORKEY, transparent);
   fn_hero_blit(&(lv->hero),
       lv->layer_hero,
       lv->tilecache,
       lv->pixelsize);
+
+  printf("*** Updating done ***\n");
 
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);

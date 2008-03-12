@@ -187,7 +187,7 @@ int main(int argc, char ** argv)
     fn_level_blit_to_surface(lv,
         level,
         &r,
-        &r);
+        NULL);
 
     SDL_BlitSurface(level, NULL, screen, NULL);
 
@@ -261,8 +261,8 @@ int main(int argc, char ** argv)
 
                       tilenr = fn_level_get_raw(lv, tile_x, tile_y);
                       is_solid = fn_level_is_solid(lv, tile_x, tile_y);
-                      printf("Tile number: 0x%04x; Solid: %s\n",
-                          tilenr, (is_solid? "yes" : "no"));
+                      printf("Tile number x=%d y=%d: 0x%04x; Solid: %s\n",
+                          tile_x, tile_y, tilenr, (is_solid? "yes" : "no"));
                     }
                     break;
                 case SDL_VIDEOEXPOSE:

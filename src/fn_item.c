@@ -251,3 +251,13 @@ void fn_item_hero_touch(
       break;
   }
 }
+
+size_t fn_item_get_x(fn_item_t * item)
+{
+  return item->x;
+}
+
+size_t fn_item_get_y(fn_item_t * item)
+{
+  return item->y;
+}
