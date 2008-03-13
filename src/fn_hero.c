@@ -70,8 +70,8 @@ void fn_hero_blit(fn_hero_t * hero,
   int tilenr;
   SDL_Surface * tile;
 
-  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * hero->x;
-  dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * hero->y;
+  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * (hero->x - 1);
+  dstrect.y = (FN_HALFTILE_HEIGHT * hero->y - FN_PART_HEIGHT) * pixelsize;
   dstrect.w = pixelsize * FN_PART_WIDTH;
   dstrect.h = pixelsize * FN_PART_HEIGHT;
 

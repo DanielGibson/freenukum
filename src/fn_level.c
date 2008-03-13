@@ -50,49 +50,8 @@ fn_level_t * fn_level_load(int fd,
   lv->do_play = 1;
   lv->pixelsize = pixelsize;
   lv->tilecache = tilecache;
-  lv->layer_background = SDL_CreateRGBSurface(
-      SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      FN_COLOR_DEPTH,
-      0,
-      0,
-      0,
-      0);
 
-  lv->pixelsize = pixelsize;
-  lv->tilecache = tilecache;
-  lv->layer_hero = SDL_CreateRGBSurface(
-      SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      FN_COLOR_DEPTH,
-      0,
-      0,
-      0,
-      0);
-
-  lv->layer_animations = SDL_CreateRGBSurface(
-      SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      FN_COLOR_DEPTH,
-      0,
-      0,
-      0,
-      0);
-
-  lv->layer_items = SDL_CreateRGBSurface(
-      SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      FN_COLOR_DEPTH,
-      0,
-      0,
-      0,
-      0);
-
-  lv->layer_bots = SDL_CreateRGBSurface(
+  lv->surface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
       FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
       FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
@@ -448,6 +407,12 @@ fn_level_t * fn_level_load(int fd,
         }
         break;
       case 0x3033: /* grey box with the access card inside */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+              FN_ITEM_TYPE_BOX_GREY_ACCESS_CARD,
+              lv->tilecache, lv->pixelsize, x, y));
         /* TODO */
         break;
       case 0x3034: /* slot for access card */
@@ -891,7 +856,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   printf("blitting y from %d to %d\n", y_start, y_end);
 
   SDL_Surface * tile;
-  Uint32 transparent = SDL_MapRGB(lv->layer_background->format, 100, 1, 1);
   r.x = 0;
   r.y = 0;
   r.w = FN_PART_WIDTH * lv->pixelsize;
@@ -899,8 +863,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   /* load the background tiles */
   printf("*** Updating background ***\n");
-  SDL_FillRect(lv->layer_background, sourcerect, transparent);
-  SDL_SetColorKey(lv->layer_background, SDL_SRCCOLORKEY, transparent);
+  SDL_FillRect(lv->surface, sourcerect, 0);
   for (j = y_start; j != y_end; j++)
   {
     for (i = x_start; i != x_end; i++)
@@ -916,15 +879,13 @@ void fn_level_blit_to_surface(fn_level_t * lv,
         } else {
           tile = fn_tilecache_get_tile(lv->tilecache, 0);
         }
-        SDL_BlitSurface(tile, NULL, lv->layer_background, &r);
+        SDL_BlitSurface(tile, NULL, lv->surface, &r);
       }
     }
   }
 
   printf("*** Updating animation ***\n");
   /* blit the animation objects */
-  SDL_FillRect(lv->layer_animations, sourcerect, transparent);
-  SDL_SetColorKey(lv->layer_animations, SDL_SRCCOLORKEY, transparent);
   for (iter = g_list_first(lv->animations);
       iter != g_list_last(lv->animations);
       iter = g_list_next(iter)) {
@@ -932,14 +893,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     Uint16 x = fn_animation_get_x(animation);
     Uint16 y = fn_animation_get_y(animation);
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_animation_blit(animation, lv->layer_animations);
+      fn_animation_blit(animation, lv->surface);
     }
   }
 
   printf("*** Updating items ***\n");
   /* blit the items */
-  SDL_FillRect(lv->layer_items, sourcerect, transparent);
-  SDL_SetColorKey(lv->layer_items, SDL_SRCCOLORKEY, transparent);
   for (iter = g_list_first(lv->items);
       iter != g_list_last(lv->items);
       iter = g_list_next(iter)) {
@@ -947,15 +906,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     int x = fn_item_get_x(item) / 2;
     int y = fn_item_get_y(item) / 2;
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_item_blit(item, lv->layer_items);
+      fn_item_blit(item, lv->surface);
     }
   }
 
   printf("*** Updating Bots ***\n");
-  /* blit the items */
-  SDL_FillRect(lv->layer_bots, sourcerect, transparent);
-  SDL_SetColorKey(lv->layer_bots, SDL_SRCCOLORKEY, transparent);
-
+  /* blit the bots */
   for (iter = g_list_first(lv->bots);
       iter != g_list_last(lv->bots);
       iter = g_list_next(iter)) {
@@ -963,27 +919,21 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     int x = fn_bot_get_x(bot) / 2;
     int y = fn_bot_get_y(bot) / 2;
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_bot_blit(bot, lv->layer_bots);
+      fn_bot_blit(bot, lv->surface);
     }
   }
 
   printf("*** Updating hero ***\n");
   /* blit the hero */
-  SDL_FillRect(lv->layer_hero, sourcerect, transparent);
-  SDL_SetColorKey(lv->layer_hero, SDL_SRCCOLORKEY, transparent);
   fn_hero_blit(&(lv->hero),
-      lv->layer_hero,
+      lv->surface,
       lv->tilecache,
       lv->pixelsize);
 
   printf("*** Updating done ***\n");
 
   /* blit the whole thing to the caller */
-  SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
-  SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
-  SDL_BlitSurface(lv->layer_items, sourcerect, target, targetrect);
-  SDL_BlitSurface(lv->layer_bots, sourcerect, target, targetrect);
-  SDL_BlitSurface(lv->layer_hero, sourcerect, target, targetrect);
+  SDL_BlitSurface(lv->surface, sourcerect, target, targetrect);
 }
 
 int fn_level_keep_on_playing(fn_level_t * lv) {

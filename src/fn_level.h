@@ -67,29 +67,9 @@ typedef struct fn_level_t {
   Uint16 tiles[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
 
   /**
-   * The background layer.
+   * The surface for blitting the level.
    */
-  SDL_Surface * layer_background;
-
-  /**
-   * The animations layer.
-   */
-  SDL_Surface * layer_animations;
-
-  /**
-   * The hero layer.
-   */
-  SDL_Surface * layer_hero;
-
-  /**
-   * The items layer.
-   */
-  SDL_Surface * layer_items;
-
-  /**
-   * The bots layer.
-   */
-  SDL_Surface * layer_bots;
+  SDL_Surface * surface;
 
   /**
    * The pixel size.
