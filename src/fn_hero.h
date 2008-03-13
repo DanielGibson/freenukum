@@ -134,6 +134,25 @@ void fn_hero_blit(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Let the hero act execute his next timed action.
+ *
+ * @param  hero  The hero that has to act.
+ * @param  data  A pointer to the level inside which the hero
+ *               is placed. Maybe I will find a better way to
+ *               use a direct fn_level_t pointer instead of a
+ *               void* one day, but currently this is the
+ *               simplest solution because we have a chicken-egg
+ *               problem if we include fn_hero.h inside fn_level.h
+ *               and other way round too.
+ * 
+ * @return Zero if the hero has died, otherwise non-zero.
+ */
+int fn_hero_act(fn_hero_t * hero,
+    void * data);
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_next_animationframe(
     fn_hero_t * hero);
 

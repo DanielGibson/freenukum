@@ -43,6 +43,8 @@ fn_level_t * fn_level_load(int fd,
   Uint8 uppertile;
   Uint8 lowertile;
 
+  lv->animated_frames = 0;
+
   lv->bots = NULL;
   lv->animations = NULL;
   lv->items = NULL;
@@ -827,8 +829,11 @@ Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y)
 
 /* --------------------------------------------------------------- */
 
-Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y)
+Uint8 fn_level_is_solid(fn_level_t * lv, int x, int y)
 {
+  if (x < 0 || y < 0 || x > FN_LEVEL_WIDTH || y > FN_LEVEL_HEIGHT) {
+    return 1;
+  }
   return lv->solid[y][x];
 }
 
@@ -972,6 +977,14 @@ fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
 
 int fn_level_act(fn_level_t * lv) {
   GList * iter = NULL;
+
+  lv->animated_frames ++;
+  lv->animated_frames %= 1;
+  if (lv->animated_frames == 0) {
+    /* do some action, not just animation */
+    fn_hero_act(&(lv->hero), lv);
+  }
+
   for (iter = g_list_first(lv->animations);
       iter != g_list_last(lv->animations);
       iter = g_list_next(iter)) {

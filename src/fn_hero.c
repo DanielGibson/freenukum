@@ -33,6 +33,7 @@
 #include "fn_hero.h"
 #include "fn_object.h"
 #include "fn.h"
+#include "fn_level.h"
 
 /* --------------------------------------------------------------- */
 
@@ -92,6 +93,43 @@ void fn_hero_blit(fn_hero_t * hero,
   dstrect.x += dstrect.w;
   tile = fn_tilecache_get_tile(tilecache, tilenr+3);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_hero_act(
+    fn_hero_t * hero,
+    void * data)
+{
+  fn_level_t * lv = (fn_level_t *)data;
+  if (lv == NULL) {
+    return hero->health;
+  }
+  /* TODO */
+  if (hero->motion == FN_HERO_MOTION_WALKING) {
+    /* our hero is moving */
+    switch(hero->direction) {
+      case FN_HERO_DIRECTION_LEFT:
+        if (!fn_level_is_solid(lv, (hero->x-1)/2, hero->y/2) ||
+            !fn_level_is_solid(lv, (hero->x-1)/2, (hero->y-1)/2)) {
+          /* there is no solid block left of our hero */
+          hero->x--;
+        }
+        break;
+      case FN_HERO_DIRECTION_RIGHT:
+        if (!fn_level_is_solid(lv, (hero->x+2)/2, hero->y/2) ||
+            !fn_level_is_solid(lv, (hero->x+2)/2, (hero->y-1)/2)) {
+          /* there is no solid block left of our hero */
+          hero->x++;
+        }
+        break;
+      default:
+        /* do nothing else */
+        break;
+    }
+  }
+  printf("hero acting.\n");
+  return hero->health;
 }
 
 /* --------------------------------------------------------------- */

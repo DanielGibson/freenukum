@@ -146,7 +146,7 @@ void fn_game_start(
         "You can browse through the level\n"
         "by pressing the cursor keys though.\n");
 
-    fn_game_start_in_level('1',
+    fn_game_start_in_level('2',
         pixelsize,
         tilecache,
         screen,

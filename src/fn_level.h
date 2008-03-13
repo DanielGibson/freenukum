@@ -101,6 +101,11 @@ typedef struct fn_level_t {
    */
   int do_play;
 
+  /**
+   * The number of animated frames since last action.
+   */
+  size_t animated_frames;
+
 } fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -166,7 +171,7 @@ Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y);
  *
  * @return 1 if solid, else 0.
  */
-Uint8 fn_level_is_solid(fn_level_t * lv, size_t x, size_t y);
+Uint8 fn_level_is_solid(fn_level_t * lv, int x, int y);
 
 /* --------------------------------------------------------------- */
 
