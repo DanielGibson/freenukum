@@ -877,8 +877,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       y_start = y_end - FN_LEVELWINDOW_HEIGHT * 2;
     }
   }
-  printf("blitting x from %d to %d\n", x_start, x_end);
-  printf("blitting y from %d to %d\n", y_start, y_end);
 
   SDL_Surface * tile;
   r.x = 0;
@@ -887,7 +885,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   r.h = FN_TILE_HEIGHT * lv->pixelsize;
 
   /* load the background tiles */
-  printf("*** Updating background ***\n");
   SDL_FillRect(lv->surface, sourcerect, 0);
   for (j = y_start; j != y_end; j++)
   {
@@ -909,7 +906,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  printf("*** Updating animation ***\n");
   /* blit the animation objects */
   for (iter = g_list_first(lv->animations);
       iter != g_list_last(lv->animations);
@@ -922,7 +918,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  printf("*** Updating items ***\n");
   /* blit the items */
   for (iter = g_list_first(lv->items);
       iter != g_list_last(lv->items);
@@ -935,7 +930,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  printf("*** Updating Bots ***\n");
   /* blit the bots */
   for (iter = g_list_first(lv->bots);
       iter != g_list_last(lv->bots);
@@ -948,14 +942,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  printf("*** Updating hero ***\n");
   /* blit the hero */
   fn_hero_blit(&(lv->hero),
       lv->surface,
       lv->tilecache,
       lv->pixelsize);
 
-  printf("*** Updating done ***\n");
 
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->surface, sourcerect, target, targetrect);

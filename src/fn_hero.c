@@ -134,9 +134,16 @@ int fn_hero_act(
     if (!fn_level_is_solid(lv, (hero->x)/2, (hero->y+2)/2)) {
       hero->y++;
     }
+  } else {
+    if (hero->counter > 0) {
+      hero->counter--;
+      hero->y--;
+    } else {
+      hero->counter = 0;
+      fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
+    }
   }
 
-  printf("hero acting.\n");
   return hero->health;
 }
 
@@ -147,9 +154,11 @@ void fn_hero_next_animationframe(
 {
   hero->animationframe++;
   hero->animationframe %= hero->num_animationframes;
+  /*
   if (hero->counter > 0) {
     hero->counter--;
   }
+  */
 }
 
 /* --------------------------------------------------------------- */
@@ -233,6 +242,11 @@ void fn_hero_set_flying(
     fn_hero_t * hero,
     Uint8 flying)
 {
+  if (flying == FN_HERO_FLYING_TRUE) {
+    if (hero->flying != flying) {
+      hero->counter = 6;
+    }
+  }
   hero->flying = flying;
 }
 

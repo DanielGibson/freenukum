@@ -219,23 +219,21 @@ void fn_game_start_in_level(
   while (fn_level_keep_on_playing(lv))
   {
     if (doupdate) {
+      /*
       printf("starting blit of level.\n");
       printf("srcrect: x %d, y %d, w %d, h %d\n", srcrect.x, srcrect.y,
           srcrect.w, srcrect.h);
+          */
       fn_level_blit_to_surface(lv,
           level,
           &srcrect,
           &srcrect);
-      printf("starting blit to screen.\n");
       SDL_BlitSurface(level, &srcrect, screen, &dstrect);
-      printf("updating screen.\n");
       SDL_UpdateRect(screen, 0, 0, 0, 0);
       doupdate = 0;
     }
 
-    printf("waiting for event... ");
     res = SDL_WaitEvent(&event);
-    printf("event occured.\n");
     if (res == 1) {
       switch(event.type) {
         case SDL_QUIT:
@@ -299,6 +297,10 @@ void fn_game_start_in_level(
               }
               doupdate = 1;
               printf("rightkey pressed - x: %d\n", srcrect.x);
+              break;
+            case SDLK_LCTRL:
+              fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
+              fn_hero_update_animation(hero);
               break;
             default:
               printf("unknown key pressed.\n");
