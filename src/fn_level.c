@@ -275,7 +275,6 @@ fn_level_t * fn_level_load(int fd,
               FN_BOT_TYPE_WALLCRAWLER_LEFT, &(lv->hero), lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
         if (x > 0) {
@@ -286,7 +285,6 @@ fn_level_t * fn_level_load(int fd,
               FN_BOT_TYPE_WALLCRAWLER_RIGHT, &(lv->hero), lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3018: /* red box with chicken inside */
         if (x > 0) {
@@ -297,7 +295,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_RED_CHICKEN, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
         /* TODO */
@@ -320,7 +317,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x301e: /* blue box with joystick inside */
         if (x > 0) {
@@ -331,7 +327,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x301f: /* blue box with disk inside */
         if (x > 0) {
@@ -342,7 +337,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3020: /* grey box with glove inside */
         if (x > 0) {
@@ -353,7 +347,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
         if (x > 0) {
@@ -373,7 +366,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv->tilecache,
               lv->pixelsize, x*2, y*2);
         }
-        /* TODO */
         break;
       case 0x3024: /* camera */
         if (x > 0) {
