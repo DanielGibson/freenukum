@@ -211,4 +211,28 @@ void fn_hero_jump(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the x position of the hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return  The x position.
+ */
+Uint16 fn_hero_get_x(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the y position of the hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return  The y position.
+ */
+Uint16 fn_hero_get_y(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */

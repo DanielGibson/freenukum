@@ -30,7 +30,6 @@ else:
 freenukum = env.Program('freenukum', [
   'fn_picture_splash.c',
   'fn_picture.c',
-  'freenukum.c',
   'fn_draw.c',
   'fn_msgbox.c',
   'fn_tile.c',
@@ -48,7 +47,7 @@ freenukum = env.Program('freenukum', [
   'fn_item.c',
   'fn_level.c',
   'fn_animation.c',
-  'fn_bot_robot.c'])
+  'freenukum.c'])
 
 env.Install(bindir, freenukum)
 env.Alias('install', bindir)
@@ -90,6 +89,7 @@ if ARGUMENTS.get('tests', 0):
     'fn_hero.c',
     'fn_animation.c',
     'fn_item.c',
+    'fn_bot.c',
     'fn_tile.c'])
 
   env.Program('fn_test_msgbox', [

@@ -88,6 +88,16 @@ fn_level_t * fn_level_load(int fd,
       0,
       0);
 
+  lv->layer_bots = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
     size_t x = i%FN_LEVEL_WIDTH;
@@ -179,12 +189,21 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_FOOTBOT, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x300d: /* carbot */
         /* TODO */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_TANKBOT, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         break;
       case 0x300e: /* fire wheel bot */
@@ -207,7 +226,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_ROBOT, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3011: /* exit door */
         if (y > 0) {
@@ -247,11 +270,21 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_WALLCRAWLER_LEFT, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         /* TODO */
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
-        if (y > 0) {
-          lv->tiles[y][x] = lv->tiles[y-1][x];
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_WALLCRAWLER_RIGHT, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
         }
         /* TODO */
         break;
@@ -346,7 +379,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO*/
+        if (lv->num_bots < FN_MAX_BOTS) {
+          lv->bots[lv->num_bots++] = fn_bot_create(
+              FN_BOT_TYPE_CAMERA, &(lv->hero), lv->tilecache,
+              lv->pixelsize, x*2, y*2);
+        }
         break;
       case 0x3025: /* broken wall background */
         /* take the part from one above */
@@ -929,13 +966,23 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_FillRect(lv->layer_items, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_items, SDL_SRCCOLORKEY, transparent);
   for (i = 0; i < lv->num_items; i++) {
-    /*
-    size_t x = fn_item_get_x((lv->items[i])) * 2;
-    size_t y = fn_item_get_y((lv->items[i])) * 2;
+    int x = fn_item_get_x((lv->items[i])) / 2;
+    int y = fn_item_get_y((lv->items[i])) / 2;
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-    */
       fn_item_blit(lv->items[i], lv->layer_items);
-    /* } */
+    }
+  }
+
+  printf("*** Updating Bots ***\n");
+  /* blit the items */
+  SDL_FillRect(lv->layer_bots, sourcerect, transparent);
+  SDL_SetColorKey(lv->layer_bots, SDL_SRCCOLORKEY, transparent);
+  for (i = 0; i < lv->num_bots; i++) {
+    int x = fn_bot_get_x((lv->bots[i])) / 2;
+    int y = fn_bot_get_y((lv->bots[i])) / 2;
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      fn_bot_blit(lv->bots[i], lv->layer_bots);
+    }
   }
 
   printf("*** Updating hero ***\n");
@@ -953,9 +1000,14 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_BlitSurface(lv->layer_background, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_animations, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_items, sourcerect, target, targetrect);
+  SDL_BlitSurface(lv->layer_bots, sourcerect, target, targetrect);
   SDL_BlitSurface(lv->layer_hero, sourcerect, target, targetrect);
 }
 
 int fn_level_keep_on_playing(fn_level_t * lv) {
   return lv->do_play;
+}
+
+fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
+  return &(lv->hero);
 }

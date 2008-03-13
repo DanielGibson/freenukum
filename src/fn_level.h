@@ -34,6 +34,7 @@
 #include "fn_hero.h"
 #include "fn_animation.h"
 #include "fn_item.h"
+#include "fn_bot.h"
 
 /* --------------------------------------------------------------- */
 
@@ -82,6 +83,11 @@ typedef struct fn_level_t {
   SDL_Surface * layer_items;
 
   /**
+   * The bots layer.
+   */
+  SDL_Surface * layer_bots;
+
+  /**
    * The pixel size.
    */
   size_t pixelsize;
@@ -90,6 +96,16 @@ typedef struct fn_level_t {
    * The tile cache.
    */
   fn_tilecache_t * tilecache;
+
+  /**
+   * The number of bots in this level
+   */
+  size_t num_bots;
+
+  /**
+   * The bots
+   */
+  fn_bot_t * bots[FN_MAX_BOTS];
 
   /**
    * The number of items in this level
@@ -208,6 +224,17 @@ void fn_level_blit_to_surface(fn_level_t * lv,
  * @return  non-zero if we are still playing, otherwise zero.
  */
 int fn_level_keep_on_playing(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the hero of the level.
+ *
+ * @param  lv    The level from which to get the hero.
+ *
+ * @return The hero.
+ */
+fn_hero_t * fn_level_get_hero(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 
