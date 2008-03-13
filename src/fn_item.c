@@ -53,8 +53,8 @@ void fn_item_blit(
   SDL_Surface * tile = NULL;
   dstrect.x = item->x * item->pixelsize * FN_HALFTILE_WIDTH;
   dstrect.y = item->y * item->pixelsize * FN_HALFTILE_HEIGHT;
-  dstrect.w = FN_PART_WIDTH * item->pixelsize;
-  dstrect.h = FN_PART_HEIGHT * item->pixelsize;
+  dstrect.w = FN_TILE_WIDTH * item->pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * item->pixelsize;
 
   /* build up the tile surface and blit it */
   switch(item->type) {

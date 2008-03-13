@@ -83,8 +83,8 @@ SDL_Surface * fn_msgbox(
       0,
       0
       );
-  r.w = pixelsize * FN_PART_WIDTH;
-  r.h = pixelsize * FN_PART_HEIGHT;
+  r.w = pixelsize * FN_TILE_WIDTH;
+  r.h = pixelsize * FN_TILE_HEIGHT;
 
   for (i = 0; i <= rows; i++) {
     for (j = 0; j <= columns; j++) {

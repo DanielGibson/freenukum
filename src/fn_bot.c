@@ -115,8 +115,8 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
   SDL_Surface * tile = NULL;
   dstrect.x = bot->x * bot->pixelsize * FN_HALFTILE_WIDTH;
   dstrect.y = bot->y * bot->pixelsize * FN_HALFTILE_HEIGHT;
-  dstrect.w = FN_PART_WIDTH * bot->pixelsize;
-  dstrect.h = FN_PART_HEIGHT * bot->pixelsize;
+  dstrect.w = FN_TILE_WIDTH * bot->pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * bot->pixelsize;
   switch(bot->type) {
     case FN_BOT_TYPE_FIREWHEEL:
       /* TODO */
@@ -133,20 +133,20 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
             ANIM_FOOTBOT + 2);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x += FN_PART_WIDTH * bot->pixelsize;
+        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
 
         tile = fn_tilecache_get_tile(bot->tilecache,
             ANIM_FOOTBOT + 3);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x -= FN_PART_WIDTH * bot->pixelsize;
-        dstrect.y -= FN_PART_HEIGHT * bot->pixelsize;
+        dstrect.x -= FN_TILE_WIDTH * bot->pixelsize;
+        dstrect.y -= FN_TILE_HEIGHT * bot->pixelsize;
 
         tile = fn_tilecache_get_tile(bot->tilecache,
             ANIM_FOOTBOT + 0);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x += FN_PART_WIDTH * bot->pixelsize;
+        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
 
         tile = fn_tilecache_get_tile(bot->tilecache,
             ANIM_FOOTBOT + 1);
@@ -181,7 +181,7 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
         tile = fn_tilecache_get_tile(bot->tilecache,
             ANIM_CARBOT);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
-        dstrect.x += FN_PART_WIDTH * bot->pixelsize;
+        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
         tile = fn_tilecache_get_tile(bot->tilecache,
             ANIM_CARBOT + 1);
         SDL_BlitSurface(tile, NULL, target, &dstrect);

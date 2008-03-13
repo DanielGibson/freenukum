@@ -171,8 +171,8 @@ void fn_game_start_in_level(
   int doupdate = 1;
   SDL_Surface * level = SDL_CreateRGBSurface(
             SDL_SWSURFACE,
-            FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-            FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+            FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+            FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
             FN_COLOR_DEPTH,
             0,
             0,
@@ -200,16 +200,16 @@ void fn_game_start_in_level(
   }
   close(fd);
 
-  dstrect.x = FN_PART_WIDTH * pixelsize;
-  dstrect.y = FN_PART_HEIGHT * pixelsize;
-  dstrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
-  dstrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
+  dstrect.x = FN_TILE_WIDTH * pixelsize;
+  dstrect.y = FN_TILE_HEIGHT * pixelsize;
+  dstrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
+  dstrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
   /* TODO get this dynamically from the hero struct. */
-  srcrect.x = 50 * pixelsize * FN_PART_WIDTH;
+  srcrect.x = 50 * pixelsize * FN_TILE_WIDTH;
   /* TODO get this dynamically from the hero struct. */
-  srcrect.y = 0 * pixelsize * FN_PART_HEIGHT;
-  srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
-  srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
+  srcrect.y = 0 * pixelsize * FN_TILE_HEIGHT;
+  srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
+  srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
 
   tick = SDL_AddTimer(200, fn_game_timer_triggered, 0);
 
@@ -253,8 +253,8 @@ void fn_game_start_in_level(
             case SDLK_DOWN:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.y + srcrect.h
-                    < FN_LEVEL_HEIGHT * pixelsize * FN_PART_HEIGHT) {
-                  srcrect.y += pixelsize * FN_PART_HEIGHT;
+                    < FN_LEVEL_HEIGHT * pixelsize * FN_TILE_HEIGHT) {
+                  srcrect.y += pixelsize * FN_HALFTILE_HEIGHT;
                 }
               } else {
                 /* TODO move our hero */
@@ -265,7 +265,7 @@ void fn_game_start_in_level(
             case SDLK_UP:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.y > 0) {
-                  srcrect.y -= pixelsize * FN_PART_HEIGHT;
+                  srcrect.y -= pixelsize * FN_HALFTILE_HEIGHT;
                 }
               } else {
                 /* TODO move our hero */
@@ -276,7 +276,7 @@ void fn_game_start_in_level(
             case SDLK_LEFT:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.x > 0) {
-                  srcrect.x -= pixelsize * FN_PART_WIDTH;
+                  srcrect.x -= pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
                 fn_hero_set_direction(hero, FN_HERO_DIRECTION_LEFT);
@@ -289,8 +289,8 @@ void fn_game_start_in_level(
             case SDLK_RIGHT:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.x + srcrect.w
-                    < FN_LEVEL_WIDTH * pixelsize * FN_PART_WIDTH) {
-                  srcrect.x += pixelsize * FN_PART_WIDTH;
+                    < FN_LEVEL_WIDTH * pixelsize * FN_TILE_WIDTH) {
+                  srcrect.x += pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
                 fn_hero_set_direction(hero, FN_HERO_DIRECTION_RIGHT);

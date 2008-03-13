@@ -45,8 +45,8 @@ void fn_borders_blit_tile(
     Uint8 pixelsize)
 {
   SDL_Rect dstrect;
-  dstrect.x = FN_PART_WIDTH/2 * pixelsize * x;
-  dstrect.y = FN_PART_HEIGHT/2 * pixelsize * y;
+  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * x;
+  dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * y;
   SDL_BlitSurface(
       tile,
       NULL,
@@ -89,8 +89,8 @@ void fn_borders_blit(
     Uint8 pixelsize)
 {
   static int borders
-    [ (2*FN_WINDOW_HEIGHT/FN_PART_HEIGHT)
-    * (2*FN_WINDOW_WIDTH/FN_PART_WIDTH)]
+    [ (2*FN_WINDOW_HEIGHT/FN_TILE_HEIGHT)
+    * (2*FN_WINDOW_WIDTH/FN_TILE_WIDTH)]
     =
   {
       4,-1, 2,-1, 2,-1, 2,-1, 2,-1, 2,-1, 2,-1, 2,-1, 2,-1, 2,-1,
@@ -175,8 +175,8 @@ void fn_borders_blit(
     tc,
     pixelsize,
     borders,
-    2 * FN_WINDOW_WIDTH / FN_PART_WIDTH,
-    2 * FN_WINDOW_HEIGHT / FN_PART_HEIGHT,
+    2 * FN_WINDOW_WIDTH / FN_TILE_WIDTH,
+    2 * FN_WINDOW_HEIGHT / FN_TILE_HEIGHT,
     BORD_GREY_START
     );
 }
@@ -211,7 +211,7 @@ void fn_borders_blit_life(
   lifesurface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
       FN_FONT_WIDTH * pixelsize * FN_NUM_MAXLIFE,
-      FN_PART_HEIGHT * pixelsize,
+      FN_TILE_HEIGHT * pixelsize,
       FN_COLOR_DEPTH,
       0,
       0,
@@ -225,7 +225,7 @@ void fn_borders_blit_life(
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 7.5 * pixelsize * FN_FONT_HEIGHT;
   dstrect.w = FN_NUM_MAXLIFE * FN_FONT_WIDTH * pixelsize;
-  dstrect.h = FN_PART_HEIGHT * pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * pixelsize;
 
   SDL_BlitSurface(lifesurface, NULL, screen, &dstrect);
   SDL_FreeSurface(lifesurface);
@@ -267,7 +267,7 @@ void fn_borders_blit_score(
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 3 * pixelsize * FN_FONT_HEIGHT;
   dstrect.w = FN_NUM_MAXLIFE * FN_FONT_WIDTH * pixelsize;
-  dstrect.h = FN_PART_HEIGHT * pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * pixelsize;
 
   SDL_BlitSurface(scoresurface, NULL, screen, &dstrect);
   SDL_FreeSurface(scoresurface);
@@ -301,8 +301,8 @@ void fn_borders_blit_firepower(
 
   firepowersurface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_NUM_MAXFIREPOWER,
-      FN_PART_HEIGHT * pixelsize * 2,
+      FN_TILE_WIDTH * pixelsize * FN_NUM_MAXFIREPOWER,
+      FN_TILE_HEIGHT * pixelsize * 2,
       FN_COLOR_DEPTH,
       0,
       0,
@@ -316,8 +316,8 @@ void fn_borders_blit_firepower(
 
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 12 * pixelsize * FN_FONT_HEIGHT;
-  dstrect.w = FN_NUM_MAXFIREPOWER * FN_PART_WIDTH * pixelsize;
-  dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
+  dstrect.w = FN_NUM_MAXFIREPOWER * FN_TILE_WIDTH * pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * 2 * pixelsize;
 
   SDL_BlitSurface(firepowersurface, NULL, screen, &dstrect);
   SDL_FreeSurface(firepowersurface);
@@ -364,8 +364,8 @@ void fn_borders_blit_inventory(
 
   inventorysurface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_SIZE_INVENTORY/2,
-      FN_PART_HEIGHT * pixelsize * 2,
+      FN_TILE_WIDTH * pixelsize * FN_SIZE_INVENTORY/2,
+      FN_TILE_HEIGHT * pixelsize * 2,
       FN_COLOR_DEPTH,
       0,
       0,
@@ -379,8 +379,8 @@ void fn_borders_blit_inventory(
 
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 18 * pixelsize * FN_FONT_HEIGHT;
-  dstrect.w = FN_NUM_MAXFIREPOWER * FN_PART_WIDTH * pixelsize;
-  dstrect.h = FN_PART_HEIGHT * 2 * pixelsize;
+  dstrect.w = FN_NUM_MAXFIREPOWER * FN_TILE_WIDTH * pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * 2 * pixelsize;
 
   SDL_BlitSurface(inventorysurface, NULL, screen, &dstrect);
   SDL_FreeSurface(inventorysurface);

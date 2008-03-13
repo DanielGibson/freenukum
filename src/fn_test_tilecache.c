@@ -154,8 +154,8 @@ int main(int argc, char ** argv)
     }
 
     screen = SDL_SetVideoMode(
-            FN_PART_WIDTH * pixelsize * (50+1),
-            FN_PART_HEIGHT * pixelsize * (26+1),
+            FN_TILE_WIDTH * pixelsize * (50+1),
+            FN_TILE_HEIGHT * pixelsize * (26+1),
             FN_COLOR_DEPTH,
             SDL_SWSURFACE);
 
@@ -168,12 +168,12 @@ int main(int argc, char ** argv)
     SDL_Rect r;
     r.x = 0;
     r.y = 0;
-    r.w = FN_PART_WIDTH * pixelsize;
-    r.h = FN_PART_HEIGHT * pixelsize;
+    r.w = FN_TILE_WIDTH * pixelsize;
+    r.h = FN_TILE_HEIGHT * pixelsize;
 
     for (i = 0; i != 26; i++) {
       r.x = 0;
-      r.y = (i+1) * FN_PART_HEIGHT * pixelsize;
+      r.y = (i+1) * FN_TILE_HEIGHT * pixelsize;
       blithex(screen,
           &r,
           &tc,
@@ -182,7 +182,7 @@ int main(int argc, char ** argv)
     }
 
     for (i = 0; i != 50; i++) {
-      r.x = (i+1) * FN_PART_WIDTH * pixelsize;
+      r.x = (i+1) * FN_TILE_WIDTH * pixelsize;
       r.y = 0;
       blithex(screen,
           &r,
@@ -195,8 +195,8 @@ int main(int argc, char ** argv)
     {
         for(i = 0; i != size[j]; i++)
         {
-            r.x = (i+1) * FN_PART_WIDTH * pixelsize;
-            r.y = (j+1) * FN_PART_HEIGHT * pixelsize;
+            r.x = (i+1) * FN_TILE_WIDTH * pixelsize;
+            r.y = (j+1) * FN_TILE_HEIGHT * pixelsize;
             SDL_BlitSurface(fn_tilecache_get_tile(&tc, sumuntil(size, j)+i), NULL, 
                     screen, &r);
         }

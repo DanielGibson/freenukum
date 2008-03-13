@@ -66,8 +66,8 @@ void fn_animation_blit(
     )
 {
   SDL_Rect r;
-  r.x = anim->pixelsize * anim->x * FN_PART_WIDTH;
-  r.y = anim->pixelsize * anim->y * FN_PART_HEIGHT;
+  r.x = anim->pixelsize * anim->x * FN_TILE_WIDTH;
+  r.y = anim->pixelsize * anim->y * FN_TILE_HEIGHT;
   SDL_BlitSurface(anim->frames[anim->current_frame], NULL,
       target, &r);
 }

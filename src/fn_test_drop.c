@@ -68,8 +68,8 @@ int main(int argc, char ** argv)
     }
 
     screen = SDL_SetVideoMode(
-            FN_DROP_WIDTH * FN_PART_WIDTH * pixelsize,
-            FN_DROP_HEIGHT * FN_PART_HEIGHT * pixelsize,
+            FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
+            FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
             FN_COLOR_DEPTH,
             SDL_SWSURFACE);
 

@@ -40,8 +40,8 @@
 #define FN_FONT_WIDTH        8
 #define FN_FONT_HEIGHT       8
 
-#define FN_PART_WIDTH       16
-#define FN_PART_HEIGHT      16
+#define FN_TILE_WIDTH       16
+#define FN_TILE_HEIGHT      16
 
 #define FN_COLOR_DEPTH      24
 

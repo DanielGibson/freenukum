@@ -47,8 +47,8 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize)
 
     drop = SDL_CreateRGBSurface(
             SDL_SWSURFACE,  /* flags */
-            FN_DROP_WIDTH * FN_PART_WIDTH * pixelsize,  /* width */
-            FN_DROP_HEIGHT * FN_PART_WIDTH * pixelsize, /* height */
+            FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,  /* width */
+            FN_DROP_HEIGHT * FN_TILE_WIDTH * pixelsize, /* height */
             FN_COLOR_DEPTH, /* depth */
             0,              /* Rmask */
             0,              /* Gmask */
@@ -60,8 +60,8 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize)
 
     r.x=0;
     r.y=0;
-    r.w=FN_PART_WIDTH * pixelsize;
-    r.h=FN_PART_HEIGHT * pixelsize;
+    r.w=FN_TILE_WIDTH * pixelsize;
+    r.h=FN_TILE_HEIGHT * pixelsize;
 
     h.width = 2;
     h.height = 16;

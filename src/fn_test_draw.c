@@ -54,8 +54,8 @@ int main()
     }
 
     screen = SDL_SetVideoMode(
-            FN_DROP_WIDTH * FN_PART_WIDTH * pixelsize,
-            FN_DROP_HEIGHT * FN_PART_HEIGHT * pixelsize,
+            FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
+            FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
             FN_COLOR_DEPTH,
             SDL_SWSURFACE
     );
@@ -66,8 +66,8 @@ int main()
     }
 
     object = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-            FN_DROP_WIDTH * FN_PART_WIDTH * pixelsize,
-            FN_DROP_HEIGHT * FN_PART_HEIGHT * pixelsize,
+            FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
+            FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
             FN_COLOR_DEPTH,
             0,
             0,
@@ -117,7 +117,7 @@ int main()
         };
 
 
-    while (ypos != FN_DROP_HEIGHT * FN_PART_HEIGHT)
+    while (ypos != FN_DROP_HEIGHT * FN_TILE_HEIGHT)
     {
         fn_draw_byterow(
                 object,
@@ -125,7 +125,7 @@ int main()
                 br + ((ypos / (8)) % (16)),
                 color,
                 pixelsize);
-        if (xpos == FN_DROP_WIDTH * FN_PART_WIDTH)
+        if (xpos == FN_DROP_WIDTH * FN_TILE_WIDTH)
         {
             xpos = 0;
             ypos ++;

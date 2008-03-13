@@ -167,8 +167,8 @@ int main(int argc, char ** argv)
 
     level = SDL_CreateRGBSurface(
             SDL_SWSURFACE,
-            FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-            FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+            FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+            FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
             FN_COLOR_DEPTH,
             0,
             0,
@@ -181,8 +181,8 @@ int main(int argc, char ** argv)
     SDL_Rect r;
     r.x = 0;
     r.y = 0;
-    r.w = FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH;
-    r.h = FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT;
+    r.w = FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH;
+    r.h = FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT;
 
     fn_level_blit_to_surface(lv,
         level,
@@ -256,8 +256,8 @@ int main(int argc, char ** argv)
 
                       global_x = (r.x) + (click_x);
                       global_y = (r.y) + (click_y);
-                      tile_x = global_x / FN_PART_WIDTH / pixelsize;
-                      tile_y = global_y / FN_PART_HEIGHT / pixelsize;
+                      tile_x = global_x / FN_TILE_WIDTH / pixelsize;
+                      tile_y = global_y / FN_TILE_HEIGHT / pixelsize;
 
                       tilenr = fn_level_get_raw(lv, tile_x, tile_y);
                       is_solid = fn_level_is_solid(lv, tile_x, tile_y);

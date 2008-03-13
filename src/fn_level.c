@@ -53,8 +53,8 @@ fn_level_t * fn_level_load(int fd,
 
   lv->surface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,
-      FN_PART_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_PART_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
       FN_COLOR_DEPTH,
       0,
       0,
@@ -539,14 +539,14 @@ fn_level_t * fn_level_load(int fd,
               lv->tilecache, ANIM_BADGUYSCREEN+1);
           SDL_Surface * tile = SDL_CreateRGBSurface(
               SDL_SWSURFACE,
-              FN_PART_WIDTH * pixelsize * 2,
-              FN_PART_HEIGHT * pixelsize,
+              FN_TILE_WIDTH * pixelsize * 2,
+              FN_TILE_HEIGHT * pixelsize,
               FN_COLOR_DEPTH, 0, 0, 0, 0);
           SDL_Rect r;
-          r.x = FN_PART_WIDTH * pixelsize;
+          r.x = FN_TILE_WIDTH * pixelsize;
           r.y = 0;
-          r.w = FN_PART_WIDTH * pixelsize;
-          r.h = FN_PART_HEIGHT * pixelsize;
+          r.w = FN_TILE_WIDTH * pixelsize;
+          r.h = FN_TILE_HEIGHT * pixelsize;
           SDL_BlitSurface(tile1, NULL, tile, NULL);
           SDL_BlitSurface(tile2, NULL, tile, &r);
           lv->animations = g_list_append(lv->animations,
@@ -850,26 +850,26 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   /* calculate the bounds of the area we have to blit. */
   if (sourcerect) {
-    x_start = (sourcerect->x / FN_PART_WIDTH / lv->pixelsize)
+    x_start = (sourcerect->x / FN_TILE_WIDTH / lv->pixelsize)
       - (FN_LEVELWINDOW_WIDTH / 2);
     if (x_start < 0) {
       x_start = 0;
     }
-    x_end = x_start + (sourcerect->w / FN_PART_WIDTH / lv->pixelsize) * 2;
+    x_end = x_start + (sourcerect->w / FN_TILE_WIDTH / lv->pixelsize) * 2;
     if (x_end > FN_LEVEL_WIDTH) {
       x_end = FN_LEVEL_WIDTH;
-      x_start = x_end - FN_LEVELWINDOW_WIDTH;
+      x_start = x_end - FN_LEVELWINDOW_WIDTH * 2;
     }
 
-    y_start = (sourcerect->y / FN_PART_HEIGHT / lv->pixelsize)
+    y_start = (sourcerect->y / FN_TILE_HEIGHT / lv->pixelsize)
       - (FN_LEVELWINDOW_HEIGHT / 2);
     if (y_start < 0) {
       y_start = 0;
     }
-    y_end = y_start + (sourcerect->h / FN_PART_HEIGHT / lv->pixelsize) * 2;
+    y_end = y_start + (sourcerect->h / FN_TILE_HEIGHT / lv->pixelsize) * 2;
     if (y_end > FN_LEVEL_HEIGHT) {
       y_end = FN_LEVEL_HEIGHT;
-      y_start = y_end - FN_LEVELWINDOW_HEIGHT - 6; /* same as above */
+      y_start = y_end - FN_LEVELWINDOW_HEIGHT * 2;
     }
   }
   printf("blitting x from %d to %d\n", x_start, x_end);
@@ -878,8 +878,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_Surface * tile;
   r.x = 0;
   r.y = 0;
-  r.w = FN_PART_WIDTH * lv->pixelsize;
-  r.h = FN_PART_HEIGHT * lv->pixelsize;
+  r.w = FN_TILE_WIDTH * lv->pixelsize;
+  r.h = FN_TILE_HEIGHT * lv->pixelsize;
 
   /* load the background tiles */
   printf("*** Updating background ***\n");
@@ -888,10 +888,10 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   {
     for (i = x_start; i != x_end; i++)
     {
-      r.x = i * FN_PART_WIDTH * lv->pixelsize;
-      r.y = j * FN_PART_HEIGHT * lv->pixelsize;
-      if (r.x < FN_PART_WIDTH * lv->pixelsize * FN_LEVEL_WIDTH &&
-          r.y < FN_PART_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
+      r.x = i * FN_TILE_WIDTH * lv->pixelsize;
+      r.y = j * FN_TILE_HEIGHT * lv->pixelsize;
+      if (r.x < FN_TILE_WIDTH * lv->pixelsize * FN_LEVEL_WIDTH &&
+          r.y < FN_TILE_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
       {
         int tilenr = fn_level_get_tile(lv, i, j);
         if (tilenr < (48 * 8)) {
