@@ -111,14 +111,14 @@ int fn_hero_act(
     switch(hero->direction) {
       case FN_HERO_DIRECTION_LEFT:
         if (!fn_level_is_solid(lv, (hero->x-1)/2, hero->y/2) ||
-            !fn_level_is_solid(lv, (hero->x-1)/2, (hero->y-1)/2)) {
+            !fn_level_is_solid(lv, (hero->x-1)/2, (hero->y+2)/2)) {
           /* there is no solid block left of our hero */
           hero->x--;
         }
         break;
       case FN_HERO_DIRECTION_RIGHT:
         if (!fn_level_is_solid(lv, (hero->x+2)/2, hero->y/2) ||
-            !fn_level_is_solid(lv, (hero->x+2)/2, (hero->y-1)/2)) {
+            !fn_level_is_solid(lv, (hero->x+2)/2, (hero->y+2)/2)) {
           /* there is no solid block left of our hero */
           hero->x++;
         }
@@ -128,6 +128,14 @@ int fn_hero_act(
         break;
     }
   }
+
+  if (hero->flying == FN_HERO_FLYING_FALSE) {
+    /* our hero is standing or falling */
+    if (!fn_level_is_solid(lv, (hero->x)/2, (hero->y+2)/2)) {
+      hero->y++;
+    }
+  }
+
   printf("hero acting.\n");
   return hero->health;
 }
