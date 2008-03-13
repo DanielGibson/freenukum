@@ -31,7 +31,7 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_animation_init(fn_animation_t * anim,
+fn_animation_t * fn_animation_create(
     size_t num_frames,
     SDL_Surface ** frames,
     size_t startframe,
@@ -39,7 +39,7 @@ void fn_animation_init(fn_animation_t * anim,
     Uint16 y,
     size_t pixelsize)
 {
-  memset(anim, 0, sizeof(fn_animation_t));
+  fn_animation_t * anim = malloc(sizeof(fn_animation_t));
   anim->num_frames = num_frames;
   anim->frames = malloc(sizeof(SDL_Surface *) * num_frames);
   memcpy(anim->frames, frames, sizeof(SDL_Surface *) * num_frames);
@@ -47,6 +47,15 @@ void fn_animation_init(fn_animation_t * anim,
   anim->x = x;
   anim->y = y;
   anim->pixelsize = pixelsize;
+  return anim;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_animation_free(fn_animation_t * anim)
+{
+  free(anim->frames);
+  free(anim);
 }
 
 /* --------------------------------------------------------------- */

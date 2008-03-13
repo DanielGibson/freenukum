@@ -31,6 +31,10 @@
 
 /* --------------------------------------------------------------- */
 
+#include <glib.h>
+
+/* --------------------------------------------------------------- */
+
 #include "fn_hero.h"
 #include "fn_animation.h"
 #include "fn_item.h"
@@ -98,34 +102,19 @@ typedef struct fn_level_t {
   fn_tilecache_t * tilecache;
 
   /**
-   * The number of bots in this level
-   */
-  size_t num_bots;
-
-  /**
    * The bots
    */
-  fn_bot_t * bots[FN_MAX_BOTS];
-
-  /**
-   * The number of items in this level
-   */
-  size_t num_items;
+  GList * bots;
 
   /**
    * The items
    */
-  fn_item_t * items[FN_MAX_ITEMS];
-
-  /**
-   * The number of animations in this level
-   */
-  size_t num_animations;
+  GList * items;
 
   /**
    * The animations
    */
-  fn_animation_t animations[FN_MAX_ANIMATIONS];
+  GList * animations;
 
   /**
    * As long as this is non-zero, we keep on playing.
@@ -158,7 +147,7 @@ fn_level_t * fn_level_load(int fd,
  *
  * @param  level  The level to destroy.
  */
-void fn_level_destroy(fn_level_t * level);
+void fn_level_free(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 

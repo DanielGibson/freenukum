@@ -264,7 +264,7 @@ fn_bot_t * fn_bot_create(
  *
  * @param  bot  The bot to delete.
  */
-void fn_bot_delete(fn_bot_t * bot);
+void fn_bot_free(fn_bot_t * bot);
 
 /* --------------------------------------------------------------- */
 

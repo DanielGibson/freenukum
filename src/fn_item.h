@@ -125,6 +125,15 @@ fn_item_t * fn_item_create(
 /* --------------------------------------------------------------- */
 
 /**
+ * Destroy an item.
+ *
+ * @param  item  The item to destroy.
+ */
+void fn_item_free(fn_item_t * item);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Blit the item into the level.
  *
  * @param  item    The item to blit.

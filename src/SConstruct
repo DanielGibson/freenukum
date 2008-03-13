@@ -7,6 +7,9 @@ else:
 
 env = Environment(CCFLAGS = cflags, LDFLAGS = [])
 
+env.ParseConfig('pkg-config glib-2.0 --cflags')
+env.ParseConfig('pkg-config glib-2.0 --libs')
+
 env.ParseConfig('sdl-config --cflags')
 env.ParseConfig('sdl-config --libs')
 

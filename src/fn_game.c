@@ -282,6 +282,7 @@ void fn_game_start_in_level(
   }
 
 cleanup:
+  fn_level_free(lv);
   SDL_FreeSurface(level);
 }
 

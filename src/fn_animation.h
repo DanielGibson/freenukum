@@ -70,7 +70,7 @@ struct fn_animation_t {
 /* --------------------------------------------------------------- */
 
 /**
- * Initialize an animation.
+ * Create an animation.
  *
  * @param  num_frames  The number of frames.
  * @param  frames      The frames.
@@ -78,14 +78,25 @@ struct fn_animation_t {
  * @param  x           The x position.
  * @param  y           The y position.
  * @param  pixelsize   The size of one pixel.
+ * 
+ * @return The newly created animation.
  */
-void fn_animation_init(fn_animation_t * anim,
+fn_animation_t * fn_animation_create(
     size_t num_frames,
     SDL_Surface ** frames,
     size_t startframe,
     Uint16 x,
     Uint16 y,
     size_t pixelsize);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Destroy the animation.
+ *
+ * @param  anim  The animation to destroy.
+ */
+void fn_animation_free(fn_animation_t * anim);
 
 /* --------------------------------------------------------------- */
 

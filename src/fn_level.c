@@ -43,6 +43,10 @@ fn_level_t * fn_level_load(int fd,
   Uint8 uppertile;
   Uint8 lowertile;
 
+  lv->bots = NULL;
+  lv->animations = NULL;
+  lv->items = NULL;
+
   lv->do_play = 1;
   lv->pixelsize = pixelsize;
   lv->tilecache = tilecache;
@@ -122,11 +126,9 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_EMPTY, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3001: /* lift */
         /* TODO */
@@ -147,11 +149,9 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_BOOTS, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3007: /* rocket which gets started if shot
                     * and leaves a blue box with a balloon */
@@ -161,11 +161,9 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_CLAMPS, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3009: /* fire burning to the right */
         if (y > 0) {
@@ -189,22 +187,18 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+        lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_FOOTBOT, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x300d: /* carbot */
         /* TODO */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+        lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_TANKBOT, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x300e: /* fire wheel bot */
         if (x > 0) {
@@ -216,21 +210,17 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_GUN, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_GREY_GUN, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x3010: /* robot */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+        lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_ROBOT, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3011: /* exit door */
         if (y > 0) {
@@ -242,12 +232,9 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_BOMB, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
-        /* TODO */
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3013: /* bot consisting of several white-blue balls */
         /* TODO */
@@ -259,42 +246,33 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_RED_SODA, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
-        /* TODO */
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3016: /* crab bot crawling along wall left of him */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+          lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_WALLCRAWLER_LEFT, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+        lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_WALLCRAWLER_RIGHT, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3018: /* red box with chicken inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_RED_CHICKEN, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
         /* TODO */
@@ -312,41 +290,33 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x301e: /* blue box with joystick inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x301f: /* blue box with disk inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3020: /* grey box with glove inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
         if (x > 0) {
@@ -361,21 +331,17 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x3024: /* camera */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_bots < FN_MAX_BOTS) {
-          lv->bots[lv->num_bots++] = fn_bot_create(
+        lv->bots = g_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_CAMERA, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x3025: /* broken wall background */
         /* take the part from one above */
@@ -383,15 +349,14 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, ANIM_BROKENWALLBG);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+        SDL_Surface * tile = fn_tilecache_get_tile(
+            lv->tilecache, ANIM_BROKENWALLBG);
+        lv->animations = g_list_append(lv->animations,
+            fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
-        }
+              x, y, lv->pixelsize));
         break;
       case 0x3026: /* left end of background stone wall */
         /* TODO */
@@ -401,25 +366,24 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3028: /* window inside background stone wall */
         lv->tiles[y][x] = 0;
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, ANIM_STONEWINDOWBG);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
-        }
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
+              }
         break;
       case 0x3029: /* grey box with full life */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items,fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
         if (x > 0) {
@@ -437,14 +401,15 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKE);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -452,21 +417,17 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_FLAG, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_BLUE_FLAG, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x302e: /* blue box with radio inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_RADIO, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_BOX_BLUE_RADIO, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         break;
       case 0x302f: /* beaming station */
         /* TODO */
@@ -490,14 +451,14 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3034: /* slot for access card */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_ACCESS_CARD_SLOT);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+          lv->animations = g_list_append(lv->animations, fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
+              x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -545,37 +506,40 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x303e: /* window - left part */
         lv->tiles[y][x] = 0;
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, ANIM_WINDOWBG);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
+              x, y, lv->pixelsize));
         }
         break;
       case 0x303f: /* window - right part */
         lv->tiles[y][x] = 0;
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, ANIM_WINDOWBG + 1);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         break;
       case 0x3040: /* the notebook */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_NOTE);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+          lv->animations = g_list_append(lv->animations,
+          fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
+              x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -583,7 +547,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile1 = fn_tilecache_get_tile(
               lv->tilecache, ANIM_BADGUYSCREEN);
           SDL_Surface * tile2 = fn_tilecache_get_tile(
@@ -600,11 +564,12 @@ fn_level_t * fn_level_load(int fd,
           r.h = FN_PART_HEIGHT * pixelsize;
           SDL_BlitSurface(tile1, NULL, tile, NULL);
           SDL_BlitSurface(tile2, NULL, tile, &r);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
+              x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -637,53 +602,57 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3048: /* red keyhole */
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_KEYHOLE_RED);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
       case 0x3049: /* green keyhole */
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_KEYHOLE_GREEN);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
       case 0x304a: /* blue keyhole */
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_KEYHOLE_BLUE);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
       case 0x304b: /* pink keyhole */
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_KEYHOLE_PINK);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -715,77 +684,63 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_FOOTBALL, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3051: /* single chicken on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_CHICKEN_SINGLE, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_CHICKEN_SINGLE, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3052: /* soda on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_SODA, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_SODA, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3053: /* a disk on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_DISK, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3054: /* a joystick on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
+        lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_JOYSTICK, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+              lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3055: /* a flag on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_FLAG, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_FLAG, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3056: /* a radio on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        if (lv->num_items < FN_MAX_ITEMS) {
-          lv->items[lv->num_items++] = fn_item_create(
-              FN_ITEM_TYPE_RADIO, lv->tilecache,
-              lv->pixelsize, x*2, y*2);
-        }
+        lv->items = g_list_append(lv->items, fn_item_create(
+            FN_ITEM_TYPE_RADIO, lv->tilecache,
+            lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
       case 0x3057: /* the red mine lying on the ground */
@@ -799,14 +754,15 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKES_UP);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize);
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                1, /* number of frames */
+                &tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -815,14 +771,15 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         /* add the animation object */
-        if (lv->num_animations < FN_MAX_ANIMATIONS) {
+        {
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKES_DOWN);
-          fn_animation_init(&(lv->animations[lv->num_animations++]),
+          lv->animations = g_list_append(lv->animations,
+          fn_animation_create(
               1, /* number of frames */
               &tile, /* surface(s) */
               0, /* start frame */
-              x, y, lv->pixelsize);
+              x, y, lv->pixelsize));
         }
         /* TODO */
         break;
@@ -842,9 +799,31 @@ fn_level_t * fn_level_load(int fd,
 
 /* --------------------------------------------------------------- */
 
-void fn_level_destroy(fn_level_t * level)
+void fn_level_free(fn_level_t * lv)
 {
-  free(level);
+  GList * iter = NULL;
+  for (iter = g_list_first(lv->animations);
+      iter != g_list_last(lv->animations);
+      iter = g_list_next(iter)) {
+    fn_animation_free((fn_animation_t *)iter->data);
+  }
+  g_list_free(lv->animations);
+
+  for (iter = g_list_first(lv->items);
+      iter != g_list_last(lv->items);
+      iter = g_list_next(iter)) {
+    fn_item_free((fn_item_t *)iter->data);
+  }
+  g_list_free(lv->items);
+
+  for (iter = g_list_first(lv->bots);
+      iter != g_list_last(lv->bots);
+      iter = g_list_next(iter)) {
+    fn_bot_free((fn_bot_t *)iter->data);
+  }
+  g_list_free(lv->bots);
+
+  free(lv);
 }
 
 /* --------------------------------------------------------------- */
@@ -882,6 +861,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   int y_start = 0;
   int y_end = FN_LEVEL_HEIGHT;
   SDL_Rect r;
+  GList * iter = NULL;
 
   /* calculate the bounds of the area we have to blit. */
   if (sourcerect) {
@@ -945,11 +925,14 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /* blit the animation objects */
   SDL_FillRect(lv->layer_animations, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_animations, SDL_SRCCOLORKEY, transparent);
-  for (i = 0; i < lv->num_animations; i++) {
-    Uint16 x = fn_animation_get_x(&(lv->animations[i]));
-    Uint16 y = fn_animation_get_y(&(lv->animations[i]));
+  for (iter = g_list_first(lv->animations);
+      iter != g_list_last(lv->animations);
+      iter = g_list_next(iter)) {
+    fn_animation_t * animation = (fn_animation_t *)iter->data;
+    Uint16 x = fn_animation_get_x(animation);
+    Uint16 y = fn_animation_get_y(animation);
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_animation_blit(&(lv->animations[i]), lv->layer_animations);
+      fn_animation_blit(animation, lv->layer_animations);
     }
   }
 
@@ -957,11 +940,14 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /* blit the items */
   SDL_FillRect(lv->layer_items, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_items, SDL_SRCCOLORKEY, transparent);
-  for (i = 0; i < lv->num_items; i++) {
-    int x = fn_item_get_x((lv->items[i])) / 2;
-    int y = fn_item_get_y((lv->items[i])) / 2;
+  for (iter = g_list_first(lv->items);
+      iter != g_list_last(lv->items);
+      iter = g_list_next(iter)) {
+    fn_item_t * item = (fn_item_t *)iter->data;
+    int x = fn_item_get_x(item) / 2;
+    int y = fn_item_get_y(item) / 2;
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_item_blit(lv->items[i], lv->layer_items);
+      fn_item_blit(item, lv->layer_items);
     }
   }
 
@@ -969,11 +955,15 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /* blit the items */
   SDL_FillRect(lv->layer_bots, sourcerect, transparent);
   SDL_SetColorKey(lv->layer_bots, SDL_SRCCOLORKEY, transparent);
-  for (i = 0; i < lv->num_bots; i++) {
-    int x = fn_bot_get_x((lv->bots[i])) / 2;
-    int y = fn_bot_get_y((lv->bots[i])) / 2;
+
+  for (iter = g_list_first(lv->bots);
+      iter != g_list_last(lv->bots);
+      iter = g_list_next(iter)) {
+    fn_bot_t * bot = (fn_bot_t *)iter->data;
+    int x = fn_bot_get_x(bot) / 2;
+    int y = fn_bot_get_y(bot) / 2;
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_bot_blit(lv->bots[i], lv->layer_bots);
+      fn_bot_blit(bot, lv->layer_bots);
     }
   }
 

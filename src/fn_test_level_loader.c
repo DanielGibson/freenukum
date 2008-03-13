@@ -275,6 +275,8 @@ int main(int argc, char ** argv)
         }
     }
 
+    fn_level_free(lv);
+
     return 0;
 }
 

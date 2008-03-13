@@ -238,6 +238,10 @@ void fn_item_blit(
   }
 }
 
+void fn_item_free(fn_item_t * item) {
+  free(item);
+}
+
 void fn_item_hero_touch(
     fn_item_t * item,
     fn_hero_t * hero)
