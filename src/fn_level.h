@@ -207,4 +207,15 @@ fn_hero_t * fn_level_get_hero(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Call this function make the game act one step further.
+ *
+ * @param  lv  The level which should step.
+ *
+ * @return zero if the level is finished, otherwise non-zero.
+ */
+int fn_level_act(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */

@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
   }
 
   /* initialize SDL */
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
     exit(1);
   }

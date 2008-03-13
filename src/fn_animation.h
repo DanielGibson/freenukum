@@ -116,6 +116,8 @@ void fn_animation_blit(
 /**
  * Get the x coordinate of the animation.
  *
+ * @param  anim  The animation.
+ *
  * @return  The x coordinate.
  */
 Uint16 fn_animation_get_x(fn_animation_t * anim);
@@ -125,9 +127,20 @@ Uint16 fn_animation_get_x(fn_animation_t * anim);
 /**
  * Get the y coordinate of the animation.
  *
+ * @param  anim  The animation.
+ *
  * @return  The y coordinate.
  */
 Uint16 fn_animation_get_y(fn_animation_t * anim);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Step to the next frame of the animation.
+ *
+ * @param  anim  The anim which should be animated.
+ */
+void fn_animation_act(fn_animation_t * anim);
 
 /* --------------------------------------------------------------- */
 

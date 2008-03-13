@@ -47,6 +47,21 @@ Uint32 score = 0;
 
 /* --------------------------------------------------------------- */
 
+Uint32 fn_game_timer_triggered(
+    Uint32 interval,
+    void * param)
+{
+  SDL_Event event;
+  event.type = SDL_USEREVENT;
+  event.user.code = 0;
+  event.user.data1 = 0;
+  event.user.data2 = 0;
+  SDL_PushEvent(&event);
+  return interval;
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
@@ -163,6 +178,7 @@ void fn_game_start_in_level(
             0,
             0,
             0);
+  SDL_TimerID tick;
   char levelfile[1024];
   snprintf(levelfile, 1024, "%s/WORLDAL%c.DN1",
       datapath, levelnumber);
@@ -195,6 +211,10 @@ void fn_game_start_in_level(
   srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_PART_WIDTH;
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_PART_HEIGHT;
 
+  tick = SDL_AddTimer(200, fn_game_timer_triggered, 0);
+
+  fn_hero_t * hero = fn_level_get_hero(lv);
+  
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
@@ -231,31 +251,51 @@ void fn_game_start_in_level(
               goto cleanup;
               break;
             case SDLK_DOWN:
-              if (srcrect.y + srcrect.h
-                  < FN_LEVEL_HEIGHT * pixelsize * FN_PART_HEIGHT) {
-                srcrect.y += pixelsize * FN_PART_HEIGHT;
+              if (event.key.keysym.mod & KMOD_SHIFT) {
+                if (srcrect.y + srcrect.h
+                    < FN_LEVEL_HEIGHT * pixelsize * FN_PART_HEIGHT) {
+                  srcrect.y += pixelsize * FN_PART_HEIGHT;
+                }
+              } else {
+                /* TODO move our hero */
               }
               printf("downkey pressed - y: %d\n", srcrect.y);
               doupdate = 1;
               break;
             case SDLK_UP:
-              if (srcrect.y > 0) {
-                srcrect.y -= pixelsize * FN_PART_HEIGHT;
+              if (event.key.keysym.mod & KMOD_SHIFT) {
+                if (srcrect.y > 0) {
+                  srcrect.y -= pixelsize * FN_PART_HEIGHT;
+                }
+              } else {
+                /* TODO move our hero */
               }
               printf("upkey pressed - y: %d\n", srcrect.y);
               doupdate = 1;
               break;
             case SDLK_LEFT:
-              if (srcrect.x > 0) {
-                srcrect.x -= pixelsize * FN_PART_WIDTH;
+              if (event.key.keysym.mod & KMOD_SHIFT) {
+                if (srcrect.x > 0) {
+                  srcrect.x -= pixelsize * FN_PART_WIDTH;
+                }
+              } else {
+                fn_hero_set_direction(hero, FN_HERO_DIRECTION_LEFT);
+                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                fn_hero_update_animation(hero);
               }
               printf("leftkey pressed - x: %d\n", srcrect.x);
               doupdate = 1;
               break;
             case SDLK_RIGHT:
-              if (srcrect.x + srcrect.w
-                  < FN_LEVEL_WIDTH * pixelsize * FN_PART_WIDTH) {
-                srcrect.x += pixelsize * FN_PART_WIDTH;
+              if (event.key.keysym.mod & KMOD_SHIFT) {
+                if (srcrect.x + srcrect.w
+                    < FN_LEVEL_WIDTH * pixelsize * FN_PART_WIDTH) {
+                  srcrect.x += pixelsize * FN_PART_WIDTH;
+                }
+              } else {
+                fn_hero_set_direction(hero, FN_HERO_DIRECTION_RIGHT);
+                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                fn_hero_update_animation(hero);
               }
               doupdate = 1;
               printf("rightkey pressed - x: %d\n", srcrect.x);
@@ -266,9 +306,24 @@ void fn_game_start_in_level(
               break;
           }
           break;
+        case SDL_KEYUP:
+          switch(event.key.keysym.sym) {
+            case SDLK_LEFT:
+            case SDLK_RIGHT:
+              fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+              fn_hero_update_animation(hero);
+            default:
+              /* do nothing on other keys. */
+              break;
+          }
+          break;
         case SDL_VIDEOEXPOSE:
           printf("video expose\n");
           SDL_UpdateRect(screen, 0, 0, 0, 0);
+          break;
+        case SDL_USEREVENT:
+          fn_level_act(lv);
+          doupdate = 1;
           break;
         case SDL_MOUSEMOTION:
           /* we don't do anything on mouse movement */

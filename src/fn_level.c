@@ -81,6 +81,26 @@ fn_level_t * fn_level_load(int fd,
     }
 
     switch(tilenr) {
+      case 0x0400: /* background blinking blue box */
+      case 0x0420: /* background blinking blue box */
+      case 0x0440: /* background blinking blue box */
+      case 0x0460: /* background blinking blue box */
+        /* add the animation object */
+        {
+          SDL_Surface * tile[4];
+          int i = 0;
+          for (i = 0; i < 4; i++) {
+            tile[i] = fn_tilecache_get_tile(lv->tilecache, tilenr / 0x20 + i);
+          }
+          lv->animations = g_list_append(lv->animations,
+              fn_animation_create(
+                4, /* number of frames */
+                tile, /* surface(s) */
+                0, /* start frame */
+                x, y, lv->pixelsize));
+        }
+        break;
+
       case 0x3000: /* grey box, empty */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
@@ -936,10 +956,34 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_BlitSurface(lv->surface, sourcerect, target, targetrect);
 }
 
+/* --------------------------------------------------------------- */
+
 int fn_level_keep_on_playing(fn_level_t * lv) {
   return lv->do_play;
 }
 
+/* --------------------------------------------------------------- */
+
 fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
   return &(lv->hero);
 }
+
+/* --------------------------------------------------------------- */
+
+int fn_level_act(fn_level_t * lv) {
+  GList * iter = NULL;
+  for (iter = g_list_first(lv->animations);
+      iter != g_list_last(lv->animations);
+      iter = g_list_next(iter)) {
+    fn_animation_t * anim = (fn_animation_t *)iter->data;
+    fn_animation_act(anim);
+  }
+
+  fn_hero_next_animationframe(&(lv->hero));
+  fn_hero_update_animation(&(lv->hero));
+
+  return 1;
+};
+
+/* --------------------------------------------------------------- */
+

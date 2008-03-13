@@ -85,3 +85,13 @@ Uint16 fn_animation_get_y(fn_animation_t * anim)
 {
   return anim->y;
 }
+
+/* --------------------------------------------------------------- */
+
+void fn_animation_act(fn_animation_t * anim)
+{
+  anim->current_frame++;
+  anim->current_frame %= anim->num_frames;
+}
+
+/* --------------------------------------------------------------- */
