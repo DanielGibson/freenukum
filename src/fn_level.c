@@ -412,7 +412,7 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->items = g_list_append(lv->items, fn_item_create(
               FN_ITEM_TYPE_BOX_GREY_ACCESS_CARD,
-              lv->tilecache, lv->pixelsize, x, y));
+              lv->tilecache, lv->pixelsize, x * 2, y * 2));
         /* TODO */
         break;
       case 0x3034: /* slot for access card */
