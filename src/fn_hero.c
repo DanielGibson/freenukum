@@ -102,6 +102,8 @@ int fn_hero_act(
     void * data)
 {
   fn_level_t * lv = (fn_level_t *)data;
+  int heromoved = 0;
+
   if (lv == NULL) {
     return hero->health;
   }
@@ -114,6 +116,7 @@ int fn_hero_act(
             !fn_level_is_solid(lv, (hero->x-1)/2, (hero->y+2)/2)) {
           /* there is no solid block left of our hero */
           hero->x--;
+          heromoved = 1;
         }
         break;
       case FN_HERO_DIRECTION_RIGHT:
@@ -121,6 +124,7 @@ int fn_hero_act(
             !fn_level_is_solid(lv, (hero->x+2)/2, (hero->y+2)/2)) {
           /* there is no solid block left of our hero */
           hero->x++;
+          heromoved = 1;
         }
         break;
       default:
@@ -133,15 +137,26 @@ int fn_hero_act(
     /* our hero is standing or falling */
     if (!fn_level_is_solid(lv, (hero->x)/2, (hero->y+2)/2)) {
       hero->y++;
+      heromoved = 1;
     }
   } else {
     if (hero->counter > 0) {
       hero->counter--;
       hero->y--;
+      heromoved = 1;
     } else {
       hero->counter = 0;
       fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
     }
+  }
+
+  if (heromoved) {
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    event.user.code = fn_event_heromoved;
+    event.user.data1 = hero;
+    event.user.data2 = 0;
+    SDL_PushEvent(&event);
   }
 
   return hero->health;

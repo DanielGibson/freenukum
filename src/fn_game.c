@@ -53,7 +53,7 @@ Uint32 fn_game_timer_triggered(
 {
   SDL_Event event;
   event.type = SDL_USEREVENT;
-  event.user.code = 0;
+  event.user.code = fn_event_timer;
   event.user.data1 = 0;
   event.user.data2 = 0;
   SDL_PushEvent(&event);
@@ -202,8 +202,8 @@ void fn_game_start_in_level(
 
   dstrect.x = FN_TILE_WIDTH * pixelsize;
   dstrect.y = FN_TILE_HEIGHT * pixelsize;
-  dstrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
-  dstrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
+  dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
+  dstrect.h = (FN_LEVELWINDOW_HEIGHT + 2) * pixelsize * FN_TILE_HEIGHT;
   /* TODO get this dynamically from the hero struct. */
   srcrect.x = 50 * pixelsize * FN_TILE_WIDTH;
   /* TODO get this dynamically from the hero struct. */
@@ -324,8 +324,24 @@ void fn_game_start_in_level(
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
         case SDL_USEREVENT:
-          fn_level_act(lv);
-          doupdate = 1;
+          switch(event.user.code) {
+            case fn_event_timer:
+              fn_level_act(lv);
+              doupdate = 1;
+              break;
+            case fn_event_heromoved:
+              {
+                int x = fn_hero_get_x(hero);
+                int y = fn_hero_get_y(hero);
+                srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
+                srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 1) * FN_HALFTILE_HEIGHT * pixelsize;
+                printf("hero moved to %d,%d.\n", y, x);
+              }
+              break;
+            default:
+              /* don't do anything on other events. */
+              break;
+          }
           break;
         case SDL_MOUSEMOTION:
           /* we don't do anything on mouse movement */
