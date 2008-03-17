@@ -169,6 +169,8 @@ void fn_game_start_in_level(
   SDL_Event event;
   int res = 0;
   int doupdate = 1;
+  int x = 0;
+  int y = 0;
   SDL_Surface * level = SDL_CreateRGBSurface(
             SDL_SWSURFACE,
             FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
@@ -340,12 +342,10 @@ void fn_game_start_in_level(
               doupdate = 1;
               break;
             case fn_event_heromoved:
-              {
-                int x = fn_hero_get_x(hero);
-                int y = fn_hero_get_y(hero);
-                srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
-                srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 2) * FN_HALFTILE_HEIGHT * pixelsize;
-              }
+              x = fn_hero_get_x(hero);
+              y = fn_hero_get_y(hero);
+              srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
+              srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 2) * FN_HALFTILE_HEIGHT * pixelsize;
               break;
             default:
               /* don't do anything on other events. */
