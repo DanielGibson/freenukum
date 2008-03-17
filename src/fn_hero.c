@@ -112,16 +112,13 @@ int fn_hero_act(
     /* our hero is moving */
     switch(hero->direction) {
       case FN_HERO_DIRECTION_LEFT:
-        if (!fn_level_is_solid(lv, (hero->x-1)/2, hero->y/2) ||
-            !fn_level_is_solid(lv, (hero->x-1)/2, (hero->y+2)/2)) {
-          /* there is no solid block left of our hero */
+        if (!fn_hero_would_collide(hero, lv, hero->x-1, hero->y)) {
           hero->x--;
           heromoved = 1;
         }
         break;
       case FN_HERO_DIRECTION_RIGHT:
-        if (!fn_level_is_solid(lv, (hero->x+2)/2, hero->y/2) ||
-            !fn_level_is_solid(lv, (hero->x+2)/2, (hero->y+2)/2)) {
+        if (!fn_hero_would_collide(hero, lv, hero->x+1, hero->y)) {
           /* there is no solid block left of our hero */
           hero->x++;
           heromoved = 1;
@@ -134,19 +131,37 @@ int fn_hero_act(
   }
 
   if (hero->flying == FN_HERO_FLYING_FALSE) {
-    /* our hero is standing or falling */
-    if (!fn_level_is_solid(lv, (hero->x)/2, (hero->y+2)/2)) {
-      hero->y++;
-      heromoved = 1;
-    }
+    /* our hero is standing or walking */
   } else {
+    /* our hero is jumping or falling */
     if (hero->counter > 0) {
+      /* jumping */
       hero->counter--;
-      hero->y--;
-      heromoved = 1;
+      if (!fn_hero_would_collide(hero, lv, hero->x, hero->y-1)) {
+        hero->y--;
+        heromoved = 1;
+      } else {
+        /* we bumped against the ceiling */
+        hero->counter = 0;
+      }
     } else {
+      /* falling */
+      if (!fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+        hero->y++;
+        heromoved = 1;
+      }
+    }
+  }
+
+  if (fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+    /* we are standing on solid ground */
+    fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
+    hero->counter = 0;
+  } else {
+    /* we fall down */
+    if (hero->counter == 0) {
+      fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
       hero->counter = 0;
-      fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
     }
   }
 
@@ -326,3 +341,29 @@ Uint16 fn_hero_get_y(
   return hero->y;
 }
 
+/* --------------------------------------------------------------- */
+
+int fn_hero_would_collide(fn_hero_t * hero, void * level,
+    int halftile_x, int halftile_y)
+{
+  fn_level_t * lv = (fn_level_t *)level;
+  if (lv == NULL) {
+    return 1;
+  }
+  if (halftile_x < 0 || halftile_x > FN_LEVEL_WIDTH * 2 ||
+      halftile_y < 0 || halftile_y > FN_LEVEL_HEIGHT * 2) {
+    return 1;
+  }
+  int i = 0;
+  int j = 0;
+
+  for (i = halftile_x; i < halftile_x + 2; i++) {
+    for (j = halftile_y-2; j < halftile_y+2; j++) {
+      if (fn_level_is_solid(lv, i/2, j/2)) {
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+}

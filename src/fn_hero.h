@@ -254,4 +254,19 @@ Uint16 fn_hero_get_y(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Calculate if our hero would  collide with a solid tile in the level.
+ *
+ * @param  hero        The hero.
+ * @param  level       The level.
+ * @param  halftile_x  The x halftile coordinate.
+ * @param  halftile_y  The y halftile coordinate.
+ *
+ * @return 1 if hero collides, 0 if not.
+ */
+int fn_hero_would_collide(fn_hero_t * hero, void * level,
+    int halftile_x, int halftile_y);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */
