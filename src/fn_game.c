@@ -205,15 +205,25 @@ void fn_game_start_in_level(
   dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
   dstrect.h = (FN_LEVELWINDOW_HEIGHT + 2) * pixelsize * FN_TILE_HEIGHT;
   /* TODO get this dynamically from the hero struct. */
-  srcrect.x = 50 * pixelsize * FN_TILE_WIDTH;
+  /*srcrect.x = 50 * pixelsize * FN_TILE_WIDTH; */
   /* TODO get this dynamically from the hero struct. */
-  srcrect.y = 0 * pixelsize * FN_TILE_HEIGHT;
+  /* srcrect.y = 0 * pixelsize * FN_TILE_HEIGHT; */
   srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
 
   tick = SDL_AddTimer(100, fn_game_timer_triggered, 0);
 
   fn_hero_t * hero = fn_level_get_hero(lv);
+
+  {
+    /* make the first frame appear */
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    event.user.code = fn_event_heromoved;
+    event.user.data1 = hero;
+    event.user.data2 = 0;
+    SDL_PushEvent(&event);
+  }
   
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
@@ -334,8 +344,7 @@ void fn_game_start_in_level(
                 int x = fn_hero_get_x(hero);
                 int y = fn_hero_get_y(hero);
                 srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
-                srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 1) * FN_HALFTILE_HEIGHT * pixelsize;
-                printf("hero moved to %d,%d.\n", y, x);
+                srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 2) * FN_HALFTILE_HEIGHT * pixelsize;
               }
               break;
             default:
