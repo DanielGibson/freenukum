@@ -370,6 +370,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        lv->solid[y][x] = 1;
         /* TODO */
         break;
       case 0x302b: /* rotating mill that can kill duke on touch */
