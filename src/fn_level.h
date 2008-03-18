@@ -37,15 +37,22 @@
 
 #include "fn_hero.h"
 #include "fn_animation.h"
-#include "fn_item.h"
 #include "fn_bot.h"
+
+/* --------------------------------------------------------------- */
+
+typedef struct fn_level_t fn_level_t;
+
+/* --------------------------------------------------------------- */
+
+#include "fn_item.h"
 
 /* --------------------------------------------------------------- */
 
 /**
  * A struct representing a level.
  */
-typedef struct fn_level_t {
+struct fn_level_t {
   /**
    * Stores our hero.
    */
@@ -106,7 +113,7 @@ typedef struct fn_level_t {
    */
   size_t animated_frames;
 
-} fn_level_t;
+};
 
 /* --------------------------------------------------------------- */
 

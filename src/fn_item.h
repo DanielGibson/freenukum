@@ -42,6 +42,10 @@ typedef struct fn_item_t fn_item_t;
 
 /* --------------------------------------------------------------- */
 
+#include "fn_level.h"
+
+/* --------------------------------------------------------------- */
+
 enum fn_item_type_e {
   FN_ITEM_TYPE_BOX_GREY_EMPTY,
   FN_ITEM_TYPE_BOX_GREY_BOOTS,
@@ -101,6 +105,11 @@ struct fn_item_t {
    * The y position (in half-tiles)
    */
   size_t y;
+
+  /**
+   * The level inside which the item is placed.
+   */
+  fn_level_t * level;
 };
 
 /* --------------------------------------------------------------- */
@@ -117,6 +126,7 @@ struct fn_item_t {
  */
 fn_item_t * fn_item_create(
     fn_item_type_e type,
+    fn_level_t * level,
     fn_tilecache_t * tilecache,
     Uint8 pixelsize,
     size_t x,
@@ -169,5 +179,19 @@ size_t fn_item_get_x(fn_item_t * item);
  * @return The x position.
  */
 size_t fn_item_get_y(fn_item_t * item);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Act one frame.
+ *
+ * @param  item  The item that acts.
+ *
+ * @return 0 if the item is removed, otherwise non-zero. In case
+ *         of 0, the caller has to remove the item using fn_item_free().
+ */
+int fn_item_act(fn_item_t * item);
+
+/* --------------------------------------------------------------- */
 
 #endif // FN_ITEM_H

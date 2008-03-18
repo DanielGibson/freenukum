@@ -31,6 +31,7 @@
 
 fn_item_t * fn_item_create(
     fn_item_type_e type,
+    fn_level_t * level,
     fn_tilecache_t * tilecache,
     Uint8 pixelsize,
     size_t x,
@@ -42,6 +43,7 @@ fn_item_t * fn_item_create(
   item->pixelsize = pixelsize;
   item->x = x;
   item->y = y;
+  item->level = level;
   return item;
 }
 
@@ -265,3 +267,18 @@ size_t fn_item_get_y(fn_item_t * item)
 {
   return item->y;
 }
+
+int fn_item_act(fn_item_t * item)
+{
+  switch(item->type) {
+    default:
+      /* TODO */
+      /* everything falls to the floor by default */
+      if (!fn_level_is_solid(item->level, (item->x)/2, (item->y + 2)/2)) {
+        item->y++;
+      }
+      break;
+  }
+  return 1;
+}
+

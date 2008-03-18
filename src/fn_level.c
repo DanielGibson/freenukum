@@ -108,7 +108,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_EMPTY, lv->tilecache,
+              FN_ITEM_TYPE_BOX_GREY_EMPTY, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3001: /* lift */
@@ -131,7 +131,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_BOOTS, lv->tilecache,
+              FN_ITEM_TYPE_BOX_GREY_BOOTS, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3007: /* rocket which gets started if shot
@@ -143,7 +143,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_CLAMPS, lv->tilecache,
+              FN_ITEM_TYPE_BOX_GREY_CLAMPS, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3009: /* fire burning to the right */
@@ -192,7 +192,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_GREY_GUN, lv->tilecache,
+            FN_ITEM_TYPE_BOX_GREY_GUN, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x3010: /* robot */
@@ -214,7 +214,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_BOMB, lv->tilecache,
+              FN_ITEM_TYPE_BOX_GREY_BOMB, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3013: /* bot consisting of several white-blue balls */
@@ -228,7 +228,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_RED_SODA, lv->tilecache,
+              FN_ITEM_TYPE_BOX_RED_SODA, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3016: /* crab bot crawling along wall left of him */
@@ -252,7 +252,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_RED_CHICKEN, lv->tilecache,
+              FN_ITEM_TYPE_BOX_RED_CHICKEN, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
@@ -272,7 +272,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
+            FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x301e: /* blue box with joystick inside */
@@ -280,7 +280,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv->tilecache,
+            FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x301f: /* blue box with disk inside */
@@ -288,7 +288,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv->tilecache,
+              FN_ITEM_TYPE_BOX_BLUE_FOOTBALL, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3020: /* grey box with glove inside */
@@ -296,7 +296,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
+            FN_ITEM_TYPE_BOX_GREY_GLOVE, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
@@ -313,7 +313,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv->tilecache,
+            FN_ITEM_TYPE_BOX_BLUE_BALLOON, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x3024: /* camera */
@@ -363,7 +363,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items,fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_GLOVE, lv->tilecache,
+              FN_ITEM_TYPE_BOX_GREY_GLOVE, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
@@ -400,7 +400,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_BLUE_FLAG, lv->tilecache,
+            FN_ITEM_TYPE_BOX_BLUE_FLAG, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x302e: /* blue box with radio inside */
@@ -408,7 +408,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_BOX_BLUE_RADIO, lv->tilecache,
+            FN_ITEM_TYPE_BOX_BLUE_RADIO, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         break;
       case 0x302f: /* beaming station */
@@ -434,7 +434,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_BOX_GREY_ACCESS_CARD,
+              FN_ITEM_TYPE_BOX_GREY_ACCESS_CARD, lv,
               lv->tilecache, lv->pixelsize, x * 2, y * 2));
         /* TODO */
         break;
@@ -673,7 +673,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_FOOTBALL, lv->tilecache,
+              FN_ITEM_TYPE_FOOTBALL, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -682,7 +682,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_CHICKEN_SINGLE, lv->tilecache,
+            FN_ITEM_TYPE_CHICKEN_SINGLE, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -691,7 +691,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_SODA, lv->tilecache,
+            FN_ITEM_TYPE_SODA, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -700,7 +700,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_DISK, lv->tilecache,
+              FN_ITEM_TYPE_DISK, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -709,7 +709,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-              FN_ITEM_TYPE_JOYSTICK, lv->tilecache,
+              FN_ITEM_TYPE_JOYSTICK, lv, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -718,7 +718,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_FLAG, lv->tilecache,
+            FN_ITEM_TYPE_FLAG, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -727,7 +727,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->items = g_list_append(lv->items, fn_item_create(
-            FN_ITEM_TYPE_RADIO, lv->tilecache,
+            FN_ITEM_TYPE_RADIO, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));
         /* TODO */
         break;
@@ -970,12 +970,33 @@ fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
 
 int fn_level_act(fn_level_t * lv) {
   GList * iter = NULL;
+  int res = 0;
+  int cleanup = 0;
 
   lv->animated_frames ++;
   lv->animated_frames %= 1;
   if (lv->animated_frames == 0) {
     /* do some action, not just animation */
     fn_hero_act(&(lv->hero), lv);
+  }
+
+  for (iter = g_list_first(lv->items);
+      iter != g_list_last(lv->items);
+      iter = g_list_next(iter)) {
+    fn_item_t * item = (fn_item_t *)iter->data;
+    res = fn_item_act(item);
+    if (res == 0) {
+      /* set the cleanup flag and free the memory */
+      cleanup = 1;
+      iter->data = 0;
+      fn_item_free(item);
+    }
+  }
+
+  if (cleanup) {
+    /* clean up the items that are finished */
+    cleanup = 0;
+    lv->items = g_list_remove_all(lv->items, 0);
   }
 
   for (iter = g_list_first(lv->animations);
