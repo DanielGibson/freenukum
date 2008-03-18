@@ -58,6 +58,8 @@ void fn_hero_init(
 
   hero->inventory = 0x00;
   hero->health = 8;
+
+  hero->score = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -367,3 +369,28 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
 
   return 0;
 }
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_add_score(fn_hero_t * hero, Uint64 score)
+{
+  SDL_Event event;
+
+  hero->score += score;
+
+  event.type = SDL_USEREVENT;
+  event.user.code = fn_event_heroscored;
+  event.user.data1 = hero;
+  event.user.data2 = 0;
+  SDL_PushEvent(&event);
+}
+
+/* --------------------------------------------------------------- */
+
+Uint64 fn_hero_get_score(fn_hero_t * hero)
+{
+  return hero->score;
+}
+
+/* --------------------------------------------------------------- */
+

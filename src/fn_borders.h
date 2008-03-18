@@ -54,7 +54,7 @@ void fn_borders_blit_score(
     SDL_Surface * screen,
     fn_tilecache_t * tc,
     Uint8 pixelsize,
-    Uint32 score);
+    Uint64 score);
 
 /* --------------------------------------------------------------- */
 

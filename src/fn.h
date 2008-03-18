@@ -108,6 +108,7 @@ typedef enum fn_horizontal_direction_e {
 typedef enum fn_event_e {
   fn_event_timer,
   fn_event_heromoved,
+  fn_event_heroscored,
 } fn_event_e;
 
 /* --------------------------------------------------------------- */

@@ -44,6 +44,7 @@ fn_item_t * fn_item_create(
   item->x = x;
   item->y = y;
   item->level = level;
+  item->todelete = 0;
   return item;
 }
 
@@ -244,17 +245,55 @@ void fn_item_free(fn_item_t * item) {
   free(item);
 }
 
-void fn_item_hero_touch(
+void fn_item_hero_check_touch(
     fn_item_t * item,
     fn_hero_t * hero)
 {
-  switch(item->type) {
-    case FN_ITEM_TYPE_FOOTBALL:
-      /* TODO */
-      break;
-    default:
-      /* TODO */
-      break;
+  int hero_x = fn_hero_get_x(hero);
+  int hero_y = fn_hero_get_y(hero);
+  int item_x = item->x;
+  int item_y = item->y;
+  int touch = 0;
+
+  if (hero_x > item_x - 2 && hero->x < item_x + 2) {
+    /* the same column */
+    if (hero_y > item_y - 2 && hero->y < item_y + 4) {
+      /* touch */
+      touch = 1;
+    }
+  }
+
+  if (touch) {
+    switch(item->type) {
+      case FN_ITEM_TYPE_FOOTBALL:
+        fn_hero_add_score(hero, 100);
+        item->todelete = 1;
+        /* TODO */
+        break;
+      case FN_ITEM_TYPE_JOYSTICK:
+        fn_hero_add_score(hero, 2000);
+        item->todelete = 1;
+        break;
+      case FN_ITEM_TYPE_RADIO:
+        /* TODO find out how this calculates. there seems to
+         * be some ramdom element in the score*/
+        fn_hero_add_score(hero, 100);
+        item->todelete = 1;
+        break;
+      case FN_ITEM_TYPE_FLAG:
+        /* TODO find out how this calculates. there seems to
+         * be some ramdom element in the score*/
+        fn_hero_add_score(hero, 100);
+        item->todelete = 1;
+        break;
+      case FN_ITEM_TYPE_DISK:
+        fn_hero_add_score(hero, 5000);
+        item->todelete = 1;
+        break;
+      default:
+        /* TODO */
+        break;
+    }
   }
 }
 
@@ -279,6 +318,10 @@ int fn_item_act(fn_item_t * item)
       }
       break;
   }
-  return 1;
+  if (item->todelete) {
+    return 0;
+  } else {
+    return 1;
+  }
 }
 

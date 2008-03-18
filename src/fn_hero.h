@@ -118,6 +118,11 @@ typedef struct fn_hero_t {
    * The y position of our hero (in half-tiles).
    */
   Uint16 y;
+
+  /**
+   * The score of the hero.
+   */
+  Uint64 score;
 } fn_hero_t;
 
 /* --------------------------------------------------------------- */
@@ -266,6 +271,27 @@ Uint16 fn_hero_get_y(
  */
 int fn_hero_would_collide(fn_hero_t * hero, void * level,
     int halftile_x, int halftile_y);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Add score to our hero.
+ *
+ * @param  hero   The hero.
+ * @param  score  The score to add.
+ */
+void fn_hero_add_score(fn_hero_t * hero, Uint64 score);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the current score of the hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return The current score of the hero.
+ */
+Uint64 fn_hero_get_score(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

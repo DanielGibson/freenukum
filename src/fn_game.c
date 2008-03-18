@@ -347,6 +347,14 @@ void fn_game_start_in_level(
               srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
               srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 2) * FN_HALFTILE_HEIGHT * pixelsize;
               break;
+            case fn_event_heroscored:
+              fn_borders_blit_score(
+                  screen,
+                  tilecache,
+                  pixelsize,
+                  fn_hero_get_score(hero)
+                  );
+              break;
             default:
               /* don't do anything on other events. */
               break;

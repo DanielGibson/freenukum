@@ -110,6 +110,11 @@ struct fn_item_t {
    * The level inside which the item is placed.
    */
   fn_level_t * level;
+
+  /**
+   * A flag that is set true if the item should be deleted.
+   */
+  int todelete;
 };
 
 /* --------------------------------------------------------------- */
@@ -156,9 +161,12 @@ void fn_item_blit(
 /* --------------------------------------------------------------- */
 
 /**
- * Hero touches the item.
+ * Calculate if the hero touches the item and take the necessary steps.
+ *
+ * @param  item  The item.
+ * @param  hero  The hero.
  */
-void fn_item_hero_touch(
+void fn_item_hero_check_touch(
     fn_item_t * item,
     fn_hero_t * hero);
 

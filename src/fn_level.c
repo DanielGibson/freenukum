@@ -984,6 +984,9 @@ int fn_level_act(fn_level_t * lv) {
       iter != g_list_last(lv->items);
       iter = g_list_next(iter)) {
     fn_item_t * item = (fn_item_t *)iter->data;
+
+    fn_item_hero_check_touch(item, &(lv->hero));
+
     res = fn_item_act(item);
     if (res == 0) {
       /* set the cleanup flag and free the memory */
