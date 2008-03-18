@@ -23,3 +23,16 @@ src/*.gcno
 src/fn_test_hero
 src/fn_test_effect
 src/fn_test_level_loader
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+INSTALL
+depcomp
+install-sh
+missing
+src/.deps
+src/SConstruct

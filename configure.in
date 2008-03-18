@@ -1,0 +1,15 @@
+AC_INIT(Freenukum, 0.1, http://launchpad.net/freenukum/)
+AM_INIT_AUTOMAKE(freenukum, 0.1)
+
+AC_PROG_CC
+
+AC_CONFIG_SRCDIR(src)
+
+AC_PATH_PROG(SDLCONFIG, sdl-config, yes)
+
+PKG_CHECK_MODULES(GLIB, glib-2.0)
+
+CFLAGS="$CFLAGS $GLIB_CFLAGS "`sdl-config --cflags`
+LDFLAGS="$LDFLAGS $GLIB_LIBS "`sdl-config --libs`
+
+AC_OUTPUT([Makefile src/Makefile])
