@@ -163,7 +163,6 @@ fn_level_t * fn_level_load(int fd,
               FN_ACTOR_LAVA_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
-
       case 0x3000: /* grey box, empty */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
@@ -340,6 +339,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BOX_BLUE_JOYSTICK,
+              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+        break;
         lv->items = g_list_append(lv->items, fn_item_create(
             FN_ITEM_TYPE_BOX_BLUE_JOYSTICK, lv, lv->tilecache,
             lv->pixelsize, x*2, y*2));

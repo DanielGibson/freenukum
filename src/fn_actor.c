@@ -87,14 +87,19 @@ typedef enum fn_actor_function_type_e {
  * one part wide and has a fixed number of frames that occur
  * one after each other and are lined up in a row inside
  * the tilecache.
- *
- * @param  tile           The tile number for the tilecache.
- * @param  current_frame  The number of the current frame.
- * @param  num_frames     The complete number of frames for the animation.
  */
 typedef struct fn_actor_simpleanimation_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
   Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
   Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
   Uint8 num_frames;
 } fn_actor_simpleanimation_data_t;
 
@@ -240,6 +245,117 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
 }
 
 /* --------------------------------------------------------------- */
+
+/**
+ * The item struct.
+ * Items are elements in the game which fall to the floor.
+ * They are one part high, one part wide and
+ * have either a single frame or a fixed number
+ * of frames that appear in order and are lined up in a row
+ * inside the tilecache.
+ */
+typedef struct fn_actor_item_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
+  Uint8 num_frames;
+  /**
+   * Are we standing on the ground? If no, this is zero, otherwise 1.
+   */
+  Uint8 standing_on_ground;
+} fn_actor_item_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create an item.
+ *
+ * @param  actor The item actor.
+ */
+void fn_actor_function_item_create(fn_actor_t * actor)
+{
+  fn_actor_item_data_t * data = malloc(
+      sizeof(fn_actor_item_data_t));
+
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  switch(actor->type) {
+    case FN_ACTOR_BOX_BLUE_JOYSTICK:
+      data->tile = 0x0304;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    default:
+      /* we got a type which should not be an item. */
+      printf(__FILE__ ":%d: warning: item #%d"
+          " added which is not an item\n",
+          __LINE__, actor->type);
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete an item.
+ *
+ * @param  actor  The item actor.
+ */
+void fn_actor_function_item_free(fn_actor_t * actor)
+{
+  fn_actor_item_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Action for item.
+ *
+ * @param  actor  The item actor.
+ */
+void fn_actor_function_item_act(fn_actor_t * actor)
+{
+  fn_actor_item_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+  /* TODO calculate that the item is falling to the floor. */
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the item.
+ *
+ * @param  actor  The animation actor.
+ */
+void fn_actor_function_item_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_item_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->w * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
 
 typedef void (* fn_actor_function_t)(fn_actor_t *);
 
@@ -672,14 +788,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_JOYSTICK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_JOYSTICK] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
