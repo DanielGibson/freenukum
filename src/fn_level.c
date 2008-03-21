@@ -85,48 +85,83 @@ fn_level_t * fn_level_load(int fd,
     }
 
     switch(tilenr) {
+      case 0x0080: /* written text on black screen */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0100: /* blue high voltage flash */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0180: /* red flash light */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_RED_FLASHLIGHT_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0200: /* blue high voltage flash */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0280: /* key panel on the wall */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEYPANEL_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0300: /* red rotation light */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0380: /* flashing up arrow */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_UPARROW_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
       case 0x0400: /* background blinking blue box */
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
-                ));
-          break;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
       case 0x0420: /* background blinking blue box */
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
-                ));
-          break;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
       case 0x0440: /* background blinking blue box */
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
-                ));
-          break;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
       case 0x0460: /* background blinking blue box */
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_BLUE_LIGHT_BACKGROUND4,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
-                ));
-          break;
-        /* add the animation object */
-        {
-          SDL_Surface * tile[4];
-          int i = 0;
-          for (i = 0; i < 4; i++) {
-            tile[i] = fn_tilecache_get_tile(lv->tilecache, tilenr / 0x20 + i);
-          }
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                4, /* number of frames */
-                tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_BLUE_LIGHT_BACKGROUND4,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0480: /* background green poison liquid */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_GREEN_POISON_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
+      case 0x0500: /* background lava */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_LAVA_BACKGROUND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
 
       case 0x3000: /* grey box, empty */

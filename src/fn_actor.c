@@ -114,23 +114,68 @@ void fn_actor_function_simpleanimation_create(fn_actor_t * actor)
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
   switch(actor->type) {
+    case FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND:
+      data->tile = 0x0004;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND:
+      data->tile = 0x0008;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_RED_FLASHLIGHT_BACKGROUND:
+      data->tile = 0x000C;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND:
+      data->tile = 0x0010;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_KEYPANEL_BACKGROUND:
+      data->tile = 0x0014;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND:
+      data->tile = 0x0018;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_UPARROW_BACKGROUND:
+      data->tile = 0x001C;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
     case FN_ACTOR_BLUE_LIGHT_BACKGROUND1:
-      data->tile = 0x20;
+      data->tile = 0x0020;
       data->current_frame = 0;
       data->num_frames = 4;
       break;
     case FN_ACTOR_BLUE_LIGHT_BACKGROUND2:
-      data->tile = 0x21;
+      data->tile = 0x0021;
       data->current_frame = 0;
       data->num_frames = 4;
       break;
     case FN_ACTOR_BLUE_LIGHT_BACKGROUND3:
-      data->tile = 0x22;
+      data->tile = 0x0022;
       data->current_frame = 0;
       data->num_frames = 4;
       break;
     case FN_ACTOR_BLUE_LIGHT_BACKGROUND4:
-      data->tile = 0x23;
+      data->tile = 0x0023;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_GREEN_POISON_BACKGROUND:
+      data->tile = 0x0028;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
+    case FN_ACTOR_LAVA_BACKGROUND:
+      data->tile = 0x002C;
       data->current_frame = 0;
       data->num_frames = 4;
       break;
@@ -1049,6 +1094,132 @@ void
       fn_actor_function_simpleanimation_blit,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND4] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_RED_FLASHLIGHT_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_KEYPANEL_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_UPARROW_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_GREEN_POISON_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+  },
+  [FN_ACTOR_LAVA_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_simpleanimation_create,
     [FN_ACTOR_FUNCTION_FREE]                = 
