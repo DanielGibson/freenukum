@@ -27,13 +27,14 @@
  *******************************************************************/
 
 #include "fn_level.h"
+#include "fn_actor.h"
 #include "fn_hero.h"
 #include "fn_object.h"
 
 /* --------------------------------------------------------------- */
 
 fn_level_t * fn_level_load(int fd,
-    size_t pixelsize,
+    Uint8 pixelsize,
     fn_tilecache_t * tilecache)
 {
   size_t i = 0;
@@ -45,6 +46,7 @@ fn_level_t * fn_level_load(int fd,
 
   lv->animated_frames = 0;
 
+  lv->actors = NULL;
   lv->bots = NULL;
   lv->animations = NULL;
   lv->items = NULL;
@@ -84,9 +86,33 @@ fn_level_t * fn_level_load(int fd,
 
     switch(tilenr) {
       case 0x0400: /* background blinking blue box */
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
+                ));
+          break;
       case 0x0420: /* background blinking blue box */
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
+                ));
+          break;
       case 0x0440: /* background blinking blue box */
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
+                ));
+          break;
       case 0x0460: /* background blinking blue box */
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_BLUE_LIGHT_BACKGROUND4,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT
+                ));
+          break;
         /* add the animation object */
         {
           SDL_Surface * tile[4];
@@ -907,6 +933,20 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
+  /* blit the actors */
+  for (iter = g_list_first(lv->actors);
+      iter != g_list_last(lv->actors);
+      iter = g_list_next(iter)) {
+    fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+    Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+    Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      fn_actor_blit(actor);
+    }
+  }
+
   /* blit the animation objects */
   for (iter = g_list_first(lv->animations);
       iter != g_list_last(lv->animations);
@@ -956,6 +996,27 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+SDL_Surface * fn_level_get_surface(fn_level_t * lv)
+{
+  return lv->surface;
+}
+
+/* --------------------------------------------------------------- */
+
+fn_tilecache_t * fn_level_get_tilecache(fn_level_t * lv)
+{
+  return lv->tilecache;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_level_get_pixelsize(fn_level_t * lv)
+{
+  return lv->pixelsize;
+}
+
+/* --------------------------------------------------------------- */
+
 int fn_level_keep_on_playing(fn_level_t * lv) {
   return lv->do_play;
 }
@@ -978,6 +1039,26 @@ int fn_level_act(fn_level_t * lv) {
   if (lv->animated_frames == 0) {
     /* do some action, not just animation */
     fn_hero_act(&(lv->hero), lv);
+  }
+
+  for (iter = g_list_first(lv->actors);
+      iter != g_list_last(lv->actors);
+      iter = g_list_next(iter)) {
+    fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+    res = fn_actor_act(actor);
+    if (res == 0) {
+      /* set the cleanup flag and free the memory */
+      cleanup = 1;
+      iter->data = 0;
+      fn_actor_free(actor); actor = NULL;
+    }
+  }
+
+  if (cleanup) {
+    /* clean up the actors that are finished */
+    cleanup = 0;
+    lv->actors = g_list_remove_all(lv->actors, 0);
   }
 
   for (iter = g_list_first(lv->items);

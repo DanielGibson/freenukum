@@ -45,7 +45,13 @@ typedef struct fn_level_t fn_level_t;
 
 /* --------------------------------------------------------------- */
 
+/*
+ * includes below use fn_level_t this is why they are not
+ * at the beginning of this file because fn_level_t is
+ * not yet defined there.
+ */
 #include "fn_item.h"
+#include "fn_actor.h"
 
 /* --------------------------------------------------------------- */
 
@@ -81,7 +87,7 @@ struct fn_level_t {
   /**
    * The pixel size.
    */
-  size_t pixelsize;
+  Uint8 pixelsize;
   
   /**
    * The tile cache.
@@ -89,17 +95,25 @@ struct fn_level_t {
   fn_tilecache_t * tilecache;
 
   /**
+   * The actors inside the level.
+   */
+  GList * actors;
+
+  /**
    * The bots
+   * @TODO remove this (replaced by actors).
    */
   GList * bots;
 
   /**
    * The items
+   * @TODO remove this (replaced by actors).
    */
   GList * items;
 
   /**
    * The animations
+   * @TODO remove this (replaced by actors).
    */
   GList * animations;
 
@@ -129,7 +143,7 @@ struct fn_level_t {
  *          to find out what error occured.
  */
 fn_level_t * fn_level_load(int fd,
-    size_t pixelsize,
+    Uint8 pixelsize,
     fn_tilecache_t * tilecache);
 
 /* --------------------------------------------------------------- */
@@ -194,6 +208,39 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
     SDL_Rect * sourcerect);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the SDL surface to which the level is blitted.
+ *
+ * @param  lv   The level.
+ *
+ * @return The surface to which the level is blitted.
+ */
+SDL_Surface * fn_level_get_surface(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the tilecache for the level.
+ *
+ * @param  lv  The level.
+ *
+ * @return The tilecache.
+ */
+fn_tilecache_t * fn_level_get_tilecache(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the pixel size of the level.
+ *
+ * @param  lv  The level.
+ *
+ * @return The pixel size.
+ */
+Uint8 fn_level_get_pixelsize(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 
