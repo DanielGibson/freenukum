@@ -289,8 +289,18 @@ void fn_actor_function_item_create(fn_actor_t * actor)
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
   switch(actor->type) {
+    case FN_ACTOR_BOX_BLUE_FOOTBALL:
     case FN_ACTOR_BOX_BLUE_JOYSTICK:
+    case FN_ACTOR_BOX_BLUE_DISK:
+    case FN_ACTOR_BOX_BLUE_BALLOON:
+    case FN_ACTOR_BOX_BLUE_FLAG:
+    case FN_ACTOR_BOX_BLUE_RADIO:
       data->tile = 0x0304;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_BOX_GREY_EMPTY:
+      data->tile = 0x0250;
       data->current_frame = 0;
       data->num_frames = 1;
       break;
@@ -768,6 +778,20 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_FOOTBALL] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+  },
+  [FN_ACTOR_FOOTBALL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
@@ -777,7 +801,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
-  [FN_ACTOR_FOOTBALL] = {
+  [FN_ACTOR_FLAG] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
@@ -812,14 +836,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_DISK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_DISK] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -832,14 +860,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_BALLOON] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_BALLOON] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -892,14 +924,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_FLAG] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_BLUE_FLAG] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -912,14 +948,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOX_BLUE_RADIO] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_RADIO] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
