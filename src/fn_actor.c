@@ -703,6 +703,15 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+void fn_actor_function_key_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_WIDTH;
+}
+
+
+/* --------------------------------------------------------------- */
+
 /**
  * The hero touches a key actor.
  *
@@ -1611,7 +1620,8 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_RED] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_key_create,
     [FN_ACTOR_FUNCTION_FREE]                = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_key_touch_start,
@@ -1643,7 +1653,8 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_BLUE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_key_create,
     [FN_ACTOR_FUNCTION_FREE]                = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_key_touch_start,
@@ -1675,7 +1686,8 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_PINK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_key_create,
     [FN_ACTOR_FUNCTION_FREE]                = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_key_touch_start,
@@ -1707,7 +1719,8 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_GREEN] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_key_create,
     [FN_ACTOR_FUNCTION_FREE]                = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_key_touch_start,
@@ -2277,25 +2290,25 @@ void fn_actor_free(fn_actor_t * actor)
 int fn_actor_touches_hero(fn_actor_t * actor)
 {
   Uint16 hero_x =
-    fn_hero_get_x(fn_level_get_hero(actor->level)) * FN_HALFTILE_WIDTH;
+    (fn_hero_get_x(fn_level_get_hero(actor->level))) * FN_HALFTILE_WIDTH;
   Uint16 hero_y =
-    fn_hero_get_y(fn_level_get_hero(actor->level)) * FN_HALFTILE_HEIGHT;
+    (fn_hero_get_y(fn_level_get_hero(actor->level))-2)* FN_HALFTILE_HEIGHT;
   Uint16 hero_w = FN_TILE_WIDTH;
-  Uint16 hero_h = FN_TILE_WIDTH;
+  Uint16 hero_h = FN_TILE_HEIGHT * 2;
 
-  if (hero_x + hero_w <= (actor->x)) {
+  if ((hero_x + hero_w) <= (actor->x)) {
     /* hero is left of actor */
     return 0;
   }
-  if (hero_x >= (actor->x + actor->w)) {
+  if ((hero_x) >= (actor->x + actor->w)) {
     /* hero is right of actor */
     return 0;
   }
-  if (hero_y + hero_h <= (actor->y)) {
+  if ((hero_y + hero_h) <= (actor->y)) {
     /* hero is above actor */
     return 0;
   }
-  if (hero_y >= (actor->y + actor->h)) {
+  if ((hero_y) >= (actor->y + actor->h)) {
     /* hero is below actor */
     return 0;
   }
