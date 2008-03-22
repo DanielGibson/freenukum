@@ -334,16 +334,7 @@ Uint8 fn_hero_get_inventory(fn_hero_t * hero)
 /* --------------------------------------------------------------- */
 void fn_hero_improve_health(fn_hero_t * hero, Uint8 improvement)
 {
-  SDL_Event event;
-  hero->health += improvement;
-  if (hero->health > 8) {
-    hero->health = 8;
-  }
-  event.type = SDL_USEREVENT;
-  event.user.code = fn_event_hero_health_changed;
-  event.user.data1 = hero;
-  event.user.data2 = 0;
-  SDL_PushEvent(&event);
+  fn_hero_set_health(hero, hero->health + improvement);
 }
 
 /* --------------------------------------------------------------- */
@@ -445,3 +436,15 @@ Uint64 fn_hero_get_score(fn_hero_t * hero)
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_increase_hurting_objects(fn_hero_t * hero)
+{
+  fn_hero_set_health(hero, hero->health - 1);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_decrease_hurting_objects(fn_hero_t * hero)
+{
+}
+
+/* --------------------------------------------------------------- */

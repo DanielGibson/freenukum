@@ -708,6 +708,11 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+/**
+ * Key actor creation function.
+ *
+ * @param  actor  The key actor.
+ */
 void fn_actor_function_key_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
@@ -784,6 +789,84 @@ void fn_actor_function_key_blit(fn_actor_t * actor)
     default:
       printf(__FILE__ ":%d: warning: key #%d"
           " tried to blit which is not a key\n",
+          __LINE__, actor->type);
+      return;
+      break;
+  }
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * Spikes actor creation function.
+ *
+ * @param  actor  The spikes actor.
+ */
+void fn_actor_function_spikes_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_WIDTH;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Hero touches spikes actor.
+ *
+ * @param  actor  The spikes actor.
+ */
+void fn_actor_function_spikes_touch_start(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_increase_hurting_objects(hero);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Hero stops to touch spikes actor.
+ *
+ * @param  actor  The spikes actor.
+ */
+void fn_actor_function_spikes_touch_end(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_decrease_hurting_objects(hero);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the spikes.
+ *
+ * @param  actor  The spikes actor.
+ */
+void fn_actor_function_spikes_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = NULL;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  switch(actor->type) {
+    case FN_ACTOR_SPIKES_UP:
+      tile = fn_tilecache_get_tile(tc, OBJ_SPIKES_UP);
+      break;
+    case FN_ACTOR_SPIKES_DOWN:
+      tile = fn_tilecache_get_tile(tc, OBJ_SPIKES_DOWN);
+      break;
+    case FN_ACTOR_SPIKE:
+      tile = fn_tilecache_get_tile(tc, OBJ_SPIKE);
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: spike #%d"
+          " tried to blit which is not a spike\n",
           __LINE__, actor->type);
       return;
       break;
@@ -1781,6 +1864,48 @@ void
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+  },
+  [FN_ACTOR_SPIKES_UP] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_spikes_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_spikes_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_spikes_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_spikes_blit,
+  },
+  [FN_ACTOR_SPIKES_DOWN] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_spikes_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_spikes_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_spikes_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_spikes_blit,
+  },
+  [FN_ACTOR_SPIKE] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_spikes_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_spikes_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_spikes_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_spikes_blit,
   },
   [FN_ACTOR_SCORE_100] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

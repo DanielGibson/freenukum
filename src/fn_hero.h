@@ -327,4 +327,24 @@ Uint64 fn_hero_get_score(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Increase the number of objects which can currently hurt the hero
+ * because he touches them.
+ *
+ * @param  hero  The hero.
+ */
+void fn_hero_increase_hurting_objects(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Decrease the number of objects which can currently hurt the hero
+ * because he touches them.
+ *
+ * @param  hero  The hero.
+ */
+void fn_hero_decrease_hurting_objects(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */
