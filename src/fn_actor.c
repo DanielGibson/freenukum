@@ -484,7 +484,6 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       /* do nothing about other items */
       break;
   }
-  printf("hero starts touching.\n");
 }
 
 /* --------------------------------------------------------------- */
@@ -495,8 +494,7 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
  * @param  actor  The item actor.
  */
 void fn_actor_function_item_touch_end(fn_actor_t * actor) {
-  /* TODO */
-  printf("hero stops touching.\n");
+  /* Nothing to do here */
 }
 
 /* --------------------------------------------------------------- */
