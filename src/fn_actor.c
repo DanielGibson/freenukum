@@ -381,6 +381,66 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_actor_item_data_t * data = (fn_actor_item_data_t *)actor->data;
   switch(actor->type) {
+    case FN_ACTOR_LETTER_D:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the letter d"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_LETTER_U:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the letter u"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_LETTER_K:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the letter k"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_LETTER_E:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the letter e"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_FULL_LIFE:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the full life"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_GUN:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the gun"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_ACCESS_CARD:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the access card"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_GLOVE:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the glove"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_BOOTS:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the boots"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
+    case FN_ACTOR_CLAMPS:
+      /* TODO */
+      printf(__FILE__ ":%d: warning: the clamps"
+          " cannot be fetched by the hero yet\n",
+          __LINE__);
+      break;
     case FN_ACTOR_FOOTBALL:
       fn_hero_add_score(hero, 100);
       actor->is_alive = 0;
