@@ -988,7 +988,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   /* blit the actors */
   for (iter = g_list_first(lv->actors);
-      iter != g_list_last(lv->actors);
+      iter != NULL;
       iter = g_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
@@ -1002,7 +1002,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   /* blit the animation objects */
   for (iter = g_list_first(lv->animations);
-      iter != g_list_last(lv->animations);
+      iter != NULL;
       iter = g_list_next(iter)) {
     fn_animation_t * animation = (fn_animation_t *)iter->data;
     Uint16 x = fn_animation_get_x(animation);
@@ -1014,7 +1014,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   /* blit the bots */
   for (iter = g_list_first(lv->bots);
-      iter != g_list_last(lv->bots);
+      iter != NULL;
       iter = g_list_next(iter)) {
     fn_bot_t * bot = (fn_bot_t *)iter->data;
     int x = fn_bot_get_x(bot) / 2;
@@ -1083,7 +1083,7 @@ int fn_level_act(fn_level_t * lv) {
   }
 
   for (iter = g_list_first(lv->actors);
-      iter != g_list_last(lv->actors);
+      iter != NULL;
       iter = g_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
@@ -1103,7 +1103,7 @@ int fn_level_act(fn_level_t * lv) {
   }
 
   for (iter = g_list_first(lv->animations);
-      iter != g_list_last(lv->animations);
+      iter != NULL;
       iter = g_list_next(iter)) {
     fn_animation_t * anim = (fn_animation_t *)iter->data;
     fn_animation_act(anim);
@@ -1114,6 +1114,18 @@ int fn_level_act(fn_level_t * lv) {
 
   return 1;
 };
+
+/* --------------------------------------------------------------- */
+
+fn_actor_t * fn_level_add_actor(fn_level_t * lv,
+    fn_actor_type_e type,
+    Uint16 x,
+    Uint16 y)
+{
+  fn_actor_t * actor = fn_actor_create(lv, type, x, y);
+  lv->actors = g_list_append(lv->actors, actor);
+  return actor;
+}
 
 /* --------------------------------------------------------------- */
 

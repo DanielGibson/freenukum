@@ -241,7 +241,7 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
   destrect.w = actor->w * pixelsize;
-  destrect.h = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
   SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
@@ -443,10 +443,20 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       break;
     case FN_ACTOR_FOOTBALL:
       fn_hero_add_score(hero, 100);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_100, actor->x, actor->y);
+      actor->is_alive = 0;
+      break;
+    case FN_ACTOR_DISK:
+      fn_hero_add_score(hero, 5000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_5000, actor->x, actor->y);
       actor->is_alive = 0;
       break;
     case FN_ACTOR_JOYSTICK:
       fn_hero_add_score(hero, 2000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_2000, actor->x, actor->y);
       actor->is_alive = 0;
       break;
     case FN_ACTOR_RADIO:
@@ -454,21 +464,20 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       switch(data->current_frame) {
         case 0:
           fn_hero_add_score(hero, 100);
+          fn_level_add_actor(actor->level,
+              FN_ACTOR_SCORE_100, actor->x, actor->y);
           break;
         case 1:
           fn_hero_add_score(hero, 2000);
+          fn_level_add_actor(actor->level,
+              FN_ACTOR_SCORE_2000, actor->x, actor->y);
           break;
         case 2:
           fn_hero_add_score(hero, 5000);
+          fn_level_add_actor(actor->level,
+              FN_ACTOR_SCORE_5000, actor->x, actor->y);
           break;
       }
-      actor->is_alive = 0;
-      break;
-      fn_hero_add_score(hero, 100);
-      actor->is_alive = 0;
-      break;
-    case FN_ACTOR_DISK:
-      fn_hero_add_score(hero, 5000);
       actor->is_alive = 0;
       break;
     default:
@@ -528,12 +537,173 @@ void fn_actor_function_item_blit(fn_actor_t * actor)
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
   destrect.w = actor->w * pixelsize;
-  destrect.h = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
   SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
 
+/**
+ * The score struct.
+ * Scores are elements which get shown when the hero has fetched
+ * an item for which he gets points. The score element slowly
+ * flys up until it disappears by itself. Scores are animated by
+ * two frames which appear alternating.
+ */
+typedef struct fn_actor_score_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The counter which defines for how many steps the score
+   * will fly up until it disappears. Gets reduced every
+   * time the act function is called.
+   */
+  Uint8 countdown;
+} fn_actor_score_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a score.
+ *
+ * @param  actor  The score actor.
+ */
+void fn_actor_function_score_create(fn_actor_t * actor)
+{
+  fn_actor_score_data_t * data = malloc(
+      sizeof(fn_actor_score_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->countdown = 40;
+
+  switch(actor->type) {
+    case FN_ACTOR_SCORE_100:
+      data->tile = NUMB_100;
+      break;
+    case FN_ACTOR_SCORE_200:
+      data->tile = NUMB_200;
+      break;
+    case FN_ACTOR_SCORE_500:
+      data->tile = NUMB_500;
+      break;
+    case FN_ACTOR_SCORE_1000:
+      data->tile = NUMB_1000;
+      break;
+    case FN_ACTOR_SCORE_2000:
+      data->tile = NUMB_2000;
+      break;
+    case FN_ACTOR_SCORE_5000:
+      data->tile = NUMB_5000;
+      break;
+    case FN_ACTOR_SCORE_10000:
+      data->tile = NUMB_10000;
+      break;
+    case FN_ACTOR_SCORE_BONUS_1_LEFT:
+      data->tile = NUMB_BONUS_1_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_1_RIGHT:
+      data->tile = NUMB_BONUS_1_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_2_LEFT:
+      data->tile = NUMB_BONUS_2_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_2_RIGHT:
+      data->tile = NUMB_BONUS_2_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_3_LEFT:
+      data->tile = NUMB_BONUS_3_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_3_RIGHT:
+      data->tile = NUMB_BONUS_3_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_4_LEFT:
+      data->tile = NUMB_BONUS_4_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_4_RIGHT:
+      data->tile = NUMB_BONUS_4_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_5_LEFT:
+      data->tile = NUMB_BONUS_5_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_5_RIGHT:
+      data->tile = NUMB_BONUS_5_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_6_LEFT:
+      data->tile = NUMB_BONUS_6_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_6_RIGHT:
+      data->tile = NUMB_BONUS_6_RIGHT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_7_LEFT:
+      data->tile = NUMB_BONUS_7_LEFT;
+      break;
+    case FN_ACTOR_SCORE_BONUS_7_RIGHT:
+      data->tile = NUMB_BONUS_7_RIGHT;
+      break;
+    default:
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete a score.
+ *
+ * @param  actor  The score actor.
+ */
+void fn_actor_function_score_free(fn_actor_t * actor)
+{
+  fn_actor_score_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Action for score.
+ * 
+ * @param  actor  The score actor.
+ */
+void fn_actor_function_score_act(fn_actor_t * actor)
+{
+  fn_actor_score_data_t * data = actor->data;
+  data->countdown--;
+  actor->y--;
+  if (data->countdown == 0 || actor->y == 0) {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the score.
+ *
+ * @param  actor  The score actor.
+ */
+void fn_actor_function_score_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_score_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->countdown % 2));
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
 
 typedef void (* fn_actor_function_t)(fn_actor_t *);
 
@@ -1504,6 +1674,300 @@ void
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+  },
+  [FN_ACTOR_SCORE_100] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_200] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_500] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_1000] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_2000] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_5000] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_10000] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_1_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_1_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_2_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_2_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_3_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_3_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_4_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_4_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_5_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_5_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_6_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_6_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_7_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
+  },
+  [FN_ACTOR_SCORE_BONUS_7_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_score_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_score_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_score_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_score_blit,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND1] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

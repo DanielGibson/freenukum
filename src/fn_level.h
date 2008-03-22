@@ -276,4 +276,21 @@ int fn_level_act(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Add an actor to the level.
+ *
+ * @param  lv    The level to which the actor gets added.
+ * @param  type  The type of actor.
+ * @param  x     The x coordinate of the top left corner.
+ * @param  y     The y coordinate of the top left corner.
+ *
+ * @return  The newly created actor.
+ */
+fn_actor_t * fn_level_add_actor(fn_level_t * lv,
+    fn_actor_type_e type,
+    Uint16 x,
+    Uint16 y);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */
