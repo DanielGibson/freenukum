@@ -229,6 +229,33 @@ Uint8 fn_hero_get_inventory(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Improve the life of our hero by a certain amount of units.
+ *
+ * @param  hero         The hero whose life should be improved.
+ * @param  improvement  The number of units by which to improve.
+ */
+void fn_hero_improve_health(fn_hero_t * hero, Uint8 improvement);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the health of our hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return  The health of the hero.
+ */
+Uint8 fn_hero_get_health(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the health of the hero.
+ *
+ * @param  hero    The hero.
+ * @param  health  The health to set for the hero.
+ */
 void fn_hero_set_health(
     fn_hero_t * hero,
     Uint8 health);

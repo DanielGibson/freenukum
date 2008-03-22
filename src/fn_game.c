@@ -364,6 +364,12 @@ void fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_inventory(hero));
+            case fn_event_hero_health_changed:
+              fn_borders_blit_life(
+                  screen,
+                  tilecache,
+                  pixelsize,
+                  fn_hero_get_health(hero));
             default:
               /* don't do anything on other events. */
               break;

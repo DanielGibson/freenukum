@@ -456,6 +456,11 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         {
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_SPIKES_DOWN,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+          break;
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKE);
           lv->animations = g_list_append(lv->animations,
@@ -844,6 +849,11 @@ fn_level_t * fn_level_load(int fd,
         }
         /* add the animation object */
         {
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_SPIKES_UP,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+          break;
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKES_UP);
           lv->animations = g_list_append(lv->animations,
@@ -861,6 +871,11 @@ fn_level_t * fn_level_load(int fd,
         }
         /* add the animation object */
         {
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_SPIKES_DOWN,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+          break;
           SDL_Surface * tile = fn_tilecache_get_tile(
               lv->tilecache, OBJ_SPIKES_DOWN);
           lv->animations = g_list_append(lv->animations,

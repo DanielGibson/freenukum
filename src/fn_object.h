@@ -55,7 +55,7 @@
 #define ANIM_BOMB                 (ANIM_START +    114)
 #define ANIM_RABBIT1              (ANIM_START +    116)
 #define ANIM_BALLWORM             (ANIM_START +    122)
-#define ANIM_SODA                 (ANIM_START +    130)
+#define ANIM_SODA                 (ANIM_START +    128)
 #define ANIM_SODAFLY              (ANIM_START +    134)
 #define ANIM_WALLCRAWLERBOT_LEFT  (ANIM_START +    138)
 #define ANIM_WALLCRAWLERBOT_RIGHT (ANIM_START +    142)

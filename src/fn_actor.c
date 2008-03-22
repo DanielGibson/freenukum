@@ -347,6 +347,11 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 3;
       break;
+    case FN_ACTOR_SODA:
+      data->tile = ANIM_SODA;
+      data->current_frame = 0;
+      data->num_frames = 4;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
@@ -970,14 +975,20 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_SODA] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
   },
   [FN_ACTOR_UNSTABLEFLOOR] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
