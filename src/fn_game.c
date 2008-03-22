@@ -344,17 +344,26 @@ void fn_game_start_in_level(
             case fn_event_heromoved:
               x = fn_hero_get_x(hero);
               y = fn_hero_get_y(hero);
-              srcrect.x = (x - FN_LEVELWINDOW_WIDTH) * FN_HALFTILE_WIDTH * pixelsize;
-              srcrect.y = (y - FN_LEVELWINDOW_HEIGHT + 2) * FN_HALFTILE_HEIGHT * pixelsize;
+              srcrect.x =
+                (x - FN_LEVELWINDOW_WIDTH) *
+                FN_HALFTILE_WIDTH * pixelsize;
+              srcrect.y =
+                (y - FN_LEVELWINDOW_HEIGHT + 2) *
+                FN_HALFTILE_HEIGHT * pixelsize;
               break;
             case fn_event_heroscored:
               fn_borders_blit_score(
                   screen,
                   tilecache,
                   pixelsize,
-                  fn_hero_get_score(hero)
-                  );
+                  fn_hero_get_score(hero));
               break;
+            case fn_event_hero_inventory_changed:
+              fn_borders_blit_inventory(
+                  screen,
+                  tilecache,
+                  pixelsize,
+                  fn_hero_get_inventory(hero));
             default:
               /* don't do anything on other events. */
               break;

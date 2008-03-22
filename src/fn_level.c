@@ -654,24 +654,39 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEY_RED,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3045: /* green key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEY_GREEN,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         /* TODO */
         break;
       case 0x3046: /* blue key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEY_BLUE,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         /* TODO */
         break;
       case 0x3047: /* pink key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEY_PINK,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         /* TODO */
         break;
       case 0x3048: /* red keyhole */

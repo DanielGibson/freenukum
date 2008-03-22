@@ -313,9 +313,22 @@ void fn_hero_set_counter(
 
 void fn_hero_set_inventory(
     fn_hero_t * hero,
-    Uint8 health)
+    Uint8 inventory)
 {
-  hero->health = health;
+  SDL_Event event;
+  hero->inventory = inventory;
+  event.type = SDL_USEREVENT;
+  event.user.code = fn_event_hero_inventory_changed;
+  event.user.data1 = hero;
+  event.user.data2 = 0;
+  SDL_PushEvent(&event);
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_hero_get_inventory(fn_hero_t * hero)
+{
+  return hero->inventory;
 }
 
 /* --------------------------------------------------------------- */

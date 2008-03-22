@@ -703,6 +703,83 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+/**
+ * The hero touches a key actor.
+ *
+ * @param  actor  The key actor.
+ */
+void fn_actor_function_key_touch_start(fn_actor_t * actor)
+{
+  printf("******** hero touches key.\n");
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  Uint8 inventory = fn_hero_get_inventory(hero);
+  switch(actor->type) {
+    case FN_ACTOR_KEY_RED:
+      inventory |= FN_INVENTORY_KEY_RED;
+      break;
+    case FN_ACTOR_KEY_BLUE:
+      inventory |= FN_INVENTORY_KEY_BLUE;
+      break;
+    case FN_ACTOR_KEY_GREEN:
+      inventory |= FN_INVENTORY_KEY_GREEN;
+      break;
+    case FN_ACTOR_KEY_PINK:
+      inventory |= FN_INVENTORY_KEY_PINK;
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: key #%d"
+          " added which is not a key\n",
+          __LINE__, actor->type);
+      break;
+  }
+  actor->is_alive = 0;
+  fn_hero_set_inventory(hero, inventory);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the key.
+ *
+ * @param  actor  The key actor.
+ */
+void fn_actor_function_key_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = NULL;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  switch(actor->type) {
+    case FN_ACTOR_KEY_RED:
+      tile = fn_tilecache_get_tile(tc, OBJ_KEY_RED);
+      break;
+    case FN_ACTOR_KEY_BLUE:
+      tile = fn_tilecache_get_tile(tc, OBJ_KEY_BLUE);
+      break;
+    case FN_ACTOR_KEY_GREEN:
+      tile = fn_tilecache_get_tile(tc, OBJ_KEY_GREEN);
+      break;
+    case FN_ACTOR_KEY_PINK:
+      tile = fn_tilecache_get_tile(tc, OBJ_KEY_PINK);
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: key #%d"
+          " tried to blit which is not a key\n",
+          __LINE__, actor->type);
+      return;
+      break;
+  }
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 typedef void (* fn_actor_function_t)(fn_actor_t *);
 
 /**
@@ -1534,14 +1611,16 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_RED] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_key_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -1564,14 +1643,16 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_BLUE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_key_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_BLUE] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -1594,14 +1675,16 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_PINK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_key_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_PINK] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -1624,14 +1707,16 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_KEY_GREEN] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_key_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_GREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

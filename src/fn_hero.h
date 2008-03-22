@@ -224,6 +224,11 @@ void fn_hero_set_inventory(
 
 /* --------------------------------------------------------------- */
 
+Uint8 fn_hero_get_inventory(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_set_health(
     fn_hero_t * hero,
     Uint8 health);
