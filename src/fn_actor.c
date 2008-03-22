@@ -485,6 +485,13 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       }
       actor->is_alive = 0;
       break;
+    case FN_ACTOR_SODA:
+      fn_hero_improve_health(hero, 1);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 200);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_200, actor->x, actor->y);
+      break;
     default:
       /* do nothing about other items */
       break;
