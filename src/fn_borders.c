@@ -244,7 +244,7 @@ void fn_borders_blit_score(
 
   char scoretext[FN_SCORE_DIGITS+1];
 
-  sprintf(scoretext, "%08d", score);
+  sprintf(scoretext, "%08llu", score);
 
   scoresurface = SDL_CreateRGBSurface(
       SDL_SWSURFACE,

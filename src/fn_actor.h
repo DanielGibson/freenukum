@@ -44,87 +44,87 @@ typedef enum fn_actor_type_e fn_actor_type_e;
  * The actor types.
  */
 enum fn_actor_type_e {
-  FN_ACTOR_FIREWHEELBOT,
-  FN_ACTOR_FLAMEGNOMEBOT,
-  FN_ACTOR_FLYINGBOT,
-  FN_ACTOR_FOOTBOT,
-  FN_ACTOR_HELICOPTERBOT,
-  FN_ACTOR_RABBITOIDBOT,
-  FN_ACTOR_REDBALL_JUMPING,
-  FN_ACTOR_REDBALL_LYING,
-  FN_ACTOR_ROBOT,
-  FN_ACTOR_SNAKEBOT,
-  FN_ACTOR_TANKBOT,
-  FN_ACTOR_WALLCRAWLERBOT_LEFT,
-  FN_ACTOR_WALLCRAWLERBOT_RIGHT,
-  FN_ACTOR_DRPROTON,
-  FN_ACTOR_CAMERA,
-  FN_ACTOR_BOMB,
-  FN_ACTOR_EXITDOOR,
-  FN_ACTOR_SODA,
-  FN_ACTOR_UNSTABLEFLOOR,
-  FN_ACTOR_FAN_LEFT,
-  FN_ACTOR_FAN_RIGHT,
-  FN_ACTOR_BROKENWALL_BACKGROUND,
-  FN_ACTOR_STONE_BACKGROUND,
-  FN_ACTOR_TELEPORTER1,
-  FN_ACTOR_TELEPORTER2,
-  FN_ACTOR_FENCE_BACKGROUND,
-  FN_ACTOR_WINDOW_BACKGROUND,
-  FN_ACTOR_SCREEN,
-  FN_ACTOR_BOX_GREY_EMPTY,
-  FN_ACTOR_BOX_GREY_BOOTS,
-  FN_ACTOR_BOOTS,
-  FN_ACTOR_BOX_GREY_CLAMPS,
-  FN_ACTOR_CLAMPS,
-  FN_ACTOR_BOX_GREY_GUN,
-  FN_ACTOR_GUN,
-  FN_ACTOR_BOX_GREY_BOMB,
-  FN_ACTOR_BOX_RED_SODA,
-  FN_ACTOR_BOX_RED_CHICKEN,
-  FN_ACTOR_CHICKEN_SINGLE,
-  FN_ACTOR_CHICKEN_DOUBLE,
-  FN_ACTOR_BOX_BLUE_FOOTBALL,
-  FN_ACTOR_FOOTBALL,
-  FN_ACTOR_FLAG,
-  FN_ACTOR_BOX_BLUE_JOYSTICK,
-  FN_ACTOR_JOYSTICK,
-  FN_ACTOR_BOX_BLUE_DISK,
-  FN_ACTOR_DISK,
-  FN_ACTOR_BOX_BLUE_BALLOON,
-  FN_ACTOR_BALLOON,
-  FN_ACTOR_BOX_GREY_GLOVE,
-  FN_ACTOR_GLOVE,
-  FN_ACTOR_BOX_GREY_FULL_LIFE,
-  FN_ACTOR_FULL_LIFE,
-  FN_ACTOR_BOX_BLUE_FLAG,
-  FN_ACTOR_BLUE_FLAG,
-  FN_ACTOR_BOX_BLUE_RADIO,
-  FN_ACTOR_RADIO,
-  FN_ACTOR_BOX_GREY_ACCESS_CARD,
-  FN_ACTOR_ACCESS_CARD,
-  FN_ACTOR_BOX_GREY_LETTER_D,
-  FN_ACTOR_LETTER_D,
-  FN_ACTOR_BOX_GREY_LETTER_U,
-  FN_ACTOR_LETTER_U,
-  FN_ACTOR_BOX_GREY_LETTER_K,
-  FN_ACTOR_LETTER_K,
-  FN_ACTOR_BOX_GREY_LETTER_E,
-  FN_ACTOR_LETTER_E,
-  FN_ACTOR_KEY_RED,
-  FN_ACTOR_KEYHOLE_RED,
-  FN_ACTOR_DOOR_RED,
-  FN_ACTOR_KEY_BLUE,
-  FN_ACTOR_KEYHOLE_BLUE,
-  FN_ACTOR_DOOR_BLUE,
-  FN_ACTOR_KEY_PINK,
-  FN_ACTOR_KEYHOLE_PINK,
-  FN_ACTOR_DOOR_PINK,
-  FN_ACTOR_KEY_GREEN,
-  FN_ACTOR_KEYHOLE_GREEN,
-  FN_ACTOR_DOOR_GREEN,
-  FN_ACTOR_MILL,
-  FN_ACTOR_ACCESS_CARD_DOOR,
+  FN_ACTOR_FIREWHEELBOT,             /* TODO */
+  FN_ACTOR_FLAMEGNOMEBOT,            /* TODO */
+  FN_ACTOR_FLYINGBOT,                /* TODO */
+  FN_ACTOR_FOOTBOT,                  /* TODO */
+  FN_ACTOR_HELICOPTERBOT,            /* TODO */
+  FN_ACTOR_RABBITOIDBOT,             /* TODO */
+  FN_ACTOR_REDBALL_JUMPING,          /* TODO */
+  FN_ACTOR_REDBALL_LYING,            /* TODO */
+  FN_ACTOR_ROBOT,                    /* TODO */
+  FN_ACTOR_SNAKEBOT,                 /* TODO */
+  FN_ACTOR_TANKBOT,                  /* TODO */
+  FN_ACTOR_WALLCRAWLERBOT_LEFT,      /* TODO */
+  FN_ACTOR_WALLCRAWLERBOT_RIGHT,     /* TODO */
+  FN_ACTOR_DRPROTON,                 /* TODO */
+  FN_ACTOR_CAMERA,                   /* TODO */
+  FN_ACTOR_BOMB,                     /* TODO */
+  FN_ACTOR_EXITDOOR,                 /* TODO */
+  FN_ACTOR_SODA,                     /* TODO */
+  FN_ACTOR_UNSTABLEFLOOR,            /* TODO */
+  FN_ACTOR_FAN_LEFT,                 /* TODO */
+  FN_ACTOR_FAN_RIGHT,                /* TODO */
+  FN_ACTOR_BROKENWALL_BACKGROUND,    /* TODO */
+  FN_ACTOR_STONE_BACKGROUND,         /* TODO */
+  FN_ACTOR_TELEPORTER1,              /* TODO */
+  FN_ACTOR_TELEPORTER2,              /* TODO */
+  FN_ACTOR_FENCE_BACKGROUND   ,      /* TODO */
+  FN_ACTOR_WINDOW_BACKGROUND,        /* TODO */
+  FN_ACTOR_SCREEN,                   /* TODO */
+  FN_ACTOR_BOX_GREY_EMPTY,           /* TODO */
+  FN_ACTOR_BOX_GREY_BOOTS,           /* TODO */
+  FN_ACTOR_BOOTS,                    /* TODO */
+  FN_ACTOR_BOX_GREY_CLAMPS,          /* TODO */
+  FN_ACTOR_CLAMPS,                   /* TODO */
+  FN_ACTOR_BOX_GREY_GUN,             /* TODO */
+  FN_ACTOR_GUN,                      /* TODO */
+  FN_ACTOR_BOX_GREY_BOMB,            /* TODO */
+  FN_ACTOR_BOX_RED_SODA,             /* TODO */
+  FN_ACTOR_BOX_RED_CHICKEN,          /* TODO */
+  FN_ACTOR_CHICKEN_SINGLE,           /* TODO */
+  FN_ACTOR_CHICKEN_DOUBLE,           /* TODO */
+  FN_ACTOR_BOX_BLUE_FOOTBALL,        /* TODO */
+  FN_ACTOR_FOOTBALL,                 /* TODO */
+  FN_ACTOR_FLAG,                     /* TODO */
+  FN_ACTOR_BOX_BLUE_JOYSTICK,        /* TODO */
+  FN_ACTOR_JOYSTICK,                 /* TODO */
+  FN_ACTOR_BOX_BLUE_DISK,            /* TODO */
+  FN_ACTOR_DISK,                     /* TODO */
+  FN_ACTOR_BOX_BLUE_BALLOON,         /* TODO */
+  FN_ACTOR_BALLOON,                  /* TODO */
+  FN_ACTOR_BOX_GREY_GLOVE,           /* TODO */
+  FN_ACTOR_GLOVE,                    /* TODO */
+  FN_ACTOR_BOX_GREY_FULL_LIFE,       /* TODO */
+  FN_ACTOR_FULL_LIFE,                /* TODO */
+  FN_ACTOR_BOX_BLUE_FLAG,            /* TODO */
+  FN_ACTOR_BLUE_FLAG,                /* TODO */
+  FN_ACTOR_BOX_BLUE_RADIO,           /* TODO */
+  FN_ACTOR_RADIO,                    /* TODO */
+  FN_ACTOR_BOX_GREY_ACCESS_CARD,     /* TODO */
+  FN_ACTOR_ACCESS_CARD,              /* TODO */
+  FN_ACTOR_BOX_GREY_LETTER_D,        /* TODO */
+  FN_ACTOR_LETTER_D,                 /* TODO */
+  FN_ACTOR_BOX_GREY_LETTER_U,        /* TODO */
+  FN_ACTOR_LETTER_U,                 /* TODO */
+  FN_ACTOR_BOX_GREY_LETTER_K,        /* TODO */
+  FN_ACTOR_LETTER_K,                 /* TODO */
+  FN_ACTOR_BOX_GREY_LETTER_E,        /* TODO */
+  FN_ACTOR_LETTER_E,                 /* TODO */
+  FN_ACTOR_KEY_RED,                  /* TODO */
+  FN_ACTOR_KEYHOLE_RED,              /* TODO */
+  FN_ACTOR_DOOR_RED,                 /* TODO */
+  FN_ACTOR_KEY_BLUE,                 /* TODO */
+  FN_ACTOR_KEYHOLE_BLUE,             /* TODO */
+  FN_ACTOR_DOOR_BLUE,                /* TODO */
+  FN_ACTOR_KEY_PINK,                 /* TODO */
+  FN_ACTOR_KEYHOLE_PINK,             /* TODO */
+  FN_ACTOR_DOOR_PINK,                /* TODO */
+  FN_ACTOR_KEY_GREEN,                /* TODO */
+  FN_ACTOR_KEYHOLE_GREEN,            /* TODO */
+  FN_ACTOR_DOOR_GREEN,               /* TODO */
+  FN_ACTOR_MILL,                     /* TODO */
+  FN_ACTOR_ACCESS_CARD_DOOR,         /* TODO */
   FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
   FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
   FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
@@ -187,6 +187,11 @@ struct fn_actor_t {
    * Flag that indicates if the actor is (still) alive.
    */
   int is_alive;
+
+  /**
+   * Flag that indicates if the actor is being touched by the hero
+   */
+  int touches_hero;
 };
 
 /* --------------------------------------------------------------- */
@@ -214,6 +219,18 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
  * @param  actor  The actor to delete.
  */
 void fn_actor_free(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if the hero does touch the actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return Non-zero if the hero touches, otherwise zero.
+ */
+int fn_actor_touches_hero(fn_actor_t * actor);
+
 
 /* --------------------------------------------------------------- */
 
