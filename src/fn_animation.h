@@ -144,4 +144,4 @@ void fn_animation_act(fn_animation_t * anim);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_ANIMATION_H
+#endif /* FN_ANIMATION_H */

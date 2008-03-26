@@ -42,4 +42,4 @@ SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_PICTURE_H
+#endif /* FN_PICTURE_H */

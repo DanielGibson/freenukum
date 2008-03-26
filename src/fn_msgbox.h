@@ -47,4 +47,4 @@ SDL_Surface * fn_msgbox(
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_MSGBOX_H
+#endif /* FN_MSGBOX_H */

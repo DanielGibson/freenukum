@@ -332,5 +332,5 @@ int fn_bot_action_progress(fn_bot_t * bot);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_BOT_H
+#endif /* FN_BOT_H */
 

@@ -121,15 +121,15 @@ fn_settings_t * fn_settings_new_from_file(char * path)
 
   s = fn_settings_new();
 
-  // get each line of the file
+  /* get each line of the file */
   while (fgets(buffer, sizeof(buffer), fh))
   {
     fn_settings_option_t * o;
 
-    // trim whitespace from left
+    /* trim whitespace from left */
     for (start = buffer; *start == ' ' || *start == '\t'; start++);
 
-    // trim whitespace from right
+    /* trim whitespace from right */
     end = start + strlen(start);
     while (end > start
         && ((c = end[-1]) == '\n' || c == '\r' || c == ' ' || c == '\t'))
@@ -139,21 +139,21 @@ fn_settings_t * fn_settings_new_from_file(char * path)
     *end = '\0';
 
     name_start = start;
-    // find the '=' sign
+    /* find the '=' sign */
     for(name_end = start; name_end != end && *name_end != '='; name_end++);
 
-    // ignore lines without '=' sign
+    /* ignore lines without '=' sign */
     if (name_end == end)
       continue;
 
-    // get the value (trim whitespace after '=' sign)
+    /* get the value (trim whitespace after '=' sign) */
     value_end = end;
     for (value_start = name_end + 1;
         value_start < value_end
         && (*value_start == ' ' || *value_start == '\t');
         value_start++);
 
-    // get the name (trim whitespace before '=' sign)
+    /* get the name (trim whitespace before '=' sign) */
     while (name_end > name_start
         && ((c = name_end[-1]) == ' ' || c == '\t'))
     {
@@ -161,7 +161,7 @@ fn_settings_t * fn_settings_new_from_file(char * path)
     }
     *name_end = '\0';
 
-    // create a new option node
+    /* create a new option node */
     o = malloc(sizeof(fn_settings_option_t));
 
     o->name = malloc(strlen(name_start)+1);
@@ -172,14 +172,14 @@ fn_settings_t * fn_settings_new_from_file(char * path)
 
     o->next = NULL;
 
-    // append the node
+    /* append the node */
     if (s->end == NULL) {
-      // s still empty
+      /* s still empty */
       s->end = o;
       s->options = o;
     }
     else {
-      // s non-empty
+      /* s non-empty */
       s->end->next = o;
       s->end = o;
     }

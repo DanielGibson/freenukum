@@ -48,4 +48,4 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_DROP_H
+#endif /* FN_DROP_H */

@@ -264,4 +264,4 @@ void fn_settings_set_string(fn_settings_t * s,
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_SETTINGS_H
+#endif /* FN_SETTINGS_H */

@@ -202,4 +202,4 @@ int fn_item_act(fn_item_t * item);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_ITEM_H
+#endif /* FN_ITEM_H */

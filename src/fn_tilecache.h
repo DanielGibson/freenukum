@@ -79,5 +79,5 @@ SDL_Surface * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos);
 
 /* --------------------------------------------------------------- */
 
-#endif // FN_TILECACHE_H
+#endif /* FN_TILECACHE_H */
 
