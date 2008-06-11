@@ -51,7 +51,7 @@
 #define ANIM_FIREWHEEL_ON         (ANIM_START +     64)
 #define ANIM_ROBOT                (ANIM_START +     80)
 #define ANIM_BOMBFIRE             (ANIM_START +     90)
-#define ANIM_EXITDOOR             (ANIM_START +     98)
+#define ANIM_EXITDOOR             (ANIM_START +     96)
 #define ANIM_BOMB                 (ANIM_START +    114)
 #define ANIM_RABBIT1              (ANIM_START +    116)
 #define ANIM_BALLWORM             (ANIM_START +    122)

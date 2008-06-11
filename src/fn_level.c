@@ -267,10 +267,10 @@ fn_level_t * fn_level_load(int fd,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3011: /* exit door */
-        if (y > 0) {
-          lv->tiles[y][x] = lv->tiles[y-1][x];
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_EXITDOOR,
+              x * FN_TILE_WIDTH, (y-1) * FN_TILE_WIDTH));
         break;
       case 0x3012: /* grey box with bomb inside */
         if (x > 0) {

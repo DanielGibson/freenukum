@@ -716,6 +716,152 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The exitdoor struct.
+ */
+typedef struct fn_actor_exitdoor_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The counter which defines for how many steps the exitdoor
+   * has to be animated until the hero disappears.
+   * time the act function is called.
+   */
+  Uint8 counter;
+  /**
+   * Stores the state of the door. 0 is idle, 1 is opening,
+   * 2 is closing.
+   */
+  Uint8 state;
+} fn_actor_exitdoor_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create an exit door.
+ *
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_exitdoor_create(fn_actor_t * actor)
+{
+  fn_actor_exitdoor_data_t * data = malloc(
+      sizeof(fn_actor_exitdoor_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH * 2;
+  actor->h = FN_TILE_HEIGHT * 2;
+  data->counter = 0;
+  data->state = 0;
+  data->tile = ANIM_EXITDOOR;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete an exit door.
+ *
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_exitdoor_free(fn_actor_t * actor)
+{
+  fn_actor_score_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Action for exit door.
+ * 
+ * @param  actor  The exitdoor actor.
+ */
+void fn_actor_function_exitdoor_act(fn_actor_t * actor)
+{
+  fn_actor_exitdoor_data_t * data = actor->data;
+
+  switch(data->state) {
+    case 0: /* idle */
+      break;
+    case 1: /* opening */
+      data->counter++;
+      if (data->counter == 4) {
+        data->state = 2;
+      }
+      break;
+    case 2: /* closing */
+      data->counter--;
+      if (data->counter == 0) {
+        actor->level->do_play = 0;
+      }
+      break;
+    default: /* error */
+      fn_error_print_commandline("Exitdoor in invalid state");
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the exitdoor.
+ *
+ * @param  actor  The exitdoor actor.
+ */
+void fn_actor_function_exitdoor_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_exitdoor_data_t * data = actor->data;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = 0;
+  destrect.y = 0;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  SDL_Surface * tile = SDL_CreateRGBSurface(
+      SDL_SWSURFACE,
+      actor->w * pixelsize,
+      actor->h * pixelsize,
+      FN_COLOR_DEPTH,
+      0,
+      0,
+      0,
+      0);
+  SDL_Surface * part = fn_tilecache_get_tile(tc,
+      data->tile + data->counter * 4);
+  SDL_BlitSurface(part, NULL, tile, &destrect);
+
+  destrect.x += pixelsize * FN_TILE_WIDTH;
+  part = fn_tilecache_get_tile(tc,
+    data->tile + data->counter * 4 + 1);
+  SDL_BlitSurface(part, NULL, tile, &destrect);
+
+  destrect.x = 0;
+  destrect.y += pixelsize * FN_TILE_HEIGHT;
+  part = fn_tilecache_get_tile(tc,
+    data->tile + data->counter * 4 + 2);
+  SDL_BlitSurface(part, NULL, tile, &destrect);
+
+  destrect.x += pixelsize * FN_TILE_WIDTH;
+  part = fn_tilecache_get_tile(tc,
+    data->tile + data->counter * 4 + 3);
+  SDL_BlitSurface(part, NULL, tile, &destrect);
+
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  SDL_FreeSurface(tile); tile = NULL;
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * Key actor creation function.
  *
  * @param  actor  The key actor.
@@ -1055,14 +1201,18 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
   },
   [FN_ACTOR_EXITDOOR] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_exitdoor_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_exitdoor_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_exitdoor_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_exitdoor_blit
   },
   [FN_ACTOR_SODA] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
