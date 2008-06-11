@@ -123,6 +123,11 @@ typedef struct fn_hero_t {
    * The score of the hero.
    */
   Uint64 score;
+
+  /**
+   * Blit the hero only if this is zero.
+   */
+  Uint8 hidden;
 } fn_hero_t;
 
 /* --------------------------------------------------------------- */

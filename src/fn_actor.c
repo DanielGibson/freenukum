@@ -791,25 +791,29 @@ void fn_actor_function_exitdoor_interact_start(fn_actor_t * actor)
 void fn_actor_function_exitdoor_act(fn_actor_t * actor)
 {
   fn_actor_exitdoor_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
 
   switch(data->state) {
     case 0: /* idle */
       break;
-    case 1: /* opening */
+    case 1: /* door opening */
       data->counter++;
       if (data->counter == 4) {
+        hero->hidden = 1;
         data->state = 2;
         data->counter--;
       }
       break;
-    case 2: /* closing */
+    case 2: /* door closing */
       data->counter--;
       if (data->counter == 0) {
         actor->level->do_play = 0;
+        hero->hidden = 0;
       }
       break;
     default: /* error */
       fn_error_print_commandline("Exitdoor in invalid state");
+      break;
   }
 }
 

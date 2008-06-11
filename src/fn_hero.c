@@ -60,6 +60,8 @@ void fn_hero_init(
   hero->health = 8;
 
   hero->score = 0;
+
+  hero->hidden = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -72,6 +74,10 @@ void fn_hero_blit(fn_hero_t * hero,
   SDL_Rect dstrect;
   int tilenr;
   SDL_Surface * tile;
+
+  if (hero->hidden) {
+    return;
+  }
 
   dstrect.x = FN_HALFTILE_WIDTH * pixelsize * (hero->x - 1);
   dstrect.y = (FN_HALFTILE_HEIGHT * hero->y - FN_TILE_HEIGHT) * pixelsize;
