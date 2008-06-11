@@ -764,8 +764,21 @@ void fn_actor_function_exitdoor_create(fn_actor_t * actor)
  */
 void fn_actor_function_exitdoor_free(fn_actor_t * actor)
 {
-  fn_actor_score_data_t * data = actor->data;
+  fn_actor_exitdoor_data_t * data = actor->data;
   free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Interaction of hero with exit door.
+ *
+ * @param  actor  The exitdoor actor.
+ */
+void fn_actor_function_exitdoor_interact_start(fn_actor_t * actor)
+{
+  fn_actor_exitdoor_data_t * data = actor->data;
+  data->state = 1;
 }
 
 /* --------------------------------------------------------------- */
@@ -786,6 +799,7 @@ void fn_actor_function_exitdoor_act(fn_actor_t * actor)
       data->counter++;
       if (data->counter == 4) {
         data->state = 2;
+        data->counter--;
       }
       break;
     case 2: /* closing */
@@ -1205,9 +1219,10 @@ void
       fn_actor_function_exitdoor_create,
     [FN_ACTOR_FUNCTION_FREE]                =
       fn_actor_function_exitdoor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_exitdoor_interact_start,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_ACT]                 =
       fn_actor_function_exitdoor_act,

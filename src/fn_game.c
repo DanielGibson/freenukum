@@ -278,7 +278,7 @@ void fn_game_start_in_level(
                   srcrect.y -= pixelsize * FN_HALFTILE_HEIGHT;
                 }
               } else {
-                /* TODO move our hero */
+                fn_level_hero_interact_start(lv);
               }
               printf("upkey pressed - y: %d\n", srcrect.y);
               doupdate = 1;
@@ -322,6 +322,10 @@ void fn_game_start_in_level(
           break;
         case SDL_KEYUP:
           switch(event.key.keysym.sym) {
+            case SDLK_UP:
+              fn_level_hero_interact_stop(lv);
+              doupdate = 1;
+              break;
             case SDLK_LEFT:
             case SDLK_RIGHT:
               fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);

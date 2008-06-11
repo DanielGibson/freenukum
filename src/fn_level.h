@@ -276,6 +276,15 @@ int fn_level_act(fn_level_t * lv);
 /* --------------------------------------------------------------- */
 
 /**
+ * Call this function to make the hero interact with items around.
+ *
+ * @param  lv  The level whose hero should interact.
+ */
+void fn_level_hero_interact(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Add an actor to the level.
  *
  * @param  lv    The level to which the actor gets added.
