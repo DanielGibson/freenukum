@@ -882,6 +882,305 @@ void fn_actor_function_exitdoor_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The door struct.
+ */
+typedef struct fn_actor_door_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The counter which defines for how many steps the exitdoor
+   * has to be animated until the hero disappears.
+   * time the act function is called.
+   */
+  Uint8 counter;
+  /**
+   * Stores the state of the door. 0 is idle, 1 is opening,
+   * 2 is removed and invisible.
+   */
+  Uint8 state;
+} fn_actor_door_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a door.
+ *
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_door_create(fn_actor_t * actor)
+{
+  fn_actor_door_data_t * data = malloc(
+      sizeof(fn_actor_door_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->counter = 0;
+  data->state = 0;
+  data->tile = OBJ_DOOR;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete a door.
+ *
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_door_free(fn_actor_t * actor)
+{
+  fn_actor_door_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Action for door.
+ * 
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_door_act(fn_actor_t * actor)
+{
+  fn_level_t * level = actor->level;
+  fn_actor_door_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(level);
+
+  switch(data->state) {
+    case 0: /* idle */
+      break;
+    case 1: /* door opening */
+      data->counter++;
+      if (data->counter == 8) {
+        data->counter = 0;
+        data->state = 2;
+        actor->is_alive = 0;
+        fn_level_set_solid(level,
+            actor->x / FN_TILE_WIDTH,
+            actor->y / FN_TILE_HEIGHT,
+            0);
+      }
+      break;
+    case 2:
+      /* do nothing, the door is already opened. */
+      break;
+    default: /* error */
+      fn_error_print_commandline("Door in invalid state");
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the door.
+ *
+ * @param  actor  The door actor.
+ */
+void fn_actor_function_door_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_door_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->counter);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The keyhole struct.
+ */
+typedef struct fn_actor_keyhole_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The counter which defines for how many steps the exitdoor
+   * has to be animated until the hero disappears.
+   * time the act function is called.
+   */
+  Uint8 counter;
+} fn_actor_keyhole_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a keyhole.
+ *
+ * @param  actor  The keyhole actor.
+ */
+void fn_actor_function_keyhole_create(fn_actor_t * actor)
+{
+  printf("keyhole created.\n");
+  fn_actor_keyhole_data_t * data = malloc(
+      sizeof(fn_actor_keyhole_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->counter = 0;
+  data->tile = OBJ_KEYHOLE_BLACK;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete a keyhole.
+ *
+ * @param  actor  The keyhole actor.
+ */
+void fn_actor_function_keyhole_free(fn_actor_t * actor)
+{
+  fn_actor_keyhole_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Action for keyhole.
+ * 
+ * @param  actor  The keyhole actor.
+ */
+void fn_actor_function_keyhole_act(fn_actor_t * actor)
+{
+  fn_actor_keyhole_data_t * data = actor->data;
+
+  if (data->counter != 5) {
+    data->counter++;
+    data->counter %= 4;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the keyhole.
+ *
+ * @param  actor  The keyhole actor.
+ */
+void fn_actor_function_keyhole_blit(fn_actor_t * actor)
+{
+  fn_actor_keyhole_data_t * data = actor->data;
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  if (data->counter > 1) {
+    switch(actor->type) {
+      case FN_ACTOR_KEYHOLE_RED:
+        tile = fn_tilecache_get_tile(tc, OBJ_KEYHOLE_RED);
+        break;
+      case FN_ACTOR_KEYHOLE_BLUE:
+        tile = fn_tilecache_get_tile(tc, OBJ_KEYHOLE_BLUE);
+        break;
+      case FN_ACTOR_KEYHOLE_PINK:
+        tile = fn_tilecache_get_tile(tc, OBJ_KEYHOLE_PINK);
+        break;
+      case FN_ACTOR_KEYHOLE_GREEN:
+        tile = fn_tilecache_get_tile(tc, OBJ_KEYHOLE_GREEN);
+        break;
+      default:
+        fn_error_print_commandline("Invalid keyhole actor");
+    }
+  }
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/**
+ * Hero interacts with keyhole.
+ *
+ * @param  actor  The keyhole actor.
+ */
+void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
+{
+  printf("Hero interacts with keyhole.\n");
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  Uint8 inventory = fn_hero_get_inventory(hero);
+
+  char msg[40];
+
+  Uint8 haskey = 0;
+  Uint8 needed_key = 0;
+  fn_actor_type_e door_to_open;
+
+  switch(actor->type) {
+    case FN_ACTOR_KEYHOLE_RED:
+      needed_key = FN_INVENTORY_KEY_RED;
+      door_to_open = FN_ACTOR_DOOR_RED;
+      snprintf(msg, 40, "You don't have the red key.\n");
+      break;
+    case FN_ACTOR_KEYHOLE_BLUE:
+      needed_key = FN_INVENTORY_KEY_BLUE;
+      door_to_open = FN_ACTOR_DOOR_BLUE;
+      snprintf(msg, 40, "You don't have the blue key.\n");
+      break;
+    case FN_ACTOR_KEYHOLE_PINK:
+      needed_key = FN_INVENTORY_KEY_PINK;
+      door_to_open = FN_ACTOR_DOOR_PINK;
+      snprintf(msg, 40, "You don't have the pink key.\n");
+      break;
+    case FN_ACTOR_KEYHOLE_GREEN:
+      needed_key = FN_INVENTORY_KEY_GREEN;
+      door_to_open = FN_ACTOR_DOOR_GREEN;
+      snprintf(msg, 40, "You don't have the green key.\n");
+      break;
+    default:
+      fn_error_print_commandline("Invalid keyhole actor");
+  }
+
+  haskey = inventory & needed_key;
+
+  if (haskey) {
+    inventory &= ~(needed_key);
+    fn_hero_set_inventory(hero, inventory);
+
+    /* open all doors with the real color */
+    GList * iter = NULL;
+    for (iter = g_list_first(actor->level->actors);
+        iter != NULL;
+        iter = g_list_next(iter)) {
+      fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+      if (actor->type == door_to_open) {
+        fn_actor_door_data_t * data = actor->data;
+        data->state = 1;
+      }
+    }
+  } else {
+    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+    fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+    SDL_Surface * screen = actor->level->screen;
+
+    fn_infobox_show(pixelsize, tc, screen, msg);
+  }
+}
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * Key actor creation function.
  *
  * @param  actor  The key actor.
@@ -902,7 +1201,6 @@ void fn_actor_function_key_create(fn_actor_t * actor)
  */
 void fn_actor_function_key_touch_start(fn_actor_t * actor)
 {
-  printf("******** hero touches key.\n");
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   Uint8 inventory = fn_hero_get_inventory(hero);
   switch(actor->type) {
@@ -1905,24 +2203,33 @@ void
       fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_RED] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_keyhole_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_keyhole_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_keyhole_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_keyhole_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_keyhole_blit
   },
   [FN_ACTOR_DOOR_RED] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_door_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_door_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_door_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_door_blit
   },
   [FN_ACTOR_KEY_BLUE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -1938,24 +2245,33 @@ void
       fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_BLUE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_keyhole_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_keyhole_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_keyhole_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_keyhole_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_keyhole_blit
   },
   [FN_ACTOR_DOOR_BLUE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_door_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_door_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_door_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_door_blit
   },
   [FN_ACTOR_KEY_PINK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -1971,24 +2287,33 @@ void
       fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_PINK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_keyhole_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_keyhole_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_keyhole_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_keyhole_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_keyhole_blit
   },
   [FN_ACTOR_DOOR_PINK] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_door_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_door_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_door_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_door_blit
   },
   [FN_ACTOR_KEY_GREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2004,24 +2329,33 @@ void
       fn_actor_function_key_blit,
   },
   [FN_ACTOR_KEYHOLE_GREEN] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_keyhole_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_keyhole_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_keyhole_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_keyhole_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_keyhole_blit
   },
   [FN_ACTOR_DOOR_GREEN] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_door_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_door_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_door_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_door_blit
   },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

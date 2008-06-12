@@ -35,7 +35,8 @@
 
 fn_level_t * fn_level_load(int fd,
     Uint8 pixelsize,
-    fn_tilecache_t * tilecache)
+    fn_tilecache_t * tilecache,
+    SDL_Surface * screen)
 {
   size_t i = 0;
   fn_level_t * lv = malloc(sizeof(fn_level_t));
@@ -43,6 +44,8 @@ fn_level_t * fn_level_load(int fd,
   Uint16 tilenr;
   Uint8 uppertile;
   Uint8 lowertile;
+
+  lv->screen = screen;
 
   lv->animated_frames = 0;
 
@@ -674,7 +677,6 @@ fn_level_t * fn_level_load(int fd,
             fn_actor_create(lv,
               FN_ACTOR_KEY_GREEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
-        /* TODO */
         break;
       case 0x3046: /* blue key */
         if (x > 0) {
@@ -684,7 +686,6 @@ fn_level_t * fn_level_load(int fd,
             fn_actor_create(lv,
               FN_ACTOR_KEY_BLUE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
-        /* TODO */
         break;
       case 0x3047: /* pink key */
         if (x > 0) {
@@ -694,87 +695,70 @@ fn_level_t * fn_level_load(int fd,
             fn_actor_create(lv,
               FN_ACTOR_KEY_PINK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
-        /* TODO */
         break;
       case 0x3048: /* red keyhole */
-        /* add the animation object */
-        {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_KEYHOLE_RED);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEYHOLE_RED,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3049: /* green keyhole */
-        /* add the animation object */
-        {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_KEYHOLE_GREEN);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEYHOLE_GREEN,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304a: /* blue keyhole */
-        /* add the animation object */
-        {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_KEYHOLE_BLUE);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEYHOLE_BLUE,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304b: /* pink keyhole */
-        /* add the animation object */
-        {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_KEYHOLE_PINK);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_KEYHOLE_PINK,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304c: /* red door */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_DOOR_RED,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304d: /* green door */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_DOOR_GREEN,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304e: /* blue door */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_DOOR_BLUE,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304f: /* pink door */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_DOOR_PINK,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3050: /* football on its own */
         if (x > 0) {
@@ -947,6 +931,16 @@ Uint8 fn_level_is_solid(fn_level_t * lv, int x, int y)
     return 1;
   }
   return lv->solid[y][x];
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_level_set_solid(fn_level_t * lv, int x, int y, Uint8 solid)
+{
+  if (x < 0 || y < 0 || x > FN_LEVEL_WIDTH || y > FN_LEVEL_HEIGHT) {
+    return;
+  }
+  lv->solid[y][x] = solid;
 }
 
 /* --------------------------------------------------------------- */

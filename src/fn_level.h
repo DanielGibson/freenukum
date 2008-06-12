@@ -84,6 +84,11 @@ struct fn_level_t {
   SDL_Surface * surface;
 
   /**
+   * The screen surface.
+   */
+  SDL_Surface * screen;
+
+  /**
    * The pixel size.
    */
   Uint8 pixelsize;
@@ -140,6 +145,7 @@ struct fn_level_t {
  * @param  fd  An already opened file descriptor to the level file.
  * @param  pixelsize  The size of a single pixel.
  * @param  tilecache  The tilecache from which to show the tiles.
+ * @param  screen     The screen on which the level will be displayed.
  *
  * @return  The fully loaded level. If it was not possible to load
  *          the level, NULL is returned. Examine errno in order
@@ -147,7 +153,8 @@ struct fn_level_t {
  */
 fn_level_t * fn_level_load(int fd,
     Uint8 pixelsize,
-    fn_tilecache_t * tilecache);
+    fn_tilecache_t * tilecache,
+    SDL_Surface * screen);
 
 /* --------------------------------------------------------------- */
 
@@ -196,6 +203,18 @@ Uint16 fn_level_get_raw(fn_level_t * lv, size_t x, size_t y);
  * @return 1 if solid, else 0.
  */
 Uint8 fn_level_is_solid(fn_level_t * lv, int x, int y);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the information wether a tile is solid or not.
+ *
+ * @param  lv     The level.
+ * @param  x      The x coordinate.
+ * @param  y      The y coordinate.
+ * @param  solid  1 if solid, else 0;
+ */
+void fn_level_set_solid(fn_level_t * lv, int x, int y, Uint8 solid);
 
 /* --------------------------------------------------------------- */
 

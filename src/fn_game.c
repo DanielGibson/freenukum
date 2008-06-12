@@ -221,7 +221,7 @@ int fn_game_start_in_level(
     goto cleanup;
   }
 
-  lv = fn_level_load(fd, pixelsize, tilecache);
+  lv = fn_level_load(fd, pixelsize, tilecache, screen);
   if (lv == NULL)
   {
     close(fd);
@@ -254,7 +254,7 @@ int fn_game_start_in_level(
     event.user.data2 = 0;
     SDL_PushEvent(&event);
   }
-  
+
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
