@@ -1158,17 +1158,19 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
   if (haskey) {
     inventory &= ~(needed_key);
     fn_hero_set_inventory(hero, inventory);
+    fn_actor_keyhole_data_t * data = actor->data;
+    data->counter = 5;
 
     /* open all doors with the real color */
     GList * iter = NULL;
     for (iter = g_list_first(actor->level->actors);
         iter != NULL;
         iter = g_list_next(iter)) {
-      fn_actor_t * actor = (fn_actor_t *)iter->data;
+      fn_actor_t * dooractor = (fn_actor_t *)iter->data;
 
-      if (actor->type == door_to_open) {
-        fn_actor_door_data_t * data = actor->data;
-        data->state = 1;
+      if (dooractor->type == door_to_open) {
+        fn_actor_door_data_t * doordata = dooractor->data;
+        doordata->state = 1;
       }
     }
   } else {
