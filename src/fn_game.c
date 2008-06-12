@@ -37,6 +37,7 @@
 #include "fn_picture_splash.h"
 #include "fn_infobox.h"
 #include "fn_level.h"
+#include "fn_drop.h"
 
 /* --------------------------------------------------------------- */
 
@@ -208,6 +209,38 @@ int fn_game_start_in_level(
             0,
             0,
             0);
+
+  SDL_Surface * backdrop = NULL;;
+  int backdropnumber = 0;
+
+  switch(levelnumber) {
+    case 1:
+      backdropnumber = 0;
+      break;
+    default:
+      backdropnumber = 1;
+      break;
+  }
+
+  char backdropfile[1024];
+  snprintf(backdropfile, 1024, "%s/DROP%d.DN1",
+      datapath, backdropnumber);
+  fd = open(backdropfile, O_RDONLY);
+
+  if (fd == -1)
+  {
+    fprintf(stderr, "Could not open file %s\n", backdropfile);
+    perror("Can't open file");
+    goto cleanup;
+  }
+  backdrop = fn_drop_load(fd, pixelsize);
+  if (backdrop != NULL) {
+    printf("loaded backdrop %s\n", backdropfile);
+  } else {
+    printf("could not load backdrop");
+  }
+  close(fd);
+
   SDL_TimerID tick;
   char levelfile[1024];
   snprintf(levelfile, 1024, "%s/WORLDAL%X.DN1",
@@ -267,7 +300,9 @@ int fn_game_start_in_level(
       fn_level_blit_to_surface(lv,
           level,
           &srcrect,
-          &srcrect);
+          &srcrect,
+          NULL,
+          NULL);
       SDL_BlitSurface(level, &srcrect, screen, &dstrect);
       SDL_UpdateRect(screen, 0, 0, 0, 0);
       doupdate = 0;
@@ -420,6 +455,9 @@ int fn_game_start_in_level(
   }
 
 cleanup:
+  if (backdrop != NULL) {
+    SDL_FreeSurface(backdrop);
+  }
   SDL_RemoveTimer(tick);
   fn_level_free(lv);
   SDL_FreeSurface(level);

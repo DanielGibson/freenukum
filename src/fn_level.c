@@ -948,7 +948,9 @@ void fn_level_set_solid(fn_level_t * lv, int x, int y, Uint8 solid)
 void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
-    SDL_Rect * sourcerect)
+    SDL_Rect * sourcerect,
+    SDL_Surface * backdrop1,
+    SDL_Surface * backdrop2)
 {
   int j = 0;
   int i = 0;
@@ -1002,7 +1004,11 @@ void fn_level_blit_to_surface(fn_level_t * lv,
           r.y < FN_TILE_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
       {
         int tilenr = fn_level_get_tile(lv, i, j);
-        if (tilenr < (48 * 8)) {
+        if (tilenr == 0 && backdrop1 != NULL) {
+          /* TODO copy first backdrop buffer */
+        } else if (tilenr == 1 && backdrop2 != NULL) {
+          /* TODO copy second backdrop buffer */
+        } else if (tilenr < (48 * 8)) {
           tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
         } else {
           tile = fn_tilecache_get_tile(lv->tilecache, 0);
@@ -1055,7 +1061,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       lv->surface,
       lv->tilecache,
       lv->pixelsize);
-
 
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->surface, sourcerect, target, targetrect);

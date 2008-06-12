@@ -225,11 +225,15 @@ void fn_level_set_solid(fn_level_t * lv, int x, int y, Uint8 solid);
  * @param  target     The target SDL Surface.
  * @param  targetrect The target area to which to blit.
  * @param  sourcerect The source rectangle.
+ * @param  backdrop1  The first backdrop type.
+ * @param  backdrop2  The second backdrop type.
  */
 void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
-    SDL_Rect * sourcerect);
+    SDL_Rect * sourcerect,
+    SDL_Surface * backdrop1,
+    SDL_Surface * backdrop2);
 
 /* --------------------------------------------------------------- */
 
