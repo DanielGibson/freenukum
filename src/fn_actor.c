@@ -779,6 +779,8 @@ void fn_actor_function_exitdoor_interact_start(fn_actor_t * actor)
 {
   fn_actor_exitdoor_data_t * data = actor->data;
   data->state = 1;
+  fn_level_t * level = actor->level;
+  level->levelpassed = 1;
 }
 
 /* --------------------------------------------------------------- */

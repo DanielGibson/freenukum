@@ -58,14 +58,16 @@ void fn_game_start(
 /**
  * Start the game from a certain level.
  *
- * @param  levelnumber  The level number (must be between '1' and 'C').
+ * @param  levelnumber  The level number (must be between 1 and 12).
  * @param  pixelsize    The size of a single pixel.
  * @param  tilecache    The tile cache to use.
  * @param  screen       The output screen.
  * @param  datapath     The path whele all the game data is stored.
+ *
+ * @return Non-zero if the level was completed successfully, else zero.
  */
-void fn_game_start_in_level(
-    char levelnumber,
+int fn_game_start_in_level(
+    int levelnumber,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,

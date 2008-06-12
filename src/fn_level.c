@@ -46,6 +46,8 @@ fn_level_t * fn_level_load(int fd,
 
   lv->animated_frames = 0;
 
+  lv->levelpassed = 0;
+
   lv->actors = NULL;
   lv->bots = NULL;
   lv->animations = NULL;

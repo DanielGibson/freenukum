@@ -125,6 +125,11 @@ struct fn_level_t {
    * The number of animated frames since last action.
    */
   size_t animated_frames;
+
+  /**
+   * Non-zero if the hero passed the level, otherwise zero.
+   */
+  int levelpassed;
 };
 
 /* --------------------------------------------------------------- */

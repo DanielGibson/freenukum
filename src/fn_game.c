@@ -138,6 +138,10 @@ void fn_game_start(
 
   { /* start the game itself */
 
+    int level = 1;
+    int interlevel = 0;
+    int success = 1;
+
     fn_infobox_show(pixelsize,
         tilecache,
         screen,
@@ -146,22 +150,46 @@ void fn_game_start(
         "You can browse through the level\n"
         "by pressing the cursor keys though.\n");
 
-    fn_game_start_in_level('1',
-        pixelsize,
-        tilecache,
-        screen,
-        datapath);
+    while (success && level < 13) {
+      if (interlevel) {
+        /* interlevel */
+        success = fn_game_start_in_level(2,
+            pixelsize,
+            tilecache,
+            screen,
+            datapath);
+        level++;
+        if (level == 2) {
+          level++;
+        }
+        interlevel = 0;
+      } else {
+        /* real level */
+        success = fn_game_start_in_level(level,
+            pixelsize,
+            tilecache,
+            screen,
+            datapath);
+        interlevel = 1;
+      }
+    }
+
+    if (success) {
+      /* the player finished, so we show the end sequence */
+      /* TODO */
+    }
   }
 
 }
 
-void fn_game_start_in_level(
-    char levelnumber,
+int fn_game_start_in_level(
+    int levelnumber,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath)
 {
+  int returnvalue = 0;
   int fd = 0;
   fn_level_t * lv = 0;
   SDL_Rect dstrect;
@@ -182,7 +210,7 @@ void fn_game_start_in_level(
             0);
   SDL_TimerID tick;
   char levelfile[1024];
-  snprintf(levelfile, 1024, "%s/WORLDAL%c.DN1",
+  snprintf(levelfile, 1024, "%s/WORLDAL%X.DN1",
       datapath, levelnumber);
   fd = open(levelfile, O_RDONLY);
 
@@ -202,6 +230,8 @@ void fn_game_start_in_level(
   }
   close(fd);
 
+  fn_hero_t * hero = fn_level_get_hero(lv);
+
   dstrect.x = FN_TILE_WIDTH * pixelsize;
   dstrect.y = FN_TILE_HEIGHT * pixelsize;
   dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
@@ -214,8 +244,6 @@ void fn_game_start_in_level(
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
 
   tick = SDL_AddTimer(100, fn_game_timer_triggered, 0);
-
-  fn_hero_t * hero = fn_level_get_hero(lv);
 
   {
     /* make the first frame appear */
@@ -388,10 +416,14 @@ void fn_game_start_in_level(
           break;
       }
     }
+    returnvalue = lv->levelpassed;
   }
 
 cleanup:
+  SDL_RemoveTimer(tick);
   fn_level_free(lv);
   SDL_FreeSurface(level);
+
+  return returnvalue;
 }
 
