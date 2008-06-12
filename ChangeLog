@@ -1,7 +1,9 @@
+  - Hero can walk through opened doors immediately instead of having
+    to wait until the animation finishes.
   - Hero earns score for fetching keys.
   - Keys can now be used.
   - After finishing a level, we go on to the next instead of returning
-	  to the title screen
+    to the title screen
 
 2.0
   - Exit doors work now

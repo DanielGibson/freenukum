@@ -951,15 +951,17 @@ void fn_actor_function_door_act(fn_actor_t * actor)
     case 0: /* idle */
       break;
     case 1: /* door opening */
+      if (data->counter == 0) {
+        fn_level_set_solid(level,
+            actor->x / FN_TILE_WIDTH,
+            actor->y / FN_TILE_HEIGHT,
+            0);
+      }
       data->counter++;
       if (data->counter == 8) {
         data->counter = 0;
         data->state = 2;
         actor->is_alive = 0;
-        fn_level_set_solid(level,
-            actor->x / FN_TILE_WIDTH,
-            actor->y / FN_TILE_HEIGHT,
-            0);
       }
       break;
     case 2:
