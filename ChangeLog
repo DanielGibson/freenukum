@@ -1,4 +1,8 @@
+  - After finishing a level, we go on to the next instead of returning
+	  to the title screen
+
 2.0
   - Exit doors work now
+
 1.0
   - Initial development release
