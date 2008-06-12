@@ -807,11 +807,11 @@ void fn_actor_function_exitdoor_act(fn_actor_t * actor)
       }
       break;
     case 2: /* door closing */
-      data->counter--;
       if (data->counter == 0) {
         actor->level->do_play = 0;
         hero->hidden = 0;
       }
+      data->counter--;
       break;
     default: /* error */
       fn_error_print_commandline("Exitdoor in invalid state");
