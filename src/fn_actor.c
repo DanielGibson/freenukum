@@ -1222,6 +1222,9 @@ void fn_actor_function_key_touch_start(fn_actor_t * actor)
           __LINE__, actor->type);
       break;
   }
+  fn_hero_add_score(hero, 1000);
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_SCORE_1000, actor->x, actor->y);
   actor->is_alive = 0;
   fn_hero_set_inventory(hero, inventory);
 }

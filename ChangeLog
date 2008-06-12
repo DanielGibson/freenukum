@@ -1,3 +1,4 @@
+  - Hero earns score for fetching keys.
   - Keys can now be used.
   - After finishing a level, we go on to the next instead of returning
 	  to the title screen
