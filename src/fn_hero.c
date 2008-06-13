@@ -212,9 +212,17 @@ void fn_hero_update_animation(
 
       /* hero is standing */
       if (hero->direction == FN_HERO_DIRECTION_LEFT) {
-        hero->tilenr = HERO_STANDING_LEFT;
+        if (hero->shooting == FN_HERO_SHOOTING_TRUE) {
+          hero->tilenr = HERO_WALKING_LEFT + 12;
+        } else {
+          hero->tilenr = HERO_STANDING_LEFT;
+        }
       } else {
-        hero->tilenr = HERO_STANDING_RIGHT;
+        if (hero->shooting == FN_HERO_SHOOTING_TRUE) {
+          hero->tilenr = HERO_WALKING_RIGHT + 12;
+        } else {
+          hero->tilenr = HERO_STANDING_RIGHT;
+        }
       }
       hero->num_animationframes = HERO_NUM_ANIM_STANDING;
 
@@ -455,3 +463,21 @@ void fn_hero_decrease_hurting_objects(fn_hero_t * hero)
 }
 
 /* --------------------------------------------------------------- */
+
+void fn_hero_fire_start(fn_hero_t * hero)
+{
+  printf("Starting fire.\n");
+  fn_hero_set_shooting(hero, FN_HERO_SHOOTING_TRUE);
+  /* TODO fire shot */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_fire_stop(fn_hero_t * hero)
+{
+  printf("Stopping fire.\n");
+  fn_hero_set_shooting(hero, FN_HERO_SHOOTING_FALSE);
+}
+
+/* --------------------------------------------------------------- */
+

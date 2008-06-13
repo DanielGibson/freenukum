@@ -352,4 +352,22 @@ void fn_hero_decrease_hurting_objects(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Fire a shot.
+ *
+ * @param  hero  The hero.
+ */
+void fn_hero_fire_start(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Stop firing a shot.
+ *
+ * @param  hero  The hero.
+ */
+void fn_hero_fire_stop(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */

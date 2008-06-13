@@ -377,6 +377,10 @@ int fn_game_start_in_level(
               fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
               fn_hero_update_animation(hero);
               break;
+            case SDLK_LALT:
+              fn_hero_fire_start(hero);
+              fn_hero_update_animation(hero);
+              break;
             default:
               printf("unknown key pressed.\n");
               /* do nothing on other key input (yet) */
@@ -393,6 +397,10 @@ int fn_game_start_in_level(
             case SDLK_RIGHT:
               fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
               fn_hero_update_animation(hero);
+            case SDLK_LALT:
+              fn_hero_fire_stop(hero);
+              fn_hero_update_animation(hero);
+              break;
             default:
               /* do nothing on other keys. */
               break;
