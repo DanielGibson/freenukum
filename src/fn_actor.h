@@ -40,6 +40,13 @@ typedef enum fn_actor_type_e fn_actor_type_e;
 
 /* --------------------------------------------------------------- */
 
+typedef enum fn_actor_direction_e {
+  FN_ACTOR_DIRECTION_LEFT,
+  FN_ACTOR_DIRECTION_RIGHT
+} fn_actor_direction_e;
+
+/* --------------------------------------------------------------- */
+
 /**
  * The actor types.
  */
