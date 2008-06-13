@@ -111,18 +111,18 @@ enum fn_actor_type_e {
   FN_ACTOR_LETTER_K,                 /* TODO */
   FN_ACTOR_BOX_GREY_LETTER_E,        /* TODO */
   FN_ACTOR_LETTER_E,                 /* TODO */
-  FN_ACTOR_KEY_RED,                  /* TODO */
-  FN_ACTOR_KEYHOLE_RED,              /* TODO */
-  FN_ACTOR_DOOR_RED,                 /* TODO */
-  FN_ACTOR_KEY_BLUE,                 /* TODO */
-  FN_ACTOR_KEYHOLE_BLUE,             /* TODO */
-  FN_ACTOR_DOOR_BLUE,                /* TODO */
-  FN_ACTOR_KEY_PINK,                 /* TODO */
-  FN_ACTOR_KEYHOLE_PINK,             /* TODO */
-  FN_ACTOR_DOOR_PINK,                /* TODO */
-  FN_ACTOR_KEY_GREEN,                /* TODO */
-  FN_ACTOR_KEYHOLE_GREEN,            /* TODO */
-  FN_ACTOR_DOOR_GREEN,               /* TODO */
+  FN_ACTOR_KEY_RED,
+  FN_ACTOR_KEYHOLE_RED,
+  FN_ACTOR_DOOR_RED,
+  FN_ACTOR_KEY_BLUE,
+  FN_ACTOR_KEYHOLE_BLUE,
+  FN_ACTOR_DOOR_BLUE,
+  FN_ACTOR_KEY_PINK,
+  FN_ACTOR_KEYHOLE_PINK,
+  FN_ACTOR_DOOR_PINK,
+  FN_ACTOR_KEY_GREEN,
+  FN_ACTOR_KEYHOLE_GREEN,
+  FN_ACTOR_DOOR_GREEN,
   FN_ACTOR_MILL,                     /* TODO */
   FN_ACTOR_ACCESS_CARD_DOOR,         /* TODO */
   FN_ACTOR_SPIKES_UP,                /* TODO */
