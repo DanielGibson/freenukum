@@ -39,9 +39,6 @@
 
 /* --------------------------------------------------------------- */
 
-#define FN_HERO_DIRECTION_RIGHT    0
-#define FN_HERO_DIRECTION_LEFT     1
-
 #define FN_HERO_MOTION_NONE        0
 #define FN_HERO_MOTION_WALKING     1
 
@@ -60,7 +57,7 @@ typedef struct fn_hero_t {
   /**
    * The direction to which the hero moves.
    */
-  Uint8 direction;
+  fn_horizontal_direction_e direction;
 
   /**
    * The motion state (none or walking).
@@ -189,7 +186,7 @@ void fn_hero_init(
 
 void fn_hero_set_direction(
     fn_hero_t * hero,
-    Uint8 direction);
+    fn_horizontal_direction_e direction);
 
 /* --------------------------------------------------------------- */
 

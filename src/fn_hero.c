@@ -45,7 +45,7 @@ void fn_hero_init(
   hero->x = x;
   hero->y = y;
 
-  hero->direction = FN_HERO_DIRECTION_RIGHT;
+  hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
   hero->shooting = FN_HERO_SHOOTING_FALSE;
@@ -120,13 +120,13 @@ int fn_hero_act(
   if (hero->motion == FN_HERO_MOTION_WALKING) {
     /* our hero is moving */
     switch(hero->direction) {
-      case FN_HERO_DIRECTION_LEFT:
+      case fn_horizontal_direction_left:
         if (!fn_hero_would_collide(hero, lv, hero->x-1, hero->y)) {
           hero->x--;
           heromoved = 1;
         }
         break;
-      case FN_HERO_DIRECTION_RIGHT:
+      case fn_horizontal_direction_right:
         if (!fn_hero_would_collide(hero, lv, hero->x+1, hero->y)) {
           /* there is no solid block left of our hero */
           hero->x++;
@@ -211,7 +211,7 @@ void fn_hero_update_animation(
     if (hero->motion == FN_HERO_MOTION_NONE) {
 
       /* hero is standing */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+      if (hero->direction == fn_horizontal_direction_left) {
         if (hero->shooting == FN_HERO_SHOOTING_TRUE) {
           hero->tilenr = HERO_WALKING_LEFT + 12;
         } else {
@@ -229,7 +229,7 @@ void fn_hero_update_animation(
     } else {
 
       /* hero is walking */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+      if (hero->direction == fn_horizontal_direction_left) {
         hero->tilenr = HERO_WALKING_LEFT + 4 * hero->animationframe;
       } else {
         hero->tilenr = HERO_WALKING_RIGHT + 4 * hero->animationframe;
@@ -243,7 +243,7 @@ void fn_hero_update_animation(
     if (hero->counter > 0) {
 
       /* hero is jumping */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+      if (hero->direction == fn_horizontal_direction_left) {
         hero->tilenr = HERO_JUMPING_LEFT;
       } else {
         hero->tilenr = HERO_JUMPING_RIGHT;
@@ -253,7 +253,7 @@ void fn_hero_update_animation(
     } else {
 
       /* hero is falling */
-      if (hero->direction == FN_HERO_DIRECTION_LEFT) {
+      if (hero->direction == fn_horizontal_direction_left) {
         hero->tilenr = HERO_FALLING_LEFT;
       } else {
         hero->tilenr = HERO_FALLING_RIGHT;
@@ -269,7 +269,7 @@ void fn_hero_update_animation(
 
 void fn_hero_set_direction(
     fn_hero_t * hero,
-    Uint8 direction)
+    fn_horizontal_direction_e direction)
 {
   hero->direction = direction;
 }

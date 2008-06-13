@@ -142,9 +142,11 @@ int main(int argc, char ** argv)
             case SDLK_LEFT:
               if (event.key.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_RIGHT) {
-                  fn_hero_set_direction(&hero, FN_HERO_DIRECTION_RIGHT);
+                  fn_hero_set_direction(&hero,
+                      fn_horizontal_direction_right);
                 } else {
-                  fn_hero_set_direction(&hero, FN_HERO_DIRECTION_LEFT);
+                  fn_hero_set_direction(&hero,
+                      fn_horizontal_direction_left);
                 }
                 fn_hero_set_motion(&hero, FN_HERO_MOTION_WALKING);
               } else if (event.key.type == SDL_KEYUP) {

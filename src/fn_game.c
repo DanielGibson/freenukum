@@ -352,7 +352,8 @@ int fn_game_start_in_level(
                   srcrect.x -= pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
-                fn_hero_set_direction(hero, FN_HERO_DIRECTION_LEFT);
+                fn_hero_set_direction(hero,
+                    fn_horizontal_direction_left);
                 fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
                 fn_hero_update_animation(hero);
               }
@@ -366,7 +367,8 @@ int fn_game_start_in_level(
                   srcrect.x += pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
-                fn_hero_set_direction(hero, FN_HERO_DIRECTION_RIGHT);
+                fn_hero_set_direction(hero,
+                    fn_horizontal_direction_right);
                 fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
                 fn_hero_update_animation(hero);
               }
