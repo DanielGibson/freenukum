@@ -29,4 +29,5 @@ freenukum_SOURCES = fn.h \
 										fn_text.h           fn_text.c \
 										fn_tile.h           fn_tile.c \
 										fn_tilecache.h      fn_tilecache.c \
+										fn_shot.h           fn_shot.c \
 										freenukum.c

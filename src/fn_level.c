@@ -51,9 +51,12 @@ fn_level_t * fn_level_load(int fd,
 
   lv->levelpassed = 0;
 
+  lv->num_shots = 0;
+
   lv->actors = NULL;
   lv->bots = NULL;
   lv->animations = NULL;
+  lv->shots = NULL;
 
   lv->do_play = 1;
   lv->pixelsize = pixelsize;
@@ -1056,6 +1059,21 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
+  /* blit the shots */
+  for (iter = g_list_first(lv->shots);
+      iter != NULL;
+      iter = g_list_next(iter)) {
+    fn_shot_t * shot = (fn_shot_t *)iter->data;
+
+    Uint16 x = fn_shot_get_x(shot) / FN_TILE_WIDTH;
+    Uint16 y = fn_shot_get_y(shot) / FN_TILE_HEIGHT;
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      fn_shot_blit(shot);
+    } else {
+      fn_shot_gets_out_of_sight(shot);
+    }
+  }
+
   /* blit the hero */
   fn_hero_blit(&(lv->hero),
       lv->surface,
@@ -1133,6 +1151,27 @@ int fn_level_act(fn_level_t * lv) {
     lv->actors = g_list_remove_all(lv->actors, 0);
   }
 
+  for (iter = g_list_first(lv->shots);
+      iter != NULL;
+      iter = g_list_next(iter)) {
+    fn_shot_t * shot = (fn_shot_t *)iter->data;
+
+    res = fn_shot_act(shot);
+    if (res == 0) {
+      /* set the cleanup flag and free the memory */
+      cleanup = 1;
+      iter->data = 0;
+      fn_shot_free(shot); shot = NULL;
+      lv->num_shots--;
+    }
+  }
+
+  if (cleanup) {
+    /* clean up the shots that are finished */
+    cleanup = 0;
+    lv->shots = g_list_remove_all(lv->shots, 0);
+  }
+
   for (iter = g_list_first(lv->animations);
       iter != NULL;
       iter = g_list_next(iter)) {
@@ -1202,16 +1241,35 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+fn_shot_t * fn_level_add_shot(fn_level_t * lv,
+    fn_horizontal_direction_e direction,
+    Uint16 x,
+    Uint16 y)
+{
+  fn_shot_t * shot = fn_shot_create(lv,
+      x, y, direction);
+  lv->shots = g_list_append(lv->shots, shot);
+  return shot;
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_level_fire_shot(fn_level_t * lv)
 {
+  printf("Creating shot!!!\n");
   fn_hero_t * hero = fn_level_get_hero(lv);
-  /* TODO check if any further shot can be added */
-  switch(hero->direction) {
-    /*
-    fn_level_add_actor(actor->level,
-        FN_ACTOR_SCORE_100, actor->x, actor->y);
-        */
-    /* TODO create the shot */
+  Uint16 x = hero->x * FN_HALFTILE_WIDTH;
+  Uint16 y = (hero->y - 1) * FN_HALFTILE_HEIGHT - 4;
+
+  if (hero->direction == fn_horizontal_direction_right) {
+    x += FN_HALFTILE_WIDTH;
+  } else {
+    x -= FN_HALFTILE_WIDTH;
+  }
+
+  if (lv->num_shots < fn_hero_get_firepower(&(lv->hero))) {
+    fn_level_add_shot(lv, hero->direction, x, y);
+    lv->num_shots++;
   }
 }
 

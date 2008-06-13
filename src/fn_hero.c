@@ -468,7 +468,6 @@ void fn_hero_fire_start(fn_hero_t * hero)
 {
   printf("Starting fire.\n");
   fn_hero_set_shooting(hero, FN_HERO_SHOOTING_TRUE);
-  /* TODO fire shot */
 }
 
 /* --------------------------------------------------------------- */
@@ -481,3 +480,9 @@ void fn_hero_fire_stop(fn_hero_t * hero)
 
 /* --------------------------------------------------------------- */
 
+Uint8 fn_hero_get_firepower(fn_hero_t * hero)
+{
+  return hero->firepower;
+}
+
+/* --------------------------------------------------------------- */

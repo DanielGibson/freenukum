@@ -51,6 +51,7 @@ typedef struct fn_level_t fn_level_t;
  * not yet defined there.
  */
 #include "fn_actor.h"
+#include "fn_shot.h"
 
 /* --------------------------------------------------------------- */
 
@@ -102,6 +103,16 @@ struct fn_level_t {
    * The actors inside the level.
    */
   GList * actors;
+
+  /**
+   * The shots inside the level.
+   */
+  GList * shots;
+
+  /**
+   * The number of shots currently in level.
+   */
+  Uint8 num_shots;
 
   /**
    * The bots

@@ -367,4 +367,13 @@ void fn_hero_fire_stop(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the firepower that our hero currently has.
+ *
+ * @param  hero  The hero.
+ */
+Uint8 fn_hero_get_firepower(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */
