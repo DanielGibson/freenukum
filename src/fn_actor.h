@@ -329,7 +329,20 @@ void fn_actor_blit(fn_actor_t * actor);
 /* --------------------------------------------------------------- */
 
 /**
+ * The actor gets hit by a shot.
+ *
+ * @param  actor  The actor.
+ *
+ * @return 1 if the actor absorbs the shot, otherwise 0.
+ */
+Uint8 fn_actor_shot(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Get the x coordinate (in pixels) of the actor.
+ *
+ * @param  actor  The actor.
  *
  * @return  The x coordinate.
  */
@@ -340,9 +353,44 @@ Uint16 fn_actor_get_x(fn_actor_t * actor);
 /**
  * Get the y coordinate (in pixels) of the actor.
  *
+ * @param  actor  The actor.
+ *
  * @return  The y coordinate.
  */
 Uint16 fn_actor_get_y(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the width (in pixels) of the actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return  The width.
+ */
+Uint16 fn_actor_get_w(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the height (in pixels) of the actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return  The height.
+ */
+Uint16 fn_actor_get_h(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Tells if an actor can get shot.
+ *
+ * @param  actor  The actor.
+ *
+ * @return 1 if the actor can get shot, otherwise 0.
+ */
+Uint8 fn_actor_can_get_shot(fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 

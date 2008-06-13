@@ -41,6 +41,7 @@ fn_shot_t * fn_shot_create(fn_level_t * level,
   shot->is_alive = 1;
   shot->direction = direction;
   shot->counter = 0;
+  shot->countdown = 2;
 
   return shot;
 }
@@ -59,12 +60,36 @@ Uint8 fn_shot_act(fn_shot_t * shot)
   shot->counter++;
   shot->counter %= 4;
 
-  if (shot->direction == fn_horizontal_direction_right) {
-    shot->x += FN_TILE_WIDTH;
-  } else {
-    shot->x -= FN_TILE_WIDTH;
+  if (shot->countdown == 1) {
+    shot->countdown--;
+    shot->is_alive = 0;
   }
-  /* TODO check if shot hits anything else */
+
+  if (shot->countdown == 2) {
+    if (shot->direction == fn_horizontal_direction_right) {
+      shot->x += FN_TILE_WIDTH;
+    } else {
+      shot->x -= FN_TILE_WIDTH;
+    }
+
+    GList * iter = NULL;
+    fn_level_t * lv = fn_shot_get_level(shot);
+
+    for (iter = g_list_first(lv->actors);
+        iter != NULL;
+        iter = g_list_next(iter)) {
+      fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+      if (fn_actor_can_get_shot(actor) &&
+          fn_shot_overlaps_actor(shot, actor) &&
+          fn_actor_shot(actor)) {
+        shot->countdown = 1;
+        /* TODO create the fire effect */
+      }
+    }
+  }
+  /* TODO check if shot hits solid part */
+  /* TODO create effect if shot hits anything */
   return shot->is_alive;
 }
 
@@ -108,3 +133,61 @@ Uint16 fn_shot_get_y(fn_shot_t * shot)
   return shot->y;
 }
 
+/* --------------------------------------------------------------- */
+
+Uint16 fn_shot_get_w(fn_shot_t * shot)
+{
+  return FN_TILE_WIDTH;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint16 fn_shot_get_h(fn_shot_t * shot)
+{
+  return FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+fn_level_t * fn_shot_get_level(fn_shot_t * shot)
+{
+  return shot->level;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor)
+{
+  Uint16 shot_x_start = fn_shot_get_x(shot);
+  Uint16 shot_y_start = fn_shot_get_y(shot);
+  Uint16 shot_x_end = shot_x_start + fn_shot_get_w(shot);
+  Uint16 shot_y_end = shot_y_start + fn_shot_get_h(shot);
+  Uint16 actor_x_start = fn_actor_get_x(actor);
+  Uint16 actor_y_start = fn_actor_get_y(actor);
+  Uint16 actor_x_end = actor_x_start + fn_actor_get_w(actor);
+  Uint16 actor_y_end = actor_y_start + fn_actor_get_h(actor);
+
+  if (shot_x_end < actor_x_start) {
+    /* shot is further left than actor. */
+    return 0;
+  }
+
+  if (actor_x_end < shot_x_start) {
+    /* shot is further right than actor */
+    return 0;
+  }
+
+  if (shot_y_end < actor_y_start) {
+    /* shot is above actor. */
+    return 0;
+  }
+
+  if (actor_y_end < shot_y_start) {
+    /* shot is below actor. */
+    return 0;
+  }
+
+  return 1;
+}
+
+/* --------------------------------------------------------------- */

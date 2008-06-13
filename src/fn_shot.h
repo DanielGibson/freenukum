@@ -72,6 +72,11 @@ struct fn_shot_t {
    * The counter for the animation.
    */
   Uint8 counter;
+
+  /**
+   * The down until the shot is to be removed.
+   */
+  Uint8 countdown;
 };
 
 /* --------------------------------------------------------------- */
@@ -133,7 +138,7 @@ void fn_shot_gets_out_of_sight(fn_shot_t * shot);
 /**
  * Get the x position of a shot (in pixels).
  *
- * @param  shot  The soht.
+ * @param  shot  The shot.
  */
 Uint16 fn_shot_get_x(fn_shot_t * shot);
 
@@ -142,9 +147,50 @@ Uint16 fn_shot_get_x(fn_shot_t * shot);
 /**
  * Get the y position of a shot (in pixels).
  *
- * @param  shot  The soht.
+ * @param  shot  The shot.
  */
 Uint16 fn_shot_get_y(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the width of a shot (in pixels).
+ *
+ * @param  shot  The shot.
+ */
+Uint16 fn_shot_get_w(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the height of a shot (in pixels).
+ *
+ * @param  shot  The shot.
+ */
+Uint16 fn_shot_get_h(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the level inside which a shot resides.
+ * 
+ * @param  shot  The shot.
+ *
+ * @return The level inside the shot resides.
+ */
+fn_level_t * fn_shot_get_level(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if a shot overlaps an actor.
+ *
+ * @param  shot   The shot.
+ * @param  actor  The actor.
+ *
+ * @return 1 if they overlap, otherwise 0.
+ */
+Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
