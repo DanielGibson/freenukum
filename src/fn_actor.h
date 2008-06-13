@@ -128,6 +128,7 @@ enum fn_actor_type_e {
   FN_ACTOR_SPIKES_UP,                /* TODO */
   FN_ACTOR_SPIKES_DOWN,              /* TODO */
   FN_ACTOR_SPIKE,                    /* TODO */
+  FN_ACTOR_SHOT,                     /* TODO */
   FN_ACTOR_SCORE_100,
   FN_ACTOR_SCORE_200,
   FN_ACTOR_SCORE_500,

@@ -329,4 +329,16 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Let the hero fire a shot.
+ *
+ * If there are already the maximum of shots in the level,
+ * no shot is created and this function returns.
+ * 
+ * @param  lv  The level.
+ */
+void fn_level_fire_shot(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */

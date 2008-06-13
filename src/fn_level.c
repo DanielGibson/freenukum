@@ -1202,3 +1202,18 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+void fn_level_fire_shot(fn_level_t * lv)
+{
+  fn_hero_t * hero = fn_level_get_hero(lv);
+  /* TODO check if any further shot can be added */
+  switch(hero->direction) {
+    /*
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_SCORE_100, actor->x, actor->y);
+        */
+    /* TODO create the shot */
+  }
+}
+
+/* --------------------------------------------------------------- */
+

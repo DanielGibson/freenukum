@@ -2426,6 +2426,16 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_spikes_blit,
   },
+  [FN_ACTOR_SHOT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL  /* TODO */
+  },
   [FN_ACTOR_SCORE_100] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_score_create,

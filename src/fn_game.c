@@ -379,6 +379,7 @@ int fn_game_start_in_level(
               break;
             case SDLK_LALT:
               fn_hero_fire_start(hero);
+              fn_level_fire_shot(lv);
               fn_hero_update_animation(hero);
               break;
             default:
