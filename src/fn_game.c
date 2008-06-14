@@ -146,10 +146,7 @@ void fn_game_start(
     fn_infobox_show(pixelsize,
         tilecache,
         screen,
-        "Sorry, gameplay is\n"
-        "not implemented yet.\n"
-        "You can browse through the level\n"
-        "by pressing the cursor keys though.\n");
+        "Get ready FreeNukum,\nyou are going in.\n");
 
     while (success && level < 13) {
       if (interlevel) {
