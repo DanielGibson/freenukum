@@ -565,7 +565,6 @@ void fn_actor_function_item_blit(fn_actor_t * actor)
 void fn_actor_function_item_shot(fn_actor_t * actor)
 {
   fn_level_t * lv = actor->level;
-  printf("Item got shot.\n");
   switch(actor->type) {
     case FN_ACTOR_BOX_BLUE_FOOTBALL:
       actor->is_alive = 0;
@@ -684,6 +683,102 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     default:
       break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a teleporter.
+ *
+ * @param  actor  The teleporter actor.
+ */
+void fn_actor_function_teleporter_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Interact with a teleporter.
+ *
+ * @param  actor  The teleporter actor.
+ */
+void fn_actor_function_teleporter_interact_start(fn_actor_t * actor)
+{
+  fn_actor_type_e othertype;
+  if (actor->type == FN_ACTOR_TELEPORTER1) {
+    othertype = FN_ACTOR_TELEPORTER2;
+    printf("Beaming to teleporter 2\n");
+  } else {
+    othertype = FN_ACTOR_TELEPORTER1;
+    printf("Beaming to teleporter 1\n");
+  }
+  fn_level_t * level = actor->level;
+
+  GList * iter = NULL;
+  for (iter = g_list_first(level->actors);
+      iter != NULL;
+      iter = g_list_next(iter)) {
+    fn_actor_t * otheractor = (fn_actor_t *)iter->data;
+    if (otheractor->type == othertype) {
+      fn_hero_t * hero = fn_level_get_hero(actor->level);
+      fn_hero_replace(hero,
+          otheractor->x / FN_HALFTILE_WIDTH,
+          otheractor->y / FN_HALFTILE_HEIGHT);
+      return;
+    }
+  }
+  return;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * The teleporter acts.
+ *
+ * @param  actor  The teleporter actor.
+ */
+void fn_actor_function_teleporter_act(fn_actor_t * actor)
+{
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit a teleporter.
+ *
+ * @param  actor  The teleporter actor.
+ */
+void fn_actor_function_teleporter_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_item_data_t * data = actor->data;
+  SDL_Surface * tile;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  int i = 0;
+  for (i = 0; i < 3; i++) {
+    int j = 0;
+    for (j = 0; j < 3; j++) {
+      destrect.x = (actor->x - (1 - j) * FN_TILE_WIDTH) * pixelsize;
+      destrect.y = (actor->y - (2 - i) * FN_TILE_HEIGHT) * pixelsize;
+      tile = fn_tilecache_get_tile(tc,
+          ANIM_TELEPORTER1 + i * 3 + j
+          );
+      SDL_BlitSurface(tile, NULL, target, &destrect);
+    }
   }
 }
 
@@ -1225,7 +1320,6 @@ typedef struct fn_actor_keyhole_data_t {
  */
 void fn_actor_function_keyhole_create(fn_actor_t * actor)
 {
-  printf("keyhole created.\n");
   fn_actor_keyhole_data_t * data = malloc(
       sizeof(fn_actor_keyhole_data_t));
   actor->data = data;
@@ -1890,26 +1984,34 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_TELEPORTER1] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_teleporter_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_teleporter_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_teleporter_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_teleporter_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_TELEPORTER2] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_teleporter_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_teleporter_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_teleporter_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_teleporter_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_FENCE_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

@@ -60,15 +60,15 @@ enum fn_actor_type_e {
   FN_ACTOR_DRPROTON,                 /* TODO */
   FN_ACTOR_CAMERA,                   /* TODO */
   FN_ACTOR_BOMB,                     /* TODO */
-  FN_ACTOR_EXITDOOR,                 /* TODO */
+  FN_ACTOR_EXITDOOR,
   FN_ACTOR_SODA,                     /* TODO */
   FN_ACTOR_UNSTABLEFLOOR,            /* TODO */
   FN_ACTOR_FAN_LEFT,                 /* TODO */
   FN_ACTOR_FAN_RIGHT,                /* TODO */
   FN_ACTOR_BROKENWALL_BACKGROUND,    /* TODO */
   FN_ACTOR_STONE_BACKGROUND,         /* TODO */
-  FN_ACTOR_TELEPORTER1,              /* TODO */
-  FN_ACTOR_TELEPORTER2,              /* TODO */
+  FN_ACTOR_TELEPORTER1,
+  FN_ACTOR_TELEPORTER2,
   FN_ACTOR_FENCE_BACKGROUND   ,      /* TODO */
   FN_ACTOR_WINDOW_BACKGROUND,        /* TODO */
   FN_ACTOR_SCREEN,                   /* TODO */

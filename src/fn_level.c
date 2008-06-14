@@ -355,7 +355,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_FOOTBALL,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x301e: /* blue box with joystick inside */
         if (x > 0) {
@@ -364,7 +364,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_JOYSTICK,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x301f: /* blue box with disk inside */
         if (x > 0) {
@@ -373,7 +373,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_DISK,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3020: /* grey box with glove inside */
         if (x > 0) {
@@ -400,7 +400,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_BALLOON,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3024: /* camera */
         if (x > 0) {
@@ -409,7 +409,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_CAMERA,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3025: /* broken wall background */
         /* take the part from one above */
@@ -495,7 +495,7 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_FLAG,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x302e: /* blue box with radio inside */
         if (x > 0) {
@@ -504,13 +504,19 @@ fn_level_t * fn_level_load(int fd,
         lv->actors = g_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_RADIO,
-              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
-      case 0x302f: /* beaming station */
-        /* TODO */
+      case 0x302f: /* teleporter station */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_TELEPORTER1,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
-      case 0x3030: /* beaming station */
-        /* TODO */
+      case 0x3030: /* teleporter station */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_TELEPORTER2,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3031: /* jumping mines */
         if (x > 0) {
@@ -1211,6 +1217,7 @@ void fn_level_hero_interact_start(fn_level_t * lv)
         actor->y <= (hero->y+2) * FN_HALFTILE_HEIGHT) {
 
       fn_actor_hero_interact_start(actor);
+      return;
     }
   }
 }
@@ -1264,7 +1271,6 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 
 void fn_level_fire_shot(fn_level_t * lv)
 {
-  printf("Creating shot!!!\n");
   fn_hero_t * hero = fn_level_get_hero(lv);
   Uint16 x = hero->x * FN_HALFTILE_WIDTH;
   Uint16 y = (hero->y - 1) * FN_HALFTILE_HEIGHT - 4;

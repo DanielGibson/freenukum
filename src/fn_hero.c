@@ -188,6 +188,21 @@ int fn_hero_act(
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_replace(fn_hero_t * hero,
+    Uint16 x, Uint16 y)
+{
+  hero->x = x;
+  hero->y = y;
+  SDL_Event event;
+  event.type = SDL_USEREVENT;
+  event.user.code = fn_event_heromoved;
+  event.user.data1 = hero;
+  event.user.data2 = 0;
+  SDL_PushEvent(&event);
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_next_animationframe(
     fn_hero_t * hero)
 {

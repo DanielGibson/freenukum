@@ -160,6 +160,18 @@ int fn_hero_act(fn_hero_t * hero,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Put the hero to a new position.
+ *
+ * @param  hero  The hero.
+ * @param  x     The new x position of our hero (in half-tiles).
+ * @param  y     The new y position of our hero (in half-tiles).
+ */
+void fn_hero_replace(fn_hero_t * hero,
+    Uint16 x, Uint16 y);
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_next_animationframe(
     fn_hero_t * hero);
 
