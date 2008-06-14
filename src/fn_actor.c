@@ -401,7 +401,6 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
   fn_actor_item_data_t * data = (fn_actor_item_data_t *)actor->data;
   Uint8 inventory = fn_hero_get_inventory(hero);
   Uint8 firepower = fn_hero_get_firepower(hero);
-  printf("Hero has firepower %d\n", firepower);
   switch(actor->type) {
     case FN_ACTOR_LETTER_D:
       /* TODO */
@@ -437,7 +436,6 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       firepower++;
       fn_hero_set_firepower(hero, firepower);
       actor->is_alive = 0;
-      printf("****** Added firepower up to %d\n", firepower);
       break;
     case FN_ACTOR_ACCESS_CARD:
       /* TODO */
@@ -724,10 +722,8 @@ void fn_actor_function_teleporter_interact_start(fn_actor_t * actor)
   fn_actor_type_e othertype;
   if (actor->type == FN_ACTOR_TELEPORTER1) {
     othertype = FN_ACTOR_TELEPORTER2;
-    printf("Beaming to teleporter 2\n");
   } else {
     othertype = FN_ACTOR_TELEPORTER1;
-    printf("Beaming to teleporter 1\n");
   }
   fn_level_t * level = actor->level;
 
