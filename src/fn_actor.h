@@ -123,6 +123,7 @@ enum fn_actor_type_e {
   FN_ACTOR_KEY_GREEN,
   FN_ACTOR_KEYHOLE_GREEN,
   FN_ACTOR_DOOR_GREEN,
+  FN_ACTOR_SHOOTABLE_WALL,
   FN_ACTOR_MILL,                     /* TODO */
   FN_ACTOR_ACCESS_CARD_DOOR,         /* TODO */
   FN_ACTOR_SPIKES_UP,                /* TODO */

@@ -1318,7 +1318,6 @@ void fn_actor_function_keyhole_blit(fn_actor_t * actor)
  */
 void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
 {
-  printf("Hero interacts with keyhole.\n");
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
   Uint8 inventory = fn_hero_get_inventory(hero);
@@ -1473,6 +1472,63 @@ void fn_actor_function_key_blit(fn_actor_t * actor)
       break;
   }
   SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * Create the shootable wall.
+ *
+ * @param  actor  The wall actor.
+ */
+void fn_actor_function_shootable_wall_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the shootable wall.
+ *
+ * @param  actor  The wall actor.
+ */
+void fn_actor_function_shootable_wall_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  SDL_Surface * tile = NULL;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  tile = fn_tilecache_get_tile(tc, 0x8C0/0x20);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+  tile = fn_tilecache_get_tile(tc, 0x1800/0x20);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Shoot the shootable wall.
+ *
+ * @param  actor  The wall actor.
+ */
+void fn_actor_function_shootable_wall_shot(fn_actor_t * actor)
+{
+  fn_level_t * level = actor->level;
+  actor->is_alive = 0;
+  fn_level_set_solid(level,
+      actor->x / FN_TILE_WIDTH,
+      actor->y / FN_TILE_HEIGHT,
+      0);
 }
 
 /* --------------------------------------------------------------- */
@@ -2667,6 +2723,20 @@ void
       fn_actor_function_door_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
+  [FN_ACTOR_SHOOTABLE_WALL] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_shootable_wall_create,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_shootable_wall_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_shootable_wall_shot,
+  },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
@@ -3455,55 +3525,9 @@ Uint16 fn_actor_get_h(fn_actor_t * actor)
 
 Uint8 fn_actor_can_get_shot(fn_actor_t * actor)
 {
-  switch(actor->type) {
-    case FN_ACTOR_FIREWHEELBOT:
-    case FN_ACTOR_FLYINGBOT:
-    case FN_ACTOR_FOOTBOT:
-    case FN_ACTOR_HELICOPTERBOT:
-    case FN_ACTOR_RABBITOIDBOT:
-    case FN_ACTOR_REDBALL_JUMPING:
-    case FN_ACTOR_REDBALL_LYING:
-    case FN_ACTOR_ROBOT:
-    case FN_ACTOR_SNAKEBOT:
-    case FN_ACTOR_TANKBOT:
-    case FN_ACTOR_WALLCRAWLERBOT_LEFT:
-    case FN_ACTOR_WALLCRAWLERBOT_RIGHT:
-    case FN_ACTOR_DRPROTON:
-    case FN_ACTOR_CAMERA:
-    case FN_ACTOR_SODA:
-    case FN_ACTOR_FAN_LEFT:
-    case FN_ACTOR_FAN_RIGHT:
-    case FN_ACTOR_BOX_GREY_EMPTY:
-    case FN_ACTOR_BOX_GREY_BOOTS:
-    case FN_ACTOR_BOX_GREY_CLAMPS:
-    case FN_ACTOR_BOX_GREY_GUN:
-    case FN_ACTOR_BOX_GREY_BOMB:
-    case FN_ACTOR_BOX_RED_SODA:
-    case FN_ACTOR_BOX_RED_CHICKEN:
-    case FN_ACTOR_CHICKEN_SINGLE:
-    case FN_ACTOR_CHICKEN_DOUBLE:
-    case FN_ACTOR_BOX_BLUE_FOOTBALL:
-    case FN_ACTOR_BOX_BLUE_JOYSTICK:
-    case FN_ACTOR_BOX_BLUE_DISK:
-    case FN_ACTOR_BOX_BLUE_BALLOON:
-    case FN_ACTOR_BALLOON:
-    case FN_ACTOR_BOX_GREY_GLOVE:
-    case FN_ACTOR_BOX_GREY_FULL_LIFE:
-    case FN_ACTOR_BOX_BLUE_FLAG:
-    case FN_ACTOR_BOX_BLUE_RADIO:
-    case FN_ACTOR_BOX_GREY_ACCESS_CARD:
-    case FN_ACTOR_BOX_GREY_LETTER_D:
-    case FN_ACTOR_BOX_GREY_LETTER_U:
-    case FN_ACTOR_BOX_GREY_LETTER_K:
-    case FN_ACTOR_BOX_GREY_LETTER_E:
-    case FN_ACTOR_MILL:
-    case FN_ACTOR_ACCESS_CARD_DOOR:
-      return 1;
-      break;
-    default:
-      return 0;
-      break;
-  }
+  fn_actor_function_t func =
+    fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_SHOT];
+  return (func != NULL);
 }
 
 /* --------------------------------------------------------------- */

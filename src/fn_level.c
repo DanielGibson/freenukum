@@ -170,6 +170,13 @@ fn_level_t * fn_level_load(int fd,
               FN_ACTOR_LAVA_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
+      case 0x1800: /* solid wall which can be shot */
+        lv->tiles[y][x] = 0x17E0/0x20;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_SHOOTABLE_WALL,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
+        break;
       case 0x3000: /* grey box, empty */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
