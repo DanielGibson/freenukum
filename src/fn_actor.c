@@ -371,6 +371,16 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 8;
       break;
+    case FN_ACTOR_CHICKEN_SINGLE:
+      data->tile = OBJ_CHICKEN_SINGLE;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_CHICKEN_DOUBLE:
+      data->tile = OBJ_CHICKEN_DOUBLE;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
@@ -506,6 +516,20 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       break;
     case FN_ACTOR_SODA:
       fn_hero_improve_health(hero, 1);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 200);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_200, actor->x, actor->y);
+      break;
+    case FN_ACTOR_CHICKEN_SINGLE:
+      fn_hero_improve_health(hero, 1);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 100);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_100, actor->x, actor->y);
+      break;
+    case FN_ACTOR_CHICKEN_DOUBLE:
+      fn_hero_improve_health(hero, 2);
       actor->is_alive = 0;
       fn_hero_add_score(hero, 200);
       fn_level_add_actor(actor->level,
@@ -695,6 +719,12 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_E, actor->x, actor->y));
+      break;
+    case FN_ACTOR_CHICKEN_SINGLE:
+      actor->is_alive = 0;
+      lv->actors = g_list_append(lv->actors,
+          fn_actor_create(lv,
+            FN_ACTOR_CHICKEN_DOUBLE, actor->x, actor->y));
       break;
     default:
       break;
@@ -2234,26 +2264,39 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_CHICKEN_SINGLE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_item_shot,
   },
   [FN_ACTOR_CHICKEN_DOUBLE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_BLUE_FOOTBALL] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
