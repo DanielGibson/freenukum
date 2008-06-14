@@ -399,9 +399,10 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_CAMERA, &(lv->hero), lv->tilecache,
-              lv->pixelsize, x*2, y*2));
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_CAMERA,
+              x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
         break;
       case 0x3025: /* broken wall background */
         /* take the part from one above */

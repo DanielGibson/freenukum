@@ -691,6 +691,69 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * Create a camera.
+ *
+ * @param  actor  The camera actor.
+ */
+void fn_actor_function_camera_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/**
+ * Blit the camera.
+ *
+ * @param  actor  The camera actor.
+ */
+void fn_actor_function_camera_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_item_data_t * data = actor->data;
+  SDL_Surface * tile;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  size_t x = fn_hero_get_x(hero) * FN_HALFTILE_WIDTH;
+  if (x-1 > actor->x) {
+    tile = fn_tilecache_get_tile(tc,
+        ANIM_CAMERA_RIGHT);
+  } else if (x+1 < actor->x) {
+    tile = fn_tilecache_get_tile(tc,
+        ANIM_CAMERA_LEFT);
+  } else {
+    tile = fn_tilecache_get_tile(tc,
+        ANIM_CAMERA_CENTER);
+  }
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * A camera gets shot.
+ *
+ * @param  actor  The camera actor.
+ */
+void fn_actor_function_camera_shot(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  actor->is_alive = 0;
+  fn_hero_add_score(hero, 100);
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_SCORE_100, actor->x, actor->y);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * The score struct.
  * Scores are elements which get shown when the hero has fetched
  * an item for which he gets points. The score element slowly
@@ -1658,7 +1721,8 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_CAMERA] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_camera_create,
     [FN_ACTOR_FUNCTION_FREE]                = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
