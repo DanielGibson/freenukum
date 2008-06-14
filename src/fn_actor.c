@@ -356,6 +356,11 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 4;
       break;
+    case FN_ACTOR_BOOTS:
+      data->tile = OBJ_BOOT;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
@@ -389,6 +394,7 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_actor_item_data_t * data = (fn_actor_item_data_t *)actor->data;
+  Uint8 inventory = fn_hero_get_inventory(hero);
   switch(actor->type) {
     case FN_ACTOR_LETTER_D:
       /* TODO */
@@ -439,10 +445,9 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
           __LINE__);
       break;
     case FN_ACTOR_BOOTS:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the boots"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      inventory |= FN_INVENTORY_BOOT;
+      fn_hero_set_inventory(hero, inventory);
+      actor->is_alive = 0;
       break;
     case FN_ACTOR_CLAMPS:
       /* TODO */
@@ -2085,15 +2090,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_BOOTS] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_CLAMPS] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

@@ -306,7 +306,11 @@ void fn_hero_set_flying(
 {
   if (flying == FN_HERO_FLYING_TRUE) {
     if (hero->flying != flying) {
-      hero->counter = 6;
+      if (hero->inventory & FN_INVENTORY_BOOT) {
+        hero->counter = 8;
+      } else {
+        hero->counter = 6;
+      }
     }
   }
   hero->flying = flying;
@@ -346,7 +350,9 @@ void fn_hero_set_inventory(
     Uint8 inventory)
 {
   SDL_Event event;
+
   hero->inventory = inventory;
+
   event.type = SDL_USEREVENT;
   event.user.code = fn_event_hero_inventory_changed;
   event.user.data1 = hero;
