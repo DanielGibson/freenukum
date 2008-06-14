@@ -1413,7 +1413,7 @@ void fn_actor_function_keyhole_blit(fn_actor_t * actor)
 void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-
+  fn_actor_keyhole_data_t * data = actor->data;
   Uint8 inventory = fn_hero_get_inventory(hero);
 
   char msg[40];
@@ -1452,7 +1452,6 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
   if (haskey) {
     inventory &= ~(needed_key);
     fn_hero_set_inventory(hero, inventory);
-    fn_actor_keyhole_data_t * data = actor->data;
     data->counter = 5;
 
     /* open all doors with the real color */
@@ -1467,7 +1466,7 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
         doordata->state = 1;
       }
     }
-  } else {
+  } else if (data->counter != 5) {
     Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
     fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
     SDL_Surface * screen = actor->level->screen;
