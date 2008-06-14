@@ -35,12 +35,6 @@
 
 /* --------------------------------------------------------------- */
 
-#include "fn_hero.h"
-#include "fn_animation.h"
-#include "fn_bot.h"
-
-/* --------------------------------------------------------------- */
-
 typedef struct fn_level_t fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -50,8 +44,11 @@ typedef struct fn_level_t fn_level_t;
  * at the beginning of this file because fn_level_t is
  * not yet defined there.
  */
+#include "fn_hero.h"
 #include "fn_actor.h"
 #include "fn_shot.h"
+#include "fn_animation.h"
+#include "fn_bot.h"
 
 /* --------------------------------------------------------------- */
 
@@ -146,6 +143,11 @@ struct fn_level_t {
    * Non-zero if the hero passed the level, otherwise zero.
    */
   int levelpassed;
+
+  /**
+   * The actor with which the hero interacts.
+   */
+  fn_actor_t * interactor;
 };
 
 /* --------------------------------------------------------------- */

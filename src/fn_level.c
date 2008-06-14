@@ -60,6 +60,7 @@ fn_level_t * fn_level_load(int fd,
   lv->bots = NULL;
   lv->animations = NULL;
   lv->shots = NULL;
+  lv->interactor = NULL;
 
   lv->do_play = 1;
   lv->pixelsize = pixelsize;
@@ -190,7 +191,11 @@ fn_level_t * fn_level_load(int fd,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3001: /* lift */
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_LIFT,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3002: /* left end of left-moving conveyor */
         /* TODO */
@@ -1204,6 +1209,16 @@ int fn_level_act(fn_level_t * lv) {
 
 /* --------------------------------------------------------------- */
 
+void fn_level_hero_interact_stop(fn_level_t * lv)
+{
+  if (lv->interactor != NULL) {
+    fn_actor_hero_interact_stop(lv->interactor);
+  }
+  lv->interactor = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_level_hero_interact_start(fn_level_t * lv)
 {
   GList * iter = NULL;
@@ -1218,28 +1233,11 @@ void fn_level_hero_interact_start(fn_level_t * lv)
         actor->y >= (hero->y-2) * FN_HALFTILE_HEIGHT &&
         actor->y <= (hero->y+2) * FN_HALFTILE_HEIGHT) {
 
+      fn_level_hero_interact_stop(lv);
+
+      lv->interactor = actor;
       fn_actor_hero_interact_start(actor);
       return;
-    }
-  }
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_level_hero_interact_stop(fn_level_t * lv)
-{
-  GList * iter = NULL;
-  for (iter = g_list_first(lv->actors);
-      iter != NULL;
-      iter = g_list_next(iter)) {
-    fn_actor_t * actor = (fn_actor_t *)iter->data;
-    fn_hero_t * hero = fn_level_get_hero(lv);
-
-    if (actor->x >= (hero->x - FN_TILE_WIDTH) &&
-        actor->x <= (hero->x + FN_TILE_WIDTH) &&
-        actor->y >= (hero->y - FN_TILE_HEIGHT) &&
-        actor->y <= (hero->y + FN_TILE_HEIGHT)) {
-      fn_actor_hero_interact_stop(actor);
     }
   }
 }

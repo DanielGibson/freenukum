@@ -35,7 +35,12 @@
 
 /* --------------------------------------------------------------- */
 
+typedef struct fn_hero_t fn_hero_t;
+
+/* --------------------------------------------------------------- */
+
 #include "fn_tilecache.h"
+#include "fn_actor.h"
 
 /* --------------------------------------------------------------- */
 
@@ -53,7 +58,7 @@
 /**
  * Our hero.
  */
-typedef struct fn_hero_t {
+struct fn_hero_t {
   /**
    * The direction to which the hero moves.
    */
@@ -131,7 +136,7 @@ typedef struct fn_hero_t {
    * This is zero if none was fetched yet.
    */
   Uint8 fetchedletter;
-} fn_hero_t;
+};
 
 /* --------------------------------------------------------------- */
 

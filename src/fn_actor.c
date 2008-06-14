@@ -252,6 +252,212 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef enum fn_actor_lift_state_e {
+  fn_actor_lift_state_idle,
+  fn_actor_lift_state_ascending,
+  fn_actor_lift_state_descending,
+} fn_actor_lift_state_e;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * The lift.
+ */
+typedef struct fn_actor_lift_data_t {
+  /**
+   * The current height of the lift.
+   */
+  Uint16 height;
+  /**
+   * The state of the lift.
+   */
+  fn_actor_lift_state_e state;
+} fn_actor_lift_data_t;
+
+/**
+ * Create a lift.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_create(fn_actor_t * actor)
+{
+  fn_actor_lift_data_t * data = malloc(
+      sizeof(fn_actor_lift_data_t));
+  data->height = 0;
+  data->state = fn_actor_lift_state_idle;
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete the lift.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_free(fn_actor_t * actor)
+{
+  fn_actor_lift_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Hero starts to interact with lift.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_interact_start(fn_actor_t * actor)
+{
+  fn_actor_lift_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  printf("Interact: hero x: %d, hero y: %d\n",
+      fn_hero_get_x(hero) * FN_HALFTILE_WIDTH,
+      fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT);
+  printf("x: %d, y: %d\n",
+      actor->x, actor->y - FN_TILE_HEIGHT);
+  if (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH == actor->x &&
+      fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
+      actor->y - FN_TILE_HEIGHT) {
+    data->state = fn_actor_lift_state_ascending;
+    printf("**** LIFT ASCENDING ****\n");
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Hero stops to interact with lift.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_interact_end(fn_actor_t * actor)
+{
+  fn_actor_lift_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH == actor->x &&
+      fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
+      actor->y - FN_TILE_HEIGHT) {
+    data->state = fn_actor_lift_state_idle;
+    printf("%d **** LIFT IDLE ****\n", __LINE__);
+  } else {
+    data->state = fn_actor_lift_state_descending;
+    printf("%d **** LIFT DESCENDING ****\n", __LINE__);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Lift acts.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_act(fn_actor_t * actor)
+{
+  fn_actor_lift_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_level_t * level = actor->level;
+
+  if (data->state == fn_actor_lift_state_ascending ||
+      (data->state == fn_actor_lift_state_idle && data->height > 0))
+  {
+    if (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH == actor->x &&
+        fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
+        actor->y - FN_TILE_HEIGHT) {
+    } else {
+      printf("x hero: %d, x actor: %d, y hero: %d, y actor: %d\n",
+        fn_hero_get_x(hero) * FN_HALFTILE_WIDTH,
+        actor->x,
+        fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT,
+        actor->y - FN_TILE_HEIGHT);
+      data->state = fn_actor_lift_state_descending;
+      printf("%d **** LIFT DESCENDING ****\n", __LINE__);
+    }
+  }
+
+  switch(data->state)
+  {
+    case fn_actor_lift_state_ascending:
+      if (fn_level_is_solid(level,
+            actor->x/FN_TILE_WIDTH,
+            actor->y/FN_TILE_HEIGHT-3)) {
+        data->state = fn_actor_lift_state_idle;
+      } else {
+        data->height++;
+        actor->y -= FN_TILE_HEIGHT;
+        fn_hero_replace(hero,
+            actor->x/FN_HALFTILE_WIDTH,
+            actor->y/FN_HALFTILE_HEIGHT - 2);
+        fn_level_set_solid(level,
+            actor->x/FN_TILE_WIDTH,
+            actor->y/FN_TILE_HEIGHT,
+            1);
+      }
+      break;
+    case fn_actor_lift_state_descending:
+      if (data->height != 0) {
+        fn_level_set_solid(level,
+            actor->x/FN_TILE_WIDTH,
+            actor->y/FN_TILE_HEIGHT,
+            0);
+        actor->y += FN_TILE_HEIGHT;
+        data->height--;
+      } else {
+        data->state = fn_actor_lift_state_idle;
+        printf("%d **** LIFT IDLE ****\n", __LINE__);
+      }
+      break;
+    case fn_actor_lift_state_idle:
+      /* nothing to do, we stay where we are. */
+      break;
+    default:
+      /* we are in an invalid state. */
+      printf(__FILE__ ":%d: warning: lift "
+          "is in invalid state.\n",
+          __LINE__);
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the lift.
+ *
+ * @param  actor  The lift actor.
+ */
+void fn_actor_function_lift_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_lift_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      OBJ_ELEVATOR);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  int i = 0;
+  tile = fn_tilecache_get_tile(tc, SOLID_START + 23);
+  for (i = 0; i < data->height; i++) {
+    destrect.y += FN_TILE_HEIGHT * pixelsize;
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * The accesscard slot.
  */
@@ -3248,6 +3454,23 @@ void
       fn_actor_function_shootable_wall_blit,
     [FN_ACTOR_FUNCTION_SHOT]                =
       fn_actor_function_shootable_wall_shot,
+  },
+  [FN_ACTOR_LIFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_lift_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_lift_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_lift_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   =
+      fn_actor_function_lift_interact_end,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_lift_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_lift_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

@@ -1,3 +1,5 @@
+	- Basic lift functionality.
+0.2.1
 	- Hero can fetch guns for more firepower.
 	- Hero can fetch boots and then jump higher.
 	- Hero can use teleporters.
@@ -10,8 +12,8 @@
 	- After finishing a level, we go on to the next instead of returning
 	  to the title screen
 
-2.0
+0.2
 	- Exit doors work now
 
-1.0
+0.1
 	- Initial development release

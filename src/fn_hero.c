@@ -91,6 +91,7 @@ void fn_hero_enterlevel(
       ~FN_INVENTORY_KEY_PINK
       );
   hero->hidden = 0;
+  hero->fetchedletter = 0;
 }
 
 /* --------------------------------------------------------------- */
