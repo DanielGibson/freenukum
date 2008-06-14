@@ -1474,6 +1474,7 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
     fn_infobox_show(pixelsize, tc, screen, msg);
   }
 }
+
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
