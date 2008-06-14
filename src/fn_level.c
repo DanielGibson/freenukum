@@ -474,7 +474,7 @@ fn_level_t * fn_level_load(int fd,
         {
           lv->actors = g_list_append(lv->actors,
               fn_actor_create(lv,
-                FN_ACTOR_SPIKES_DOWN,
+                FN_ACTOR_SPIKE,
                 x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
           break;
           SDL_Surface * tile = fn_tilecache_get_tile(
