@@ -61,8 +61,7 @@ enum fn_bot_type_e {
   FN_BOT_TYPE_TANKBOT,
   FN_BOT_TYPE_WALLCRAWLER_LEFT,
   FN_BOT_TYPE_WALLCRAWLER_RIGHT,
-  FN_BOT_TYPE_DRPROTON,
-  FN_BOT_TYPE_CAMERA
+  FN_BOT_TYPE_DRPROTON
 };
 
 /* --------------------------------------------------------------- */

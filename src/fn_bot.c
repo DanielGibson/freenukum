@@ -90,9 +90,6 @@ fn_bot_t * fn_bot_create(
     case FN_BOT_TYPE_DRPROTON:
       /* TODO */
       break;
-    case FN_BOT_TYPE_CAMERA:
-      /* no data to store here. */
-      break;
     default:
       /* TODO - unknown bot */
       break;
@@ -201,22 +198,6 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
       break;
     case FN_BOT_TYPE_DRPROTON:
       /* TODO */
-      break;
-    case FN_BOT_TYPE_CAMERA:
-      {
-        size_t x = fn_hero_get_x(bot->hero);
-        if (x-1 > bot->x) {
-          tile = fn_tilecache_get_tile(bot->tilecache,
-              ANIM_CAMERA_RIGHT);
-        } else if (x+1 < bot->x) {
-          tile = fn_tilecache_get_tile(bot->tilecache,
-              ANIM_CAMERA_LEFT);
-        } else {
-          tile = fn_tilecache_get_tile(bot->tilecache,
-              ANIM_CAMERA_CENTER);
-        }
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
-      }
       break;
     default:
       /* TODO - unknown bot */
