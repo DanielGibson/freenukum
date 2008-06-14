@@ -3439,7 +3439,8 @@ void fn_actor_hero_touch_end(fn_actor_t * actor)
 void fn_actor_hero_interact_start(fn_actor_t * actor)
 {
   fn_actor_function_t func =
-    fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_START];
+    fn_actor_functions[
+    actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_START];
   if (func != NULL) {
     func(actor);
   }
@@ -3450,7 +3451,8 @@ void fn_actor_hero_interact_start(fn_actor_t * actor)
 void fn_actor_hero_interact_stop(fn_actor_t * actor)
 {
   fn_actor_function_t func =
-    fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_END];
+    fn_actor_functions[
+    actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_END];
   if (func != NULL) {
     func(actor);
   }
