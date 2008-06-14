@@ -1246,6 +1246,8 @@ void fn_actor_function_keyhole_blit(fn_actor_t * actor)
   SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
+/* --------------------------------------------------------------- */
+
 /**
  * Hero interacts with keyhole.
  *
@@ -1656,15 +1658,17 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_CAMERA] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_camera_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_camera_shot,
   },
   [FN_ACTOR_BOMB] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -2034,7 +2038,7 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_FLAG] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2051,7 +2055,7 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_BLUE_JOYSTICK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2086,7 +2090,7 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_BLUE_DISK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2121,7 +2125,7 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_BLUE_BALLOON] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2272,7 +2276,7 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_ACCESS_CARD] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2431,7 +2435,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_key_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEYHOLE_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2447,7 +2451,7 @@ void
       fn_actor_function_keyhole_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_keyhole_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_DOOR_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2462,7 +2466,7 @@ void
       fn_actor_function_door_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_door_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_BLUE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2476,7 +2480,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_key_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEYHOLE_BLUE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2492,7 +2496,7 @@ void
       fn_actor_function_keyhole_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_keyhole_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_DOOR_BLUE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2507,7 +2511,7 @@ void
       fn_actor_function_door_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_door_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_PINK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2521,7 +2525,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_key_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEYHOLE_PINK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2537,7 +2541,7 @@ void
       fn_actor_function_keyhole_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_keyhole_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_DOOR_PINK] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2552,7 +2556,7 @@ void
       fn_actor_function_door_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_door_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_GREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2566,7 +2570,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_key_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEYHOLE_GREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2582,7 +2586,7 @@ void
       fn_actor_function_keyhole_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_keyhole_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_DOOR_GREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2597,7 +2601,7 @@ void
       fn_actor_function_door_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_door_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -2634,7 +2638,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_spikes_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SPIKES_DOWN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2649,7 +2653,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_spikes_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SPIKE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2664,7 +2668,7 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_spikes_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SHOT] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -2690,7 +2694,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_200] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2705,7 +2709,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_500] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2720,7 +2724,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_1000] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2735,7 +2739,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_2000] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2750,7 +2754,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_5000] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2765,7 +2769,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_10000] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2780,7 +2784,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_1_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2795,7 +2799,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_1_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2810,7 +2814,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_2_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2825,7 +2829,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_2_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2840,7 +2844,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_3_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2855,7 +2859,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_3_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2870,7 +2874,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_4_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2885,7 +2889,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_4_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2900,7 +2904,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_5_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2915,7 +2919,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_5_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2930,7 +2934,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_6_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2945,7 +2949,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_6_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2960,7 +2964,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_7_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2975,7 +2979,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCORE_BONUS_7_RIGHT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2990,7 +2994,7 @@ void
       fn_actor_function_score_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_score_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND1] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3005,7 +3009,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND2] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3020,7 +3024,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND3] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3035,7 +3039,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BLUE_LIGHT_BACKGROUND4] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3050,7 +3054,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3065,7 +3069,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3080,7 +3084,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_RED_FLASHLIGHT_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3095,7 +3099,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3110,7 +3114,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEYPANEL_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3125,7 +3129,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3140,7 +3144,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_UPARROW_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3155,7 +3159,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_GREEN_POISON_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3170,7 +3174,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_LAVA_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3185,7 +3189,7 @@ void
       fn_actor_function_simpleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_simpleanimation_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
 };
 
