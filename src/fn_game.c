@@ -266,10 +266,17 @@ int fn_game_start_in_level(
   dstrect.y = FN_TILE_HEIGHT * pixelsize;
   dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
   dstrect.h = (FN_LEVELWINDOW_HEIGHT + 2) * pixelsize * FN_TILE_HEIGHT;
-  /* TODO get this dynamically from the hero struct. */
-  /*srcrect.x = 50 * pixelsize * FN_TILE_WIDTH; */
-  /* TODO get this dynamically from the hero struct. */
-  /* srcrect.y = 0 * pixelsize * FN_TILE_HEIGHT; */
+
+  srcrect.x = (fn_hero_get_x(hero)+2) * FN_HALFTILE_WIDTH * pixelsize -
+    dstrect.w / 2;
+  srcrect.y = fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT * pixelsize -
+    dstrect.h / 2;
+  if (srcrect.x < 0) {
+    srcrect.x = 0;
+  }
+  if (srcrect.y < 0) {
+    srcrect.y = 0;
+  }
   srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
 
@@ -407,7 +414,6 @@ int fn_game_start_in_level(
           }
           break;
         case SDL_VIDEOEXPOSE:
-          printf("video expose\n");
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
         case SDL_USEREVENT:
@@ -422,9 +428,24 @@ int fn_game_start_in_level(
               srcrect.x =
                 (x - FN_LEVELWINDOW_WIDTH) *
                 FN_HALFTILE_WIDTH * pixelsize;
+              if (srcrect.x < 0) {
+                srcrect.x = 0;
+              } else if (srcrect.x + srcrect.w >
+                  FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize) {
+                srcrect.x = FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize -
+                  srcrect.w;
+              }
               srcrect.y =
                 (y - FN_LEVELWINDOW_HEIGHT + 2) *
                 FN_HALFTILE_HEIGHT * pixelsize;
+              if (srcrect.y < 0) {
+                srcrect.y = 0;
+              } else if (srcrect.y + srcrect.h >
+                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize) {
+                srcrect.y =
+                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize -
+                  srcrect.h;
+              }
               break;
             case fn_event_heroscored:
               fn_borders_blit_score(
