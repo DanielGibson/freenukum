@@ -76,7 +76,7 @@ Uint8 fn_shot_act(fn_shot_t * shot)
     fn_level_t * lv = fn_shot_get_level(shot);
 
     for (iter = g_list_first(lv->actors);
-        iter != NULL;
+        iter != NULL && shot->countdown != 1;
         iter = g_list_next(iter)) {
       fn_actor_t * actor = (fn_actor_t *)iter->data;
 
