@@ -1618,7 +1618,9 @@ void fn_actor_function_shootable_wall_blit(fn_actor_t * actor)
 void fn_actor_function_shootable_wall_shot(fn_actor_t * actor)
 {
   fn_level_t * level = actor->level;
+  fn_hero_t * hero = fn_level_get_hero(level);
   actor->is_alive = 0;
+  fn_hero_add_score(hero, 10);
   fn_level_set_solid(level,
       actor->x / FN_TILE_WIDTH,
       actor->y / FN_TILE_HEIGHT,

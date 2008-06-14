@@ -280,7 +280,7 @@ int fn_game_start_in_level(
   srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
   srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
 
-  tick = SDL_AddTimer(100, fn_game_timer_triggered, 0);
+  tick = SDL_AddTimer(80, fn_game_timer_triggered, 0);
 
   {
     /* make the first frame appear */
