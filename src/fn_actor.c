@@ -446,11 +446,17 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       health = 8;
       fn_hero_set_health(hero, health);
       actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_GUN:
       firepower++;
       fn_hero_set_firepower(hero, firepower);
       actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_ACCESS_CARD:
       /* TODO */
@@ -468,6 +474,9 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
       inventory |= FN_INVENTORY_BOOT;
       fn_hero_set_inventory(hero, inventory);
       actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_CLAMPS:
       /* TODO */
