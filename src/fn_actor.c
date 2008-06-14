@@ -1699,6 +1699,7 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
       break;
     case FN_ACTOR_SPIKE:
       tile = fn_tilecache_get_tile(tc, OBJ_SPIKE);
+      /* TODO check if hero touches spike and print heavy spike */
       break;
     default:
       printf(__FILE__ ":%d: warning: spike #%d"
