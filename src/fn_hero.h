@@ -196,6 +196,20 @@ void fn_hero_init(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Update a hero for a new level.
+ *
+ * @param  hero  The hero that is to be updated.
+ * @param  x     The initial x position of our hero (in half-tiles)
+ * @param  y     The initial x position of our hero (in half-tiles)
+ */
+void fn_hero_enterlevel(
+    fn_hero_t * hero,
+    Uint16 x,
+    Uint16 y);
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_set_direction(
     fn_hero_t * hero,
     fn_horizontal_direction_e direction);

@@ -62,7 +62,7 @@ struct fn_level_t {
   /**
    * Stores our hero.
    */
-  fn_hero_t hero;
+  fn_hero_t * hero;
 
   /**
    * Stores the raw data loaded from the level.
@@ -165,7 +165,8 @@ struct fn_level_t {
 fn_level_t * fn_level_load(int fd,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
-    SDL_Surface * screen);
+    SDL_Surface * screen,
+    fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

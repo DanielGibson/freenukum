@@ -66,6 +66,35 @@ void fn_hero_init(
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_enterlevel(
+    fn_hero_t * hero,
+    Uint16 x,
+    Uint16 y)
+{
+  hero->x = x;
+  hero->y = y;
+  hero->direction = fn_horizontal_direction_right;
+  hero->motion = FN_HERO_MOTION_NONE;
+  hero->flying = FN_HERO_FLYING_FALSE;
+  hero->shooting = FN_HERO_SHOOTING_FALSE;
+
+  hero->counter = 0;
+  hero->tilenr = HERO_STANDING_RIGHT;
+
+  hero->animationframe = 0;
+  hero->num_animationframes = 1;
+
+  hero->inventory &= (
+      ~FN_INVENTORY_KEY_RED &
+      ~FN_INVENTORY_KEY_GREEN &
+      ~FN_INVENTORY_KEY_BLUE &
+      ~FN_INVENTORY_KEY_PINK
+      );
+  hero->hidden = 0;
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_blit(fn_hero_t * hero,
     SDL_Surface * target,
     fn_tilecache_t * tilecache,
@@ -331,7 +360,19 @@ void fn_hero_set_firepower(
     fn_hero_t * hero,
     Uint8 firepower)
 {
+  SDL_Event event;
+
+  if (firepower > 4) {
+    firepower = 4;
+  }
   hero->firepower = firepower;
+  printf("========== Firepower is now %d\n", hero->firepower);
+
+  event.type = SDL_USEREVENT;
+  event.user.code = fn_event_hero_firepower_changed;
+  event.user.data1 = hero;
+  event.user.data2 = 0;
+  SDL_PushEvent(&event);
 }
 
 /* --------------------------------------------------------------- */
@@ -487,7 +528,6 @@ void fn_hero_decrease_hurting_objects(fn_hero_t * hero)
 
 void fn_hero_fire_start(fn_hero_t * hero)
 {
-  printf("Starting fire.\n");
   fn_hero_set_shooting(hero, FN_HERO_SHOOTING_TRUE);
 }
 
@@ -495,7 +535,6 @@ void fn_hero_fire_start(fn_hero_t * hero)
 
 void fn_hero_fire_stop(fn_hero_t * hero)
 {
-  printf("Stopping fire.\n");
   fn_hero_set_shooting(hero, FN_HERO_SHOOTING_FALSE);
 }
 

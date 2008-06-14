@@ -35,6 +35,7 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_hero.h"
 #include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
@@ -63,6 +64,7 @@ void fn_game_start(
  * @param  tilecache    The tile cache to use.
  * @param  screen       The output screen.
  * @param  datapath     The path whele all the game data is stored.
+ * @param  hero         The hero to use.
  *
  * @return Non-zero if the level was completed successfully, else zero.
  */
@@ -71,7 +73,8 @@ int fn_game_start_in_level(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
-    char * datapath);
+    char * datapath,
+    fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

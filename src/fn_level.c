@@ -36,7 +36,8 @@
 fn_level_t * fn_level_load(int fd,
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
-    SDL_Surface * screen)
+    SDL_Surface * screen,
+    fn_hero_t * hero)
 {
   size_t i = 0;
   fn_level_t * lv = malloc(sizeof(fn_level_t));
@@ -44,6 +45,8 @@ fn_level_t * fn_level_load(int fd,
   Uint16 tilenr;
   Uint8 uppertile;
   Uint8 lowertile;
+
+  lv->hero = hero;
 
   lv->screen = screen;
 
@@ -246,7 +249,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_FOOTBOT, &(lv->hero), lv->tilecache,
+              FN_BOT_TYPE_FOOTBOT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x300d: /* carbot */
@@ -255,7 +258,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_TANKBOT, &(lv->hero), lv->tilecache,
+              FN_BOT_TYPE_TANKBOT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x300e: /* fire wheel bot */
@@ -278,7 +281,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_ROBOT, &(lv->hero), lv->tilecache,
+              FN_BOT_TYPE_ROBOT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3011: /* exit door */
@@ -316,7 +319,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
           lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_WALLCRAWLER_LEFT, &(lv->hero), lv->tilecache,
+              FN_BOT_TYPE_WALLCRAWLER_LEFT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
@@ -324,7 +327,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = g_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_WALLCRAWLER_RIGHT, &(lv->hero), lv->tilecache,
+              FN_BOT_TYPE_WALLCRAWLER_RIGHT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
       case 0x3018: /* red box with chicken inside */
@@ -525,7 +528,7 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3032: /* we found our hero! */
-        fn_hero_init(&(lv->hero), x * 2, y * 2);
+        fn_hero_enterlevel(lv->hero, x * 2, y * 2);
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
@@ -1089,7 +1092,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   }
 
   /* blit the hero */
-  fn_hero_blit(&(lv->hero),
+  fn_hero_blit(lv->hero,
       lv->surface,
       lv->tilecache,
       lv->pixelsize);
@@ -1128,7 +1131,7 @@ int fn_level_keep_on_playing(fn_level_t * lv) {
 /* --------------------------------------------------------------- */
 
 fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
-  return &(lv->hero);
+  return lv->hero;
 }
 
 /* --------------------------------------------------------------- */
@@ -1142,7 +1145,7 @@ int fn_level_act(fn_level_t * lv) {
   lv->animated_frames %= 1;
   if (lv->animated_frames == 0) {
     /* do some action, not just animation */
-    fn_hero_act(&(lv->hero), lv);
+    fn_hero_act(lv->hero, lv);
   }
 
   for (iter = g_list_first(lv->actors);
@@ -1193,8 +1196,8 @@ int fn_level_act(fn_level_t * lv) {
     fn_animation_act(anim);
   }
 
-  fn_hero_next_animationframe(&(lv->hero));
-  fn_hero_update_animation(&(lv->hero));
+  fn_hero_next_animationframe(lv->hero);
+  fn_hero_update_animation(lv->hero);
 
   return 1;
 };
@@ -1281,7 +1284,7 @@ void fn_level_fire_shot(fn_level_t * lv)
     x -= FN_HALFTILE_WIDTH;
   }
 
-  if (lv->num_shots < fn_hero_get_firepower(&(lv->hero))) {
+  if (lv->num_shots < fn_hero_get_firepower(lv->hero)) {
     fn_level_add_shot(lv, hero->direction, x, y);
     lv->num_shots++;
   }

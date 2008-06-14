@@ -70,6 +70,8 @@ void fn_game_start(
     char * datapath)
 {
   int res;
+  fn_hero_t hero;
+  fn_hero_init(&hero, 0, 0);
 
   char * msg1 =
     "So you're the pitiful\n"
@@ -139,7 +141,7 @@ void fn_game_start(
 
   { /* start the game itself */
 
-    int level = 1;
+    int level = 5;
     int interlevel = 0;
     int success = 1;
 
@@ -155,7 +157,7 @@ void fn_game_start(
             pixelsize,
             tilecache,
             screen,
-            datapath);
+            datapath, &hero);
         level++;
         if (level == 2) {
           level++;
@@ -167,7 +169,7 @@ void fn_game_start(
             pixelsize,
             tilecache,
             screen,
-            datapath);
+            datapath, &hero);
         interlevel = 1;
       }
     }
@@ -185,7 +187,8 @@ int fn_game_start_in_level(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
-    char * datapath)
+    char * datapath,
+    fn_hero_t * hero)
 {
   int returnvalue = 0;
   int fd = 0;
@@ -251,7 +254,7 @@ int fn_game_start_in_level(
     goto cleanup;
   }
 
-  lv = fn_level_load(fd, pixelsize, tilecache, screen);
+  lv = fn_level_load(fd, pixelsize, tilecache, screen, hero);
   if (lv == NULL)
   {
     close(fd);
@@ -259,8 +262,6 @@ int fn_game_start_in_level(
     goto cleanup;
   }
   close(fd);
-
-  fn_hero_t * hero = fn_level_get_hero(lv);
 
   dstrect.x = FN_TILE_WIDTH * pixelsize;
   dstrect.y = FN_TILE_HEIGHT * pixelsize;
@@ -320,11 +321,9 @@ int fn_game_start_in_level(
           goto cleanup;
           break;
         case SDL_KEYDOWN:
-          printf("key down.\n");
           switch(event.key.keysym.sym) {
             case SDLK_q:
             case SDLK_ESCAPE:
-              printf("quitkey pressed\n");
               goto cleanup;
               break;
             case SDLK_DOWN:
@@ -336,7 +335,6 @@ int fn_game_start_in_level(
               } else {
                 /* TODO move our hero */
               }
-              printf("downkey pressed - y: %d\n", srcrect.y);
               doupdate = 1;
               break;
             case SDLK_UP:
@@ -347,7 +345,6 @@ int fn_game_start_in_level(
               } else {
                 fn_level_hero_interact_start(lv);
               }
-              printf("upkey pressed - y: %d\n", srcrect.y);
               doupdate = 1;
               break;
             case SDLK_LEFT:
@@ -361,7 +358,6 @@ int fn_game_start_in_level(
                 fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
                 fn_hero_update_animation(hero);
               }
-              printf("leftkey pressed - x: %d\n", srcrect.x);
               doupdate = 1;
               break;
             case SDLK_RIGHT:
@@ -377,7 +373,6 @@ int fn_game_start_in_level(
                 fn_hero_update_animation(hero);
               }
               doupdate = 1;
-              printf("rightkey pressed - x: %d\n", srcrect.x);
               break;
             case SDLK_LCTRL:
               fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
@@ -389,7 +384,6 @@ int fn_game_start_in_level(
               fn_hero_update_animation(hero);
               break;
             default:
-              printf("unknown key pressed.\n");
               /* do nothing on other key input (yet) */
               break;
           }
@@ -454,6 +448,12 @@ int fn_game_start_in_level(
                   pixelsize,
                   fn_hero_get_score(hero));
               break;
+            case fn_event_hero_firepower_changed:
+              fn_borders_blit_firepower(
+                  screen,
+                  tilecache,
+                  pixelsize,
+                  fn_hero_get_firepower(hero));
             case fn_event_hero_inventory_changed:
               fn_borders_blit_inventory(
                   screen,
