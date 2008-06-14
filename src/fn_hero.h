@@ -125,6 +125,12 @@ typedef struct fn_hero_t {
    * Blit the hero only if this is zero.
    */
   Uint8 hidden;
+
+  /**
+   * The letter which was last fetched by the hero.
+   * This is zero if none was fetched yet.
+   */
+  Uint8 fetchedletter;
 } fn_hero_t;
 
 /* --------------------------------------------------------------- */
@@ -399,6 +405,20 @@ void fn_hero_fire_stop(fn_hero_t * hero);
  * @param  hero  The hero.
  */
 Uint8 fn_hero_get_firepower(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the last fetched letter.
+ */
+Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the last fetched letter.
+ */
+void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter);
 
 /* --------------------------------------------------------------- */
 

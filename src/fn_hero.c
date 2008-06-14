@@ -546,3 +546,17 @@ Uint8 fn_hero_get_firepower(fn_hero_t * hero)
 }
 
 /* --------------------------------------------------------------- */
+
+Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero)
+{
+  return hero->fetchedletter;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter)
+{
+  hero->fetchedletter = letter;
+}
+
+/* --------------------------------------------------------------- */

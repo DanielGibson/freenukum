@@ -381,6 +381,26 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 1;
       break;
+    case FN_ACTOR_LETTER_D:
+      data->tile = OBJ_LETTER_D;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_LETTER_U:
+      data->tile = OBJ_LETTER_U;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_LETTER_K:
+      data->tile = OBJ_LETTER_K;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_LETTER_E:
+      data->tile = OBJ_LETTER_E;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
@@ -419,28 +439,45 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
   Uint8 firepower = fn_hero_get_firepower(hero);
   switch(actor->type) {
     case FN_ACTOR_LETTER_D:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the letter d"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      fn_hero_set_fetched_letter(hero, 'D');
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 500);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_500, actor->x, actor->y);
       break;
     case FN_ACTOR_LETTER_U:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the letter u"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      if (fn_hero_get_fetched_letter(hero) == 'D') {
+        fn_hero_set_fetched_letter(hero, 'U');
+      } else {
+        fn_hero_set_fetched_letter(hero, 0);
+      }
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 500);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_500, actor->x, actor->y);
       break;
     case FN_ACTOR_LETTER_K:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the letter k"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      if (fn_hero_get_fetched_letter(hero) == 'U') {
+        fn_hero_set_fetched_letter(hero, 'K');
+      } else {
+        fn_hero_set_fetched_letter(hero, 0);
+      }
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 500);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_500, actor->x, actor->y);
       break;
     case FN_ACTOR_LETTER_E:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the letter e"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      if (fn_hero_get_fetched_letter(hero) == 'K') {
+      fn_hero_add_score(hero, 10000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_10000, actor->x, actor->y);
+      } else {
+      fn_hero_add_score(hero, 500);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_500, actor->x, actor->y);
+      }
+      actor->is_alive = 0;
       break;
     case FN_ACTOR_FULL_LIFE:
       health = 8;
@@ -2634,15 +2671,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_LETTER_D] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_LETTER_U] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2663,15 +2706,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_LETTER_U] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_LETTER_K] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2692,15 +2741,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_LETTER_K] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_LETTER_E] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2721,15 +2776,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_LETTER_E] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
