@@ -80,37 +80,38 @@ enum fn_actor_type_e {
   FN_ACTOR_BOX_GREY_GUN,             /* TODO */
   FN_ACTOR_GUN,                      /* TODO */
   FN_ACTOR_BOX_GREY_BOMB,            /* TODO */
-  FN_ACTOR_BOX_RED_SODA,             /* TODO */
-  FN_ACTOR_BOX_RED_CHICKEN,          /* TODO */
-  FN_ACTOR_CHICKEN_SINGLE,           /* TODO */
-  FN_ACTOR_CHICKEN_DOUBLE,           /* TODO */
-  FN_ACTOR_BOX_BLUE_FOOTBALL,        /* TODO */
-  FN_ACTOR_FOOTBALL,                 /* TODO */
-  FN_ACTOR_FLAG,                     /* TODO */
-  FN_ACTOR_BOX_BLUE_JOYSTICK,        /* TODO */
-  FN_ACTOR_JOYSTICK,                 /* TODO */
-  FN_ACTOR_BOX_BLUE_DISK,            /* TODO */
-  FN_ACTOR_DISK,                     /* TODO */
-  FN_ACTOR_BOX_BLUE_BALLOON,         /* TODO */
+  FN_ACTOR_BOX_RED_SODA,
+  FN_ACTOR_BOX_RED_CHICKEN,
+  FN_ACTOR_CHICKEN_SINGLE,
+  FN_ACTOR_CHICKEN_DOUBLE,
+  FN_ACTOR_BOX_BLUE_FOOTBALL,
+  FN_ACTOR_FOOTBALL,
+  FN_ACTOR_FLAG,
+  FN_ACTOR_BOX_BLUE_JOYSTICK,
+  FN_ACTOR_JOYSTICK,
+  FN_ACTOR_BOX_BLUE_DISK,
+  FN_ACTOR_DISK,
+  FN_ACTOR_BOX_BLUE_BALLOON,
   FN_ACTOR_BALLOON,                  /* TODO */
-  FN_ACTOR_BOX_GREY_GLOVE,           /* TODO */
-  FN_ACTOR_GLOVE,                    /* TODO */
-  FN_ACTOR_BOX_GREY_FULL_LIFE,       /* TODO */
-  FN_ACTOR_FULL_LIFE,                /* TODO */
-  FN_ACTOR_BOX_BLUE_FLAG,            /* TODO */
-  FN_ACTOR_BLUE_FLAG,                /* TODO */
-  FN_ACTOR_BOX_BLUE_RADIO,           /* TODO */
-  FN_ACTOR_RADIO,                    /* TODO */
-  FN_ACTOR_BOX_GREY_ACCESS_CARD,     /* TODO */
-  FN_ACTOR_ACCESS_CARD,              /* TODO */
-  FN_ACTOR_BOX_GREY_LETTER_D,        /* TODO */
-  FN_ACTOR_LETTER_D,                 /* TODO */
-  FN_ACTOR_BOX_GREY_LETTER_U,        /* TODO */
-  FN_ACTOR_LETTER_U,                 /* TODO */
-  FN_ACTOR_BOX_GREY_LETTER_K,        /* TODO */
-  FN_ACTOR_LETTER_K,                 /* TODO */
-  FN_ACTOR_BOX_GREY_LETTER_E,        /* TODO */
-  FN_ACTOR_LETTER_E,                 /* TODO */
+  FN_ACTOR_BOX_GREY_GLOVE,
+  FN_ACTOR_GLOVE,
+  FN_ACTOR_BOX_GREY_FULL_LIFE,
+  FN_ACTOR_FULL_LIFE,
+  FN_ACTOR_BOX_BLUE_FLAG,
+  FN_ACTOR_BLUE_FLAG,
+  FN_ACTOR_BOX_BLUE_RADIO,
+  FN_ACTOR_RADIO,
+  FN_ACTOR_BOX_GREY_ACCESS_CARD,
+  FN_ACTOR_ACCESS_CARD,
+  FN_ACTOR_BOX_GREY_LETTER_D,
+  FN_ACTOR_LETTER_D,
+  FN_ACTOR_BOX_GREY_LETTER_U,
+  FN_ACTOR_LETTER_U,
+  FN_ACTOR_BOX_GREY_LETTER_K,
+  FN_ACTOR_LETTER_K,
+  FN_ACTOR_BOX_GREY_LETTER_E,
+  FN_ACTOR_LETTER_E,
+  FN_ACTOR_ACCESS_CARD_SLOT,         /* TODO */
   FN_ACTOR_KEY_RED,
   FN_ACTOR_KEYHOLE_RED,
   FN_ACTOR_DOOR_RED,
@@ -126,10 +127,9 @@ enum fn_actor_type_e {
   FN_ACTOR_SHOOTABLE_WALL,
   FN_ACTOR_MILL,                     /* TODO */
   FN_ACTOR_ACCESS_CARD_DOOR,         /* TODO */
-  FN_ACTOR_SPIKES_UP,                /* TODO */
-  FN_ACTOR_SPIKES_DOWN,              /* TODO */
-  FN_ACTOR_SPIKE,                    /* TODO */
-  FN_ACTOR_SHOT,                     /* TODO */
+  FN_ACTOR_SPIKES_UP,
+  FN_ACTOR_SPIKES_DOWN,
+  FN_ACTOR_SPIKE,
   FN_ACTOR_SCORE_100,
   FN_ACTOR_SCORE_200,
   FN_ACTOR_SCORE_500,

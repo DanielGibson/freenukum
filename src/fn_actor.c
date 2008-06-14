@@ -250,6 +250,137 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
 }
 
 /* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The accesscard slot.
+ */
+typedef struct fn_actor_acces_card_slot_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+} fn_actor_access_card_slot_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create an accesscard slot.
+ *
+ * @param  actor  The accesscard slot actor.
+ */
+void fn_actor_function_accesscard_slot_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  fn_actor_access_card_slot_data_t * data = malloc(
+      sizeof(fn_actor_access_card_slot_data_t));
+  data->tile = OBJ_ACCESS_CARD_SLOT;
+  data->current_frame = 0;
+  data->num_frames = 8;
+  actor->data = data;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete an accesscard slot.
+ *
+ * @param  actor  The accesscard slot actor.
+ */
+void fn_actor_function_accesscard_slot_free(fn_actor_t * actor)
+{
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Interact with an accesscard slot.
+ *
+ * @param  actor  The accesscard slot actor.
+ */
+void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
+{
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  fn_level_t * level = actor->level;
+  Uint8 inventory = fn_hero_get_inventory(fn_level_get_hero(level));
+
+  if (inventory & FN_INVENTORY_ACCESS_CARD) {
+    GList * iter = NULL;
+    for (iter = g_list_first(actor->level->actors);
+        iter != NULL;
+        iter = g_list_next(iter)) {
+      fn_actor_t * dooractor = (fn_actor_t *)iter->data;
+
+      if (dooractor->type == FN_ACTOR_ACCESS_CARD_DOOR) {
+        dooractor->is_alive = 0;
+        int x = dooractor->x / FN_TILE_WIDTH;
+        int y = dooractor->y / FN_TILE_HEIGHT;
+        fn_level_set_solid(level, x, y, 0);
+      }
+    }
+    data->current_frame = 0;
+    data->num_frames = 1;
+    data->tile = OBJ_ACCESS_CARD_SLOT + 8;
+  } else {
+    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+    fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+    SDL_Surface * screen = actor->level->screen;
+
+    fn_infobox_show(pixelsize, tc, screen,
+        "You don't have the access card\n");
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Let the accesscard slot act.
+ *
+ * @param  actor  The accesscard slot actor.
+ */
+void fn_actor_function_accesscard_slot_act(fn_actor_t * actor)
+{
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit the accesscard slot.
+ *
+ * @param  actor  The accesscard slot actor.
+ */
+void fn_actor_function_accesscard_slot_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
 
 /**
  * The item struct.
@@ -401,6 +532,11 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 1;
       break;
+    case FN_ACTOR_ACCESS_CARD:
+      data->tile = OBJ_ACCESS_CARD;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
@@ -496,16 +632,20 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
           FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_ACCESS_CARD:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the access card"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      inventory |= FN_INVENTORY_ACCESS_CARD;
+      fn_hero_set_inventory(hero, inventory);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_GLOVE:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the glove"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      inventory |= FN_INVENTORY_ROBOHAND;
+      fn_hero_set_inventory(hero, inventory);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_BOOTS:
       inventory |= FN_INVENTORY_BOOT;
@@ -516,10 +656,12 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
           FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_CLAMPS:
-      /* TODO */
-      printf(__FILE__ ":%d: warning: the clamps"
-          " cannot be fetched by the hero yet\n",
-          __LINE__);
+      inventory |= FN_INVENTORY_CLAMP;
+      fn_hero_set_inventory(hero, inventory);
+      actor->is_alive = 0;
+      fn_hero_add_score(hero, 1000);
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_FOOTBALL:
       fn_hero_add_score(hero, 100);
@@ -1719,6 +1861,93 @@ void fn_actor_function_shootable_wall_shot(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef struct fn_actor_accesscard_door_data_t
+{
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
+  Uint8 num_frames;
+} fn_actor_accesscard_door_data_t;
+
+/**
+ * Create an accesscard door.
+ *
+ * @param  actor  The accesscard door actor.
+ */
+void fn_actor_function_access_card_door_create(fn_actor_t * actor)
+{
+  fn_actor_accesscard_door_data_t * data = malloc(
+      sizeof(fn_actor_accesscard_door_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+
+  data->tile = OBJ_LASERBEAM;
+  data->current_frame = 0;
+  data->num_frames = 4;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete an accesscard door.
+ *
+ * @param  actor  The accesscard door actor.
+ */
+void fn_actor_function_access_card_door_free(fn_actor_t * actor)
+{
+  fn_actor_accesscard_door_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit an accesscard door.
+ *
+ * @param  actor  The accesscard door actor.
+ */
+void fn_actor_function_access_card_door_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_accesscard_door_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Act an accesscard door.
+ *
+ * @param  actor  The accesscard door actor.
+ */
+void fn_actor_function_access_card_door_act(fn_actor_t * actor)
+{
+  fn_actor_accesscard_door_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * Spikes actor creation function.
  *
@@ -2210,15 +2439,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_CLAMPS] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_GUN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2514,15 +2749,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_GLOVE] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_FULL_LIFE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2642,15 +2883,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_ACCESS_CARD] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_item_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_item_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_item_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_item_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_item_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOX_GREY_LETTER_D] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -2790,6 +3037,22 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_ACCESS_CARD_SLOT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_accesscard_slot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_accesscard_slot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_accesscard_slot_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_accesscard_slot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_accesscard_slot_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_RED] = {
@@ -2998,15 +3261,19 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_ACCESS_CARD_DOOR] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_access_card_door_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_access_card_door_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_access_card_door_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_access_card_door_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SPIKES_UP] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3052,17 +3319,6 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_spikes_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
-  },
-  [FN_ACTOR_SHOT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_SCORE_100] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

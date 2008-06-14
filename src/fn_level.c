@@ -391,7 +391,11 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->solid[y][x] = 1;
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_ACCESS_CARD_DOOR,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3022: /* helicopter */
         /* TODO */
@@ -544,15 +548,11 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3034: /* slot for access card */
         {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_ACCESS_CARD_SLOT);
-          lv->animations = g_list_append(lv->animations, fn_animation_create(
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize));
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_ACCESS_CARD_SLOT,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         }
-        /* TODO */
         break;
       case 0x3035: /* slot for glove */
         /* TODO */
@@ -1206,7 +1206,6 @@ int fn_level_act(fn_level_t * lv) {
 
 void fn_level_hero_interact_start(fn_level_t * lv)
 {
-  fn_error_print_commandline("Started interact");
   GList * iter = NULL;
   for (iter = g_list_first(lv->actors);
       iter != NULL;
