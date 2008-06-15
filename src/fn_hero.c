@@ -52,6 +52,7 @@ void fn_hero_init(
   hero->firepower = 1;
   hero->counter = 0;
   hero->tilenr = HERO_STANDING_RIGHT;
+  hero->verticalspeed = 0;
 
   hero->animationframe = 0;
   hero->num_animationframes = 1;
@@ -77,6 +78,7 @@ void fn_hero_enterlevel(
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
   hero->shooting = FN_HERO_SHOOTING_FALSE;
+  hero->verticalspeed = 0;
 
   hero->counter = 0;
   hero->tilenr = HERO_STANDING_RIGHT;
@@ -171,23 +173,48 @@ int fn_hero_act(
 
   if (hero->flying == FN_HERO_FLYING_FALSE) {
     /* our hero is standing or walking */
+    hero->verticalspeed = 0;
   } else {
     /* our hero is jumping or falling */
     if (hero->counter > 0) {
       /* jumping */
       hero->counter--;
-      if (!fn_hero_would_collide(hero, lv, hero->x, hero->y-1)) {
-        hero->y--;
-        heromoved = 1;
-      } else {
-        /* we bumped against the ceiling */
-        hero->counter = 0;
+      switch(hero->counter) {
+        case 3:
+        case 2:
+          hero->verticalspeed = 1;
+          break;
+        case 1:
+        case 0:
+          hero->verticalspeed = 0;
+          break;
+        default:
+          hero->verticalspeed = 2;
+          break;
+
+      }
+      int i = 0;
+      for (i = 0; i < hero->verticalspeed; i++) {
+        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y-1)) {
+          hero->y--;
+          heromoved = 1;
+        } else {
+          /* we bumped against the ceiling */
+          hero->counter = 0;
+        }
       }
     } else {
       /* falling */
-      if (!fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
-        hero->y++;
-        heromoved = 1;
+      if (hero->verticalspeed != 6) {
+        hero->verticalspeed++;
+      }
+
+      int i = 0;
+      for (i = 0; i < hero->verticalspeed/2; i++) {
+        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+          hero->y++;
+          heromoved = 1;
+        }
       }
     }
   }
@@ -337,9 +364,11 @@ void fn_hero_set_flying(
   if (flying == FN_HERO_FLYING_TRUE) {
     if (hero->flying != flying) {
       if (hero->inventory & FN_INVENTORY_BOOT) {
-        hero->counter = 8;
+        hero->counter = 7;
+        hero->verticalspeed = 2;
       } else {
         hero->counter = 6;
+        hero->verticalspeed = 2;
       }
     }
   }

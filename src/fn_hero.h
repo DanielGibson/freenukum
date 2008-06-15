@@ -136,6 +136,12 @@ struct fn_hero_t {
    * This is zero if none was fetched yet.
    */
   Uint8 fetchedletter;
+
+  /**
+   * The speed with which our hero falls or jumps.
+   * Either 0, 1 or 2.
+   */
+  Uint8 verticalspeed;
 };
 
 /* --------------------------------------------------------------- */
