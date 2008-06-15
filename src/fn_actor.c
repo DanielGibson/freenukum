@@ -4172,6 +4172,16 @@ void fn_actor_hero_touch_end(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
+Uint8 fn_actor_hero_can_interact(fn_actor_t * actor)
+{
+  fn_actor_function_t func =
+    fn_actor_functions[
+    actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_START];
+  return (func != NULL);
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_actor_hero_interact_start(fn_actor_t * actor)
 {
   fn_actor_function_t func =

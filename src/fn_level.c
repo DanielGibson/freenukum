@@ -1235,9 +1235,11 @@ void fn_level_hero_interact_start(fn_level_t * lv)
 
       fn_level_hero_interact_stop(lv);
 
-      lv->interactor = actor;
-      fn_actor_hero_interact_start(actor);
-      return;
+      if (fn_actor_hero_can_interact(actor)) {
+        lv->interactor = actor;
+        fn_actor_hero_interact_start(actor);
+        return;
+      }
     }
   }
 }

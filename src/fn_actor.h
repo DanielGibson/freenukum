@@ -290,6 +290,17 @@ void fn_actor_hero_touch_end(fn_actor_t * actor);
 /* --------------------------------------------------------------- */
 
 /**
+ * Tells if the hero can interact with an actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return 1 if the hero can interact with the actor, otherwise 0.
+ */
+Uint8 fn_actor_hero_can_interact(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
  * The hero starts to interact with the actor
  * (player pressed up arrow)
  *
