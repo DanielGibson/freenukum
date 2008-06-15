@@ -1043,7 +1043,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  /* blit the actors */
+  /* blit the actors in the background */
   for (iter = g_list_first(lv->actors);
       iter != NULL;
       iter = g_list_next(iter)) {
@@ -1053,7 +1053,31 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
 
     if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      fn_actor_blit(actor);
+      if (!fn_actor_in_foreground(actor)) {
+        fn_actor_blit(actor);
+      }
+    }
+  }
+
+  /* blit the hero */
+  fn_hero_blit(lv->hero,
+      lv->surface,
+      lv->tilecache,
+      lv->pixelsize);
+
+  /* blit the actors in the foreground */
+  for (iter = g_list_first(lv->actors);
+      iter != NULL;
+      iter = g_list_next(iter)) {
+    fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+    Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+    Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+
+    if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      if (fn_actor_in_foreground(actor)) {
+        fn_actor_blit(actor);
+      }
     }
   }
 
@@ -1095,12 +1119,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       fn_shot_gets_out_of_sight(shot);
     }
   }
-
-  /* blit the hero */
-  fn_hero_blit(lv->hero,
-      lv->surface,
-      lv->tilecache,
-      lv->pixelsize);
 
   /* blit the whole thing to the caller */
   SDL_BlitSurface(lv->surface, sourcerect, target, targetrect);

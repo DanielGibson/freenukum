@@ -221,6 +221,12 @@ struct fn_actor_t {
    * Flag that indicates if the actor is being touched by the hero
    */
   int touches_hero;
+
+  /**
+   * Flag that indicates if the actor is in foreground (means in front
+   * of hero).
+   */
+  Uint8 is_in_foreground;
 };
 
 /* --------------------------------------------------------------- */
@@ -406,6 +412,17 @@ Uint16 fn_actor_get_h(fn_actor_t * actor);
  * @return 1 if the actor can get shot, otherwise 0.
  */
 Uint8 fn_actor_can_get_shot(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Tells if an actor is in the foreground.
+ *
+ * @param  actor  The actor.
+ *
+ * @return 1 if the actor is in foreground, otherwise 0.
+ */
+Uint8 fn_actor_in_foreground(fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 

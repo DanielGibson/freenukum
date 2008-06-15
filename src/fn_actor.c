@@ -120,6 +120,7 @@ void fn_actor_function_simpleanimation_create(fn_actor_t * actor)
   fn_actor_simpleanimation_data_t * data = malloc(
       sizeof(fn_actor_simpleanimation_data_t));
 
+  actor->is_in_foreground = 0;
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
@@ -288,6 +289,7 @@ void fn_actor_function_lift_create(fn_actor_t * actor)
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -491,6 +493,7 @@ void fn_actor_function_accesscard_slot_create(fn_actor_t * actor)
   data->current_frame = 0;
   data->num_frames = 8;
   actor->data = data;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -631,6 +634,7 @@ void fn_actor_function_item_create(fn_actor_t * actor)
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 0;
   switch(actor->type) {
     case FN_ACTOR_BOX_RED_SODA:
     case FN_ACTOR_BOX_RED_CHICKEN:
@@ -1143,6 +1147,7 @@ void fn_actor_function_teleporter_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 1;
 }
 
 /* --------------------------------------------------------------- */
@@ -1261,6 +1266,7 @@ void fn_actor_function_dustcloud_create(fn_actor_t * actor)
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 1;
 
   data->tile = OBJ_DUST;
   data->current_frame = 0;
@@ -1356,6 +1362,7 @@ void fn_actor_function_explosion_create(fn_actor_t * actor)
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 0;
 
   data->tile = ANIM_EXPLODE;
   data->current_frame = 0;
@@ -1427,6 +1434,7 @@ void fn_actor_function_camera_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 0;
 }
 
 /**
@@ -1517,6 +1525,7 @@ void fn_actor_function_score_create(fn_actor_t * actor)
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 1;
   data->countdown = 40;
 
   switch(actor->type) {
@@ -1682,6 +1691,7 @@ void fn_actor_function_exitdoor_create(fn_actor_t * actor)
   data->counter = 0;
   data->state = 0;
   data->tile = ANIM_EXITDOOR;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -1848,6 +1858,7 @@ void fn_actor_function_door_create(fn_actor_t * actor)
   data->counter = 0;
   data->state = 0;
   data->tile = OBJ_DOOR;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -1962,6 +1973,7 @@ void fn_actor_function_keyhole_create(fn_actor_t * actor)
   actor->h = FN_TILE_HEIGHT;
   data->counter = 0;
   data->tile = OBJ_KEYHOLE_BLACK;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -2122,6 +2134,7 @@ void fn_actor_function_key_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_WIDTH;
+  actor->is_in_foreground = 0;
 }
 
 
@@ -2215,6 +2228,7 @@ void fn_actor_function_shootable_wall_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -2297,6 +2311,7 @@ void fn_actor_function_access_card_door_create(fn_actor_t * actor)
   data->tile = OBJ_LASERBEAM;
   data->current_frame = 0;
   data->num_frames = 4;
+  actor->is_in_foreground = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -2361,6 +2376,7 @@ void fn_actor_function_spikes_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_WIDTH;
+  actor->is_in_foreground = 1;
 }
 
 /* --------------------------------------------------------------- */
@@ -4300,6 +4316,7 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
   actor->h = 0; /* should be changed by func */
   actor->is_alive = 1;
   actor->touches_hero = 0;
+  actor->is_in_foreground = 0;
   func = fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_CREATE];
   if (func != NULL) {
     func(actor);
@@ -4510,3 +4527,8 @@ Uint8 fn_actor_can_get_shot(fn_actor_t * actor)
 }
 
 /* --------------------------------------------------------------- */
+
+Uint8 fn_actor_in_foreground(fn_actor_t * actor)
+{
+  return actor->is_in_foreground;
+}
