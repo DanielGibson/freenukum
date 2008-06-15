@@ -519,7 +519,8 @@ void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
 {
   fn_actor_access_card_slot_data_t * data = actor->data;
   fn_level_t * level = actor->level;
-  Uint8 inventory = fn_hero_get_inventory(fn_level_get_hero(level));
+  fn_hero_t * hero = fn_level_get_hero(level);
+  Uint8 inventory = fn_hero_get_inventory(hero);
 
   if (inventory & FN_INVENTORY_ACCESS_CARD) {
     GList * iter = NULL;
@@ -538,6 +539,8 @@ void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
     data->current_frame = 0;
     data->num_frames = 1;
     data->tile = OBJ_ACCESS_CARD_SLOT + 8;
+    inventory &= ~FN_INVENTORY_ACCESS_CARD;
+    fn_hero_set_inventory(hero, inventory);
   } else {
     Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
     fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
