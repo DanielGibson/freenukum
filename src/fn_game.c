@@ -494,18 +494,27 @@ int fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_firepower(hero));
+              break;
             case fn_event_hero_inventory_changed:
               fn_borders_blit_inventory(
                   screen,
                   tilecache,
                   pixelsize,
                   fn_hero_get_inventory(hero));
+              break;
             case fn_event_hero_health_changed:
               fn_borders_blit_life(
                   screen,
                   tilecache,
                   pixelsize,
                   fn_hero_get_health(hero));
+              break;
+            case fn_event_herolanded:
+              fn_level_add_actor(lv, FN_ACTOR_DUSTCLOUD,
+                  fn_hero_get_x(hero) * FN_HALFTILE_WIDTH,
+                  fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT
+                  );
+              break;
             default:
               /* don't do anything on other events. */
               break;

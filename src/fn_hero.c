@@ -220,6 +220,14 @@ int fn_hero_act(
   }
 
   if (fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+    if (hero->flying == FN_HERO_FLYING_TRUE) {
+      SDL_Event event;
+      event.type = SDL_USEREVENT;
+      event.user.code = fn_event_herolanded;
+      event.user.data1 = hero;
+      event.user.data2 = 0;
+      SDL_PushEvent(&event);
+    }
     /* we are standing on solid ground */
     fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
     hero->counter = 0;

@@ -1229,6 +1229,101 @@ void fn_actor_function_teleporter_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * Dustclound data struct.
+ */
+typedef struct fn_actor_dustcloud_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
+  Uint8 num_frames;
+} fn_actor_dustcloud_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a dustcloud.
+ *
+ * @param  actor  The dustcloud actor.
+ */
+void fn_actor_function_dustcloud_create(fn_actor_t * actor)
+{
+  fn_actor_dustcloud_data_t * data = malloc(
+      sizeof(fn_actor_dustcloud_data_t));
+
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+
+  data->tile = OBJ_DUST;
+  data->current_frame = 0;
+  data->num_frames = 5;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete a dustcloud.
+ *
+ * @param  actor  The dustcloud actor.
+ */
+void fn_actor_function_dustcloud_free(fn_actor_t * actor)
+{
+  fn_actor_dustcloud_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Act a dustcloud.
+ *
+ * @param  actor  The dustcloud actor.
+ */
+void fn_actor_function_dustcloud_act(fn_actor_t * actor)
+{
+  fn_actor_dustcloud_data_t * data = actor->data;
+
+  data->current_frame++;
+  if (data->current_frame == data->num_frames) {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit an dustcloud.
+ *
+ * @param  actor  The dustcloud actor.
+ */
+void fn_actor_function_dustcloud_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_dustcloud_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * Explosion data struct.
  */
 typedef struct fn_actor_explosion_data_t {
@@ -2527,6 +2622,21 @@ void
       fn_actor_function_explosion_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_explosion_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_DUSTCLOUD] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_dustcloud_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_dustcloud_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_dustcloud_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_dustcloud_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOMB] = {

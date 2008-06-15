@@ -112,6 +112,7 @@ typedef enum fn_event_e {
   fn_event_hero_firepower_changed,
   fn_event_hero_inventory_changed,
   fn_event_hero_health_changed,
+  fn_event_herolanded,
 } fn_event_e;
 
 /* --------------------------------------------------------------- */
