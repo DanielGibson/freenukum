@@ -743,6 +743,11 @@ void fn_actor_function_item_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 1;
       break;
+    case FN_ACTOR_GLOVE:
+      data->tile = OBJ_ROBOHAND;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an item. */
       printf(__FILE__ ":%d: warning: item #%d"
