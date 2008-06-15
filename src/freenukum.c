@@ -157,6 +157,9 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
+  /* set window caption */
+  SDL_WM_SetCaption("Freenukum " VERSION, "Freenukum " VERSION);
+
   /* show the splash screen */
   res = fn_picture_splash_show(
       datapath,

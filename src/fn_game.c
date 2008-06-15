@@ -141,7 +141,7 @@ void fn_game_start(
 
   { /* start the game itself */
 
-    int level = 1;
+    int level = 7;
     int interlevel = 0;
     int success = 1;
 
