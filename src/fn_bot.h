@@ -56,7 +56,6 @@ enum fn_bot_type_e {
   FN_BOT_TYPE_RABBITOID,
   FN_BOT_TYPE_REDBALL_JUMPING,
   FN_BOT_TYPE_REDBALL_LYING,
-  FN_BOT_TYPE_ROBOT,
   FN_BOT_TYPE_SNAKEBOT,
   FN_BOT_TYPE_TANKBOT,
   FN_BOT_TYPE_WALLCRAWLER_LEFT,
@@ -123,14 +122,6 @@ typedef struct fn_bot_redball_lying_data_t {
 /* --------------------------------------------------------------- */
 
 /**
- * The data needed for a robot.
- */
-typedef struct fn_bot_robot_data_t {
-} fn_bot_robot_data_t;
-
-/* --------------------------------------------------------------- */
-
-/**
  * The data needed for a snake bot.
  */
 typedef struct fn_bot_snakebot_data_t {
@@ -186,7 +177,6 @@ union fn_bot_data_u {
   fn_bot_rabbitoid_data_t rabbitoid;
   fn_bot_redball_jumping_data_t redball_jumping;
   fn_bot_redball_lying_data_t redball_lying;
-  fn_bot_robot_data_t robot;
   fn_bot_snakebot_data_t snakebot;
   fn_bot_tankbot_data_t tankbot;
   fn_bot_wallcrawler_left_data_t wallcrawler_left;

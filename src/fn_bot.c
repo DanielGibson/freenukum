@@ -72,9 +72,6 @@ fn_bot_t * fn_bot_create(
     case FN_BOT_TYPE_REDBALL_LYING:
       /* TODO */
       break;
-    case FN_BOT_TYPE_ROBOT:
-      /* TODO */
-      break;
     case FN_BOT_TYPE_SNAKEBOT:
       /* TODO */
       break;
@@ -162,12 +159,6 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
       break;
     case FN_BOT_TYPE_REDBALL_LYING:
       /* TODO */
-      break;
-    case FN_BOT_TYPE_ROBOT:
-      /* TODO get animation type */
-      tile = fn_tilecache_get_tile(bot->tilecache,
-          ANIM_ROBOT);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
       break;
     case FN_BOT_TYPE_SNAKEBOT:
       /* TODO */
