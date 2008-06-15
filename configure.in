@@ -1,5 +1,5 @@
-AC_INIT(Freenukum, 0.2.1, http://launchpad.net/freenukum/)
-AM_INIT_AUTOMAKE(freenukum, 0.2.1)
+AC_INIT(Freenukum, 0.2.2, http://launchpad.net/freenukum/)
+AM_INIT_AUTOMAKE(freenukum, 0.2.2)
 
 AC_PROG_CC
 
