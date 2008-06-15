@@ -315,11 +315,6 @@ void fn_actor_function_lift_interact_start(fn_actor_t * actor)
   fn_actor_lift_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  printf("Interact: hero x: %d, hero y: %d\n",
-      fn_hero_get_x(hero) * FN_HALFTILE_WIDTH,
-      fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT);
-  printf("x: %d, y: %d\n",
-      actor->x, actor->y - FN_TILE_HEIGHT);
   if (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH == actor->x &&
       fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
       actor->y - FN_TILE_HEIGHT) {
@@ -4174,6 +4169,17 @@ void fn_actor_hero_touch_end(fn_actor_t * actor)
 
 Uint8 fn_actor_hero_can_interact(fn_actor_t * actor)
 {
+  if (actor->type == FN_ACTOR_LIFT) {
+    /* This check needs to be done for lift only because
+     * if there are two lifts next to each other, the mostleft
+     * lift would be chosen for interaction instead of the one on
+     * which the hero stands.
+     */
+    fn_hero_t * hero = fn_level_get_hero(actor->level);
+    return (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH == actor->x &&
+        fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
+        actor->y - FN_TILE_HEIGHT);
+  }
   fn_actor_function_t func =
     fn_actor_functions[
     actor->type][FN_ACTOR_FUNCTION_HERO_INTERACT_START];
