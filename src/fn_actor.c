@@ -319,7 +319,6 @@ void fn_actor_function_lift_interact_start(fn_actor_t * actor)
       fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
       actor->y - FN_TILE_HEIGHT) {
     data->state = fn_actor_lift_state_ascending;
-    printf("**** LIFT ASCENDING ****\n");
   }
 }
 
@@ -339,10 +338,8 @@ void fn_actor_function_lift_interact_end(fn_actor_t * actor)
       fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
       actor->y - FN_TILE_HEIGHT) {
     data->state = fn_actor_lift_state_idle;
-    printf("%d **** LIFT IDLE ****\n", __LINE__);
   } else {
     data->state = fn_actor_lift_state_descending;
-    printf("%d **** LIFT DESCENDING ****\n", __LINE__);
   }
 }
 
@@ -366,13 +363,7 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
         fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT ==
         actor->y - FN_TILE_HEIGHT) {
     } else {
-      printf("x hero: %d, x actor: %d, y hero: %d, y actor: %d\n",
-        fn_hero_get_x(hero) * FN_HALFTILE_WIDTH,
-        actor->x,
-        fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT,
-        actor->y - FN_TILE_HEIGHT);
       data->state = fn_actor_lift_state_descending;
-      printf("%d **** LIFT DESCENDING ****\n", __LINE__);
     }
   }
 
@@ -405,7 +396,6 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
         data->height--;
       } else {
         data->state = fn_actor_lift_state_idle;
-        printf("%d **** LIFT IDLE ****\n", __LINE__);
       }
       break;
     case fn_actor_lift_state_idle:
