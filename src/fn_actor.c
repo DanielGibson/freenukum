@@ -387,15 +387,20 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
       }
       break;
     case fn_actor_lift_state_descending:
-      if (data->height != 0) {
-        fn_level_set_solid(level,
-            actor->x/FN_TILE_WIDTH,
-            actor->y/FN_TILE_HEIGHT,
-            0);
-        actor->y += FN_TILE_HEIGHT;
-        data->height--;
-      } else {
-        data->state = fn_actor_lift_state_idle;
+      {
+        int i = 0;
+        for (i = 0; i < 2; i++) {
+          if (data->height != 0) {
+            fn_level_set_solid(level,
+                actor->x/FN_TILE_WIDTH,
+                actor->y/FN_TILE_HEIGHT,
+                0);
+            actor->y += FN_TILE_HEIGHT;
+            data->height--;
+          } else {
+            data->state = fn_actor_lift_state_idle;
+          }
+        }
       }
       break;
     case fn_actor_lift_state_idle:
@@ -423,21 +428,29 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_lift_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
-      OBJ_ELEVATOR);
+  SDL_Surface * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  int i = 0;
+  tile = fn_tilecache_get_tile(tc, SOLID_START + 23);
+  for (i = 0; i < data->height * 2; i++) {
+    destrect.y += FN_HALFTILE_HEIGHT * pixelsize;
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+  }
+
+  tile = fn_tilecache_get_tile(tc,
+      OBJ_ELEVATOR);
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
   destrect.w = actor->w * pixelsize;
   destrect.h = actor->h * pixelsize;
   SDL_BlitSurface(tile, NULL, target, &destrect);
 
-  int i = 0;
-  tile = fn_tilecache_get_tile(tc, SOLID_START + 23);
-  for (i = 0; i < data->height; i++) {
-    destrect.y += FN_TILE_HEIGHT * pixelsize;
-    SDL_BlitSurface(tile, NULL, target, &destrect);
-  }
 }
 
 /* --------------------------------------------------------------- */
