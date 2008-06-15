@@ -1,5 +1,5 @@
 	- Made hero motion model more similar to original game.
-	- Basic lift functionality.
+	- Elevators implemented
 0.2.1
 	- Hero can fetch guns for more firepower.
 	- Hero can fetch boots and then jump higher.
