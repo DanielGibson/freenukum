@@ -1229,6 +1229,101 @@ void fn_actor_function_teleporter_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * Explosion data struct.
+ */
+typedef struct fn_actor_explosion_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
+  Uint8 num_frames;
+} fn_actor_explosion_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create an explosion.
+ *
+ * @param  actor  The explosion actor.
+ */
+void fn_actor_function_explosion_create(fn_actor_t * actor)
+{
+  fn_actor_explosion_data_t * data = malloc(
+      sizeof(fn_actor_explosion_data_t));
+
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+
+  data->tile = ANIM_EXPLODE;
+  data->current_frame = 0;
+  data->num_frames = 6;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete an explosion.
+ *
+ * @param  actor  The explosion actor.
+ */
+void fn_actor_function_explosion_free(fn_actor_t * actor)
+{
+  fn_actor_explosion_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Act an explosion.
+ *
+ * @param  actor  The explosion actor.
+ */
+void fn_actor_function_explosion_act(fn_actor_t * actor)
+{
+  fn_actor_explosion_data_t * data = actor->data;
+
+  data->current_frame++;
+  if (data->current_frame == data->num_frames) {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Blit an explosion.
+ *
+ * @param  actor  The explosion actor.
+ */
+void fn_actor_function_explosion_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_explosion_data_t * data = actor->data;
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * Create a camera.
  *
  * @param  actor  The camera actor.
@@ -1286,6 +1381,8 @@ void fn_actor_function_camera_shot(fn_actor_t * actor)
   fn_hero_add_score(hero, 100);
   fn_level_add_actor(actor->level,
       FN_ACTOR_SCORE_100, actor->x, actor->y);
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_EXPLOSION, actor->x, actor->y);
 }
 
 /* --------------------------------------------------------------- */
@@ -2416,6 +2513,21 @@ void
       fn_actor_function_camera_blit,
     [FN_ACTOR_FUNCTION_SHOT]                =
       fn_actor_function_camera_shot,
+  },
+  [FN_ACTOR_EXPLOSION] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_explosion_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_explosion_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_explosion_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_explosion_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOMB] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

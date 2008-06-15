@@ -58,7 +58,8 @@ enum fn_actor_type_e {
   FN_ACTOR_WALLCRAWLERBOT_LEFT,      /* TODO */
   FN_ACTOR_WALLCRAWLERBOT_RIGHT,     /* TODO */
   FN_ACTOR_DRPROTON,                 /* TODO */
-  FN_ACTOR_CAMERA,                   /* TODO */
+  FN_ACTOR_CAMERA,
+  FN_ACTOR_EXPLOSION,
   FN_ACTOR_BOMB,                     /* TODO */
   FN_ACTOR_EXITDOOR,
   FN_ACTOR_SODA,                     /* TODO */
