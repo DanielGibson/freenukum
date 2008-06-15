@@ -326,6 +326,46 @@ int fn_game_start_in_level(
             case SDLK_ESCAPE:
               goto cleanup;
               break;
+            case SDLK_1:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_KEY_RED);
+              break;
+            case SDLK_2:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_KEY_GREEN);
+              break;
+            case SDLK_3:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_KEY_BLUE);
+              break;
+            case SDLK_4:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_KEY_PINK);
+              break;
+            case SDLK_5:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_BOOT);
+              break;
+            case SDLK_6:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_ROBOHAND);
+              break;
+            case SDLK_7:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_CLAMP);
+              break;
+            case SDLK_8:
+              fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
+                  FN_INVENTORY_ACCESS_CARD);
+              break;
+            case SDLK_9:
+              fn_hero_set_firepower(hero, fn_hero_get_firepower(hero) +
+                  1);
+              break;
+            case SDLK_0:
+              lv->levelpassed = 1;
+              lv->do_play = 0;
+              break;
             case SDLK_DOWN:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.y + srcrect.h
