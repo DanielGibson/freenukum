@@ -354,7 +354,7 @@ void fn_actor_function_robot_act(fn_actor_t * actor)
           (actor->x) / FN_TILE_WIDTH,
           (actor->y) / FN_TILE_HEIGHT + 1)) {
       /* still in the air, so let the robot fall down. */
-      actor->x += FN_HALFTILE_HEIGHT;
+      actor->y += FN_HALFTILE_HEIGHT;
     } else {
       /* on the floor, so let's walk */
       if (data->current_frame == 0) {
