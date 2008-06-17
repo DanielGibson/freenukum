@@ -617,6 +617,7 @@ void fn_actor_function_wallcrawler_shot(fn_actor_t * actor)
   actor->is_alive = 0;
   fn_level_add_actor(actor->level,
       FN_ACTOR_EXPLOSION, actor->x, actor->y);
+  fn_hero_add_score(hero, 100);
 }
 
 /* --------------------------------------------------------------- */
