@@ -38,3 +38,5 @@ src/.deps
 src/SConstruct
 freenukum-0.1.tar.gz
 freenukum-0.1.tar.gz.sig
+*.gz
+*.gz.sig
