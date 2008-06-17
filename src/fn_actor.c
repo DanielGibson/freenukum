@@ -420,10 +420,203 @@ void fn_actor_function_robot_shot(fn_actor_t * actor)
     fn_hero_decrease_hurting_objects(hero);
     data->touching_hero = 0;
   }
-  data->was_shot = 1;
+  if (!data->was_shot) {
+    data->current_frame = 0;
+    data->was_shot = 1;
+    data->tile = ANIM_ROBOT + 3;
+    data->num_frames = 7;
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The wallcrawler bot.
+ */
+typedef struct fn_actor_wallcrawler_data_t {
+  /**
+   * The direction to which the wallcrawler is moving.
+   */
+  fn_vertical_direction_e direction;
+  /**
+   * The direction to which the wallcrawler is orientated.
+   */
+  fn_horizontal_direction_e orientation;
+  /**
+   * The tile number.
+   */
+  Uint16 tile;
+  /**
+   * The animation counter.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+  /**
+   * A flag indicating if the robot was shot.
+   */
+  Uint8 was_shot;
+  /**
+   * A flag indicating if the robot is currently touching the hero.
+   */
+  Uint8 touching_hero;
+} fn_actor_wallcrawler_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_create(fn_actor_t * actor)
+{
+
+  fn_actor_wallcrawler_data_t * data = malloc(
+      sizeof(fn_actor_wallcrawler_data_t));
+  actor->data = data;
+  actor->is_in_foreground = 1;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->direction = fn_vertical_direction_up;
+  if (actor->type == FN_ACTOR_WALLCRAWLERBOT_LEFT) {
+    data->tile = ANIM_WALLCRAWLERBOT_LEFT;
+    data->orientation = fn_horizontal_direction_left;
+  } else {
+    data->tile = ANIM_WALLCRAWLERBOT_RIGHT;
+    data->orientation = fn_horizontal_direction_right;
+  }
+
   data->current_frame = 0;
-  data->tile = ANIM_ROBOT + 3;
-  data->num_frames = 7;
+  data->num_frames = 4;
+  data->was_shot = 0;
+  data->touching_hero = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_free(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_touch_start(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->was_shot) {
+    fn_hero_increase_hurting_objects(hero);
+    data->touching_hero = 1;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_touch_end(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->was_shot) {
+    fn_hero_decrease_hurting_objects(hero);
+    data->touching_hero = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_act(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_level_t * level = actor->level;
+
+  int direction = (data->direction == fn_vertical_direction_up ?
+      1 :
+      -1);
+  int orientation = (data->orientation == fn_horizontal_direction_left ?
+      -1 :
+      1);
+  if (direction > 0) {
+    /* going up */
+    data->current_frame++;
+    data->current_frame %= data->num_frames;
+
+    if (
+        /* bot collides with solid tile */
+        fn_level_is_solid(level,
+          (actor->x) / FN_TILE_WIDTH,
+          (actor->y - 1) / FN_TILE_HEIGHT) ||
+        /* bot has no more wall to stick upon */
+        !fn_level_is_solid(level,
+          (actor->x + orientation * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+          (actor->y - 1) / FN_TILE_HEIGHT)
+       ) {
+      actor->y++;
+      data->direction = fn_vertical_direction_down;
+    } else {
+      actor->y--;
+    }
+
+  } else {
+    /* going down */
+    if (data->current_frame == 0) {
+      data->current_frame = data->num_frames;
+    }
+    data->current_frame--;
+
+    if (
+        /* bot collides with solid tile */
+        fn_level_is_solid(level,
+          (actor->x) / FN_TILE_WIDTH,
+          (actor->y + FN_TILE_HEIGHT) / FN_TILE_HEIGHT) ||
+        /* bot has no more wall to stick upon */
+        !fn_level_is_solid(level,
+          (actor->x + orientation * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+          (actor->y + FN_TILE_HEIGHT) / FN_TILE_HEIGHT)
+       ) {
+      actor->y--;
+      data->direction = fn_vertical_direction_up;
+    } else {
+      actor->y++;
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_blit(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_wallcrawler_shot(fn_actor_t * actor)
+{
+  fn_actor_wallcrawler_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (!data->was_shot && data->touching_hero) {
+    fn_hero_decrease_hurting_objects(hero);
+    data->touching_hero = 0;
+    data->current_frame = 0;
+  }
+  actor->is_alive = 0;
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_EXPLOSION, actor->x, actor->y);
 }
 
 /* --------------------------------------------------------------- */
@@ -2764,26 +2957,40 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_WALLCRAWLERBOT_LEFT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_wallcrawler_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_wallcrawler_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_wallcrawler_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_wallcrawler_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_wallcrawler_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_wallcrawler_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_wallcrawler_shot,
   },
   [FN_ACTOR_WALLCRAWLERBOT_RIGHT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_wallcrawler_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_wallcrawler_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_wallcrawler_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_wallcrawler_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_wallcrawler_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_wallcrawler_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_wallcrawler_shot,
   },
   [FN_ACTOR_DRPROTON] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
