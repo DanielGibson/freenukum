@@ -71,6 +71,10 @@ int main(int argc, char ** argv)
 
   fn_settings_t * settings; /* the settings struct */
 
+  Uint8 episode = 1;
+
+  char backgroundfile[10] = "DN.DN1";
+
 /* --------------------------------------------------------------- */
 
   fn_error_set_handler(fn_error_print_commandline);
@@ -163,7 +167,7 @@ int main(int argc, char ** argv)
   /* show the splash screen */
   res = fn_picture_splash_show(
       datapath,
-      "DN.DN1",
+      backgroundfile,
       (Uint8)pixelsize,
       screen);
   if (!res) {
@@ -175,9 +179,10 @@ int main(int argc, char ** argv)
     choice = fn_mainmenu(&tilecache, (Uint8)pixelsize, screen);
     switch(choice) {
       case FN_MENUCHOICE_START:
-        fn_game_start((Uint8)pixelsize, &tilecache, screen, datapath);
+        fn_game_start(
+            (Uint8)pixelsize, &tilecache, screen, datapath, episode);
         res = fn_picture_splash_show(datapath,
-            "DN.DN1",
+            backgroundfile,
             (Uint8)pixelsize,
             screen);
         break;
@@ -197,6 +202,29 @@ int main(int argc, char ** argv)
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
             "Setup not implemented yet.\n");
         break;
+      case FN_MENUCHOICE_EPISODECHANGE:
+        {
+          char msg[100];
+          episode++;
+          if (episode > 3) {
+            episode = 1;
+          }
+          snprintf(backgroundfile,
+              7, "DN.DN%d", episode);
+          res = fn_picture_splash_show(datapath,
+              backgroundfile, (Uint8)pixelsize, screen);
+          if (res == 0) {
+            fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
+                "You don't have this episode installed.\n"
+                "We stay in episode 1\n");
+            episode = 1;
+            snprintf(backgroundfile,
+                7, "DN.DN%d", episode);
+            res = fn_picture_splash_show(datapath,
+                backgroundfile, (Uint8)pixelsize, screen);
+          }
+        }
+        break;
       case FN_MENUCHOICE_HIGHSCORES:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
             "Highscores not implemented yet.\n");
@@ -211,7 +239,7 @@ int main(int argc, char ** argv)
         break;
       case FN_MENUCHOICE_TITLESCREEN:
         res = fn_picture_splash_show(datapath,
-            "DN.DN1",
+            backgroundfile,
             (Uint8)pixelsize,
             screen);
         break;

@@ -47,12 +47,14 @@
  * @param  tilecache  The tile cache to use.
  * @param  screen     The output screen.
  * @param  datapath   The path where all the game data is stored.
+ * @param  episode    The episode in which we start.
  */
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
-    char * datapath);
+    char * datapath,
+    Uint8 episode);
 
 /* --------------------------------------------------------------- */
 
@@ -65,6 +67,7 @@ void fn_game_start(
  * @param  screen       The output screen.
  * @param  datapath     The path whele all the game data is stored.
  * @param  hero         The hero to use.
+ * @param  episode    The episode in which we start.
  *
  * @return Non-zero if the level was completed successfully, else zero.
  */
@@ -74,7 +77,8 @@ int fn_game_start_in_level(
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath,
-    fn_hero_t * hero);
+    fn_hero_t * hero,
+    Uint8 episode);
 
 /* --------------------------------------------------------------- */
 

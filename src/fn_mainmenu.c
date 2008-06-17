@@ -51,6 +51,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
     " I)nstructions \n"
     " O)rdering information \n"
     " G)ame setup \n"
+    " E)pisode change\n"
     " H)igh scores \n"
     " P)reviews/Main Demo! \n"
     " V)iew user demo \n"
@@ -99,6 +100,9 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
               break;
             case SDLK_g:
               choice = FN_MENUCHOICE_SETUP;
+              break;
+            case SDLK_e:
+              choice = FN_MENUCHOICE_EPISODECHANGE;
               break;
             case SDLK_h:
               choice = FN_MENUCHOICE_HIGHSCORES;

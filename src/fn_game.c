@@ -67,7 +67,8 @@ void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
-    char * datapath)
+    char * datapath,
+    Uint8 episode)
 {
   int res;
   fn_hero_t hero;
@@ -84,9 +85,12 @@ void fn_game_start(
     "with you and still have\n"
     "time to watch Oprah!\n";
 
+  char filename[30];
+
+  snprintf(filename, 30, "BADGUY.DN%d", episode);
   res = fn_picture_splash_show_with_message(
       datapath,
-      "BADGUY.DN1",
+      filename,
       (Uint8)pixelsize,
       screen,
       tilecache,
@@ -94,9 +98,10 @@ void fn_game_start(
       0,
       120);
 
+  snprintf(filename, 30, "DUKE.DN%d", episode);
   res = fn_picture_splash_show_with_message(
       datapath,
-      "DUKE.DN1",
+      filename,
       (Uint8)pixelsize,
       screen,
       tilecache,
@@ -157,7 +162,7 @@ void fn_game_start(
             pixelsize,
             tilecache,
             screen,
-            datapath, &hero);
+            datapath, &hero, episode);
         level++;
         if (level == 2) {
           level++;
@@ -169,7 +174,8 @@ void fn_game_start(
             pixelsize,
             tilecache,
             screen,
-            datapath, &hero);
+            datapath, &hero,
+            episode);
         interlevel = 1;
       }
     }
@@ -188,7 +194,8 @@ int fn_game_start_in_level(
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath,
-    fn_hero_t * hero)
+    fn_hero_t * hero,
+    Uint8 episode)
 {
   int returnvalue = 0;
   int fd = 0;
@@ -223,8 +230,8 @@ int fn_game_start_in_level(
   }
 
   char backdropfile[1024];
-  snprintf(backdropfile, 1024, "%s/DROP%d.DN1",
-      datapath, backdropnumber);
+  snprintf(backdropfile, 1024, "%s/DROP%d.DN%d",
+      datapath, backdropnumber, episode);
   fd = open(backdropfile, O_RDONLY);
 
   if (fd == -1)
@@ -243,8 +250,8 @@ int fn_game_start_in_level(
 
   SDL_TimerID tick;
   char levelfile[1024];
-  snprintf(levelfile, 1024, "%s/WORLDAL%X.DN1",
-      datapath, levelnumber);
+  snprintf(levelfile, 1024, "%s/WORLDAL%X.DN%d",
+      datapath, levelnumber, episode);
   fd = open(levelfile, O_RDONLY);
 
   if (fd == -1)
