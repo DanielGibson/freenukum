@@ -165,6 +165,8 @@
 #define HERO_NUM_ANIM_STANDING    (1)
 #define HERO_STANDING_LEFT        (HERO_START +   0x30)
 #define HERO_STANDING_RIGHT       (HERO_START +   0x34)
+#define HERO_SKELETON_LEFT        (HERO_START +   0xB0)
+#define HERO_SKELETON_RIGHT       (HERO_START +   0xB4)
 
 /* --------------------------------------------------------------- */
 

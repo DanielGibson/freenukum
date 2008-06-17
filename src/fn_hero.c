@@ -63,6 +63,10 @@ void fn_hero_init(
   hero->score = 0;
 
   hero->hidden = 0;
+
+  hero->immunitycountdown = 0;
+  hero->immunityduration = 16;
+  hero->hurtingobjects = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -110,6 +114,9 @@ void fn_hero_blit(fn_hero_t * hero,
   if (hero->hidden) {
     return;
   }
+  if (hero->immunitycountdown % 2 != 0) {
+    return;
+  }
 
   dstrect.x = FN_HALFTILE_WIDTH * pixelsize * (hero->x - 1);
   dstrect.y = (FN_HALFTILE_HEIGHT * hero->y - FN_TILE_HEIGHT) *
@@ -118,6 +125,13 @@ void fn_hero_blit(fn_hero_t * hero,
   dstrect.h = pixelsize * FN_TILE_HEIGHT;
 
   tilenr = hero->tilenr;
+  if (hero->immunitycountdown > hero->immunityduration - 1) {
+    if (hero->direction == fn_horizontal_direction_left) {
+      tilenr = HERO_SKELETON_LEFT;
+    } else {
+      tilenr = HERO_SKELETON_RIGHT;
+    }
+  }
 
   tile = fn_tilecache_get_tile(tilecache, tilenr);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
@@ -145,10 +159,18 @@ int fn_hero_act(
   fn_level_t * lv = (fn_level_t *)data;
   int heromoved = 0;
 
+  if (hero->immunitycountdown > 0) {
+    hero->immunitycountdown--;
+  }
+  if (hero->immunitycountdown == 0 && hero->hurtingobjects > 0) {
+    hero->immunitycountdown = hero->immunityduration;
+    fn_hero_set_health(hero, hero->health - 1);
+  }
+
   if (lv == NULL) {
     return hero->health;
   }
-  /* TODO */
+
   if (hero->motion == FN_HERO_MOTION_WALKING) {
     /* our hero is moving */
     switch(hero->direction) {
@@ -553,13 +575,14 @@ Uint64 fn_hero_get_score(fn_hero_t * hero)
 
 void fn_hero_increase_hurting_objects(fn_hero_t * hero)
 {
-  fn_hero_set_health(hero, hero->health - 1);
+  hero->hurtingobjects++;
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_hero_decrease_hurting_objects(fn_hero_t * hero)
 {
+  hero->hurtingobjects--;
 }
 
 /* --------------------------------------------------------------- */

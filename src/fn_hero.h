@@ -142,6 +142,21 @@ struct fn_hero_t {
    * Either 0, 1 or 2.
    */
   Uint8 verticalspeed;
+
+  /**
+   * A contdown how long the hero is immune when he was hurt.
+   */
+  Uint8 immunitycountdown;
+
+  /**
+   * The duration how long our hero is immune after being hurt.
+   */
+  Uint8 immunityduration;
+
+  /**
+   * The number of dangerous objects currently hurting the hero.
+   */
+  Uint8 hurtingobjects;
 };
 
 /* --------------------------------------------------------------- */
