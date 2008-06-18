@@ -2184,6 +2184,140 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef struct fn_actor_unstablefloor_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The flag showing if the hero has already been standing upon the
+   * floor
+   */
+  Uint8 touched;
+  /**
+   * The flag showing if the hero is currently touching the floor.
+   */
+  Uint8 touching;
+} fn_actor_unstablefloor_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_unstablefloor_create(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = malloc(
+      sizeof(fn_actor_unstablefloor_data_t));
+  fn_level_t * level = actor->level;
+  actor->data = data;
+  data->tile = SOLID_START + 77;
+  data->touched = 0;
+  data->touching = 0;
+  actor->w = 0;
+  actor->h = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_unstablefloor_free(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = actor->data;
+  fn_level_t * level = actor->level;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  Uint8 floorlength = 0;
+
+  /*
+   * postponed initialization because when floor is created,
+   * the necessary information is not yet loaded from the level.
+   */
+  if (actor->w == 0) {
+    while (!fn_level_is_solid(level,
+          actor->x / FN_TILE_WIDTH + floorlength,
+          actor->y / FN_TILE_HEIGHT))
+    {
+      fn_level_set_solid(level,
+          actor->x / FN_TILE_WIDTH + floorlength,
+          actor->y / FN_TILE_HEIGHT,
+          1);
+      floorlength++;
+    }
+    actor->w = floorlength * FN_TILE_WIDTH;
+    actor->h = FN_TILE_HEIGHT;
+  }
+
+  if (
+      /* hero is right of leftend */
+      fn_hero_get_x(hero) * FN_HALFTILE_WIDTH >=
+      actor->x &&
+      /* hero is left of rightend */
+      fn_hero_get_x(hero) * FN_HALFTILE_WIDTH <
+      actor->x + actor->w &&
+      /* hero is directly above floor */
+      (fn_hero_get_y(hero) + 2) * FN_HALFTILE_HEIGHT ==
+      actor->y)
+  {
+    if (data->touched) {
+      /* TODO make particles fly. */
+      floorlength = 0;
+      while (floorlength < actor->w / FN_TILE_WIDTH) {
+        fn_level_set_solid(level,
+            actor->x / FN_TILE_WIDTH + floorlength,
+            actor->y / FN_TILE_HEIGHT,
+            0);
+        if (floorlength % 2 == 1) {
+          fn_level_add_actor(actor->level,
+              FN_ACTOR_EXPLOSION,
+              actor->x + FN_TILE_WIDTH * floorlength, actor->y);
+        }
+        floorlength++;
+      }
+      actor->is_alive = 0;
+    } else {
+      data->touching = 1;
+    }
+  } else {
+    if (data->touching) {
+      data->touching = 0;
+      data->touched = 1;
+    }
+  }
+}
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_unstablefloor_blit(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = actor->data;
+  
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = NULL;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  int i = 0;
+  for (i = 0; i < (actor->w / FN_TILE_WIDTH); i++) {
+    tile = fn_tilecache_get_tile(tc,
+        data->tile + i % 2);
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+    destrect.x += FN_TILE_WIDTH * pixelsize;
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 void fn_actor_function_surveillancescreen_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH * 2;
@@ -3395,15 +3529,19 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_UNSTABLEFLOOR] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_unstablefloor_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_unstablefloor_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_unstablefloor_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_unstablefloor_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_FAN_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

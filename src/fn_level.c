@@ -347,7 +347,10 @@ fn_level_t * fn_level_load(int fd,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_UNSTABLEFLOOR,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x301a: /* horizontal laser beam which gets deactivated when mill is shot */
         /* TODO */
