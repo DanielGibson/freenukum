@@ -426,7 +426,6 @@ void fn_hero_set_firepower(
     firepower = 4;
   }
   hero->firepower = firepower;
-  printf("========== Firepower is now %d\n", hero->firepower);
 
   event.type = SDL_USEREVENT;
   event.user.code = fn_event_hero_firepower_changed;
