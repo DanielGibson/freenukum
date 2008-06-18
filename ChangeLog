@@ -1,3 +1,6 @@
+0.2.3
+	- Implemented balloons
+	- Implemented wall-crawling green bots
 	- When hero gets hurt he has an immunity phase before he is hurt again
 	- Made it possible to change to other episodes (if installed).
 0.2.2

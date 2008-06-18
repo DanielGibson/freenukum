@@ -200,6 +200,16 @@ void fn_actor_function_simpleanimation_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 1;
       break;
+    case FN_ACTOR_STONEWINDOW_BACKGROUND:
+      data->tile = ANIM_STONEWINDOWBG;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_BROKENWALL_BACKGROUND:
+      data->tile = ANIM_BROKENWALLBG;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an animation. */
       printf(__FILE__ ":%d: warning: animation #%d"
@@ -2174,6 +2184,104 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+void fn_actor_function_surveillancescreen_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH * 2;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_surveillancescreen_free(fn_actor_t * actor)
+{
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_surveillancescreen_interact_start(
+    fn_actor_t * actor)
+{
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * screen = actor->level->screen;
+
+  /* TODO show real note instead of this dummy */
+  fn_infobox_show(pixelsize, tc, screen, "Not implemented yet.\n");
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_surveillancescreen_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  SDL_Surface * tile = NULL;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  tile = fn_tilecache_get_tile(tc, ANIM_BADGUYSCREEN);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.x += FN_TILE_WIDTH * pixelsize;
+  tile = fn_tilecache_get_tile(tc, ANIM_BADGUYSCREEN + 1);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_notebook_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_notebook_free(fn_actor_t * actor)
+{
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_notebook_interact_start(fn_actor_t * actor)
+{
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * screen = actor->level->screen;
+
+  /* TODO show real note instead of this dummy */
+  fn_infobox_show(pixelsize, tc, screen, "Not implemented yet.\n");
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_notebook_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  SDL_Surface * tile = NULL;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  tile = fn_tilecache_get_tile(tc, OBJ_NOTE);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * The exitdoor struct.
  */
@@ -3232,12 +3340,42 @@ void
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
       fn_actor_function_exitdoor_interact_start,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
     [FN_ACTOR_FUNCTION_ACT]                 =
       fn_actor_function_exitdoor_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_exitdoor_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_NOTEBOOK] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_notebook_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_notebook_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_notebook_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_notebook_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_SURVEILLANCESCREEN] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_surveillancescreen_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_surveillancescreen_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_surveillancescreen_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_surveillancescreen_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SODA] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3290,15 +3428,19 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BROKENWALL_BACKGROUND] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_STONE_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -3353,15 +3495,19 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_STONEWINDOW_BACKGROUND] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_WINDOWLEFT_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
