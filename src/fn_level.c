@@ -619,27 +619,19 @@ fn_level_t * fn_level_load(int fd,
       case 0x303e: /* window - left part */
         lv->tiles[y][x] = 0;
         {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, ANIM_WINDOWBG);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize));
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_WINDOWLEFT_BACKGROUND,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         }
         break;
       case 0x303f: /* window - right part */
         lv->tiles[y][x] = 0;
         {
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, ANIM_WINDOWBG + 1);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
+          lv->actors = g_list_append(lv->actors,
+              fn_actor_create(lv,
+                FN_ACTOR_WINDOWRIGHT_BACKGROUND,
+                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         }
         break;
       case 0x3040: /* the notebook */
@@ -653,7 +645,7 @@ fn_level_t * fn_level_load(int fd,
               0, /* start frame */
               x, y, lv->pixelsize));
         }
-        /* TODO */
+        /* TODO make the notebook interactable */
         break;
       case 0x3041: /* the surveillance screen */
         if (x > 0) {
@@ -683,7 +675,7 @@ fn_level_t * fn_level_load(int fd,
               0, /* start frame */
               x, y, lv->pixelsize));
         }
-        /* TODO */
+        /* TODO make the surveillance screen interactable */
         break;
       case 0x3043: /* dr proton -the final opponent */
         /* TODO */
@@ -861,45 +853,19 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        /* add the animation object */
-        {
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_SPIKES_UP,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
-          break;
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_SPIKES_UP);
-          lv->animations = g_list_append(lv->animations,
-              fn_animation_create(
-                1, /* number of frames */
-                &tile, /* surface(s) */
-                0, /* start frame */
-                x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_SPIKES_UP,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3059: /* spikes showing down */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* add the animation object */
-        {
-          lv->actors = g_list_append(lv->actors,
-              fn_actor_create(lv,
-                FN_ACTOR_SPIKES_DOWN,
-                x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
-          break;
-          SDL_Surface * tile = fn_tilecache_get_tile(
-              lv->tilecache, OBJ_SPIKES_DOWN);
-          lv->animations = g_list_append(lv->animations,
-          fn_animation_create(
-              1, /* number of frames */
-              &tile, /* surface(s) */
-              0, /* start frame */
-              x, y, lv->pixelsize));
-        }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_SPIKES_DOWN,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       default:
         if (tilenr / 0x20 >= SOLID_END) {

@@ -190,6 +190,16 @@ void fn_actor_function_simpleanimation_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 4;
       break;
+    case FN_ACTOR_WINDOWLEFT_BACKGROUND:
+      data->tile = ANIM_WINDOWBG;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
+    case FN_ACTOR_WINDOWRIGHT_BACKGROUND:
+      data->tile = ANIM_WINDOWBG + 1;
+      data->current_frame = 0;
+      data->num_frames = 1;
+      break;
     default:
       /* we got a type which should not be an animation. */
       printf(__FILE__ ":%d: warning: animation #%d"
@@ -3188,7 +3198,7 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
-  [FN_ACTOR_WINDOW_BACKGROUND] = {
+  [FN_ACTOR_STONEWINDOW_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
@@ -3198,6 +3208,36 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+  },
+  [FN_ACTOR_WINDOWLEFT_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_WINDOWRIGHT_BACKGROUND] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_simpleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                = 
+      fn_actor_function_simpleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 = 
+      fn_actor_function_simpleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_simpleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SCREEN] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
