@@ -60,6 +60,21 @@ int fn_draw_byterow(
                     ((br->blue >> (7-i)) & 1) * 0x54 * 2
                     + ((br->brighten >> (7-i)) & 1) * 0x54
                     );
+            /* Workaround for beautiful brown instead of
+             * strange yellow */
+            {
+              Uint8 r;
+              Uint8 g;
+              Uint8 b;
+              SDL_GetRGB(color, fmt,
+                  &r, &g, &b);
+
+              if (r == 0xA8 && g == 0xA8 && b == 0x00) {
+                color = SDL_MapRGB(
+                    fmt,
+                    0xA8, 0x54, 0x00);
+              }
+            }
         }
         SDL_FillRect(target, &r, color);
 

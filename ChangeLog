@@ -1,3 +1,4 @@
+	- Implemented floor which crashes when hero steps upon it twice
 0.2.3
 	- Implemented balloons
 	- Implemented wall-crawling green bots
