@@ -304,11 +304,6 @@ int fn_game_start_in_level(
   while (fn_level_keep_on_playing(lv))
   {
     if (doupdate) {
-      /*
-      printf("starting blit of level.\n");
-      printf("srcrect: x %d, y %d, w %d, h %d\n", srcrect.x, srcrect.y,
-          srcrect.w, srcrect.h);
-          */
       fn_level_blit_to_surface(lv,
           level,
           &srcrect,
@@ -477,12 +472,13 @@ int fn_game_start_in_level(
                   srcrect.w;
               }
               srcrect.y =
-                (y - FN_LEVELWINDOW_HEIGHT + 2) *
+                (y - FN_LEVELWINDOW_HEIGHT - 2) *
                 FN_HALFTILE_HEIGHT * pixelsize;
               if (srcrect.y < 0) {
                 srcrect.y = 0;
               } else if (srcrect.y + srcrect.h >
-                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize) {
+                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize)
+              {
                 srcrect.y =
                   FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize -
                   srcrect.h;
