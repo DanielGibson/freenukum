@@ -374,8 +374,6 @@ int fn_game_start_in_level(
                     < FN_LEVEL_HEIGHT * pixelsize * FN_TILE_HEIGHT) {
                   srcrect.y += pixelsize * FN_HALFTILE_HEIGHT;
                 }
-              } else {
-                /* TODO move our hero */
               }
               doupdate = 1;
               break;
