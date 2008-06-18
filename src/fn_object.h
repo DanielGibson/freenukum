@@ -99,7 +99,7 @@
 #define OBJ_DUST                  (OBJ_START  +     19)
 #define OBJ_FIRERIGHT             (OBJ_START  +     24)
 #define OBJ_FIRELEFT              (OBJ_START  +     29)
-#define OBJ_SMOKE                 (OBJ_START  +     34)
+#define OBJ_STEAM                 (OBJ_START  +     34)
 #define OBJ_BADSHOT               (OBJ_START  +     39)
 #define OBJ_GUN                   (OBJ_START  +     43)
 #define OBJ_CHICKEN_SINGLE        (OBJ_START  +     44)

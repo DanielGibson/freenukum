@@ -1411,7 +1411,10 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_BALLOON:
       actor->is_alive = 0;
-      /* TODO create balloon */
+      lv->actors = g_list_append(lv->actors,
+          fn_actor_create(lv,
+            FN_ACTOR_BALLOON,
+            actor->x, actor->y - FN_TILE_HEIGHT));
       break;
     case FN_ACTOR_BOX_BLUE_FLAG:
       actor->is_alive = 0;
@@ -1521,6 +1524,128 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The balloon struct.
+ */
+typedef struct fn_actor_balloon_data_t {
+  /**
+   * A flag indicating if the balloon was destroyed.
+   */
+  Uint8 destroyed;
+  /**
+   * The current frame number for the cord animation.
+   */
+  Uint8 current_frame;
+} fn_actor_balloon_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_create(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data =
+    malloc(sizeof(fn_actor_balloon_data_t));
+  actor->data = data;
+  data->destroyed = 0;
+  data->current_frame = 0;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT * 2;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_free(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_touch_start(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->destroyed) {
+    actor->is_alive = 0;
+    fn_hero_add_score(hero, 10000);
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_SCORE_10000, actor->x, actor->y);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_act(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data = actor->data;
+  fn_level_t * level = actor->level;
+
+  data->current_frame++;
+  data->current_frame %= 9;
+  if (data->destroyed) {
+    actor->is_alive = 0;
+  } else {
+    actor->y--;
+    if (
+        /* balloon bumps against wall */
+        fn_level_is_solid(level,
+          (actor->x) / FN_TILE_WIDTH,
+          (actor->y -1) / FN_TILE_HEIGHT)
+       )
+    {
+      data->destroyed = 1;
+      fn_level_add_actor(level,
+          FN_ACTOR_STEAM, actor->x, actor->y);
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_blit(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  if (data->destroyed) {
+    tile = fn_tilecache_get_tile(tc, OBJ_BALLOON + 4);
+  } else {
+    tile = fn_tilecache_get_tile(tc, OBJ_BALLOON);
+  }
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.y += FN_TILE_HEIGHT * pixelsize;
+
+  tile = fn_tilecache_get_tile(tc,
+      OBJ_BALLOON + 1 + data->current_frame / 3);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_balloon_shot(fn_actor_t * actor)
+{
+  fn_actor_balloon_data_t * data = actor->data;
+  fn_level_t * level = actor->level;
+  data->destroyed = 1;
+  fn_level_add_actor(level,
+      FN_ACTOR_STEAM, actor->x, actor->y);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * Create a teleporter.
  *
  * @param  actor  The teleporter actor.
@@ -1616,9 +1741,9 @@ void fn_actor_function_teleporter_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
- * Dustclound data struct.
+ * Singleanimation data struct.
  */
-typedef struct fn_actor_dustcloud_data_t {
+typedef struct fn_actor_singleanimation_data_t {
   /**
    * The tile number for the tilecache.
    */
@@ -1631,53 +1756,67 @@ typedef struct fn_actor_dustcloud_data_t {
    * The number of frames for the animation.
    */
   Uint8 num_frames;
-} fn_actor_dustcloud_data_t;
+} fn_actor_singleanimation_data_t;
 
 /* --------------------------------------------------------------- */
 
 /**
- * Create a dustcloud.
+ * Create a singleanimation.
  *
- * @param  actor  The dustcloud actor.
+ * @param  actor  The singleanimation actor.
  */
-void fn_actor_function_dustcloud_create(fn_actor_t * actor)
+void fn_actor_function_singleanimation_create(fn_actor_t * actor)
 {
-  fn_actor_dustcloud_data_t * data = malloc(
-      sizeof(fn_actor_dustcloud_data_t));
+  fn_actor_singleanimation_data_t * data = malloc(
+      sizeof(fn_actor_singleanimation_data_t));
 
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
   actor->is_in_foreground = 1;
 
-  data->tile = OBJ_DUST;
-  data->current_frame = 0;
-  data->num_frames = 5;
+  switch(actor->type) {
+    case FN_ACTOR_DUSTCLOUD:
+      data->tile = OBJ_DUST;
+      data->current_frame = 0;
+      data->num_frames = 5;
+      break;
+    case FN_ACTOR_STEAM:
+      data->tile = OBJ_STEAM;
+      data->current_frame = 0;
+      data->num_frames = 5;
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: singleanimation #%d"
+          " added which is not a singleanimation\n",
+          __LINE__, actor->type);
+      break;
+  }
 }
 
 /* --------------------------------------------------------------- */
 
 /**
- * Delete a dustcloud.
+ * Delete a singleanimation.
  *
- * @param  actor  The dustcloud actor.
+ * @param  actor  The singleanimation actor.
  */
-void fn_actor_function_dustcloud_free(fn_actor_t * actor)
+void fn_actor_function_singleanimation_free(fn_actor_t * actor)
 {
-  fn_actor_dustcloud_data_t * data = actor->data;
+  fn_actor_singleanimation_data_t * data = actor->data;
   free(data); actor->data = NULL; data = NULL;
 }
 
 /* --------------------------------------------------------------- */
 
 /**
- * Act a dustcloud.
+ * Act a singleanimation.
  *
- * @param  actor  The dustcloud actor.
+ * @param  actor  The singleanimation actor.
  */
-void fn_actor_function_dustcloud_act(fn_actor_t * actor)
+void fn_actor_function_singleanimation_act(fn_actor_t * actor)
 {
-  fn_actor_dustcloud_data_t * data = actor->data;
+  fn_actor_singleanimation_data_t * data = actor->data;
 
   data->current_frame++;
   if (data->current_frame == data->num_frames) {
@@ -1688,16 +1827,16 @@ void fn_actor_function_dustcloud_act(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
- * Blit an dustcloud.
+ * Blit an singleanimation.
  *
- * @param  actor  The dustcloud actor.
+ * @param  actor  The singleanimation actor.
  */
-void fn_actor_function_dustcloud_blit(fn_actor_t * actor)
+void fn_actor_function_singleanimation_blit(fn_actor_t * actor)
 {
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  fn_actor_dustcloud_data_t * data = actor->data;
+  fn_actor_singleanimation_data_t * data = actor->data;
   SDL_Surface * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
@@ -3045,17 +3184,32 @@ void
   },
   [FN_ACTOR_DUSTCLOUD] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
-      fn_actor_function_dustcloud_create,
+      fn_actor_function_singleanimation_create,
     [FN_ACTOR_FUNCTION_FREE]                =
-      fn_actor_function_dustcloud_free,
+      fn_actor_function_singleanimation_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
     [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_dustcloud_act,
+      fn_actor_function_singleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_dustcloud_blit,
+      fn_actor_function_singleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_STEAM] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_singleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_singleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_singleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_singleanimation_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOMB] = {
@@ -3603,15 +3757,21 @@ void
       fn_actor_function_item_shot,
   },
   [FN_ACTOR_BALLOON] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_balloon_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_balloon_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_balloon_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_balloon_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_balloon_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_balloon_shot,
   },
   [FN_ACTOR_BOX_GREY_GLOVE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

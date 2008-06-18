@@ -61,6 +61,7 @@ enum fn_actor_type_e {
   FN_ACTOR_CAMERA,
   FN_ACTOR_EXPLOSION,
   FN_ACTOR_DUSTCLOUD,
+  FN_ACTOR_STEAM,
   FN_ACTOR_BOMB,                     /* TODO */
   FN_ACTOR_EXITDOOR,
   FN_ACTOR_SODA,                     /* TODO */
@@ -96,7 +97,7 @@ enum fn_actor_type_e {
   FN_ACTOR_BOX_BLUE_DISK,
   FN_ACTOR_DISK,
   FN_ACTOR_BOX_BLUE_BALLOON,
-  FN_ACTOR_BALLOON,                  /* TODO */
+  FN_ACTOR_BALLOON,
   FN_ACTOR_BOX_GREY_GLOVE,
   FN_ACTOR_GLOVE,
   FN_ACTOR_BOX_GREY_FULL_LIFE,
