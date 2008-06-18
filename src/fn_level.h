@@ -117,12 +117,6 @@ struct fn_level_t {
   GList * bots;
 
   /**
-   * The items
-   * @TODO remove this (replaced by actors).
-   */
-  GList * items;
-
-  /**
    * As long as this is non-zero, we keep on playing.
    */
   int do_play;
