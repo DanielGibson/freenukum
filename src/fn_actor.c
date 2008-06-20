@@ -315,7 +315,8 @@ void fn_actor_function_redball_jumping_free(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
-void fn_actor_function_redball_hero_touch_start(fn_actor_t * actor)
+void fn_actor_function_redball_jumping_hero_touch_start(
+    fn_actor_t * actor)
 {
   fn_actor_redball_jumping_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
@@ -324,7 +325,8 @@ void fn_actor_function_redball_hero_touch_start(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
-void fn_actor_function_redball_hero_touch_end(fn_actor_t * actor)
+void fn_actor_function_redball_jumping_hero_touch_end(
+    fn_actor_t * actor)
 {
   fn_actor_redball_jumping_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
@@ -333,7 +335,7 @@ void fn_actor_function_redball_hero_touch_end(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
-void fn_actor_function_redball_act(fn_actor_t * actor)
+void fn_actor_function_redball_jumping_act(fn_actor_t * actor)
 {
   fn_actor_redball_jumping_data_t * data = actor->data;
 
@@ -377,7 +379,7 @@ void fn_actor_function_redball_act(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
-void fn_actor_function_redball_blit(fn_actor_t * actor)
+void fn_actor_function_redball_jumping_blit(fn_actor_t * actor)
 {
   fn_actor_redball_jumping_data_t * data = actor->data;
 
@@ -396,12 +398,100 @@ void fn_actor_function_redball_blit(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
-void fn_actor_function_redball_shot(fn_actor_t * actor)
+void fn_actor_function_redball_jumping_shot(fn_actor_t * actor)
 {
   /*
    * Do nothing. This function just exists so that the red
    * ball absorbs the bullet when it is shot.
    */
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The lying red ball.
+ */
+typedef struct fn_actor_redball_lying_data_t {
+  /**
+   * The tile number which is to be blitted in the level.
+   */
+  Uint16 tile;
+  /**
+   * Flag that stores if the redball is touching the hero.
+   */
+  Uint8 touching_hero;
+} fn_actor_redball_lying_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_lying_create(fn_actor_t * actor)
+{
+  fn_actor_redball_lying_data_t * data = malloc(
+      sizeof(fn_actor_redball_lying_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->tile = ANIM_MINE;
+  data->touching_hero = 0;
+}
+
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_lying_free(fn_actor_t * actor)
+{
+  fn_actor_redball_lying_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_lying_hero_touch_start(
+    fn_actor_t * actor)
+{
+  fn_actor_redball_lying_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->touching_hero) {
+    data->touching_hero = 1;
+    fn_hero_increase_hurting_objects(hero);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_lying_act(
+    fn_actor_t * actor)
+{
+  fn_actor_redball_lying_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (data->touching_hero == 1) {
+    data->touching_hero++;
+  } else if (data->touching_hero > 1) {
+    fn_hero_decrease_hurting_objects(hero);
+    actor->is_alive = 0;
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_FIRE, actor->x, actor->y);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_lying_blit(fn_actor_t * actor)
+{
+  fn_actor_redball_lying_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1920,6 +2010,11 @@ void fn_actor_function_singleanimation_create(fn_actor_t * actor)
   actor->is_in_foreground = 1;
 
   switch(actor->type) {
+    case FN_ACTOR_FIRE:
+      data->tile = ANIM_BOMBFIRE;
+      data->current_frame = 0;
+      data->num_frames = 6;
+      break;
     case FN_ACTOR_DUSTCLOUD:
       data->tile = OBJ_DUST;
       data->current_frame = 0;
@@ -3456,28 +3551,33 @@ void
     [FN_ACTOR_FUNCTION_FREE]                =
       fn_actor_function_redball_jumping_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_redball_hero_touch_start,
+      fn_actor_function_redball_jumping_hero_touch_start,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_redball_hero_touch_end,
+      fn_actor_function_redball_jumping_hero_touch_end,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
     [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_redball_act,
+      fn_actor_function_redball_jumping_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_redball_blit,
+      fn_actor_function_redball_jumping_blit,
     [FN_ACTOR_FUNCTION_SHOT]                =
-      fn_actor_function_redball_shot,
+      fn_actor_function_redball_jumping_shot,
   },
   [FN_ACTOR_REDBALL_LYING] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_redball_lying_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_redball_lying_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_redball_lying_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_redball_lying_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_redball_lying_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_ROBOT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
@@ -3593,6 +3693,21 @@ void
       fn_actor_function_explosion_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_explosion_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_FIRE] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_singleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_singleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_singleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_singleanimation_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_DUSTCLOUD] = {

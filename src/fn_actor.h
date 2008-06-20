@@ -51,7 +51,7 @@ enum fn_actor_type_e {
   FN_ACTOR_HELICOPTERBOT,            /* TODO */
   FN_ACTOR_RABBITOIDBOT,             /* TODO */
   FN_ACTOR_REDBALL_JUMPING,
-  FN_ACTOR_REDBALL_LYING,            /* TODO */
+  FN_ACTOR_REDBALL_LYING,
   FN_ACTOR_ROBOT,
   FN_ACTOR_SNAKEBOT,                 /* TODO */
   FN_ACTOR_TANKBOT,                  /* TODO */
@@ -60,6 +60,7 @@ enum fn_actor_type_e {
   FN_ACTOR_DRPROTON,                 /* TODO */
   FN_ACTOR_CAMERA,
   FN_ACTOR_EXPLOSION,
+  FN_ACTOR_FIRE,
   FN_ACTOR_DUSTCLOUD,
   FN_ACTOR_STEAM,
   FN_ACTOR_BOMB,                     /* TODO */
