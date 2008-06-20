@@ -274,6 +274,140 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The jumping red ball.
+ */
+typedef struct fn_actor_redball_jumping_data_t {
+  /**
+   * The tile number which is to be blitted in the level.
+   */
+  Uint16 tile;
+  /**
+   * The counter for the position inside the loop.
+   */
+  Uint8 counter;
+  /**
+   * The base position of the ball.
+   */
+  Uint16 base_y;
+} fn_actor_redball_jumping_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_jumping_create(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = malloc(
+      sizeof(fn_actor_redball_jumping_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  data->counter = 0;
+  data->tile = ANIM_MINE;
+  data->base_y = actor->y;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_jumping_free(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_hero_touch_start(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_increase_hurting_objects(hero);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_hero_touch_end(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_decrease_hurting_objects(hero);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_act(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = actor->data;
+
+  Uint8 distance = 0;
+  switch(data->counter) {
+    case 0:
+      distance = 0;
+      break;
+    case 1:
+    case 11:
+      distance = 16;
+      break;
+    case 2:
+    case 10:
+      distance = 28;
+      break;
+    case 3:
+    case 9:
+      distance = 36;
+      break;
+    case 4:
+    case 8:
+      distance = 40;
+      break;
+    case 5:
+    case 7:
+      distance = 41;
+      break;
+    case 6:
+      distance = 42;
+      break;
+    default:
+      distance = 0;
+      break;
+  }
+  actor->y = data->base_y - distance;
+
+  data->counter++;
+  data->counter %= 12;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_blit(fn_actor_t * actor)
+{
+  fn_actor_redball_jumping_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_redball_shot(fn_actor_t * actor)
+{
+  /*
+   * Do nothing. This function just exists so that the red
+   * ball absorbs the bullet when it is shot.
+   */
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * The robot.
  */
 typedef struct fn_actor_robot_data_t {
@@ -2225,6 +2359,38 @@ void fn_actor_function_unstablefloor_free(fn_actor_t * actor)
 
 /* --------------------------------------------------------------- */
 
+void fn_actor_function_unstablefloor_touch_start(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH >=
+      actor->x &&
+      fn_hero_get_x(hero) * FN_HALFTILE_WIDTH <
+      actor->x + actor->w) {
+
+    if (!data->touched) {
+      data->touching = 1;
+    } else {
+      /* TODO let the floor crash away. */
+      actor->is_alive = 0;
+      /* TODO set the floor unsolid */
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_unstablefloor_touch_end(fn_actor_t * actor)
+{
+  fn_actor_unstablefloor_data_t * data = actor->data;
+  if (data->touching) {
+    data->touching = 0;
+    data->touched = 1;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
 {
   fn_actor_unstablefloor_data_t * data = actor->data;
@@ -2272,9 +2438,7 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
             actor->y / FN_TILE_HEIGHT,
             0);
         if (floorlength % 2 == 1) {
-          fn_level_add_actor(actor->level,
-              FN_ACTOR_EXPLOSION,
-              actor->x + FN_TILE_WIDTH * floorlength, actor->y);
+          
         }
         floorlength++;
       }
@@ -3287,15 +3451,22 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_REDBALL_JUMPING] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_redball_jumping_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_redball_jumping_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_redball_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_redball_hero_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_redball_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_redball_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_redball_shot,
   },
   [FN_ACTOR_REDBALL_LYING] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */

@@ -513,7 +513,10 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        /* TODO */
+        lv->actors = g_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_REDBALL_JUMPING,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3032: /* we found our hero! */
         fn_hero_enterlevel(lv->hero, x * 2, y * 2);

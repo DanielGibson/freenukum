@@ -50,7 +50,7 @@ enum fn_actor_type_e {
   FN_ACTOR_FOOTBOT,                  /* TODO */
   FN_ACTOR_HELICOPTERBOT,            /* TODO */
   FN_ACTOR_RABBITOIDBOT,             /* TODO */
-  FN_ACTOR_REDBALL_JUMPING,          /* TODO */
+  FN_ACTOR_REDBALL_JUMPING,
   FN_ACTOR_REDBALL_LYING,            /* TODO */
   FN_ACTOR_ROBOT,
   FN_ACTOR_SNAKEBOT,                 /* TODO */

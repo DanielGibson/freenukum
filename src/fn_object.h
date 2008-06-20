@@ -72,7 +72,7 @@
 #define ANIM_WHITEBALLSMALL       (ANIM_START +    209)
 #define ANIM_WHITEBALLBIG         (ANIM_START +    210)
 #define ANIM_TELEPORTER1          (ANIM_START +    212)
-#define ANIM_MINE                 (ANIM_START +    225)
+#define ANIM_MINE                 (ANIM_START +    223)
 #define ANIM_TELEPORTER2          (ANIM_START +    226)
 #define ANIM_RABBIT2              (ANIM_START +    230)
 #define ANIM_TELEPORTER3          (ANIM_START +    240)
