@@ -43,6 +43,15 @@ fn_shot_t * fn_shot_create(fn_level_t * level,
   shot->counter = 0;
   shot->countdown = 2;
 
+  if ((shot->x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH) {
+    shot->x = shot->x - ((shot->x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH);
+  }
+  if (shot->direction == fn_horizontal_direction_right) {
+    shot->x -= FN_TILE_WIDTH;
+  } else {
+    shot->x += FN_TILE_WIDTH;
+  }
+
   return shot;
 }
 
