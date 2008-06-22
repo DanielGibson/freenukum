@@ -1225,6 +1225,201 @@ void fn_actor_function_acme_hero_touch_start(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef enum fn_actor_fire_state_e {
+  fn_actor_fire_state_off,
+  fn_actor_fire_state_ignition,
+  fn_actor_fire_state_burning
+} fn_actor_fire_state_e;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * The burning fire.
+ */
+typedef struct fn_actor_fire_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The direction to which the fire burns.
+   */
+  fn_horizontal_direction_e direction;
+  /**
+   * The state of the fire.
+   */
+  fn_actor_fire_state_e state;
+  /**
+   * Counter for animation.
+   */
+  Uint8 counter;
+  /**
+   * Flag indicating if the hero is currently being touched.
+   */
+  Uint8 touching_hero;
+} fn_actor_fire_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_create(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = malloc(
+      sizeof(fn_actor_fire_data_t));
+  actor->data = data;
+
+  actor->w = FN_TILE_WIDTH * 3;
+  actor->h = FN_TILE_HEIGHT;
+
+  if (actor->type == FN_ACTOR_FIRE_RIGHT) {
+    data->tile = OBJ_FIRERIGHT;
+    data->direction = fn_horizontal_direction_right;
+  } else {
+    data->tile = OBJ_FIRELEFT;
+    data->direction = fn_horizontal_direction_left;
+    actor->x -= 2 * FN_TILE_WIDTH;
+  }
+  data->counter = 0;
+  data->state = fn_actor_fire_state_off;
+  data->touching_hero = 0;
+  actor->is_in_foreground = 1;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_free(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_hero_touch_start(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  data->touching_hero = 1;
+
+  if (data->state == fn_actor_fire_state_burning) {
+    fn_hero_increase_hurting_objects(hero);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_hero_touch_end(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  data->touching_hero = 0;
+
+  if (data->state == fn_actor_fire_state_burning) {
+    fn_hero_decrease_hurting_objects(hero);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_act(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  switch(data->state)
+  {
+    case fn_actor_fire_state_off:
+      if (data->counter == 40) {
+        data->counter = 0;
+        data->state = fn_actor_fire_state_ignition;
+      }
+      break;
+    case fn_actor_fire_state_ignition:
+      if (data->counter == 20) {
+        data->counter = 0;
+        data->state = fn_actor_fire_state_burning;
+        if (data->touching_hero) {
+          fn_hero_increase_hurting_objects(hero);
+        }
+      }
+      break;
+    case fn_actor_fire_state_burning:
+      if (data->counter == 20) {
+        data->counter = 0;
+        data->state = fn_actor_fire_state_off;
+        if (data->touching_hero) {
+          fn_hero_decrease_hurting_objects(hero);
+        }
+      }
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: fire "
+          "is in invalid state.\n",
+          __LINE__);
+      break;
+  }
+  data->counter++;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fire_blit(fn_actor_t * actor)
+{
+  fn_actor_fire_data_t * data = actor->data;
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile0 = NULL;
+  SDL_Surface * tile1 = NULL;
+  SDL_Surface * tile2 = NULL;
+
+  switch(data->state)
+  {
+    case fn_actor_fire_state_off:
+      break;
+    case fn_actor_fire_state_ignition:
+      if (data->counter % 2) {
+        if (data->direction == fn_horizontal_direction_left) {
+          tile2 = fn_tilecache_get_tile(tc,
+              data->tile);
+        } else {
+          tile0 = fn_tilecache_get_tile(tc,
+              data->tile);
+        }
+      }
+      break;
+    case fn_actor_fire_state_burning:
+      tile1 = fn_tilecache_get_tile(tc,
+          data->tile + 1 + (data->counter % 2));
+      if (data->direction == fn_horizontal_direction_left) {
+        tile2 = tile1;
+        tile0 = fn_tilecache_get_tile(tc, data->tile + 3 +
+            (data->counter % 2));
+      } else {
+        tile0 = tile1;
+        tile2 = fn_tilecache_get_tile(tc, data->tile + 3 +
+            (data->counter % 2));
+      }
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: fire "
+          "is in invalid state.\n",
+          __LINE__);
+      break;
+  }
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile0, NULL, target, &destrect);
+  destrect.x += FN_TILE_WIDTH * pixelsize;
+  SDL_BlitSurface(tile1, NULL, target, &destrect);
+  destrect.x += FN_TILE_WIDTH * pixelsize;
+  SDL_BlitSurface(tile2, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * The accesscard slot.
  */
@@ -5042,6 +5237,40 @@ void
       fn_actor_function_acme_blit,
     [FN_ACTOR_FUNCTION_SHOT]                =
       fn_actor_function_acme_shot,
+  },
+  [FN_ACTOR_FIRE_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_fire_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_fire_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_fire_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_fire_hero_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_fire_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_fire_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_FIRE_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_fire_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_fire_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_fire_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_fire_hero_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_fire_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_fire_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
