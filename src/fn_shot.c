@@ -84,12 +84,22 @@ Uint8 fn_shot_act(fn_shot_t * shot)
           fn_shot_overlaps_actor(shot, actor) &&
           fn_actor_shot(actor)) {
         shot->countdown = 1;
-        /* TODO create the fire effect */
       }
     }
   }
-  /* TODO check if shot hits solid part */
-  /* TODO create effect if shot hits anything */
+  if (shot->countdown == 2) {
+    Uint8 subtraction =
+      (shot->direction == fn_horizontal_direction_right ? 1 : 0);
+    if (fn_level_is_solid(shot->level,
+          (shot->x / FN_TILE_WIDTH) + subtraction,
+          (shot->y + FN_HALFTILE_HEIGHT) / FN_TILE_HEIGHT))
+    {
+      shot->countdown = 1;
+      fn_level_add_actor(shot->level,
+          FN_ACTOR_EXPLOSION,
+          shot->x, shot->y);
+    }
+  }
   return shot->is_alive;
 }
 
