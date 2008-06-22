@@ -309,7 +309,16 @@ int fn_level_act(fn_level_t * lv);
  *
  * @param  lv  The level whose hero should interact.
  */
-void fn_level_hero_interact(fn_level_t * lv);
+void fn_level_hero_interact_start(fn_level_t * lv);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Call this function to make the hero stop interacting with an item.
+ *
+ * @param  lv  The level whose hero should interact.
+ */
+void fn_level_hero_interact_stop(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 

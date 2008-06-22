@@ -29,6 +29,8 @@
 #include "fn_tilecache.h"
 #include "fn_actor.h"
 #include "fn_object.h"
+#include "fn_infobox.h"
+#include "fn_error_cmdline.h"
 
 /* --------------------------------------------------------------- */
 
@@ -318,7 +320,6 @@ void fn_actor_function_redball_jumping_free(fn_actor_t * actor)
 void fn_actor_function_redball_jumping_hero_touch_start(
     fn_actor_t * actor)
 {
-  fn_actor_redball_jumping_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_hero_increase_hurting_objects(hero);
 }
@@ -328,7 +329,6 @@ void fn_actor_function_redball_jumping_hero_touch_start(
 void fn_actor_function_redball_jumping_hero_touch_end(
     fn_actor_t * actor)
 {
-  fn_actor_redball_jumping_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_hero_decrease_hurting_objects(hero);
 }
@@ -772,7 +772,6 @@ void fn_actor_function_wallcrawler_touch_end(fn_actor_t * actor)
 void fn_actor_function_wallcrawler_act(fn_actor_t * actor)
 {
   fn_actor_wallcrawler_data_t * data = actor->data;
-  fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_level_t * level = actor->level;
 
   int direction = (data->direction == fn_vertical_direction_up ?
@@ -1840,7 +1839,6 @@ void fn_actor_function_balloon_blit(fn_actor_t * actor)
   fn_actor_balloon_data_t * data = actor->data;
 
   SDL_Surface * target = fn_level_get_surface(actor->level);
-  fn_hero_t * hero = fn_level_get_hero(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   SDL_Surface * tile;
@@ -1945,10 +1943,8 @@ void fn_actor_function_teleporter_act(fn_actor_t * actor)
 void fn_actor_function_teleporter_blit(fn_actor_t * actor)
 {
   SDL_Surface * target = fn_level_get_surface(actor->level);
-  fn_hero_t * hero = fn_level_get_hero(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  fn_actor_item_data_t * data = actor->data;
   SDL_Surface * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -2208,7 +2204,6 @@ void fn_actor_function_camera_blit(fn_actor_t * actor)
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  fn_actor_item_data_t * data = actor->data;
   SDL_Surface * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -2435,7 +2430,6 @@ void fn_actor_function_unstablefloor_create(fn_actor_t * actor)
 {
   fn_actor_unstablefloor_data_t * data = malloc(
       sizeof(fn_actor_unstablefloor_data_t));
-  fn_level_t * level = actor->level;
   actor->data = data;
   data->tile = SOLID_START + 77;
   data->touched = 0;
@@ -2907,7 +2901,6 @@ void fn_actor_function_door_act(fn_actor_t * actor)
 {
   fn_level_t * level = actor->level;
   fn_actor_door_data_t * data = actor->data;
-  fn_hero_t * hero = fn_level_get_hero(level);
 
   switch(data->state) {
     case 0: /* idle */

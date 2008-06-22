@@ -924,7 +924,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     }
   }
 
-  SDL_Surface * tile;
+  SDL_Surface * tile = NULL;
   r.x = 0;
   r.y = 0;
   r.w = FN_TILE_WIDTH * lv->pixelsize;

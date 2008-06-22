@@ -218,6 +218,7 @@ int fn_game_start_in_level(
             0);
 
   SDL_Surface * backdrop = NULL;;
+  SDL_TimerID tick = 0;
   int backdropnumber = 0;
 
   switch(levelnumber) {
@@ -248,7 +249,6 @@ int fn_game_start_in_level(
   }
   close(fd);
 
-  SDL_TimerID tick;
   char levelfile[1024];
   snprintf(levelfile, 1024, "%s/WORLDAL%X.DN%d",
       datapath, levelnumber, episode);

@@ -204,7 +204,6 @@ int main(int argc, char ** argv)
         break;
       case FN_MENUCHOICE_EPISODECHANGE:
         {
-          char msg[100];
           episode++;
           if (episode > 3) {
             episode = 1;
