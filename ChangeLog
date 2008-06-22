@@ -1,3 +1,4 @@
+	- Added Manpage
 	- Implemented mines
 	- Implemented floor which crashes when hero steps upon it twice
 0.2.3
