@@ -96,7 +96,7 @@ void fn_game_start(
       tilecache,
       msg1,
       0,
-      120);
+      144);
 
   snprintf(filename, 30, "DUKE.DN%d", episode);
   res = fn_picture_splash_show_with_message(
@@ -106,8 +106,8 @@ void fn_game_start(
       screen,
       tilecache,
       msg2,
-      100,
-      120);
+      79,
+      144);
 
   SDL_FillRect(screen, NULL, 0);
 
