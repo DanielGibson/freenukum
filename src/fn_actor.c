@@ -3441,6 +3441,8 @@ void fn_actor_function_shootable_wall_shot(fn_actor_t * actor)
       actor->x / FN_TILE_WIDTH,
       actor->y / FN_TILE_HEIGHT,
       0);
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_EXPLOSION, actor->x, actor->y);
 }
 
 /* --------------------------------------------------------------- */
