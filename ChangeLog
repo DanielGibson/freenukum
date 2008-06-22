@@ -1,3 +1,4 @@
+	- Added ACME stone
 	- Added Manpage
 	- Implemented mines
 	- Implemented floor which crashes when hero steps upon it twice

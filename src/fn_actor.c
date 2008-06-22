@@ -1074,6 +1074,158 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The acme stone.
+ */
+typedef struct fn_actor_acme_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The counter for the state.
+   */
+  Uint8 counter;
+  /**
+   * A flag indicating if the hero is being touched.
+   */
+  Uint8 touching_hero;
+} fn_actor_acme_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_create(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = malloc(
+      sizeof(fn_actor_acme_data_t));
+  actor->data = data;
+  data->tile = OBJ_FALLINGBLOCK;
+  data->counter = 0;
+  data->touching_hero = 0;
+  actor->w = FN_TILE_WIDTH * 2;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_free(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = actor->data;
+
+  if (data->touching_hero) {
+    fn_hero_t * hero = fn_level_get_hero(actor->level);
+    data->touching_hero = 0;
+    fn_hero_decrease_hurting_objects(hero);
+  }
+
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_act(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = actor->data;
+
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  switch(data->counter) {
+    case 0:
+      if (fn_hero_get_x(hero) >= actor->x / FN_HALFTILE_WIDTH &&
+        fn_hero_get_x(hero) <= (actor->x / FN_HALFTILE_WIDTH)+2 &&
+        fn_hero_get_y(hero) >= actor->y / FN_HALFTILE_HEIGHT)
+      {
+        data->counter++;
+      }
+      break;
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 9:
+      actor->y++;
+      data->counter++;
+      break;
+    case 2:
+    case 4:
+    case 6:
+    case 8:
+    case 10:
+      actor->y--;
+      data->counter++;
+      break;
+    default:
+      if (fn_level_is_solid(actor->level,
+            actor->x / FN_TILE_WIDTH,
+            (actor->y / FN_TILE_HEIGHT) + 1))
+      {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_STEAM, actor->x + FN_HALFTILE_WIDTH, actor->y);
+        /* TODO make particles */
+        actor->is_alive = 0;
+      } else {
+        actor->y += FN_TILE_HEIGHT;
+      }
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_blit(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc, data->tile+1);
+  destrect.x += FN_TILE_WIDTH * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_shot(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = actor->data;
+
+  if (data->counter > 0) {
+    fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+    fn_hero_add_score(hero, 500);
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_SCORE_500, actor->x, actor->y);
+    actor->is_alive = 0;
+    /* TODO add particles */
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_acme_hero_touch_start(fn_actor_t * actor)
+{
+  fn_actor_acme_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (data->counter > 10 && !data->touching_hero) {
+    data->touching_hero = 1;
+    fn_hero_increase_hurting_objects(hero);
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * The accesscard slot.
  */
 typedef struct fn_actor_acces_card_slot_data_t {
@@ -4871,6 +5023,23 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_lift_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_ACME] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_acme_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_acme_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_acme_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_acme_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_acme_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_acme_shot,
   },
   [FN_ACTOR_MILL] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
