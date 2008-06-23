@@ -1,3 +1,5 @@
+0.2.5
+	- Made freenukum compile on AMD64 (LP: #242228)
 0.2.4
 	- Implemented flamethrower
 	- Shots can no longer go through solid parts
