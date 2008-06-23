@@ -829,7 +829,7 @@ fn_level_t * fn_level_load(int fd,
       default:
         if (tilenr / 0x20 >= SOLID_END) {
           fprintf(stderr, "Unknown tile 0x%04x at x: %d, y: %d\n",
-              tilenr, x, y);
+              tilenr, (int)x, (int)y);
           lv->tiles[y][x] = 2;
         }
         break;
