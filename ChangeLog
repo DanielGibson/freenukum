@@ -1,3 +1,5 @@
+	- Distribution tarball includes manpage (LP: #243296)
+	- Compiling (but not installing) fn_test_tilecache for devs
 0.2.5
 	- Made freenukum compile on AMD64 (LP: #242228)
 0.2.4
