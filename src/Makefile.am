@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = freenukum
+noinst_PROGRAMS = fn_test_tilecache
 
 INCLUDES = \
 					 -I$(srcdir)
@@ -30,3 +31,11 @@ freenukum_SOURCES = fn.h \
 										fn_tilecache.h      fn_tilecache.c \
 										fn_shot.h           fn_shot.c \
 										freenukum.c
+
+fn_test_tilecache_SOURCES = fn_test_tilecache.c \
+														fn.h \
+														fn_tilecache.h       fn_tilecache.c \
+														fn_tile.h            fn_tile.c \
+														fn_draw.h            fn_draw.c \
+														fn_error.h           fn_error.c \
+														fn_error_cmdline.h   fn_error_cmdline.c
