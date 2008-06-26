@@ -208,7 +208,7 @@ int fn_game_start_in_level(
   int x = 0;
   int y = 0;
   SDL_Surface * level = SDL_CreateRGBSurface(
-            SDL_SWSURFACE,
+            FN_SURFACE_FLAGS,
             FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
             FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
             FN_COLOR_DEPTH,

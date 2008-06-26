@@ -157,7 +157,7 @@ int main(int argc, char ** argv)
             1000,
             700,
             FN_COLOR_DEPTH,
-            SDL_SWSURFACE);
+            FN_SURFACE_FLAGS);
 
     if (screen == NULL)
     {
@@ -166,7 +166,7 @@ int main(int argc, char ** argv)
     }
 
     level = SDL_CreateRGBSurface(
-            SDL_SWSURFACE,
+            FN_SURFACE_FLAGS,
             FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
             FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
             FN_COLOR_DEPTH,

@@ -57,7 +57,7 @@ int main()
             FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
             FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
             FN_COLOR_DEPTH,
-            SDL_SWSURFACE
+            FN_SURFACE_FLAGS
     );
     if(screen == NULL)
     {
@@ -65,7 +65,7 @@ int main()
         return -1;
     }
 
-    object = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
+    object = SDL_CreateRGBSurface(FN_SURFACE_FLAGS | SDL_SRCCOLORKEY,
             FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
             FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
             FN_COLOR_DEPTH,

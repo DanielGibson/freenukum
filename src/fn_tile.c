@@ -58,7 +58,7 @@ SDL_Surface * fn_tile_load(
     char readbuf[5];
 
     tile = SDL_CreateRGBSurface(
-            SDL_SWSURFACE,
+            FN_SURFACE_FLAGS,
             h->width * 8 * pixelsize,
             h->height * pixelsize,
             FN_COLOR_DEPTH,

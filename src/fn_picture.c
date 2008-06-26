@@ -44,7 +44,7 @@ SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize)
     size_t num_read = 0;
 
     picture = SDL_CreateRGBSurface(
-              SDL_SWSURFACE,     /* flags */
+              FN_SURFACE_FLAGS,     /* flags */
               FN_WINDOW_WIDTH * pixelsize,   /* width */
               FN_WINDOW_HEIGHT * pixelsize,  /* height */
               FN_COLOR_DEPTH,    /* depth */

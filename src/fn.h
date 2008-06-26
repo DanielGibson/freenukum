@@ -96,6 +96,10 @@
 
 /* --------------------------------------------------------------- */
 
+#define FN_SURFACE_FLAGS (SDL_HWSURFACE | SDL_HWACCEL | SDL_ASYNCBLIT | SDL_HWPALETTE | SDL_RLEACCEL)
+
+/* --------------------------------------------------------------- */
+
 typedef enum fn_horizontal_direction_e {
   fn_horizontal_direction_none,
   fn_horizontal_direction_left,

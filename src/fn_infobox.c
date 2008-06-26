@@ -57,7 +57,7 @@ void fn_infobox_show(
   dstrect.h = msgbox->h;
 
   /* backup the background */
-  temp = SDL_CreateRGBSurface(SDL_SWSURFACE,
+  temp = SDL_CreateRGBSurface(FN_SURFACE_FLAGS,
       dstrect.w, dstrect.h,
       FN_COLOR_DEPTH,
       0, 0, 0, 0);

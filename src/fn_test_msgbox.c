@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
             FN_TILE_WIDTH * pixelsize * width,
             FN_TILE_HEIGHT * pixelsize * height,
             FN_COLOR_DEPTH,
-            SDL_SWSURFACE);
+            FN_SURFACE_FLAGS);
 
     if (screen == NULL)
     {

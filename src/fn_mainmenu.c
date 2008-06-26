@@ -69,7 +69,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
   dstrect.w = msgbox->w;
   dstrect.h = msgbox->h;
 
-  temp = SDL_CreateRGBSurface(SDL_SWSURFACE,
+  temp = SDL_CreateRGBSurface(FN_SURFACE_FLAGS,
       dstrect.w, dstrect.h,
       FN_COLOR_DEPTH,
       0, 0, 0, 0);

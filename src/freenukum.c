@@ -155,7 +155,7 @@ int main(int argc, char ** argv)
       FN_WINDOW_WIDTH * pixelsize,
       FN_WINDOW_HEIGHT * pixelsize,
       FN_COLOR_DEPTH,
-      SDL_SWSURFACE);
+      FN_SURFACE_FLAGS);
   if (screen == NULL) {
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
     exit(1);

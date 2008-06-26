@@ -74,7 +74,7 @@ SDL_Surface * fn_msgbox(
   }
 
   msgbox = SDL_CreateRGBSurface(
-      SDL_SWSURFACE,
+      FN_SURFACE_FLAGS,
       FN_FONT_WIDTH * pixelsize * (columns + 2),
       FN_FONT_HEIGHT * pixelsize * (rows + 2),
       FN_COLOR_DEPTH,

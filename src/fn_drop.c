@@ -46,7 +46,7 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize)
     SDL_Surface * tile;
 
     drop = SDL_CreateRGBSurface(
-            SDL_SWSURFACE,  /* flags */
+            FN_SURFACE_FLAGS,  /* flags */
             FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,  /* width */
             FN_DROP_HEIGHT * FN_TILE_WIDTH * pixelsize, /* height */
             FN_COLOR_DEPTH, /* depth */
