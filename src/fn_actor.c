@@ -3732,15 +3732,45 @@ void fn_actor_function_access_card_door_act(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The spikes data structure.
+ */
+typedef struct fn_actor_spike_data_t {
+  /**
+   * A flag indicating if the hero is currently touching the spike.
+   */
+  Uint8 touching_hero;
+} fn_actor_spike_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
  * Spikes actor creation function.
  *
  * @param  actor  The spikes actor.
  */
 void fn_actor_function_spikes_create(fn_actor_t * actor)
 {
+  fn_actor_spike_data_t * data = malloc(
+      sizeof(fn_actor_spike_data_t));
+  actor->data = data;
+  data->touching_hero = 0;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_WIDTH;
   actor->is_in_foreground = 1;
+}
+
+/* --------------------------------------------------------------- */
+
+
+/**
+ * Spikes actor deletion function.
+ *
+ * @param  actor  The spikes actor.
+ */
+void fn_actor_function_spikes_free(fn_actor_t * actor)
+{
+  fn_actor_spike_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
 }
 
 /* --------------------------------------------------------------- */
@@ -3753,7 +3783,9 @@ void fn_actor_function_spikes_create(fn_actor_t * actor)
 void fn_actor_function_spikes_touch_start(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_actor_spike_data_t * data = actor->data;
   fn_hero_increase_hurting_objects(hero);
+  data->touching_hero = 1;
 }
 
 /* --------------------------------------------------------------- */
@@ -3767,6 +3799,8 @@ void fn_actor_function_spikes_touch_end(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   fn_hero_decrease_hurting_objects(hero);
+  fn_actor_spike_data_t * data = actor->data;
+  data->touching_hero = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -3783,6 +3817,7 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   SDL_Surface * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  fn_actor_spike_data_t * data = actor->data;
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
   destrect.w = actor->w * pixelsize;
@@ -3795,8 +3830,12 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
       tile = fn_tilecache_get_tile(tc, OBJ_SPIKES_DOWN);
       break;
     case FN_ACTOR_SPIKE:
-      tile = fn_tilecache_get_tile(tc, OBJ_SPIKE);
-      /* TODO check if hero touches spike and print heavy spike */
+      if (data->touching_hero) {
+        tile = fn_tilecache_get_tile(tc, OBJ_SPIKE + 1);
+      } else {
+        tile = fn_tilecache_get_tile(tc, OBJ_SPIKE);
+      }
+
       break;
     default:
       printf(__FILE__ ":%d: warning: spike #%d"
@@ -5301,7 +5340,8 @@ void
   [FN_ACTOR_SPIKES_UP] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_spikes_create,
-    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_spikes_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_spikes_touch_start,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
