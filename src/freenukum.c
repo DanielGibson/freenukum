@@ -140,7 +140,9 @@ int main(int argc, char ** argv)
   res = fn_tilecache_loadtiles(&tilecache, datapath);
   if (res == -1) {
     fn_error_printf(1024, "Could not load tiles.\n"
-        "Copy the original game files to %s" , datapath);
+        "Copy the original game files to %s.\n"
+        "They can be downloaded free of charge from\n"
+        "http://www.3drealms.com/duke1/index.html" , datapath);
     exit(1);
   }
 
