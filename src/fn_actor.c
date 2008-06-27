@@ -3149,10 +3149,10 @@ void fn_actor_function_exitdoor_blit(fn_actor_t * actor)
   destrect.h = actor->h * pixelsize;
 
   SDL_Surface * tile = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      target->flags,
       actor->w * pixelsize,
       actor->h * pixelsize,
-      FN_COLOR_DEPTH,
+      target->format->BitsPerPixel,
       0,
       0,
       0,

@@ -109,14 +109,6 @@ int main(int argc, char ** argv)
 
     fn_tilecache_init(&tc, pixelsize);
 
-    res = fn_tilecache_loadtiles(&tc, datapath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", datapath);
-        return -1;
-    }
-
     Uint8 size[] = {
         48,
         48,
@@ -162,6 +154,18 @@ int main(int argc, char ** argv)
     if (screen == NULL)
     {
         fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
+        return -1;
+    }
+
+    res = fn_tilecache_loadtiles(
+        &tc,
+        screen->flags,
+        screen->format->BitsPerPixel,
+        datapath);
+    if (res == -1)
+    {
+        printf("Could not load tiles.\n");
+        printf("Copy the original game files to %s.\n", datapath);
         return -1;
     }
 

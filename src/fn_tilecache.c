@@ -56,6 +56,8 @@ void fn_tilecache_init(
 
 int fn_tilecache_loadtiles(
         fn_tilecache_t * tc,
+        Uint32 flags,
+        int bitsperpixel,
         char * directory
         )
 {
@@ -142,7 +144,13 @@ int fn_tilecache_loadtiles(
         }
 
         fn_tile_loadheader(fd, &header);
-        res = fn_tilecache_loadfile(tc, fd, size[i], &header);
+        res =
+          fn_tilecache_loadfile(tc,
+              flags,
+              bitsperpixel,
+              fd,
+              size[i],
+              &header);
         close(fd);
 
         if (res != 0)
@@ -160,13 +168,20 @@ int fn_tilecache_loadtiles(
 
 int fn_tilecache_loadfile(
         fn_tilecache_t * tc,
+        Uint32 flags,
+        int bitsperpixel,
         int fd,
         size_t num_tiles,
         fn_tileheader_t * header)
 {
     while(num_tiles > 0)
     {
-        tc->tiles[tc->size] = fn_tile_load(fd, tc->pixelsize, header);
+        tc->tiles[tc->size] =
+          fn_tile_load(fd,
+              tc->pixelsize,
+              flags,
+              bitsperpixel,
+              header);
         if (tc->tiles[tc->size] == NULL)
         {
             return -1;

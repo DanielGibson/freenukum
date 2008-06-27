@@ -135,17 +135,6 @@ int main(int argc, char ** argv)
   fn_settings_get_longint_with_default(settings, "pixelsize",
       &pixelsize, FN_DEFAULT_PIXELSIZE);
 
-  /* initialize the tile cache */
-  fn_tilecache_init(&tilecache, (Uint8)pixelsize);
-  res = fn_tilecache_loadtiles(&tilecache, datapath);
-  if (res == -1) {
-    fn_error_printf(1024, "Could not load tiles.\n"
-        "Copy the original game files to %s.\n"
-        "They can be downloaded free of charge from\n"
-        "http://www.3drealms.com/duke1/index.html" , datapath);
-    exit(1);
-  }
-
   /* initialize SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
@@ -167,6 +156,23 @@ int main(int argc, char ** argv)
 
   /* set window caption */
   SDL_WM_SetCaption("Freenukum " VERSION, "Freenukum " VERSION);
+
+  /* initialize the tile cache */
+  fn_tilecache_init(&tilecache, (Uint8)pixelsize);
+  res = fn_tilecache_loadtiles(
+      &tilecache,
+      screen->flags,
+      screen->format->BitsPerPixel,
+      datapath);
+  if (res == -1) {
+    fn_error_printf(1024, "Could not load tiles.\n"
+        "Copy the original game files to %s.\n"
+        "They can be downloaded free of charge from\n"
+        "http://www.3drealms.com/duke1/index.html" , datapath);
+    /* TODO show text in screen maybe? */
+    exit(1);
+  }
+
 
   /* show the splash screen */
   res = fn_picture_splash_show(

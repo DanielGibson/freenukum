@@ -62,16 +62,20 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
 
   SDL_Event event;
 
-  msgbox = fn_msgbox(pixelsize, tilecache, msg);
+  msgbox = fn_msgbox(pixelsize,
+      screen->flags,
+      screen->format->BitsPerPixel,
+      tilecache,
+      msg);
 
   dstrect.x = ((screen->w)-(msgbox->w))/2;
   dstrect.y = ((screen->h)-(msgbox->h))/2;
   dstrect.w = msgbox->w;
   dstrect.h = msgbox->h;
 
-  temp = SDL_CreateRGBSurface(FN_SURFACE_FLAGS,
+  temp = SDL_CreateRGBSurface(screen->flags,
       dstrect.w, dstrect.h,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0, 0, 0, 0);
   SDL_BlitSurface(screen, &dstrect, temp, NULL);
 

@@ -209,10 +209,10 @@ void fn_borders_blit_life(
   }
 
   lifesurface = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      screen->flags,
       FN_FONT_WIDTH * pixelsize * FN_NUM_MAXLIFE,
       FN_TILE_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0,
       0,
       0,
@@ -247,10 +247,10 @@ void fn_borders_blit_score(
   sprintf(scoretext, "%08llu", score);
 
   scoresurface = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      screen->flags,
       FN_FONT_WIDTH * pixelsize * FN_SCORE_DIGITS,
       FN_FONT_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0,
       0,
       0,
@@ -300,10 +300,10 @@ void fn_borders_blit_firepower(
   }
 
   firepowersurface = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      screen->flags,
       FN_TILE_WIDTH * pixelsize * FN_NUM_MAXFIREPOWER,
       FN_TILE_HEIGHT * pixelsize * 2,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0,
       0,
       0,
@@ -363,10 +363,10 @@ void fn_borders_blit_inventory(
   }
 
   inventorysurface = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      screen->flags,
       FN_TILE_WIDTH * pixelsize * FN_SIZE_INVENTORY/2,
       FN_TILE_HEIGHT * pixelsize * 2,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0,
       0,
       0,

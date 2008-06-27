@@ -66,10 +66,10 @@ fn_level_t * fn_level_load(int fd,
   lv->tilecache = tilecache;
 
   lv->surface = SDL_CreateRGBSurface(
-      FN_SURFACE_FLAGS,
+      screen->flags,
       FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
       FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      FN_COLOR_DEPTH,
+      screen->format->BitsPerPixel,
       0,
       0,
       0,

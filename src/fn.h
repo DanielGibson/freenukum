@@ -43,7 +43,7 @@
 #define FN_TILE_WIDTH       16
 #define FN_TILE_HEIGHT      16
 
-#define FN_COLOR_DEPTH      24
+#define FN_COLOR_DEPTH       0
 
 #define FN_WINDOW_WIDTH    320
 #define FN_WINDOW_HEIGHT   200
@@ -96,7 +96,7 @@
 
 /* --------------------------------------------------------------- */
 
-#define FN_SURFACE_FLAGS (SDL_HWSURFACE | SDL_HWACCEL | SDL_ASYNCBLIT | SDL_HWPALETTE | SDL_RLEACCEL)
+#define FN_SURFACE_FLAGS (SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT)
 
 /* --------------------------------------------------------------- */
 

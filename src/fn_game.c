@@ -208,10 +208,10 @@ int fn_game_start_in_level(
   int x = 0;
   int y = 0;
   SDL_Surface * level = SDL_CreateRGBSurface(
-            FN_SURFACE_FLAGS,
+            screen->flags,
             FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
             FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-            FN_COLOR_DEPTH,
+            screen->format->BitsPerPixel,
             0,
             0,
             0,
@@ -241,7 +241,10 @@ int fn_game_start_in_level(
     perror("Can't open file");
     goto cleanup;
   }
-  backdrop = fn_drop_load(fd, pixelsize);
+  backdrop = fn_drop_load(fd,
+      pixelsize,
+      screen->flags,
+      screen->format->BitsPerPixel);
   if (backdrop != NULL) {
     printf("loaded backdrop %s\n", backdropfile);
   } else {

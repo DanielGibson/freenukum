@@ -57,6 +57,8 @@ void fn_tilecache_init(
 
 int fn_tilecache_loadtiles(
         fn_tilecache_t * tc,
+        Uint32 flags,
+        int bitsperpixel,
         char * directory
         );
 
@@ -64,6 +66,8 @@ int fn_tilecache_loadtiles(
 
 int fn_tilecache_loadfile(
         fn_tilecache_t * tc,
+        Uint32 flags,
+        int bitsperpixel,
         int fd,
         size_t num_tiles,
         fn_tileheader_t * header);

@@ -42,6 +42,8 @@
 
 SDL_Surface * fn_msgbox(
     Uint8 pixelsize,
+    Uint32 flags,
+    int bitsperpixel,
     fn_tilecache_t * tilecache,
     char * text);
 

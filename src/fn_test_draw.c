@@ -65,10 +65,10 @@ int main()
         return -1;
     }
 
-    object = SDL_CreateRGBSurface(FN_SURFACE_FLAGS | SDL_SRCCOLORKEY,
+    object = SDL_CreateRGBSurface(screen->flags,
             FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,
             FN_DROP_HEIGHT * FN_TILE_HEIGHT * pixelsize,
-            FN_COLOR_DEPTH,
+            screen->format->BitsPerPixel,
             0,
             0,
             0,

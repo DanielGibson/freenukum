@@ -38,7 +38,16 @@
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize);
+/**
+ * Load a picture from a picture file.
+ *
+ * @param  fd            The opened file descriptor to the file.
+ * @param  pixelsize     The size of one original pixel.
+ * @param  flags         sdl flags for CreateRGBSurface.
+ * @param  bitsperpixel  The color bits per pixel.
+ */
+SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
+    Uint32 flags, int bitsperpixel);
 
 /* --------------------------------------------------------------- */
 

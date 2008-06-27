@@ -53,7 +53,10 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h);
 
 SDL_Surface * fn_tile_load(
         int fd,
-        Uint8 pixelsize, fn_tileheader_t * h
+        Uint8 pixelsize,
+        Uint32 flags,
+        int bitsperpixel,
+        fn_tileheader_t * h
         );
 
 /* --------------------------------------------------------------- */

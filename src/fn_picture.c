@@ -37,17 +37,18 @@
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize)
+SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
+    Uint32 flags, int bitsperpixel)
 {
     SDL_Surface * picture;
     SDL_Rect r;
     size_t num_read = 0;
 
     picture = SDL_CreateRGBSurface(
-              FN_SURFACE_FLAGS,     /* flags */
+              flags,     /* flags */
               FN_WINDOW_WIDTH * pixelsize,   /* width */
               FN_WINDOW_HEIGHT * pixelsize,  /* height */
-              FN_COLOR_DEPTH,    /* depth */
+              bitsperpixel,    /* depth */
               0,                 /* Rmask */
               0,                 /* Gmask */
               0,                 /* Bmask */
