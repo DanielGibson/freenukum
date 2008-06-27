@@ -465,6 +465,13 @@ void fn_actor_function_redball_lying_act(
 {
   fn_actor_redball_lying_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (!fn_level_is_solid(actor->level,
+        (actor->x) / FN_TILE_WIDTH,
+        (actor->y) / FN_TILE_HEIGHT + 1)) {
+    actor->y += FN_HALFTILE_HEIGHT;
+  }
+
   if (data->touching_hero == 1) {
     data->touching_hero++;
   } else if (data->touching_hero > 1) {
