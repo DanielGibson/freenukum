@@ -152,6 +152,8 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
+  atexit(SDL_Quit);
+
   /* initialize SDL window */
   screen = SDL_SetVideoMode(
       FN_WINDOW_WIDTH * pixelsize,

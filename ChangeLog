@@ -1,3 +1,4 @@
+	- Calling SDL_Quit on exit of the program (LP: #243597)
 	- Distribution tarball includes manpage (LP: #243296)
 	- Compiling (but not installing) fn_test_tilecache for devs
 0.2.5
