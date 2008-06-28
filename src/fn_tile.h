@@ -55,7 +55,7 @@ SDL_Surface * fn_tile_load(
         int fd,
         Uint8 pixelsize,
         Uint32 flags,
-        int bitsperpixel,
+        SDL_PixelFormat * format,
         fn_tileheader_t * h
         );
 

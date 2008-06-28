@@ -160,7 +160,7 @@ int main(int argc, char ** argv)
     res = fn_tilecache_loadtiles(
         &tc,
         screen->flags,
-        screen->format->BitsPerPixel,
+        screen->format,
         datapath);
     if (res == -1)
     {

@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
 
     fn_tile_loadheader(fd, &h);
 
-    drop = fn_drop_load(fd, pixelsize);
+    drop = fn_drop_load(fd, pixelsize, screen->flags, screen->format);
 
     SDL_BlitSurface(drop, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);

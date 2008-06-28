@@ -38,7 +38,7 @@
 /* --------------------------------------------------------------- */
 
 SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
-    Uint32 flags, int bitsperpixel)
+    Uint32 flags, SDL_PixelFormat * format)
 {
     SDL_Surface * picture;
     SDL_Rect r;
@@ -48,7 +48,7 @@ SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
               flags,     /* flags */
               FN_WINDOW_WIDTH * pixelsize,   /* width */
               FN_WINDOW_HEIGHT * pixelsize,  /* height */
-              bitsperpixel,    /* depth */
+              format->BitsPerPixel,    /* depth */
               0,                 /* Rmask */
               0,                 /* Gmask */
               0,                 /* Bmask */

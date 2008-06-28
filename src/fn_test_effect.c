@@ -95,7 +95,11 @@ int main(int argc, char ** argv)
     exit(1);
   }
 
-  picture = fn_picture_load(fd, pixelsize);
+  picture = fn_picture_load(
+      fd,
+      pixelsize,
+      screen->flags,
+      screen->format);
   close(fd);
 
   SDL_BlitSurface(picture, NULL, screen, NULL);

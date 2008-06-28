@@ -50,7 +50,7 @@ SDL_Surface * fn_tile_load(
         int fd,
         Uint8 pixelsize,
         Uint32 flags,
-        int bitsperpixel,
+        SDL_PixelFormat * format,
         fn_tileheader_t * h)
 {
     SDL_Surface * tile;
@@ -60,10 +60,10 @@ SDL_Surface * fn_tile_load(
     char readbuf[5];
 
     tile = SDL_CreateRGBSurface(
-            FN_SURFACE_FLAGS,
+            flags,
             h->width * 8 * pixelsize,
             h->height * pixelsize,
-            FN_COLOR_DEPTH,
+            format->BitsPerPixel,
             0,
             0,
             0,

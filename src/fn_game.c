@@ -244,7 +244,7 @@ int fn_game_start_in_level(
   backdrop = fn_drop_load(fd,
       pixelsize,
       screen->flags,
-      screen->format->BitsPerPixel);
+      screen->format);
   if (backdrop != NULL) {
     printf("loaded backdrop %s\n", backdropfile);
   } else {

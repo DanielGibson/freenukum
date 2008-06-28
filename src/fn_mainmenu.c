@@ -64,7 +64,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
 
   msgbox = fn_msgbox(pixelsize,
       screen->flags,
-      screen->format->BitsPerPixel,
+      screen->format,
       tilecache,
       msg);
 

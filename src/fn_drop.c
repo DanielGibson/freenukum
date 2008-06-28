@@ -38,7 +38,7 @@
 /* --------------------------------------------------------------- */
 
 SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
-    Uint32 flags, int bitsperpixel)
+    Uint32 flags, SDL_PixelFormat * format)
 {
     SDL_Surface * drop;
     SDL_Rect r;
@@ -50,7 +50,7 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
             flags,          /* flags */
             FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,  /* width */
             FN_DROP_HEIGHT * FN_TILE_WIDTH * pixelsize, /* height */
-            bitsperpixel,   /* depth */
+            format->BitsPerPixel,   /* depth */
             0,              /* Rmask */
             0,              /* Gmask */
             0,              /* Bmask */
@@ -72,7 +72,7 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
         tile = fn_tile_load(fd,
             pixelsize,
             flags,
-            bitsperpixel,
+            format,
             &h);
         SDL_BlitSurface(tile, NULL, drop, &r);
         SDL_FreeSurface(tile);

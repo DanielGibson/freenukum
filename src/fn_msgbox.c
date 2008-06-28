@@ -43,7 +43,7 @@
 SDL_Surface * fn_msgbox(
     Uint8 pixelsize,
     Uint32 flags,
-    int bitsperpixel,
+    SDL_PixelFormat * format,
     fn_tilecache_t * tilecache,
     char * text
     )
@@ -79,7 +79,7 @@ SDL_Surface * fn_msgbox(
       flags,
       FN_FONT_WIDTH * pixelsize * (columns + 2),
       FN_FONT_HEIGHT * pixelsize * (rows + 2),
-      bitsperpixel,
+      format->BitsPerPixel,
       0,
       0,
       0,

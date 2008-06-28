@@ -79,7 +79,8 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    picture = fn_picture_load(fd, pixelsize);
+    picture = fn_picture_load(
+        fd, pixelsize, screen->flags, screen->format);
 
     SDL_BlitSurface(picture, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);

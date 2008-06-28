@@ -36,6 +36,7 @@
 #include "fn.h"
 #include "fn_level.h"
 #include "fn_tilecache.h"
+#include "fn_hero.h"
 
 /* --------------------------------------------------------------- */
 
@@ -78,6 +79,8 @@ int main(int argc, char ** argv)
     char * homedir;
     char tilespath[1024];
     char levelfile[1024];
+    fn_hero_t hero;
+    fn_hero_init(&hero, 0, 0);
 
     int argok = 0;
     char levelnumber;
@@ -121,14 +124,6 @@ int main(int argc, char ** argv)
 
     fn_tilecache_init(&tc, pixelsize);
 
-    res = fn_tilecache_loadtiles(&tc, tilespath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", tilespath);
-        exit(1);
-    }
-
     fd = open(levelfile, O_RDONLY);
 
     if (fd == -1)
@@ -136,16 +131,6 @@ int main(int argc, char ** argv)
         perror("Can't open file");
         return -1;
     }
-
-    lv = fn_level_load(fd, pixelsize, &tc);
-    if (lv == NULL)
-    {
-        close(fd);
-        fprintf(stderr, "Could not load level from file %s\n", levelfile);
-        return -1;
-    }
-
-    close(fd);
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
     {
@@ -164,6 +149,28 @@ int main(int argc, char ** argv)
         fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
         return -1;
     }
+
+    res = fn_tilecache_loadtiles(&tc,
+        screen->flags,
+        screen->format,
+        tilespath);
+    if (res == -1)
+    {
+        printf("Could not load tiles.\n");
+        printf("Copy the original game files to %s.\n", tilespath);
+        exit(1);
+    }
+
+    lv = fn_level_load(fd, pixelsize, &tc, screen, &hero);
+    if (lv == NULL)
+    {
+        close(fd);
+        fprintf(stderr, "Could not load level from file %s\n", levelfile);
+        return -1;
+    }
+
+    close(fd);
+
 
     level = SDL_CreateRGBSurface(
             screen->flags,
@@ -187,6 +194,8 @@ int main(int argc, char ** argv)
     fn_level_blit_to_surface(lv,
         level,
         &r,
+        &r,
+        NULL,
         NULL);
 
     SDL_BlitSurface(level, NULL, screen, NULL);

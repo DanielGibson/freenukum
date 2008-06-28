@@ -62,14 +62,6 @@ int main(int argc, char ** argv)
 
   snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
-  fn_tilecache_init(&tc, (Uint8)pixelsize);
-  res = fn_tilecache_loadtiles(&tc, datapath);
-  if (res == -1) {
-    fn_error_printf(1024, "Could not load tiles.\n"
-        "Copy the original game files to %s", datapath);
-    exit(1);
-  }
-
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
     exit(1);
@@ -82,6 +74,17 @@ int main(int argc, char ** argv)
       FN_SURFACE_FLAGS);
   if (screen == NULL) {
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
+    exit(1);
+  }
+
+  fn_tilecache_init(&tc, (Uint8)pixelsize);
+  res = fn_tilecache_loadtiles(&tc,
+      screen->flags,
+      screen->format,
+      datapath);
+  if (res == -1) {
+    fn_error_printf(1024, "Could not load tiles.\n"
+        "Copy the original game files to %s", datapath);
     exit(1);
   }
 

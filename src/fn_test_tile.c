@@ -90,7 +90,8 @@ int main(int argc, char ** argv)
     size_t i = 0;
     while (i != h.tiles)
     {
-        tile = fn_tile_load(fd, pixelsize, &h);
+        tile = fn_tile_load(
+            fd, pixelsize, screen->flags, screen->format, &h);
         SDL_BlitSurface(tile, NULL, screen, &r);
         SDL_FreeSurface(tile);
         i++;

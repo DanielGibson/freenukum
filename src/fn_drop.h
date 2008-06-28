@@ -44,10 +44,10 @@
  * @param  fd            The file descriptor of the already opened file.
  * @param  pixelsize     The multiplicator how big one pixel is.
  * @param  flags         The flags for SDL CreateRGBSurface.
- * @param  bitsperpixel  The bits per pixel for the surface.
+ * @param  format        The sdl picture format.
  */
 SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
-    Uint32 flags, int bitsperpixel);
+    Uint32 flags, SDL_PixelFormat * format);
 
 /* --------------------------------------------------------------- */
 

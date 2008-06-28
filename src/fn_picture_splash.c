@@ -93,10 +93,9 @@ int fn_picture_splash_show_with_message(char * datapath,
   }
   free(path);
 
-  int bitsperpixel = screen->format->BitsPerPixel;
   Uint32 flags = screen->flags;
 
-  picture = fn_picture_load(fd, pixelsize, flags, bitsperpixel);
+  picture = fn_picture_load(fd, pixelsize, flags, screen->format);
 
   SDL_BlitSurface(picture, NULL, screen, NULL);
 
@@ -107,7 +106,7 @@ int fn_picture_splash_show_with_message(char * datapath,
 
     msgbox = fn_msgbox(pixelsize,
         screen->flags,
-        screen->format->BitsPerPixel,
+        screen->format,
         tilecache,
         msg);
 

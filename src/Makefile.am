@@ -1,7 +1,21 @@
 AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = freenukum
-noinst_PROGRAMS = fn_test_tilecache
+noinst_PROGRAMS = fn_test_tilecache \
+                  fn_test_borders \
+									fn_test_draw \
+									fn_test_drop \
+									fn_test_effect \
+									fn_test_error \
+									fn_test_hero \
+									fn_test_infobox \
+									fn_test_mainmenu \
+									fn_test_level_loader \
+									fn_test_msgbox \
+									fn_test_picture \
+									fn_test_picture_splash \
+									fn_test_settings \
+									fn_test_tile
 
 INCLUDES = \
 					 -I$(srcdir)
@@ -39,3 +53,115 @@ fn_test_tilecache_SOURCES = fn_test_tilecache.c \
 														fn_draw.h            fn_draw.c \
 														fn_error.h           fn_error.c \
 														fn_error_cmdline.h   fn_error_cmdline.c
+
+fn_test_borders_SOURCES = fn_test_borders.c \
+													fn.h \
+													fn_error_cmdline.h fn_error_cmdline.c \
+													fn_error.h         fn_error.c \
+													fn_tilecache.h     fn_tilecache.c \
+													fn_tile.h          fn_tile.c \
+													fn_draw.h          fn_draw.c \
+													fn_borders.h       fn_borders.c \
+													fn_text.h          fn_text.c
+
+fn_test_draw_SOURCES = fn_test_draw.c \
+                       fn.h \
+											 fn_error_cmdline.h fn_error_cmdline.c \
+											 fn_draw.h          fn_draw.c
+
+fn_test_drop_SOURCES = fn_test_drop.c \
+                       fn.h \
+											 fn_tile.h          fn_tile.c \
+											 fn_draw.h          fn_draw.c \
+											 fn_drop.h          fn_drop.c
+
+fn_test_effect_SOURCES = fn_test_effect.c \
+                         fn_error_cmdline.h fn_error_cmdline.c \
+												 fn_error.h         fn_error.c \
+												 fn_picture.h       fn_picture.c \
+												 fn_effect.h        fn_effect.c \
+												 fn_draw.h          fn_draw.c \
+												 fn.h
+
+fn_test_error_SOURCES = fn_test_error.c \
+                        fn_error.h      fn_error.c \
+												fn.h
+
+fn_test_hero_SOURCES = fn_test_hero.c \
+                       fn_error.h          fn_error.c \
+											 fn_error_cmdline.h  fn_error_cmdline.c \
+											 fn_draw.h           fn_draw.c \
+											 fn_tilecache.h      fn_tilecache.c \
+											 fn_hero.h           fn_hero.c \
+											 fn_tile.h           fn_tile.c \
+											 fn_level.h          fn_level.c \
+											 fn_shot.h           fn_shot.c \
+											 fn_actor.h          fn_actor.c \
+											 fn_bot.h            fn_bot.c \
+											 fn_infobox.h        fn_infobox.c \
+											 fn_msgbox.h         fn_msgbox.c \
+											 fn_text.h           fn_text.c \
+                       fn.h
+
+fn_test_infobox_SOURCES = fn_test_infobox.c \
+											    fn_infobox.h        fn_infobox.c \
+													fn_tilecache.h      fn_tilecache.c \
+													fn_tile.h           fn_tile.c \
+													fn_draw.h           fn_draw.c \
+													fn_msgbox.h         fn_msgbox.c \
+													fn_text.h           fn_text.c \
+                          fn.h
+
+fn_test_mainmenu_SOURCES = fn_test_mainmenu.c \
+													 fn.h
+
+fn_test_level_loader_SOURCES = fn_test_level_loader.c \
+													     fn_hero.h           fn_hero.c \
+															 fn_tilecache.h      fn_tilecache.c \
+															 fn_tile.h           fn_tile.c \
+															 fn_draw.h           fn_draw.c \
+															 fn_level.h          fn_level.c \
+															 fn_shot.h           fn_shot.c \
+															 fn_actor.h          fn_actor.c \
+															 fn_bot.h            fn_bot.c \
+															 fn_error_cmdline.h  fn_error_cmdline.c \
+															 fn_infobox.h        fn_infobox.c \
+															 fn_msgbox.h         fn_msgbox.c \
+															 fn_text.h           fn_text.c \
+															 fn.h
+
+fn_test_msgbox_SOURCES = fn_test_msgbox.c \
+												 fn_infobox.h        fn_infobox.c \
+												 fn_msgbox.h         fn_msgbox.c \
+												 fn_text.h           fn_text.c \
+												 fn_tilecache.h      fn_tilecache.c \
+												 fn_tile.h           fn_tile.c \
+												 fn_draw.h           fn_draw.c \
+												 fn.h
+
+fn_test_picture_SOURCES = fn_test_picture.c \
+                          fn_picture.h        fn_picture.c \
+													fn_draw.h           fn_draw.c \
+													fn.h
+
+fn_test_picture_splash_SOURCES = fn_test_picture_splash.c \
+																 fn_picture_splash.h fn_picture_splash.c \
+                                 fn_error_cmdline.h  fn_error_cmdline.c \
+																 fn_error.h          fn_error.c \
+																 fn_picture.h        fn_picture.c \
+																 fn_draw.h           fn_draw.c \
+																 fn_msgbox.h         fn_msgbox.c \
+																 fn_text.h           fn_text.c \
+																 fn_tilecache.h      fn_tilecache.c \
+																 fn_tile.h           fn_tile.c \
+																 fn.h
+
+fn_test_settings_SOURCES = fn_test_settings.c \
+                           fn_settings.h      fn_settings.c \
+													 fn.h
+
+fn_test_tile_SOURCES = fn_test_tile.c \
+                       fn_tile.h      fn_tile.c \
+											 fn_draw.h      fn_draw.c \
+                       fn.h
+

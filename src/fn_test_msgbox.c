@@ -78,14 +78,6 @@ int main(int argc, char ** argv)
 
     fn_tilecache_init(&tc, pixelsize);
 
-    res = fn_tilecache_loadtiles(&tc, tilespath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", tilespath);
-        exit(1);
-    }
-
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
     {
         fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
@@ -104,7 +96,22 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    msgbox = fn_msgbox(pixelsize,
+    res = fn_tilecache_loadtiles(
+        &tc,
+        screen->flags,
+        screen->format,
+        tilespath);
+    if (res == -1)
+    {
+        printf("Could not load tiles.\n");
+        printf("Copy the original game files to %s.\n", tilespath);
+        exit(1);
+    }
+
+    msgbox = fn_msgbox(
+        pixelsize,
+        screen->flags,
+        screen->format,
         &tc,
         msg);
 

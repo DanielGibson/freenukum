@@ -52,7 +52,7 @@ void fn_infobox_show(
   msgbox = fn_msgbox(
       pixelsize,
       screen->flags,
-      screen->format->BitsPerPixel,
+      screen->format,
       tilecache,
       msg);
 

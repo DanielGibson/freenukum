@@ -54,14 +54,6 @@ int main(int argc, char ** argv) {
 
   fn_tilecache_init(&tilecache, pixelsize);
 
-  res = fn_tilecache_loadtiles(&tilecache, tilespath);
-
-  if (res == -1) {
-    printf("Could not load tiles.\n");
-    printf("Copy the original game files to %s.\n", tilespath);
-    exit(1);
-  }
-
   if (SDL_Init(SDL_INIT_VIDEO) == -1) {
     fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
     return -1;
@@ -75,6 +67,14 @@ int main(int argc, char ** argv) {
   if (screen == NULL) {
     fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
     return -1;
+  }
+
+  res = fn_tilecache_loadtiles(
+      &tilecache, screen->flags, screen->format, tilespath);
+  if (res == -1) {
+    printf("Could not load tiles.\n");
+    printf("Copy the original game files to %s.\n", tilespath);
+    exit(1);
   }
 
   fn_infobox_show(pixelsize, &tilecache, screen, "This is...\n");

@@ -162,7 +162,7 @@ int main(int argc, char ** argv)
   res = fn_tilecache_loadtiles(
       &tilecache,
       screen->flags,
-      screen->format->BitsPerPixel,
+      screen->format,
       datapath);
   if (res == -1) {
     fn_error_printf(1024, "Could not load tiles.\n"
