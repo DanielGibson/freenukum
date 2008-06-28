@@ -1,0 +1,26 @@
+* Check AUTHORS
+* Add version number on top of ChangeLog
+* Change version number in configure.in
+* Commit bzr
+* Export tarball and try compiling it
+* Copy tarball to ../freenukum_X.Y.Z.orig.tar.gz
+* Try out if the option --enable-testprograms works
+* Try out if the game works basically
+* Merge to freenukum-package repo
+* Update freenukum-package/debian/changelog
+* bzr export from freenukum-package to freenukum-X.Y.Z
+* debuild in freenukum-X.Y.Z
+* debuild -S in freenukum-X.Y.Z
+* dput freenukum-X-Y-Z-source.changes
+* When packages are built, publish the .tar.gz
+* Make announcements / updates:
+  - happypenguin.org
+  - ostatic.com
+  - holarse.de
+  - pro-linux.de
+  - freshmeat.net
+
+  URLs:
+  download: http://launchpad.net/freenukum/+download
+  ubuntu: http://launchpad.net/~freenukum/+archive
+  site: http://launchpad.net/freenukum
