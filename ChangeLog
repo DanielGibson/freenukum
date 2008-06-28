@@ -1,7 +1,8 @@
 	- Using BitsPerPixel and SDL-Flags from initial screen (LP: #243352)
 	- Calling SDL_Quit on exit of the program (LP: #243597)
 	- Distribution tarball includes manpage (LP: #243296)
-	- Compiling (but not installing) fn_test_tilecache for devs
+	- fn_test_* programs can now be compiled using
+	  ./configure --enable-testprograms
 0.2.5
 	- Made freenukum compile on AMD64 (LP: #242228)
 0.2.4
