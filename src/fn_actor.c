@@ -827,7 +827,8 @@ void fn_actor_function_tankbot_act(fn_actor_t * actor)
     /* create steam clouds */
     if (data->current_frame == 0) {
       fn_level_add_actor(actor->level,
-          FN_ACTOR_STEAM, actor->x + FN_HALFTILE_WIDTH, actor->y - FN_TILE_HEIGHT);
+          FN_ACTOR_STEAM, actor->x + FN_HALFTILE_WIDTH,
+          actor->y - FN_TILE_HEIGHT);
     }
   }
 }
@@ -1060,6 +1061,8 @@ void fn_actor_function_wallcrawler_shot(fn_actor_t * actor)
     data->current_frame = 0;
   }
   actor->is_alive = 0;
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_STEAM, actor->x, actor->y);
   fn_level_add_actor(actor->level,
       FN_ACTOR_EXPLOSION, actor->x, actor->y);
   fn_hero_add_score(hero, 100);
