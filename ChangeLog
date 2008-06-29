@@ -1,3 +1,4 @@
+	- Added tankbot (LP: #241105)
 0.2.6
 	- Using BitsPerPixel and SDL-Flags from initial screen (LP: #243352)
 	- Calling SDL_Quit on exit of the program (LP: #243597)

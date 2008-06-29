@@ -682,51 +682,196 @@ void fn_actor_function_robot_shot(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+/**
+ * The tankbot.
+ */
+typedef struct fn_actor_tankbot_data_t {
+  /**
+   * The direction to which the robot moves.
+   */
+  fn_horizontal_direction_e direction;
+  /**
+   * The tile number.
+   */
+  Uint16 tile;
+  /**
+   * The animation counter.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+  /**
+   * A counter counting how often the bot was hit by the hero.
+   * If 0, the bot is healthy. If 1, the bot was hit once and is
+   * damaged (pushes steam clouds out), if 2 the bot is killed.
+   */
+  Uint8 was_shot;
+  /**
+   * A flag indicating if the robot is currently touching the hero.
+   */
+  Uint8 touching_hero;
+} fn_actor_tankbot_data_t;
+
+/* --------------------------------------------------------------- */
+
 void fn_actor_function_tankbot_create(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = malloc(
+      sizeof(fn_actor_tankbot_data_t));
+  actor->data = data;
+  actor->is_in_foreground = 1;
+  actor->w = FN_TILE_WIDTH * 2;
+  actor->h = FN_TILE_HEIGHT;
+  data->direction = fn_horizontal_direction_left;
+  data->tile = ANIM_CARBOT;
+  data->current_frame = 0;
+  data->num_frames = 4;
+  data->was_shot = 0;
+  data->touching_hero = 0;
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_free(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_hero_touch_start(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->was_shot) {
+    fn_hero_increase_hurting_objects(hero);
+    data->touching_hero = 1;
+  }
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_hero_touch_end(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (!data->was_shot) {
+    fn_hero_decrease_hurting_objects(hero);
+    data->touching_hero = 0;
+  }
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_act(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  data->current_frame++;
+  if (data->was_shot == 2) {
+    /* create explosion */
+    actor->is_alive = 0;
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_EXPLOSION, actor->x + FN_HALFTILE_WIDTH, actor->y);
+    fn_hero_add_score(hero, 2500);
+    /* TODO add the particle fireworks */
+  } else {
+    data->current_frame %= data->num_frames;
+    if (!fn_level_is_solid(actor->level,
+          (actor->x) / FN_TILE_WIDTH,
+          (actor->y) / FN_TILE_HEIGHT + 1) &&
+        !fn_level_is_solid(actor->level,
+          (actor->x) / FN_TILE_WIDTH + 1,
+          (actor->y) / FN_TILE_HEIGHT + 1)) {
+      /* still in the air, so let the robot fall down */
+      actor->y += FN_HALFTILE_HEIGHT;
+    } else {
+      /* on the floor, so let's walk */
+      int direction = (data->direction == fn_horizontal_direction_left ?
+          -1 : 4);
+      if (
+          /* check if the place next to the bot is free */
+          !fn_level_is_solid(actor->level,
+            (actor->x +
+             direction * FN_HALFTILE_WIDTH) / FN_TILE_WIDTH,
+            (actor->y) / FN_TILE_HEIGHT) &&
+          /* check if it is solid below this place */
+          fn_level_is_solid(actor->level,
+            (actor->x +
+             direction * FN_HALFTILE_WIDTH) / FN_TILE_WIDTH,
+            (actor->y + FN_TILE_HEIGHT) / FN_TILE_HEIGHT)
+         )
+      {
+        if (direction > 0) {
+          direction = 1;
+        }
+        actor->x += direction * FN_HALFTILE_WIDTH;
+      } else {
+        /* Reached the end, so turn around */
+        /* TODO shoot here */
+        data->direction = (
+            data->direction == fn_horizontal_direction_left ?
+            fn_horizontal_direction_right :
+            fn_horizontal_direction_left);
+        if (direction > 0) direction = 1;
+        direction *= -1;
+        actor->x += direction * FN_HALFTILE_WIDTH;
+        data->tile += 4 * direction;
+      }
+    }
+  }
+  if (data->was_shot == 1) {
+    /* create steam clouds */
+    if (data->current_frame == 0) {
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_STEAM, actor->x + FN_HALFTILE_WIDTH, actor->y - FN_TILE_HEIGHT);
+    }
+  }
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_blit(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = NULL;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame/2) * 2);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame/2) * 2 + 1);
+  destrect.x += pixelsize * FN_TILE_WIDTH;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_tankbot_shot(fn_actor_t * actor)
 {
-  /* TODO */
+  fn_actor_tankbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (data->was_shot == 1 && data->touching_hero) {
+    fn_hero_decrease_hurting_objects(hero);
+    data->touching_hero = 0;
+  }
+  if (!(data->was_shot == 2)) {
+    data->was_shot++;
+  }
 }
 
 /* --------------------------------------------------------------- */
