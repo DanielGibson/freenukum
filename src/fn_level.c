@@ -1192,6 +1192,21 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+void fn_level_add_particle_firework(fn_level_t * lv,
+    Uint16 x, Uint16 y)
+{
+  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_PINK,
+      x - FN_TILE_WIDTH, y);
+  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_BLUE,
+      x + FN_TILE_WIDTH, y);
+  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_WHITE,
+      x, y - FN_TILE_HEIGHT);
+  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_GREEN,
+      x, y + FN_TILE_HEIGHT);
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);

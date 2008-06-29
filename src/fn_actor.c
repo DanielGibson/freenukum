@@ -2181,18 +2181,21 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FOOTBALL, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_BLUE_JOYSTICK:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_JOYSTICK, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_BLUE_DISK:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_DISK, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_BLUE_BALLOON:
       actor->is_alive = 0;
@@ -2200,99 +2203,116 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
           fn_actor_create(lv,
             FN_ACTOR_BALLOON,
             actor->x, actor->y - FN_TILE_HEIGHT));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_BLUE_FLAG:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FLAG, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_BLUE_RADIO:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_RADIO, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_RED_SODA:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_SODA, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_RED_CHICKEN:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_CHICKEN_SINGLE, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_EMPTY:
       actor->is_alive = 0;
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_BOOTS:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_BOOTS, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_CLAMPS:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_CLAMPS, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_GUN:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_GUN, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_BOMB:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_BOMB, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_GLOVE:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_GLOVE, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_FULL_LIFE:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FULL_LIFE, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_ACCESS_CARD:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_ACCESS_CARD, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_LETTER_D:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_D, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_LETTER_U:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_U, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_LETTER_K:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_K, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_BOX_GREY_LETTER_E:
       actor->is_alive = 0;
       lv->actors = g_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_E, actor->x, actor->y));
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       break;
     case FN_ACTOR_CHICKEN_SINGLE:
       actor->is_alive = 0;
@@ -2626,6 +2646,92 @@ void fn_actor_function_singleanimation_blit(fn_actor_t * actor)
   fn_actor_singleanimation_data_t * data = actor->data;
   SDL_Surface * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The particle information data.
+ */
+typedef struct fn_actor_particle_data_t {
+  /**
+   * A countdown for the living time of the particle.
+   */
+  Uint8 countdown;
+  /**
+   * The tile to blit.
+   */
+  Uint16 tile;
+} fn_actor_particle_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_particle_create(fn_actor_t * actor)
+{
+  fn_actor_particle_data_t * data = malloc(
+      sizeof(fn_actor_particle_data_t));
+  actor->data = data;
+  data->countdown = 20;
+  actor->is_in_foreground = 1;
+
+  switch(actor->type) {
+    case FN_ACTOR_PARTICLE_PINK:
+      data->tile = OBJ_SPARK_PINK;
+      break;
+    case FN_ACTOR_PARTICLE_BLUE:
+      data->tile = OBJ_SPARK_BLUE;
+      break;
+    case FN_ACTOR_PARTICLE_WHITE:
+      data->tile = OBJ_SPARK_WHITE;
+      break;
+    case FN_ACTOR_PARTICLE_GREEN:
+      data->tile = OBJ_SPARK_GREEN;
+      break;
+    default:
+      printf(__FILE__ ":%d: warning: particle #%d"
+          " added which is not a particle\n",
+          __LINE__, actor->type);
+      break;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_particle_free(fn_actor_t * actor)
+{
+  fn_actor_particle_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_particle_act(fn_actor_t * actor)
+{
+  fn_actor_particle_data_t * data = actor->data;
+  if (data->countdown) {
+    data->countdown--;
+  } else {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_particle_blit(fn_actor_t * actor)
+{
+  fn_actor_particle_data_t * data = actor->data;
+
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc, data->tile);
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
@@ -3071,7 +3177,7 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
       actor->y)
   {
     if (data->touched) {
-      /* TODO make particles fly. */
+      fn_level_add_particle_firework(actor->level, actor->x, actor->y);
       floorlength = 0;
       while (floorlength < actor->w / FN_TILE_WIDTH) {
         fn_level_set_solid(level,
@@ -4331,6 +4437,66 @@ void
       fn_actor_function_singleanimation_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_singleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_PARTICLE_PINK] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_particle_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_particle_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_particle_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_particle_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_PARTICLE_BLUE] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_particle_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_particle_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_particle_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_particle_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_PARTICLE_WHITE] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_particle_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_particle_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_particle_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_particle_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_PARTICLE_GREEN] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_particle_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_particle_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_particle_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_particle_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_BOMB] = {
