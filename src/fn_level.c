@@ -1193,16 +1193,32 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 /* --------------------------------------------------------------- */
 
 void fn_level_add_particle_firework(fn_level_t * lv,
-    Uint16 x, Uint16 y)
+    Uint16 x, Uint16 y, Uint8 num_particles)
 {
-  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_PINK,
-      x - FN_TILE_WIDTH, y);
-  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_BLUE,
-      x + FN_TILE_WIDTH, y);
-  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_WHITE,
-      x, y - FN_TILE_HEIGHT);
-  fn_level_add_actor(lv, FN_ACTOR_PARTICLE_GREEN,
-      x, y + FN_TILE_HEIGHT);
+  Uint8 i;
+  for (i = 0; i < num_particles; i++) {
+    switch(i % 4) {
+      case 0:
+        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_PINK,
+            x, y);
+        break;
+      case 1:
+        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_BLUE,
+            x, y);
+        break;
+      case 2:
+        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_WHITE,
+            x, y);
+        break;
+      case 3:
+        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_GREEN,
+            x, y);
+        break;
+      default:
+        /* Do nothing, cannot be entered. */
+        break;
+    }
+  }
 }
 
 /* --------------------------------------------------------------- */

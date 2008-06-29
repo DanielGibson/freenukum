@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
 
 /* --------------------------------------------------------------- */
 
@@ -73,6 +74,9 @@ void fn_game_start(
   int res;
   fn_hero_t hero;
   fn_hero_init(&hero, 0, 0);
+
+  /* Initialize Random Number Generator. */
+  srand(time(NULL));
 
   char * msg1 =
     "So you're the pitiful\n"

@@ -342,12 +342,13 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 /**
  * Add a particle firework to a level.
  *
- * @param  lv    The level to which the firework gets added.
- * @param  x     The x coordinate of the firework.
- * @param  y     The y coordinate of the firework.
+ * @param  lv             The level to which the firework gets added.
+ * @param  x              The x coordinate of the firework.
+ * @param  y              The y coordinate of the firework.
+ * @param  num_particles  The number of particles to create.
  */
 void fn_level_add_particle_firework(fn_level_t * lv,
-    Uint16 x, Uint16 y);
+    Uint16 x, Uint16 y, Uint8 num_particles);
 
 /* --------------------------------------------------------------- */
 
