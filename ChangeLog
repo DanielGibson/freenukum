@@ -1,3 +1,4 @@
+	- Added menu shortcut .desktop file
 	- Added tankbot (LP: #241105)
 0.2.6
 	- Using BitsPerPixel and SDL-Flags from initial screen (LP: #243352)
