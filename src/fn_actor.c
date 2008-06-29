@@ -682,6 +682,56 @@ void fn_actor_function_robot_shot(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+void fn_actor_function_tankbot_create(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_free(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_hero_touch_start(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_hero_touch_end(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_act(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_blit(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_tankbot_shot(fn_actor_t * actor)
+{
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * The wallcrawler bot.
  */
@@ -3997,15 +4047,22 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_TANKBOT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_tankbot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_tankbot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_tankbot_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_tankbot_hero_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_tankbot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_tankbot_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_tankbot_shot,
   },
   [FN_ACTOR_WALLCRAWLERBOT_LEFT] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
