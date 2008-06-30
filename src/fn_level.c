@@ -744,6 +744,25 @@ void fn_level_free(fn_level_t * lv)
   }
   fn_list_free(lv->bots);
 
+  for (iter = fn_list_first(lv->shots);
+      iter != fn_list_last(lv->shots);
+      iter = fn_list_next(iter)) {
+    if (iter->data != NULL) {
+      fn_shot_free((fn_shot_t *)iter->data);
+    }
+  }
+  fn_list_free(lv->shots);
+
+  for (iter = fn_list_first(lv->actors);
+      iter != fn_list_last(lv->actors);
+      iter = fn_list_next(iter)) {
+    if (iter->data != NULL) {
+      fn_actor_free((fn_actor_t *)iter->data);
+      iter->data = NULL;
+    }
+  }
+  fn_list_free(lv->actors);
+
   free(lv);
 }
 
@@ -1004,7 +1023,7 @@ int fn_level_act(fn_level_t * lv) {
   if (cleanup) {
     /* clean up the shots that are finished */
     cleanup = 0;
-    lv->shots = fn_list_remove_all(lv->shots, 0);
+    lv->shots = fn_list_remove_all(lv->shots, NULL);
   }
 
 
@@ -1017,7 +1036,7 @@ int fn_level_act(fn_level_t * lv) {
     if (res == 0) {
       /* set the cleanup flag and free the memory */
       cleanup = 1;
-      iter->data = 0;
+      iter->data = NULL;
       fn_actor_free(actor); actor = NULL;
     }
   }
@@ -1025,7 +1044,7 @@ int fn_level_act(fn_level_t * lv) {
   if (cleanup) {
     /* clean up the actors that are finished */
     cleanup = 0;
-    lv->actors = fn_list_remove_all(lv->actors, 0);
+    lv->actors = fn_list_remove_all(lv->actors, NULL);
   }
 
   fn_hero_next_animationframe(lv->hero);

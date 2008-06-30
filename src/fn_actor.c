@@ -3409,9 +3409,7 @@ void fn_actor_function_unstablefloor_touch_start(fn_actor_t * actor)
     if (!data->touched) {
       data->touching = 1;
     } else {
-      /* TODO let the floor crash away. */
       actor->is_alive = 0;
-      /* TODO set the floor unsolid */
     }
   }
 }

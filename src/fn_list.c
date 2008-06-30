@@ -27,6 +27,7 @@
  *******************************************************************/
 
 #include <stdlib.h>
+#include <stdio.h>
 
 /* --------------------------------------------------------------- */
 
@@ -97,6 +98,19 @@ void fn_list_free(fn_list_t * list)
 
 /* --------------------------------------------------------------- */
 
+void fn_list_print(fn_list_t * list)
+{
+  printf("List:\n");
+  fn_list_t * iter = NULL;
+  for (iter = fn_list_first(list);
+      iter != fn_list_last(list);
+      iter = fn_list_next(iter)) {
+    printf("  item: 0x%X\n", (int)(iter->data));
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 fn_list_t * fn_list_remove_all(fn_list_t * list, void * data)
 {
   fn_list_t * prev = NULL;
@@ -108,10 +122,11 @@ fn_list_t * fn_list_remove_all(fn_list_t * list, void * data)
       fn_list_t * todelete = current;
       if (prev != NULL) {
         prev->next = current->next;
+        current = prev;
       } else {
         list = current->next;
+        current = list;
       }
-      current = prev;
       free(todelete); todelete = NULL;
     }
 

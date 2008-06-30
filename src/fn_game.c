@@ -204,7 +204,7 @@ int fn_game_start_in_level(
 {
   int returnvalue = 0;
   int fd = 0;
-  fn_level_t * lv = 0;
+  fn_level_t * lv = NULL;
   SDL_Rect dstrect;
   SDL_Rect srcrect;
   SDL_Event event;
@@ -563,15 +563,17 @@ int fn_game_start_in_level(
           break;
       }
     }
-    returnvalue = lv->levelpassed;
   }
 
 cleanup:
   if (backdrop != NULL) {
     SDL_FreeSurface(backdrop);
   }
+  if (lv != NULL) {
+    returnvalue = lv->levelpassed;
+    fn_level_free(lv);
+  }
   SDL_RemoveTimer(tick);
-  fn_level_free(lv);
   SDL_FreeSurface(level);
 
   return returnvalue;
