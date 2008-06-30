@@ -197,16 +197,44 @@ fn_level_t * fn_level_load(int fd,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3002: /* left end of left-moving conveyor */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        lv->solid[y][x] = 1;
+        lv->actors = fn_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3003: /* right end of left-moving conveyor */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        lv->solid[y][x] = 1;
+        lv->actors = fn_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3004: /* left end of right-moving conveyor */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        lv->solid[y][x] = 1;
+        lv->actors = fn_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_CONVEYOR_RIGHTMOVING_LEFTEND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3005: /* right end of right-moving conveyor */
-        /* TODO */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
+        lv->solid[y][x] = 1;
+        lv->actors = fn_list_append(lv->actors,
+            fn_actor_create(lv,
+              FN_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND,
+              x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3006: /* grey box with boots inside */
         if (x > 0) {
