@@ -1,3 +1,4 @@
+	- Removed dependency on glib (LP: #243956)
 	- Added background (LP: #240832)
 	- Added particle fireworks (LP: #242117)
 	- Added menu shortcut .desktop file

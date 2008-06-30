@@ -1696,10 +1696,10 @@ void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
   Uint8 inventory = fn_hero_get_inventory(hero);
 
   if (inventory & FN_INVENTORY_ACCESS_CARD) {
-    GList * iter = NULL;
-    for (iter = g_list_first(actor->level->actors);
+    fn_list_t * iter = NULL;
+    for (iter = fn_list_first(actor->level->actors);
         iter != NULL;
-        iter = g_list_next(iter)) {
+        iter = fn_list_next(iter)) {
       fn_actor_t * dooractor = (fn_actor_t *)iter->data;
 
       if (dooractor->type == FN_ACTOR_ACCESS_CARD_DOOR) {
@@ -2183,7 +2183,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
   switch(actor->type) {
     case FN_ACTOR_BOX_BLUE_FOOTBALL:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FOOTBALL, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2191,7 +2191,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_JOYSTICK:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_JOYSTICK, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2199,7 +2199,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_DISK:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_DISK, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2207,7 +2207,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_BALLOON:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_BALLOON,
             actor->x, actor->y - FN_TILE_HEIGHT));
@@ -2216,7 +2216,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_FLAG:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FLAG, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2224,7 +2224,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_BLUE_RADIO:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_RADIO, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2232,7 +2232,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_RED_SODA:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_SODA, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2240,7 +2240,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_RED_CHICKEN:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_CHICKEN_SINGLE, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2253,7 +2253,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_BOOTS:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_BOOTS, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2261,7 +2261,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_CLAMPS:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_CLAMPS, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2269,7 +2269,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_GUN:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_GUN, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2277,7 +2277,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_BOMB:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_BOMB, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2285,7 +2285,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_GLOVE:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_GLOVE, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2293,7 +2293,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_FULL_LIFE:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_FULL_LIFE, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2301,7 +2301,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_ACCESS_CARD:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_ACCESS_CARD, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2309,7 +2309,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_LETTER_D:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_D, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2317,7 +2317,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_LETTER_U:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_U, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2325,7 +2325,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_LETTER_K:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_K, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2333,7 +2333,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_BOX_GREY_LETTER_E:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_LETTER_E, actor->x, actor->y));
       fn_level_add_particle_firework(
@@ -2341,7 +2341,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
       break;
     case FN_ACTOR_CHICKEN_SINGLE:
       actor->is_alive = 0;
-      lv->actors = g_list_append(lv->actors,
+      lv->actors = fn_list_append(lv->actors,
           fn_actor_create(lv,
             FN_ACTOR_CHICKEN_DOUBLE, actor->x, actor->y));
       break;
@@ -2503,10 +2503,10 @@ void fn_actor_function_teleporter_interact_start(fn_actor_t * actor)
   }
   fn_level_t * level = actor->level;
 
-  GList * iter = NULL;
-  for (iter = g_list_first(level->actors);
+  fn_list_t * iter = NULL;
+  for (iter = fn_list_first(level->actors);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_actor_t * otheractor = (fn_actor_t *)iter->data;
     if (otheractor->type == othertype) {
       fn_hero_t * hero = fn_level_get_hero(actor->level);
@@ -3823,10 +3823,10 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
     data->counter = 5;
 
     /* open all doors with the real color */
-    GList * iter = NULL;
-    for (iter = g_list_first(actor->level->actors);
+    fn_list_t * iter = NULL;
+    for (iter = fn_list_first(actor->level->actors);
         iter != NULL;
-        iter = g_list_next(iter)) {
+        iter = fn_list_next(iter)) {
       fn_actor_t * dooractor = (fn_actor_t *)iter->data;
 
       if (dooractor->type == door_to_open) {

@@ -13,9 +13,7 @@ AC_CONFIG_SRCDIR(src)
 
 AC_PATH_PROG(SDLCONFIG, sdl-config, yes)
 
-PKG_CHECK_MODULES(GLIB, glib-2.0)
-
-CFLAGS="$CFLAGS -Wall -Werror $GLIB_CFLAGS "`sdl-config --cflags`
-LDFLAGS="$LDFLAGS $GLIB_LIBS "`sdl-config --libs`
+CFLAGS="$CFLAGS -Wall -Werror "`sdl-config --cflags`
+LDFLAGS="$LDFLAGS "`sdl-config --libs`
 
 AC_OUTPUT([Makefile src/Makefile freenukum.desktop])

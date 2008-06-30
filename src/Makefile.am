@@ -29,6 +29,7 @@ freenukum_SOURCES = fn.h \
 										fn_tile.h           fn_tile.c \
 										fn_tilecache.h      fn_tilecache.c \
 										fn_shot.h           fn_shot.c \
+										fn_list.h           fn_list.c \
 										freenukum.c
 
 if TESTPROGRAMS
@@ -46,7 +47,8 @@ noinst_PROGRAMS = fn_test_tilecache \
                   fn_test_picture \
                   fn_test_picture_splash \
                   fn_test_settings \
-                  fn_test_tile
+                  fn_test_tile \
+									fn_test_list
 
 fn_test_tilecache_SOURCES = fn_test_tilecache.c \
                             fn.h \
@@ -103,6 +105,7 @@ fn_test_hero_SOURCES = fn_test_hero.c \
 											 fn_infobox.h        fn_infobox.c \
 											 fn_msgbox.h         fn_msgbox.c \
 											 fn_text.h           fn_text.c \
+											 fn_list.h           fn_list.c \
                        fn.h
 
 fn_test_infobox_SOURCES = fn_test_infobox.c \
@@ -131,6 +134,7 @@ fn_test_level_loader_SOURCES = fn_test_level_loader.c \
 															 fn_error.h          fn_error.c \
 															 fn_msgbox.h         fn_msgbox.c \
 															 fn_text.h           fn_text.c \
+															 fn_list.h           fn_list.c \
 															 fn.h
 
 fn_test_msgbox_SOURCES = fn_test_msgbox.c \
@@ -170,5 +174,8 @@ fn_test_tile_SOURCES = fn_test_tile.c \
                        fn_tile.h      fn_tile.c \
 											 fn_draw.h      fn_draw.c \
                        fn.h
+
+fn_test_list_SOURCES = fn_test_list.c \
+                       fn_list.h      fn_list.c
 
 endif # TESTPROGRAMS

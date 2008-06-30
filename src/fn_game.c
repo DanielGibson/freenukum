@@ -30,6 +30,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* --------------------------------------------------------------- */
 

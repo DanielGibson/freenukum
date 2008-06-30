@@ -31,10 +31,6 @@
 
 /* --------------------------------------------------------------- */
 
-#include <glib.h>
-
-/* --------------------------------------------------------------- */
-
 typedef struct fn_level_t fn_level_t;
 
 /* --------------------------------------------------------------- */
@@ -48,6 +44,7 @@ typedef struct fn_level_t fn_level_t;
 #include "fn_actor.h"
 #include "fn_shot.h"
 #include "fn_bot.h"
+#include "fn_list.h"
 
 /* --------------------------------------------------------------- */
 
@@ -98,12 +95,12 @@ struct fn_level_t {
   /**
    * The actors inside the level.
    */
-  GList * actors;
+  fn_list_t * actors;
 
   /**
    * The shots inside the level.
    */
-  GList * shots;
+  fn_list_t * shots;
 
   /**
    * The number of shots currently in level.
@@ -114,7 +111,7 @@ struct fn_level_t {
    * The bots
    * @TODO remove this (replaced by actors).
    */
-  GList * bots;
+  fn_list_t * bots;
 
   /**
    * As long as this is non-zero, we keep on playing.

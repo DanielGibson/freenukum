@@ -96,86 +96,86 @@ fn_level_t * fn_level_load(int fd,
 
     switch(tilenr) {
       case 0x0080: /* written text on black screen */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0100: /* blue high voltage flash */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0180: /* red flash light */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_RED_FLASHLIGHT_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0200: /* blue high voltage flash */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0280: /* key panel on the wall */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEYPANEL_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0300: /* red rotation light */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0380: /* flashing up arrow */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_UPARROW_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0400: /* background blinking blue box */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0420: /* background blinking blue box */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0440: /* background blinking blue box */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0460: /* background blinking blue box */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BLUE_LIGHT_BACKGROUND4,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0480: /* background green poison liquid */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_GREEN_POISON_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x0500: /* background lava */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_LAVA_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x1800: /* solid wall which can be shot */
         lv->tiles[y][x] = 0x17E0/0x20;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SHOOTABLE_WALL,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -184,14 +184,14 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_EMPTY,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3001: /* lift */
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_LIFT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -212,7 +212,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_BOOTS,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -225,7 +225,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_CLAMPS,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -234,7 +234,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_FIRE_RIGHT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -243,7 +243,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_FIRE_LEFT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -258,7 +258,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->bots = g_list_append(lv->bots, fn_bot_create(
+        lv->bots = fn_list_append(lv->bots, fn_bot_create(
               FN_BOT_TYPE_FOOTBOT, lv->hero, lv->tilecache,
               lv->pixelsize, x*2, y*2));
         break;
@@ -266,7 +266,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_TANKBOT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -281,7 +281,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_GUN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -290,13 +290,13 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_ROBOT,
               x * FN_TILE_WIDTH, y * FN_TILE_WIDTH));
         break;
       case 0x3011: /* exit door */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_EXITDOOR,
               x * FN_TILE_WIDTH, (y-1) * FN_TILE_WIDTH));
@@ -305,7 +305,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_BOMB,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -320,7 +320,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_RED_SODA,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -329,7 +329,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_WALLCRAWLERBOT_LEFT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -338,7 +338,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_WALLCRAWLERBOT_RIGHT,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -347,13 +347,13 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_RED_CHICKEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_UNSTABLEFLOOR,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -371,7 +371,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_FOOTBALL,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -380,7 +380,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_JOYSTICK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -389,7 +389,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_DISK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -398,7 +398,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_GLOVE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -408,7 +408,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_ACCESS_CARD_DOOR,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -420,7 +420,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_BALLOON,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -429,7 +429,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_CAMERA,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -439,7 +439,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv, FN_ACTOR_BROKENWALL_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
@@ -450,7 +450,7 @@ fn_level_t * fn_level_load(int fd,
         /* TODO */
         break;
       case 0x3028: /* window inside background stone wall */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv, FN_ACTOR_STONEWINDOW_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
@@ -458,7 +458,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_FULL_LIFE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -468,7 +468,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_ACME,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -483,7 +483,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SPIKE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -492,7 +492,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_FLAG,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -501,19 +501,19 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_BLUE_RADIO,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x302f: /* teleporter station */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_TELEPORTER1,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3030: /* teleporter station */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_TELEPORTER2,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -522,7 +522,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_REDBALL_JUMPING,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -537,14 +537,14 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_ACCESS_CARD,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3034: /* slot for access card */
         {
-          lv->actors = g_list_append(lv->actors,
+          lv->actors = fn_list_append(lv->actors,
               fn_actor_create(lv,
                 FN_ACTOR_ACCESS_CARD_SLOT,
                 x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -560,7 +560,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_LETTER_D,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -569,7 +569,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_LETTER_U,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -578,7 +578,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_LETTER_K,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -587,7 +587,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_BOX_GREY_LETTER_E,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -606,20 +606,20 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x303e: /* window - left part */
         lv->tiles[y][x] = 0;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_WINDOWLEFT_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x303f: /* window - right part */
         lv->tiles[y][x] = 0;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_WINDOWRIGHT_BACKGROUND,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3040: /* the notebook */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_NOTEBOOK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -628,7 +628,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SURVEILLANCESCREEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -640,7 +640,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEY_RED,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -649,7 +649,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEY_GREEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -658,7 +658,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEY_BLUE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -667,31 +667,31 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEY_PINK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3048: /* red keyhole */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEYHOLE_RED,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x3049: /* green keyhole */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEYHOLE_GREEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304a: /* blue keyhole */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEYHOLE_BLUE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
         break;
       case 0x304b: /* pink keyhole */
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_KEYHOLE_PINK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -701,7 +701,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_DOOR_RED,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -711,7 +711,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_DOOR_GREEN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -721,7 +721,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_DOOR_BLUE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -731,7 +731,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->solid[y][x] = 1;
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_DOOR_PINK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -740,7 +740,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_FOOTBALL,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -749,7 +749,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_CHICKEN_SINGLE,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -758,7 +758,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SODA,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -767,7 +767,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_DISK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -776,7 +776,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_JOYSTICK,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -785,7 +785,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_FLAG,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -794,7 +794,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_RADIO,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -803,7 +803,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_REDBALL_LYING,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -812,7 +812,7 @@ fn_level_t * fn_level_load(int fd,
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SPIKES_UP,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -821,7 +821,7 @@ fn_level_t * fn_level_load(int fd,
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
-        lv->actors = g_list_append(lv->actors,
+        lv->actors = fn_list_append(lv->actors,
             fn_actor_create(lv,
               FN_ACTOR_SPIKES_DOWN,
               x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT));
@@ -844,14 +844,14 @@ fn_level_t * fn_level_load(int fd,
 
 void fn_level_free(fn_level_t * lv)
 {
-  GList * iter = NULL;
+  fn_list_t * iter = NULL;
 
-  for (iter = g_list_first(lv->bots);
-      iter != g_list_last(lv->bots);
-      iter = g_list_next(iter)) {
+  for (iter = fn_list_first(lv->bots);
+      iter != fn_list_last(lv->bots);
+      iter = fn_list_next(iter)) {
     fn_bot_free((fn_bot_t *)iter->data);
   }
-  g_list_free(lv->bots);
+  fn_list_free(lv->bots);
 
   free(lv);
 }
@@ -906,7 +906,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   int y_start = 0;
   int y_end = FN_LEVEL_HEIGHT;
   SDL_Rect r;
-  GList * iter = NULL;
+  fn_list_t * iter = NULL;
 
   /* calculate the bounds of the area we have to blit. */
   if (sourcerect) {
@@ -957,7 +957,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
         tile = NULL;
         if (tilenr == 0) {
           if (backdrop1 != NULL) {
-            /* TODO copy first backdrop buffer */
+            /* Do nothing, the backdrop1 is already in the background */
           }
         } else if (tilenr == 1) {
           if (backdrop2 != NULL) {
@@ -976,17 +976,19 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   }
 
   /* blit the actors in the background */
-  for (iter = g_list_first(lv->actors);
+  for (iter = fn_list_first(lv->actors);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
-    Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-    Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+    if (actor != NULL) {
+      Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+      Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
 
-    if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      if (!fn_actor_in_foreground(actor)) {
-        fn_actor_blit(actor);
+      if (x > x_start && y > y_start && x < x_end && y < y_end) {
+        if (!fn_actor_in_foreground(actor)) {
+          fn_actor_blit(actor);
+        }
       }
     }
   }
@@ -998,9 +1000,9 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       lv->pixelsize);
 
   /* blit the actors in the foreground */
-  for (iter = g_list_first(lv->actors);
+  for (iter = fn_list_first(lv->actors);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
     Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
@@ -1014,9 +1016,9 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   }
 
   /* blit the bots */
-  for (iter = g_list_first(lv->bots);
+  for (iter = fn_list_first(lv->bots);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_bot_t * bot = (fn_bot_t *)iter->data;
     int x = fn_bot_get_x(bot) / 2;
     int y = fn_bot_get_y(bot) / 2;
@@ -1026,9 +1028,9 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   }
 
   /* blit the shots */
-  for (iter = g_list_first(lv->shots);
+  for (iter = fn_list_first(lv->shots);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_shot_t * shot = (fn_shot_t *)iter->data;
 
     Uint16 x = fn_shot_get_x(shot) / FN_TILE_WIDTH;
@@ -1080,7 +1082,7 @@ fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
 /* --------------------------------------------------------------- */
 
 int fn_level_act(fn_level_t * lv) {
-  GList * iter = NULL;
+  fn_list_t * iter = NULL;
   int res = 0;
   int cleanup = 0;
 
@@ -1091,9 +1093,9 @@ int fn_level_act(fn_level_t * lv) {
     fn_hero_act(lv->hero, lv);
   }
 
-  for (iter = g_list_first(lv->shots);
+  for (iter = fn_list_first(lv->shots);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_shot_t * shot = (fn_shot_t *)iter->data;
 
     res = fn_shot_act(shot);
@@ -1109,13 +1111,13 @@ int fn_level_act(fn_level_t * lv) {
   if (cleanup) {
     /* clean up the shots that are finished */
     cleanup = 0;
-    lv->shots = g_list_remove_all(lv->shots, 0);
+    lv->shots = fn_list_remove_all(lv->shots, 0);
   }
 
 
-  for (iter = g_list_first(lv->actors);
+  for (iter = fn_list_first(lv->actors);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
     res = fn_actor_act(actor);
@@ -1130,7 +1132,7 @@ int fn_level_act(fn_level_t * lv) {
   if (cleanup) {
     /* clean up the actors that are finished */
     cleanup = 0;
-    lv->actors = g_list_remove_all(lv->actors, 0);
+    lv->actors = fn_list_remove_all(lv->actors, 0);
   }
 
   fn_hero_next_animationframe(lv->hero);
@@ -1153,10 +1155,10 @@ void fn_level_hero_interact_stop(fn_level_t * lv)
 
 void fn_level_hero_interact_start(fn_level_t * lv)
 {
-  GList * iter = NULL;
-  for (iter = g_list_first(lv->actors);
+  fn_list_t * iter = NULL;
+  for (iter = fn_list_first(lv->actors);
       iter != NULL;
-      iter = g_list_next(iter)) {
+      iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
     fn_hero_t * hero = fn_level_get_hero(lv);
 
@@ -1184,7 +1186,7 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
     Uint16 y)
 {
   fn_actor_t * actor = fn_actor_create(lv, type, x, y);
-  lv->actors = g_list_append(lv->actors, actor);
+  lv->actors = fn_list_append(lv->actors, actor);
   return actor;
 }
 
@@ -1197,7 +1199,7 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 {
   fn_shot_t * shot = fn_shot_create(lv,
       x, y, direction);
-  lv->shots = g_list_append(lv->shots, shot);
+  lv->shots = fn_list_append(lv->shots, shot);
   return shot;
 }
 

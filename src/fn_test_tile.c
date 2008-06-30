@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
     while (i != h.tiles)
     {
         tile = fn_tile_load(
-            fd, pixelsize, screen->flags, screen->format, &h);
+            fd, pixelsize, screen->flags, screen->format, &h, 0);
         SDL_BlitSurface(tile, NULL, screen, &r);
         SDL_FreeSurface(tile);
         i++;

@@ -81,12 +81,12 @@ Uint8 fn_shot_act(fn_shot_t * shot)
       shot->x -= FN_TILE_WIDTH;
     }
 
-    GList * iter = NULL;
+    fn_list_t * iter = NULL;
     fn_level_t * lv = fn_shot_get_level(shot);
 
-    for (iter = g_list_first(lv->actors);
+    for (iter = fn_list_first(lv->actors);
         iter != NULL && shot->countdown != 1;
-        iter = g_list_next(iter)) {
+        iter = fn_list_next(iter)) {
       fn_actor_t * actor = (fn_actor_t *)iter->data;
 
       if (fn_actor_can_get_shot(actor) &&
