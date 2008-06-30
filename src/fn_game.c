@@ -276,9 +276,7 @@ int fn_game_start_in_level(
       pixelsize,
       screen->flags,
       screen->format);
-  if (backdrop != NULL) {
-    printf("loaded backdrop %s\n", backdropfile);
-  } else {
+  if (backdrop == NULL) {
     printf("could not load backdrop");
   }
   close(fd);
@@ -344,7 +342,6 @@ int fn_game_start_in_level(
           &srcrect,
           backdrop,
           NULL);
-      //SDL_BlitSurface(backdrop, NULL, screen, &dstrect);
       SDL_BlitSurface(level, &srcrect, screen, &dstrect);
       SDL_UpdateRect(screen, 0, 0, 0, 0);
       doupdate = 0;
