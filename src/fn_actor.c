@@ -3224,17 +3224,20 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
       actor->y)
   {
     if (data->touched) {
-      fn_level_add_particle_firework(
-          actor->level, actor->x, actor->y, 4);
       floorlength = 0;
       while (floorlength < actor->w / FN_TILE_WIDTH) {
         fn_level_set_solid(level,
             actor->x / FN_TILE_WIDTH + floorlength,
             actor->y / FN_TILE_HEIGHT,
             0);
-        if (floorlength % 2 == 1) {
-          
-        }
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_EXPLOSION,
+            actor->x + floorlength * FN_TILE_WIDTH,
+            actor->y);
+        fn_level_add_particle_firework(
+            actor->level,
+            actor->x + floorlength * FN_TILE_WIDTH,
+            actor->y, 4);
         floorlength++;
       }
       actor->is_alive = 0;

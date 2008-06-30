@@ -896,12 +896,14 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
-    Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-    Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+    if (actor != NULL) {
+      Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+      Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
 
-    if (x > x_start && y > y_start && x < x_end && y < y_end) {
-      if (fn_actor_in_foreground(actor)) {
-        fn_actor_blit(actor);
+      if (x > x_start && y > y_start && x < x_end && y < y_end) {
+        if (fn_actor_in_foreground(actor)) {
+          fn_actor_blit(actor);
+        }
       }
     }
   }
