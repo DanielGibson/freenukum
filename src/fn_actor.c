@@ -2790,6 +2790,250 @@ void fn_actor_function_particle_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef struct fn_actor_bomb_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames for the animation.
+   */
+  Uint8 num_frames;
+  /**
+   * The counter for the number of cycles.
+   */
+  Uint8 counter;
+  /**
+   * Flag showing if the bomb explodes to the left.
+   */
+  Uint8 explode_left;
+  /**
+   * Flag showing if the bomb explodes to the right.
+   */
+  Uint8 explode_right;
+  /**
+   * The threshold when the bomb should explode.
+   */
+  Uint8 explode_threshold;
+  /**
+   * The number of flames that should be produced by the bomb
+   * to each direction.
+   */
+  Uint8 num_flames;
+} fn_actor_bomb_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bomb_create(fn_actor_t * actor)
+{
+  fn_actor_bomb_data_t * data = malloc(
+      sizeof(fn_actor_bomb_data_t));
+  actor->data = data;
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+
+  data->tile = ANIM_BOMB;
+  data->current_frame = 0;
+  data->num_frames = 2;
+  data->counter = 0;
+  data->explode_left = 1;
+  data->explode_right = 1;
+  data->explode_threshold = 12;
+  data->num_flames = 4;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bomb_free(fn_actor_t * actor)
+{
+  fn_actor_bomb_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bomb_act(fn_actor_t * actor)
+{
+  fn_actor_bomb_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+
+  data->counter++;
+
+  if (data->counter < data->explode_threshold) {
+    /* do nothing here, the counter counts anyway. */
+  }
+  else if (data->counter < data->explode_threshold + data->num_flames)
+  {
+    Uint8 distance = data->counter - data->explode_threshold;
+    if (data->explode_left) {
+      /* explode to the left if possible */
+      if (
+          /* check if the place for the flame is free */
+          !fn_level_is_solid(actor->level,
+            (actor->x - distance * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+            actor->y / FN_TILE_HEIGHT) &&
+          /* check if there is solid place below */
+          fn_level_is_solid(actor->level,
+            (actor->x - distance * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+            (actor->y / FN_TILE_HEIGHT) + 1))
+      {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_BOMBFIRE, actor->x - distance * FN_TILE_WIDTH,
+            actor->y);
+      } else {
+        data->explode_left = 0;
+      }
+    }
+
+    if (data->explode_right) {
+      /* explode to the right if possible */
+      if (
+          /* check if the place for the flame is free */
+          !fn_level_is_solid(actor->level,
+            (actor->x + distance * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+            actor->y / FN_TILE_HEIGHT) &&
+          /* check if there is solid place below */
+          fn_level_is_solid(actor->level,
+            (actor->x + distance * FN_TILE_WIDTH) / FN_TILE_WIDTH,
+            (actor->y / FN_TILE_HEIGHT) + 1))
+      {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_BOMBFIRE, actor->x + distance * FN_TILE_WIDTH,
+            actor->y);
+      } else {
+        data->explode_right = 0;
+      }
+    }
+
+  } else {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bomb_blit(fn_actor_t * actor)
+{
+  fn_actor_bomb_data_t * data = actor->data;
+  if (data->counter < data->explode_threshold) {
+    SDL_Surface * target = fn_level_get_surface(actor->level);
+    SDL_Rect destrect;
+    fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+    SDL_Surface * tile = fn_tilecache_get_tile(tc,
+        data->tile + data->current_frame);
+    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+    destrect.x = actor->x * pixelsize;
+    destrect.y = actor->y * pixelsize;
+    destrect.w = actor->w * pixelsize;
+    destrect.h = actor->h * pixelsize;
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+typedef struct fn_actor_bombfire_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames total.
+   */
+  Uint8 num_frames;
+  /**
+   * Flag indicating if the flame is touching the hero.
+   */
+  Uint8 touching_hero;
+} fn_actor_bombfire_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_create(fn_actor_t * actor)
+{
+  fn_actor_bombfire_data_t * data = malloc(
+      sizeof(fn_actor_bombfire_data_t));
+  actor->data = data;
+  data->tile = ANIM_BOMBFIRE;
+  data->current_frame = 0;
+  data->num_frames = 6;
+  data->touching_hero = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_free(fn_actor_t * actor)
+{
+  fn_actor_bombfire_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (data->touching_hero) {
+    fn_hero_decrease_hurting_objects(hero);
+  }
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_hero_touch_start(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_actor_bombfire_data_t * data = actor->data;
+  fn_hero_increase_hurting_objects(hero);
+  data->touching_hero = 1;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_hero_touch_end(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_decrease_hurting_objects(hero);
+  fn_actor_bombfire_data_t * data = actor->data;
+  data->touching_hero = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_act(fn_actor_t * actor)
+{
+  fn_actor_bomb_data_t * data = actor->data;
+  data->current_frame++;
+  if (data->current_frame == data->num_frames) {
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_bombfire_blit(fn_actor_t * actor)
+{
+  fn_actor_bombfire_data_t * data = actor->data;
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 /**
  * Explosion data struct.
  */
@@ -4562,15 +4806,36 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_BOMB] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_bomb_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_bomb_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_bomb_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_bomb_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_BOMBFIRE] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_bombfire_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_bombfire_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_bombfire_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_bombfire_hero_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_bombfire_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_bombfire_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_WATER] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
