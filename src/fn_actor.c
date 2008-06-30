@@ -4547,7 +4547,29 @@ void
       fn_actor_function_particle_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
+  [FN_ACTOR_ROCKET] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+  },
   [FN_ACTOR_BOMB] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+  },
+  [FN_ACTOR_WATER] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
@@ -4635,6 +4657,17 @@ void
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_unstablefloor_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_EXPANDINGFLOOR] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -5519,6 +5552,17 @@ void
       fn_actor_function_accesscard_slot_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
+  [FN_ACTOR_GLOVE_SLOT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+  },
   [FN_ACTOR_KEY_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_key_create,
@@ -5782,6 +5826,17 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_MILL] = {
+    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+  },
+  [FN_ACTOR_LASERBEAM] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
