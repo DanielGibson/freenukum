@@ -70,7 +70,8 @@ int fn_tilecache_loadfile(
         SDL_PixelFormat * format,
         int fd,
         size_t num_tiles,
-        fn_tileheader_t * header);
+        fn_tileheader_t * header,
+        Uint8 transparent);
 
 /* --------------------------------------------------------------- */
 

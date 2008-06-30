@@ -67,6 +67,35 @@ int fn_tilecache_loadtiles(
     int res;
     fn_tileheader_t header;
 
+    Uint8 transparent[] = {
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    };
+
     char * files[] = {
         "BACK0.DN1",
         "BACK1.DN1",
@@ -150,7 +179,8 @@ int fn_tilecache_loadtiles(
               format,
               fd,
               size[i],
-              &header);
+              &header,
+              transparent[i]);
         close(fd);
 
         if (res != 0)
@@ -172,7 +202,8 @@ int fn_tilecache_loadfile(
         SDL_PixelFormat * format,
         int fd,
         size_t num_tiles,
-        fn_tileheader_t * header)
+        fn_tileheader_t * header,
+        Uint8 transparent)
 {
     while(num_tiles > 0)
     {
@@ -181,7 +212,8 @@ int fn_tilecache_loadfile(
               tc->pixelsize,
               flags,
               format,
-              header);
+              header,
+              transparent);
         if (tc->tiles[tc->size] == NULL)
         {
             return -1;

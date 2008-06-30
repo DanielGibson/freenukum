@@ -73,7 +73,8 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
             pixelsize,
             flags,
             format,
-            &h);
+            &h,
+            0);
         SDL_BlitSurface(tile, NULL, drop, &r);
         SDL_FreeSurface(tile);
         r.x += 16 * pixelsize;

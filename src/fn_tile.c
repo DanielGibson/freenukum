@@ -51,7 +51,8 @@ SDL_Surface * fn_tile_load(
         Uint8 pixelsize,
         Uint32 flags,
         SDL_PixelFormat * format,
-        fn_tileheader_t * h)
+        fn_tileheader_t * h,
+        Uint8 transparent_enable)
 {
     SDL_Surface * tile;
     SDL_Rect r;
@@ -70,7 +71,12 @@ SDL_Surface * fn_tile_load(
             0
             );
 
-    Uint32 transparent = SDL_MapRGB(tile->format, 100, 1, 1);
+    Uint32 transparent;
+    if (transparent_enable) {
+      transparent = SDL_MapRGB(tile->format, 100, 1, 1);
+    } else {
+      transparent = SDL_MapRGB(tile->format, 0, 0, 0);
+    }
 
     size_t num_loads = h->width * h->height;
     
@@ -102,9 +108,12 @@ SDL_Surface * fn_tile_load(
         num_read++;
     }
 
-    if (SDL_SetColorKey(tile, SDL_SRCCOLORKEY, transparent) != 0)
-    {
+    if (transparent_enable) {
+      if (SDL_SetColorKey(tile, SDL_SRCCOLORKEY, transparent) != 0)
+      {
+        SDL_FreeSurface(tile);
         return NULL;
+      }
     }
 
     return tile;

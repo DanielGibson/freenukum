@@ -56,7 +56,8 @@ SDL_Surface * fn_tile_load(
         Uint8 pixelsize,
         Uint32 flags,
         SDL_PixelFormat * format,
-        fn_tileheader_t * h
+        fn_tileheader_t * h,
+        Uint8 transparent_enable
         );
 
 /* --------------------------------------------------------------- */
