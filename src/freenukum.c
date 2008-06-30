@@ -267,9 +267,9 @@ int main(int argc, char ** argv)
 
   fn_tilecache_destroy(&tilecache);
 
-  SDL_Quit();
-
   fn_settings_free(settings);
+
+  SDL_Quit();
 
   return 0;
 }

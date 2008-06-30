@@ -195,7 +195,7 @@ void fn_settings_free(fn_settings_t * s)
   fn_settings_option_t * option_to_delete;
   if(s->options != NULL)
   {
-    while(s->options->next != NULL) {
+    while(s->options != NULL) {
       option_to_delete = s->options;
       s->options = s->options->next;
       if (option_to_delete->name != NULL) {
@@ -375,7 +375,8 @@ void fn_settings_set_string(fn_settings_t * s,
   if (option == NULL) {
     option = _fn_settings_create_option(s, name);
   }
-  option->value = realloc(option->value, strlen(source) + 1);
+  free(option->value);
+  option->value = malloc(strlen(source) + 1);
   strcpy(option->value, source);
 }
 
