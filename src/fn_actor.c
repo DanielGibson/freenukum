@@ -1056,17 +1056,19 @@ void fn_actor_function_wallcrawler_shot(fn_actor_t * actor)
   fn_actor_wallcrawler_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (!data->was_shot && data->touching_hero) {
-    fn_hero_decrease_hurting_objects(hero);
-    data->touching_hero = 0;
-    data->current_frame = 0;
+  if (!data->was_shot) {
+    if (data->touching_hero) {
+      fn_hero_decrease_hurting_objects(hero);
+      data->touching_hero = 0;
+      data->current_frame = 0;
+    }
+    actor->is_alive = 0;
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_STEAM, actor->x, actor->y);
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_EXPLOSION, actor->x, actor->y);
+    fn_hero_add_score(hero, 100);
   }
-  actor->is_alive = 0;
-  fn_level_add_actor(actor->level,
-      FN_ACTOR_STEAM, actor->x, actor->y);
-  fn_level_add_actor(actor->level,
-      FN_ACTOR_EXPLOSION, actor->x, actor->y);
-  fn_hero_add_score(hero, 100);
 }
 
 /* --------------------------------------------------------------- */
