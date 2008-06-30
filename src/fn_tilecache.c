@@ -72,7 +72,7 @@ int fn_tilecache_loadtiles(
       0,
       0,
       0,
-      0,
+      1,
       0,
       0,
       0,
