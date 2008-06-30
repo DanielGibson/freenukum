@@ -198,6 +198,12 @@ void fn_settings_free(fn_settings_t * s)
     while(s->options->next != NULL) {
       option_to_delete = s->options;
       s->options = s->options->next;
+      if (option_to_delete->name != NULL) {
+        free(option_to_delete->name);
+      }
+      if (option_to_delete->value != NULL) {
+        free(option_to_delete->value);
+      }
       free(option_to_delete);
     }
     free(s->options);
