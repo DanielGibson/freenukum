@@ -57,7 +57,7 @@ SDL_Surface * fn_tile_load(
     SDL_Surface * tile;
     SDL_Rect r;
     size_t num_read = 0;
-    fn_byterow_t br;
+    fn_byterow_t br = {0, 0, 0, 0, 0};
     char readbuf[5];
 
     tile = SDL_CreateRGBSurface(

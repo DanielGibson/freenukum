@@ -39,13 +39,14 @@ int fn_draw_byterow(
 {
     SDL_PixelFormat * fmt = target->format;
     Uint32 color;
-    size_t i;
+    size_t i = 0;
     r.h = pixelsize;
     r.w = pixelsize;
 
     for (i = 0; i != 8; i++)
     {
-        if (((br->trans >> (7-i)) & 1) == 0)
+        Uint8 filled = (br->trans >> (7-i)) & 1;
+        if (filled == 0)
         {
             color = transcolor;
         }

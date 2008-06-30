@@ -69,7 +69,7 @@ int main(int argc, char ** argv)
   DIR * configdir; /* directory pointer to the config directory */
   DIR * datadir; /* directory pointer to the data directory */
 
-  fn_settings_t * settings; /* the settings struct */
+  fn_settings_t * settings = NULL; /* the settings struct */
 
   Uint8 episode = 1;
 
@@ -266,5 +266,8 @@ int main(int argc, char ** argv)
     fn_error_printf(1024, "Could not store settings to %s: %s",
         configfilepath, strerror(errno));
   }
+
+  fn_settings_free(settings);
+
   return 0;
 }

@@ -6147,7 +6147,8 @@ void
   [FN_ACTOR_SPIKES_DOWN] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_spikes_create,
-    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_spikes_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_spikes_touch_start,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
@@ -6162,7 +6163,8 @@ void
   [FN_ACTOR_SPIKE] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_spikes_create,
-    [FN_ACTOR_FUNCTION_FREE]                = NULL,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_spikes_free,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
       fn_actor_function_spikes_touch_start,
     [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
