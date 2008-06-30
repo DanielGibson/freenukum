@@ -940,7 +940,10 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   r.h = FN_TILE_HEIGHT * lv->pixelsize;
 
   /* load the background tiles */
+  /*
   SDL_FillRect(lv->surface, sourcerect, 0);
+  */
+  SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
   for (j = y_start; j != y_end; j++)
   {
     for (i = x_start; i != x_end; i++)
@@ -951,16 +954,23 @@ void fn_level_blit_to_surface(fn_level_t * lv,
           r.y < FN_TILE_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
       {
         int tilenr = fn_level_get_tile(lv, i, j);
-        if (tilenr == 0 && backdrop1 != NULL) {
-          /* TODO copy first backdrop buffer */
-        } else if (tilenr == 1 && backdrop2 != NULL) {
-          /* TODO copy second backdrop buffer */
+        tile = NULL;
+        if (tilenr == 0) {
+          if (backdrop1 != NULL) {
+            /* TODO copy first backdrop buffer */
+          }
+        } else if (tilenr == 1) {
+          if (backdrop2 != NULL) {
+            /* TODO copy second backdrop buffer */
+          }
         } else if (tilenr < (48 * 8)) {
           tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
         } else {
           tile = fn_tilecache_get_tile(lv->tilecache, 0);
         }
-        SDL_BlitSurface(tile, NULL, lv->surface, &r);
+        if (tile != NULL) {
+          SDL_BlitSurface(tile, NULL, lv->surface, &r);
+        }
       }
     }
   }

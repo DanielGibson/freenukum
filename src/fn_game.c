@@ -229,6 +229,30 @@ int fn_game_start_in_level(
     case 1:
       backdropnumber = 0;
       break;
+    case 3:
+      backdropnumber = 0;
+      break;
+    case 4:
+      backdropnumber = 7;
+      break;
+    case 5:
+      backdropnumber = 3;
+      break;
+    case 6:
+      backdropnumber = 2;
+      break;
+    case 7:
+      backdropnumber = 1;
+      break;
+    case 8:
+      backdropnumber = 3;
+      break;
+    case 9:
+      backdropnumber = 5;
+      break;
+    case 10:
+      backdropnumber = 1;
+      break;
     default:
       backdropnumber = 1;
       break;
@@ -245,6 +269,9 @@ int fn_game_start_in_level(
     perror("Can't open file");
     goto cleanup;
   }
+
+  fn_tileheader_t h;
+  fn_tile_loadheader(fd, &h);
   backdrop = fn_drop_load(fd,
       pixelsize,
       screen->flags,
@@ -315,8 +342,9 @@ int fn_game_start_in_level(
           level,
           &srcrect,
           &srcrect,
-          NULL,
+          backdrop,
           NULL);
+      //SDL_BlitSurface(backdrop, NULL, screen, &dstrect);
       SDL_BlitSurface(level, &srcrect, screen, &dstrect);
       SDL_UpdateRect(screen, 0, 0, 0, 0);
       doupdate = 0;
