@@ -59,6 +59,8 @@ int main(int argc, char ** argv)
 
   int res; /* results are stored here */
 
+  int retval = 1; /* The return value from the program. */
+
   int choice = 0; /* choice of the main menu */
 
   char * homepath; /* home directory of the user */
@@ -83,7 +85,7 @@ int main(int argc, char ** argv)
   homepath = getenv("HOME");
   if (homepath == NULL) {
     fn_error_print("$HOME environment variable is not set.");
-    exit(1);
+    goto homepath_failed;
   }
 
   snprintf(configpath, 1024, "%s%s", homepath, "/.freenukum");
@@ -99,10 +101,9 @@ int main(int argc, char ** argv)
     if (res) {
       fn_error_printf(1024, "Could not create the directory %s: %s",
           configpath, strerror(errno));
-      exit(1);
+      goto configdir_failed;
     }
   }
-  closedir(configdir);
 
   /* check if data directory exists and create it if
    * it does not exist yet */
@@ -113,10 +114,9 @@ int main(int argc, char ** argv)
     if (res) {
       fn_error_printf(1024, "Could not create the directory %s: %s",
           datapath, strerror(errno));
-      exit(1);
+      goto datadir_failed;
     }
   }
-  closedir(datadir);
 
   /* load the settings from the config file and
    * create the file if it does not exist */
@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
     if (!res) {
       fn_error_printf(1024, "Could not create the settings file %s: %s",
           configfilepath, strerror(errno));
-      exit(1);
+      goto settings_failed;
     }
   }
 
@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
   /* initialize SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
     fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
-    exit(1);
+    goto sdl_init_failed;
   }
 
   /* initialize SDL window */
@@ -149,7 +149,7 @@ int main(int argc, char ** argv)
       FN_SURFACE_FLAGS);
   if (screen == NULL) {
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
-    exit(1);
+    goto sdl_videomode_failed;
   }
 
   /* set window caption */
@@ -168,7 +168,7 @@ int main(int argc, char ** argv)
         "They can be downloaded free of charge from\n"
         "http://www.3drealms.com/duke1/index.html" , datapath);
     /* TODO show text in screen maybe? */
-    exit(1);
+    goto tilecache_failed;
   }
 
 
@@ -179,7 +179,8 @@ int main(int argc, char ** argv)
       (Uint8)pixelsize,
       screen);
   if (!res) {
-    exit(1);
+    fn_error_printf(1024, "Could not show splash screen.\n");
+    goto splashscreen_failed;
   }
 
   /* show the main menu */
@@ -265,11 +266,20 @@ int main(int argc, char ** argv)
         configfilepath, strerror(errno));
   }
 
+  retval = 0;
+
+splashscreen_failed:
   fn_tilecache_destroy(&tilecache);
-
-  fn_settings_free(settings);
-
+tilecache_failed:
+sdl_videomode_failed:
   SDL_Quit();
-
-  return 0;
+sdl_init_failed:
+  fn_settings_free(settings);
+settings_failed:
+  closedir(datadir);
+datadir_failed:
+  closedir(configdir);
+configdir_failed:
+homepath_failed:
+  return retval;
 }
