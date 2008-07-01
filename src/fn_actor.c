@@ -809,7 +809,7 @@ void fn_actor_function_tankbot_act(fn_actor_t * actor)
         if (direction > 0) {
           direction = 1;
         }
-        actor->x += direction * FN_HALFTILE_WIDTH;
+        actor->x += direction * FN_HALFTILE_WIDTH * 0.7;
       } else {
         /* Reached the end, so turn around */
         /* TODO shoot here */
@@ -821,6 +821,16 @@ void fn_actor_function_tankbot_act(fn_actor_t * actor)
         direction *= -1;
         actor->x += direction * FN_HALFTILE_WIDTH;
         data->tile += 4 * direction;
+
+        if (direction > 0) {
+          fn_level_add_actor(actor->level,
+             FN_ACTOR_HOSTILESHOT_RIGHT,
+             actor->x, actor->y - 6);
+        } else {
+          fn_level_add_actor(actor->level,
+             FN_ACTOR_HOSTILESHOT_LEFT,
+             actor->x, actor->y - 6);
+        }
       }
     }
   }
@@ -3570,6 +3580,118 @@ void fn_actor_function_surveillancescreen_blit(fn_actor_t * actor)
   SDL_BlitSurface(tile, NULL, target, &destrect);
 }
 
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+typedef struct fn_actor_hostileshot_data_t {
+  /**
+   * The tile number which is to be blitted in the level.
+   */
+  Uint16 tile;
+  /**
+   * Flag indicating if the shot is touching the hero.
+   */
+  Uint8 touching_hero;
+  /**
+   * The current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+} fn_actor_hostileshot_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_create(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = malloc(
+      sizeof(fn_actor_hostileshot_data_t));
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  actor->data = data;
+  data->current_frame = 0;
+  data->num_frames = 2;
+  if (actor->type == FN_ACTOR_HOSTILESHOT_LEFT) {
+    data->tile = OBJ_BADSHOT;
+  } else {
+    data->tile = OBJ_BADSHOT + 2;
+  }
+  data->touching_hero = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_free(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_touch_start(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_increase_hurting_objects(hero);
+  data->touching_hero = 1;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_touch_end(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_decrease_hurting_objects(hero);
+  data->touching_hero = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_act(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = actor->data;
+
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+
+  if (actor->type == FN_ACTOR_HOSTILESHOT_LEFT) {
+    actor->x -= FN_HALFTILE_WIDTH;
+  } else {
+    actor->x += FN_HALFTILE_WIDTH;
+  }
+  if (fn_level_is_solid(actor->level,
+        actor->x / FN_TILE_WIDTH,
+        actor->y / FN_TILE_HEIGHT)) {
+    actor->is_alive = 0;
+    if (data->touching_hero) {
+      fn_hero_t * hero = fn_level_get_hero(actor->level);
+      fn_hero_decrease_hurting_objects(hero);
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_hostileshot_blit(fn_actor_t * actor)
+{
+  fn_actor_hostileshot_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
 
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
@@ -4890,6 +5012,40 @@ void
     [FN_ACTOR_FUNCTION_ACT]                 = NULL,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_surveillancescreen_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_HOSTILESHOT_LEFT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_hostileshot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_hostileshot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_hostileshot_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_hostileshot_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_hostileshot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_hostileshot_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
+  },
+  [FN_ACTOR_HOSTILESHOT_RIGHT] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_hostileshot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_hostileshot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_hostileshot_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_hostileshot_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_hostileshot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_hostileshot_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SODA] = {
