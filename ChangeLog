@@ -1,3 +1,4 @@
+0.2.7
 	- Implemented shots by enemies (LP: #243990)
 	- Implemented bombs (LP: #242116)
 	- Removed dependency on glib (LP: #243956)
