@@ -97,15 +97,6 @@ void fn_list_free(fn_list_t * list);
 /* --------------------------------------------------------------- */
 
 /**
- * Debug-print a list
- *
- * @param  list  The list.
- */
-void fn_list_print(fn_list_t * list);
-
-/* --------------------------------------------------------------- */
-
-/**
  * Remove all occurrences of a list item.
  *
  * @param  list  The list.
