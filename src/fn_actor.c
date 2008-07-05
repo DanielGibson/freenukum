@@ -525,10 +525,6 @@ typedef struct fn_actor_robot_data_t {
    */
   Uint8 num_frames;
   /**
-   * A flag indicating if the robot was shot.
-   */
-  Uint8 was_shot;
-  /**
    * A flag indicating if the robot is currently touching the hero.
    */
   Uint8 touching_hero;
@@ -548,7 +544,6 @@ void fn_actor_function_robot_create(fn_actor_t * actor)
   data->tile = ANIM_ROBOT;
   data->current_frame = 0;
   data->num_frames = 3;
-  data->was_shot = 0;
   data->touching_hero = 0;
 }
 
@@ -566,10 +561,8 @@ void fn_actor_function_robot_touch_start(fn_actor_t * actor)
 {
   fn_actor_robot_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (!data->was_shot) {
-    fn_hero_increase_hurting_objects(hero);
-    data->touching_hero = 1;
-  }
+  fn_hero_increase_hurting_objects(hero);
+  data->touching_hero = 1;
 }
 
 /* --------------------------------------------------------------- */
@@ -578,10 +571,8 @@ void fn_actor_function_robot_touch_end(fn_actor_t * actor)
 {
   fn_actor_robot_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (!data->was_shot) {
-    fn_hero_decrease_hurting_objects(hero);
-    data->touching_hero = 0;
-  }
+  fn_hero_decrease_hurting_objects(hero);
+  data->touching_hero = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -589,53 +580,43 @@ void fn_actor_function_robot_touch_end(fn_actor_t * actor)
 void fn_actor_function_robot_act(fn_actor_t * actor)
 {
   fn_actor_robot_data_t * data = actor->data;
-  fn_hero_t * hero = fn_level_get_hero(actor->level);
   data->current_frame++;
-  if (data->was_shot) {
-    if (data->current_frame == data->num_frames) {
-      /* create explosion */
-      actor->is_alive = 0;
-      fn_level_add_actor(actor->level,
-          FN_ACTOR_EXPLOSION, actor->x, actor->y);
-      fn_hero_add_score(hero, 100);
-    }
-  } else {
-    data->current_frame %= data->num_frames;
-    if (!fn_level_is_solid(actor->level,
-          (actor->x) / FN_TILE_WIDTH,
-          (actor->y) / FN_TILE_HEIGHT + 1)) {
-      /* still in the air, so let the robot fall down. */
-      actor->y += FN_HALFTILE_HEIGHT;
-    } else {
-      /* on the floor, so let's walk */
-      if (data->current_frame == 0) {
-        int direction = (
-            data->direction == fn_horizontal_direction_left ?
-            -1 :
-            2);
-        if (
-            /* Check if the place next to the bot is free */
-            !fn_level_is_solid(actor->level,
-              (actor->x + direction * FN_HALFTILE_WIDTH)/FN_TILE_WIDTH,
-              (actor->y) / FN_TILE_HEIGHT) &&
-            /* Check if it is solid below this place */
-            fn_level_is_solid(actor->level,
-              (actor->x + direction * FN_HALFTILE_WIDTH)/FN_TILE_WIDTH,
-              (actor->y+FN_TILE_HEIGHT) / FN_TILE_HEIGHT)
-           )
-        {
-          if (direction == 2) direction = 1;
-          actor->x += direction * FN_HALFTILE_WIDTH;
-        } else {
-          data->direction = (
-              data->direction == fn_horizontal_direction_left ?
-              fn_horizontal_direction_right :
-              fn_horizontal_direction_left);
 
-          if (direction == 2) direction = 1;
-          direction *= (-1);
-          actor->x += direction * FN_HALFTILE_WIDTH;
-        }
+  data->current_frame %= data->num_frames;
+  if (!fn_level_is_solid(actor->level,
+        (actor->x) / FN_TILE_WIDTH,
+        (actor->y) / FN_TILE_HEIGHT + 1)) {
+    /* still in the air, so let the robot fall down. */
+    actor->y += FN_HALFTILE_HEIGHT;
+  } else {
+    /* on the floor, so let's walk */
+    if (data->current_frame == 0) {
+      int direction = (
+          data->direction == fn_horizontal_direction_left ?
+          -1 :
+          2);
+      if (
+          /* Check if the place next to the bot is free */
+          !fn_level_is_solid(actor->level,
+            (actor->x + direction * FN_HALFTILE_WIDTH)/FN_TILE_WIDTH,
+            (actor->y) / FN_TILE_HEIGHT) &&
+          /* Check if it is solid below this place */
+          fn_level_is_solid(actor->level,
+            (actor->x + direction * FN_HALFTILE_WIDTH)/FN_TILE_WIDTH,
+            (actor->y+FN_TILE_HEIGHT) / FN_TILE_HEIGHT)
+         )
+      {
+        if (direction == 2) direction = 1;
+        actor->x += direction * FN_HALFTILE_WIDTH;
+      } else {
+        data->direction = (
+            data->direction == fn_horizontal_direction_left ?
+            fn_horizontal_direction_right :
+            fn_horizontal_direction_left);
+
+        if (direction == 2) direction = 1;
+        direction *= (-1);
+        actor->x += direction * FN_HALFTILE_WIDTH;
       }
     }
   }
@@ -667,16 +648,14 @@ void fn_actor_function_robot_shot(fn_actor_t * actor)
   fn_actor_robot_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (!data->was_shot && data->touching_hero) {
+  fn_hero_add_score(hero, 100);
+  if (data->touching_hero) {
     fn_hero_decrease_hurting_objects(hero);
     data->touching_hero = 0;
   }
-  if (!data->was_shot) {
-    data->current_frame = 0;
-    data->was_shot = 1;
-    data->tile = ANIM_ROBOT + 3;
-    data->num_frames = 7;
-  }
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_ROBOT_DISAPPEARING, actor->x, actor->y);
+  actor->is_alive = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -2628,6 +2607,11 @@ void fn_actor_function_singleanimation_create(fn_actor_t * actor)
       data->current_frame = 0;
       data->num_frames = 5;
       break;
+    case FN_ACTOR_ROBOT_DISAPPEARING:
+      data->tile = ANIM_ROBOT + 3;
+      data->current_frame = 0;
+      data->num_frames = 7;
+      break;
     default:
       printf(__FILE__ ":%d: warning: singleanimation #%d"
           " added which is not a singleanimation\n",
@@ -2663,6 +2647,10 @@ void fn_actor_function_singleanimation_act(fn_actor_t * actor)
   data->current_frame++;
   if (data->current_frame == data->num_frames) {
     actor->is_alive = 0;
+    if (actor->type == FN_ACTOR_ROBOT_DISAPPEARING) {
+      fn_level_add_actor(actor->level,
+          FN_ACTOR_EXPLOSION, actor->x, actor->y);
+    }
   }
 }
 
@@ -4703,6 +4691,21 @@ void
       fn_actor_function_robot_blit,
     [FN_ACTOR_FUNCTION_SHOT]                =
       fn_actor_function_robot_shot,
+  },
+  [FN_ACTOR_ROBOT_DISAPPEARING] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_singleanimation_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_singleanimation_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_singleanimation_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_singleanimation_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_SNAKEBOT] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
