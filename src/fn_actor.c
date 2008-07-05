@@ -2334,10 +2334,75 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
           fn_actor_create(lv,
             FN_ACTOR_CHICKEN_DOUBLE, actor->x, actor->y));
       break;
+    case FN_ACTOR_SODA:
+      actor->is_alive = 0;
+      lv->actors = fn_list_append(lv->actors,
+          fn_actor_create(lv,
+            FN_ACTOR_SODA_FLYING, actor->x, actor->y));
+      break;
     default:
       break;
   }
 }
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_soda_flying_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_soda_flying_free(fn_actor_t * actor)
+{
+  /* nothing to do here */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_soda_flying_touch_start(fn_actor_t * actor)
+{
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_add_score(hero, 1000);
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_SCORE_1000, actor->x, actor->y);
+  actor->is_alive = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_soda_flying_act(fn_actor_t * actor)
+{
+  actor->y -= FN_HALFTILE_HEIGHT;
+  if (fn_level_is_solid(actor->level,
+        (actor->x) / FN_TILE_WIDTH,
+        (actor->y) / FN_TILE_HEIGHT)) {
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_EXPLOSION, actor->x, actor->y);
+    actor->is_alive = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_soda_flying_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc, ANIM_SODAFLY +
+      (actor->y/FN_HALFTILE_HEIGHT) % 4);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
 
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
@@ -5066,7 +5131,24 @@ void
       fn_actor_function_item_act,
     [FN_ACTOR_FUNCTION_BLIT]                =
       fn_actor_function_item_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_item_shot,
+  },
+  [FN_ACTOR_SODA_FLYING] = {
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_soda_flying_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_soda_flying_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_soda_flying_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_soda_flying_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_soda_flying_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_UNSTABLEFLOOR] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
