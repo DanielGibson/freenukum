@@ -30,6 +30,7 @@ freenukum_SOURCES = fn.h \
 										fn_tilecache.h      fn_tilecache.c \
 										fn_shot.h           fn_shot.c \
 										fn_list.h           fn_list.c \
+										fn_data.h           fn_data.c \
 										freenukum.c
 
 if TESTPROGRAMS

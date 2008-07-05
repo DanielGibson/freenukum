@@ -46,6 +46,7 @@
 #include "fn_infobox.h"
 #include "fn_settings.h"
 #include "fn_game.h"
+#include "fn_data.h"
 
 /* --------------------------------------------------------------- */
 
@@ -154,6 +155,21 @@ int main(int argc, char ** argv)
 
   /* set window caption */
   SDL_WM_SetCaption("Freenukum " VERSION, "Freenukum " VERSION);
+
+  /* check if all data is present */
+  int episodes = 0;
+  while (res != -1) {
+    res = fn_data_check(datapath, episodes + 1);
+    if (res == -1 && episodes == 0) {
+      /* we found zero episodes */
+      printf("Could not load any episode.\n");
+      goto data_check_failed;
+    } else if (res != -1) {
+      /* we found the currently requested episode */
+      episodes++;
+    }
+  }
+  printf("Found %d episodes.\n", episodes);
 
   /* initialize the tile cache */
   fn_tilecache_init(&tilecache, (Uint8)pixelsize);
@@ -271,6 +287,7 @@ int main(int argc, char ** argv)
 splashscreen_failed:
   fn_tilecache_destroy(&tilecache);
 tilecache_failed:
+data_check_failed:
 sdl_videomode_failed:
   SDL_Quit();
 sdl_init_failed:

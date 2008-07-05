@@ -1,3 +1,4 @@
+	- Freenukum can now also load lowercase named data files (LP: #245269)
 0.2.8
 	- Fixing compile bug on AMD64 (LP: #244763)
 0.2.7
