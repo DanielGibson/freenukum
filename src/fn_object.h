@@ -39,6 +39,8 @@
 #define SOLID_START                      BACKGROUND_END
 #define SOLID_END                              (8 * 48)
 
+#define SOLID_EXPANDINGFLOOR     (SOLID_END -        1)
+
 /* --------------------------------------------------------------- */
 
 #define ANIM_START                            SOLID_END
@@ -127,7 +129,7 @@
 #define OBJ_BOX_RED               (OBJ_START  +    101)
 #define OBJ_RADIO                 (OBJ_START  +    102)
 #define OBJ_ACCESS_CARD_SLOT      (OBJ_START  +    105)
-#define OBJ_ROBOHAND_SWITCH       (OBJ_START  +    114)
+#define OBJ_GLOVE_SLOT            (OBJ_START  +    114)
 #define OBJ_DUKE_WORD             (OBJ_START  +    118)
 #define OBJ_LETTER_D              (OBJ_START  +    118)
 #define OBJ_LETTER_U              (OBJ_START  +    119)

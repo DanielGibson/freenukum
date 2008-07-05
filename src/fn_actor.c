@@ -1754,6 +1754,97 @@ void fn_actor_function_accesscard_slot_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The glove slot.
+ */
+typedef struct fn_actor_glove_slot_data_t {
+  /**
+   * The tile number for the tilecache.
+   */
+  Uint16 tile;
+  /**
+   * The number of the current frame.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+} fn_actor_glove_slot_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_glove_slot_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+  fn_actor_glove_slot_data_t * data = malloc(
+      sizeof(fn_actor_glove_slot_data_t));
+  data->tile = OBJ_GLOVE_SLOT;
+  data->current_frame = 0;
+  data->num_frames = 4;
+  actor->data = data;
+  actor->is_in_foreground = 0;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_glove_slot_free(fn_actor_t * actor)
+{
+  fn_actor_glove_slot_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_glove_slot_interact_start(fn_actor_t * actor)
+{
+  /* TODO set the correct state */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_glove_slot_act(fn_actor_t * actor)
+{
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+  /* TODO expand the platform once activated or shoot when hero has
+   * no glove yet and interacted. */
+  /* TODO set the current frame to 0 for correct color. */
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_glove_slot_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  fn_actor_access_card_slot_data_t * data = actor->data;
+  Uint8 adder = (data->current_frame == 0 ? 0 : 1);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + adder);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.x -= FN_TILE_WIDTH * pixelsize;
+  tile = fn_tilecache_get_tile(tc, data->tile + 2);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.x += 2 * FN_TILE_WIDTH * pixelsize;
+  tile = fn_tilecache_get_tile(tc, data->tile + 3);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+  /* TODO */
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * The item struct.
  * Items are elements in the game which fall to the floor.
  * They are one part high, one part wide and
@@ -3585,6 +3676,49 @@ void fn_actor_function_unstablefloor_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+void fn_actor_function_expandingfloor_create(fn_actor_t * actor)
+{
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_expandingfloor_free(fn_actor_t * actor)
+{
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_expandingfloor_act(fn_actor_t * actor)
+{
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_expandingfloor_blit(fn_actor_t * actor)
+{
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc, SOLID_EXPANDINGFLOOR);
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+
+  int i = 0;
+  for (i = 0; i < (actor->w / FN_TILE_WIDTH); i++) {
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+    destrect.x += FN_TILE_WIDTH * pixelsize;
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 void fn_actor_function_surveillancescreen_create(fn_actor_t * actor)
 {
   actor->w = FN_TILE_WIDTH * 2;
@@ -5166,15 +5300,19 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_EXPANDINGFLOOR] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_expandingfloor_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_expandingfloor_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_expandingfloor_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_expandingfloor_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
@@ -6060,15 +6198,20 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_GLOVE_SLOT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_glove_slot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_glove_slot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] =
+      fn_actor_function_glove_slot_interact_start,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_glove_slot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_glove_slot_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_KEY_RED] = {
     [FN_ACTOR_FUNCTION_CREATE]              =

@@ -494,9 +494,10 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3035: /* slot for glove */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ACCESS_CARD_SLOT, x, y);
+            FN_ACTOR_GLOVE_SLOT, x, y);
         break;
       case 0x3036: /* floor which expands to right by access of glove slot */
+        fn_level_set_solid(lv, x, y, 1);
         fn_level_add_initial_actor(lv,
             FN_ACTOR_EXPANDINGFLOOR, x, y);
         break;
