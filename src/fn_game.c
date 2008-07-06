@@ -401,6 +401,16 @@ int fn_game_start_in_level(
               lv->levelpassed = 1;
               lv->do_play = 0;
               break;
+            case SDLK_f:
+              {
+                int res = SDL_WM_ToggleFullScreen(screen);
+                if (!res) {
+                  printf("Faild fullscreen toggle.\n");
+                } else {
+                  printf("Fullscreen toggled.\n");
+                }
+              }
+              break;
             case SDLK_DOWN:
               if (event.key.keysym.mod & KMOD_SHIFT) {
                 if (srcrect.y + srcrect.h
