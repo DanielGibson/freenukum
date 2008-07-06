@@ -1327,6 +1327,37 @@ void fn_actor_function_acme_act(fn_actor_t * actor)
 
   switch(data->counter) {
     case 0:
+      {
+        Uint16 xl = actor->x;
+        Uint16 xr = xl + actor->w;
+        Uint16 y = actor->y;
+        Uint16 hxl = fn_hero_get_x(hero) * FN_HALFTILE_WIDTH;
+        Uint16 hxr = hxl + FN_TILE_WIDTH;
+        Uint16 hy = fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT;
+
+        if (y < hy && /* actor higher than hero */
+            xl < hxr &&
+            xr > hxl) {
+          /* check if there are solid parts between hero and acme */
+          Uint16 i = 0;
+          Uint8 solidbetween = 0;
+          for (i = y + FN_TILE_HEIGHT;
+              i < hy && !solidbetween;
+              i += FN_TILE_HEIGHT) {
+            if (fn_level_is_solid(actor->level,
+                  xl / FN_TILE_WIDTH, i / FN_TILE_WIDTH) ||
+                fn_level_is_solid(actor->level,
+                  xl / FN_TILE_WIDTH + 1, i / FN_TILE_WIDTH)) {
+              solidbetween = 1;
+            }
+          }
+          if (!solidbetween) {
+            data->counter++;
+          }
+        }
+      }
+      break;
+      /*
       if (fn_hero_get_x(hero) >= actor->x / FN_HALFTILE_WIDTH &&
         fn_hero_get_x(hero) <= (actor->x / FN_HALFTILE_WIDTH)+2 &&
         fn_hero_get_y(hero) >= actor->y / FN_HALFTILE_HEIGHT)
@@ -1334,6 +1365,7 @@ void fn_actor_function_acme_act(fn_actor_t * actor)
         data->counter++;
       }
       break;
+      */
     case 1:
     case 3:
     case 5:
