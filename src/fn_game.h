@@ -37,6 +37,7 @@
 
 #include "fn_hero.h"
 #include "fn_tilecache.h"
+#include "fn_settings.h"
 
 /* --------------------------------------------------------------- */
 
@@ -48,13 +49,15 @@
  * @param  screen     The output screen.
  * @param  datapath   The path where all the game data is stored.
  * @param  episode    The episode in which we start.
+ * @param  settings   The game settings object.
  */
 void fn_game_start(
     Uint8 pixelsize,
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath,
-    Uint8 episode);
+    Uint8 episode,
+    fn_settings_t * settings);
 
 /* --------------------------------------------------------------- */
 
@@ -67,7 +70,8 @@ void fn_game_start(
  * @param  screen       The output screen.
  * @param  datapath     The path whele all the game data is stored.
  * @param  hero         The hero to use.
- * @param  episode    The episode in which we start.
+ * @param  episode      The episode in which we start.
+ * @param  settings     The game settings object.
  *
  * @return Non-zero if the level was completed successfully, else zero.
  */
@@ -78,7 +82,8 @@ int fn_game_start_in_level(
     SDL_Surface * screen,
     char * datapath,
     fn_hero_t * hero,
-    Uint8 episode);
+    Uint8 episode,
+    fn_settings_t * settings);
 
 /* --------------------------------------------------------------- */
 

@@ -139,7 +139,7 @@ int fn_settings_store(fn_settings_t * s, char * path);
  */
 int fn_settings_get_bool(fn_settings_t * s,
     char * name,
-    int * target);
+    unsigned char * target);
 
 /* --------------------------------------------------------------- */
 
@@ -154,8 +154,8 @@ int fn_settings_get_bool(fn_settings_t * s,
  */
 void fn_settings_get_bool_with_default(fn_settings_t * s,
     char * name,
-    int * target,
-    int defval);
+    unsigned char * target,
+    unsigned char defval);
 
 /* --------------------------------------------------------------- */
 
@@ -234,7 +234,7 @@ void fn_settings_get_string_with_default(fn_settings_t * s,
  */
 void fn_settings_set_bool(fn_settings_t * s,
     char * name,
-    int source);
+    unsigned char source);
 
 /* --------------------------------------------------------------- */
 

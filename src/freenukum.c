@@ -55,6 +55,7 @@ int main(int argc, char ** argv)
   SDL_Surface * screen; /* the main screen surface */
 
   long int pixelsize; /* pixel size */
+  Uint8 fullscreen; /* Play fullscreen? */
 
   fn_tilecache_t tilecache; /* the main tilecache */
 
@@ -74,9 +75,11 @@ int main(int argc, char ** argv)
 
   fn_settings_t * settings = NULL; /* the settings struct */
 
-  Uint8 episode = 1;
+  Uint8 episode = 1; /* The episode currently being played. */
 
   char backgroundfile[10] = "DN.DN1";
+
+  Uint32 videoflags = FN_SURFACE_FLAGS;
 
 /* --------------------------------------------------------------- */
 
@@ -135,6 +138,12 @@ int main(int argc, char ** argv)
   /* load pixelsize from config */
   fn_settings_get_longint_with_default(settings, "pixelsize",
       &pixelsize, FN_DEFAULT_PIXELSIZE);
+  fn_settings_get_bool_with_default(settings, "fullscreen",
+      &fullscreen, FN_DEFAULT_FULLSCREEN);
+
+  if (fullscreen) {
+    videoflags |= SDL_FULLSCREEN;
+  }
 
   /* initialize SDL */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
@@ -147,7 +156,7 @@ int main(int argc, char ** argv)
       FN_WINDOW_WIDTH * pixelsize,
       FN_WINDOW_HEIGHT * pixelsize,
       FN_COLOR_DEPTH,
-      FN_SURFACE_FLAGS);
+      videoflags);
   if (screen == NULL) {
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
     goto sdl_videomode_failed;
@@ -205,7 +214,8 @@ int main(int argc, char ** argv)
     switch(choice) {
       case FN_MENUCHOICE_START:
         fn_game_start(
-            (Uint8)pixelsize, &tilecache, screen, datapath, episode);
+            (Uint8)pixelsize, &tilecache, screen, datapath, episode,
+            settings);
         res = fn_picture_splash_show(datapath,
             backgroundfile,
             (Uint8)pixelsize,
@@ -226,6 +236,15 @@ int main(int argc, char ** argv)
       case FN_MENUCHOICE_SETUP:
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
             "Setup not implemented yet.\n");
+        break;
+      case FN_MENUCHOICE_FULLSCREENTOGGLE:
+        {
+          int res = SDL_WM_ToggleFullScreen(screen);
+          if (res) {
+            fullscreen = (fullscreen + 1) % 2;
+            fn_settings_set_bool(settings, "fullscreen", fullscreen);
+          }
+        }
         break;
       case FN_MENUCHOICE_EPISODECHANGE:
         {

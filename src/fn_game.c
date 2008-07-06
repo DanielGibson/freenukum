@@ -70,7 +70,8 @@ void fn_game_start(
     fn_tilecache_t * tilecache,
     SDL_Surface * screen,
     char * datapath,
-    Uint8 episode)
+    Uint8 episode,
+    fn_settings_t * settings)
 {
   int res;
   fn_hero_t hero;
@@ -167,7 +168,7 @@ void fn_game_start(
             pixelsize,
             tilecache,
             screen,
-            datapath, &hero, episode);
+            datapath, &hero, episode, settings);
         level++;
         if (level == 2) {
           level++;
@@ -180,7 +181,7 @@ void fn_game_start(
             tilecache,
             screen,
             datapath, &hero,
-            episode);
+            episode, settings);
         interlevel = 1;
       }
     }
@@ -200,7 +201,8 @@ int fn_game_start_in_level(
     SDL_Surface * screen,
     char * datapath,
     fn_hero_t * hero,
-    Uint8 episode)
+    Uint8 episode,
+    fn_settings_t * settings)
 {
   int returnvalue = 0;
   int fd = 0;
@@ -403,11 +405,16 @@ int fn_game_start_in_level(
               break;
             case SDLK_f:
               {
+                Uint8 fullscreen;
+                fn_settings_get_bool(
+                    settings, "fullscreen", &fullscreen);
+
                 int res = SDL_WM_ToggleFullScreen(screen);
-                if (!res) {
-                  printf("Faild fullscreen toggle.\n");
-                } else {
-                  printf("Fullscreen toggled.\n");
+
+                if (res) {
+                  fullscreen = (fullscreen + 1) % 2;
+                  fn_settings_set_bool(
+                      settings, "fullscreen", fullscreen);
                 }
               }
               break;

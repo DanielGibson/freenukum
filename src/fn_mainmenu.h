@@ -35,18 +35,19 @@
 
 /* --------------------------------------------------------------- */
 
-#define FN_MENUCHOICE_START         1
-#define FN_MENUCHOICE_RESTORE       2
-#define FN_MENUCHOICE_INSTRUCTIONS  3
-#define FN_MENUCHOICE_ORDERINGINFO  4
-#define FN_MENUCHOICE_SETUP         5
-#define FN_MENUCHOICE_EPISODECHANGE 6
-#define FN_MENUCHOICE_HIGHSCORES    7
-#define FN_MENUCHOICE_PREVIEWS      8
-#define FN_MENUCHOICE_VIEWUSERDEMO  9
-#define FN_MENUCHOICE_TITLESCREEN  10
-#define FN_MENUCHOICE_CREDITS      11
-#define FN_MENUCHOICE_QUIT         12
+#define FN_MENUCHOICE_START              1
+#define FN_MENUCHOICE_RESTORE            2
+#define FN_MENUCHOICE_INSTRUCTIONS       3
+#define FN_MENUCHOICE_ORDERINGINFO       4
+#define FN_MENUCHOICE_SETUP              5
+#define FN_MENUCHOICE_FULLSCREENTOGGLE   6
+#define FN_MENUCHOICE_EPISODECHANGE      7
+#define FN_MENUCHOICE_HIGHSCORES         8
+#define FN_MENUCHOICE_PREVIEWS           9
+#define FN_MENUCHOICE_VIEWUSERDEMO      10
+#define FN_MENUCHOICE_TITLESCREEN       11
+#define FN_MENUCHOICE_CREDITS           12
+#define FN_MENUCHOICE_QUIT              13
 
 /* --------------------------------------------------------------- */
 

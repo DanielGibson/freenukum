@@ -239,13 +239,14 @@ int fn_settings_store(fn_settings_t * s, char * path)
 
 int fn_settings_get_bool(fn_settings_t * s,
     char * name,
-    int * target)
+    unsigned char * target)
 {
   fn_settings_option_t * option;
   option = _fn_settings_find_option(s->options, name);
   if (option != NULL) {
-    if (strcasecmp(option->value, "true") == 0
-        || strcasecmp(option->value, "1") == 0)
+    if (strcasecmp(option->value, "true") == 0 ||
+        strcasecmp(option->value, "yes") == 0 ||
+        strcasecmp(option->value, "1") == 0)
       *target = 1;
     else
       *target = 0;
@@ -258,8 +259,8 @@ int fn_settings_get_bool(fn_settings_t * s,
 
 void fn_settings_get_bool_with_default(fn_settings_t * s,
     char * name,
-    int * target,
-    int defval)
+    unsigned char * target,
+    unsigned char defval)
 {
   if (!fn_settings_get_bool(s, name, target)) {
     fn_settings_set_bool(s, name, defval);
@@ -334,7 +335,7 @@ void fn_settings_get_string_with_default(fn_settings_t * s,
 
 void fn_settings_set_bool(fn_settings_t * s,
     char * name,
-    int source)
+    unsigned char source)
 {
   fn_settings_option_t * option;
 
