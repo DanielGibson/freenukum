@@ -507,6 +507,17 @@ void fn_hero_jump(
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_set_x(
+    fn_hero_t * hero, Uint16 x)
+{
+  if (hero->x < FN_LEVEL_WIDTH * 2)
+  {
+    hero->x = x;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 Uint16 fn_hero_get_x(
     fn_hero_t * hero)
 {

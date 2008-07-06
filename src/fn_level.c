@@ -338,10 +338,16 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_LASERBEAM, x, y);
         break;
       case 0x301b: /* fan wheel mounted on right wall blowing to the left */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         fn_level_add_initial_actor(lv,
             FN_ACTOR_FAN_LEFT, x, y);
         break;
       case 0x301c: /* fan wheel mounted on left wall blowing to the right*/
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         fn_level_add_initial_actor(lv,
             FN_ACTOR_FAN_RIGHT, x, y);
         break;

@@ -63,7 +63,7 @@
 #define ANIM_WALLCRAWLERBOT_RIGHT (ANIM_START +    140)
 #define ANIM_FLOOR_UNSTABLE       (ANIM_START +    146)
 #define ANIM_CRAP                 (ANIM_START +    148)
-#define ANIM_FAN                  (ANIM_START +    158)
+#define ANIM_FAN                  (ANIM_START +    156)
 #define ANIM_HELICOPTER           (ANIM_START +    166)
 #define ANIM_CAMERA_LEFT          (ANIM_START +    200)
 #define ANIM_CAMERA_CENTER        (ANIM_START +    201)

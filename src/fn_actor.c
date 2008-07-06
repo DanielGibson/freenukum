@@ -4891,6 +4891,159 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+/**
+ * The fan wheel
+ */
+typedef struct fn_actor_fan_data_t {
+  /**
+   * The tile number which is blitted in the level.
+   */
+  Uint16 tile;
+  /**
+   * The animation counter.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+  /**
+   * A flag showing if the wheel is running.
+   */
+  Uint8 running;
+} fn_actor_fan_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fan_create(fn_actor_t * actor)
+{
+  fn_actor_fan_data_t * data = malloc(
+      sizeof(fn_actor_fan_data_t));
+  actor->data = data;
+  data->tile = ANIM_FAN;
+  data->num_frames = 4;
+  data->current_frame = 0;
+  data->running = 10;
+  actor->h = 2 * FN_TILE_HEIGHT;
+  actor->w = FN_TILE_WIDTH;
+  actor->y -= FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fan_free(fn_actor_t * actor)
+{
+  fn_actor_fan_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fan_act(fn_actor_t * actor)
+{
+  fn_actor_fan_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  switch(data->running) {
+    case 0:
+      /* Do nothing */
+      break;
+    case 1:
+      data->current_frame++;
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
+    case 4:
+      break;
+    case 5:
+      data->current_frame++;
+      break;
+    case 6:
+      break;
+    case 7:
+      break;
+    case 8:
+      data->current_frame++;
+      break;
+    case 9:
+      break;
+    case 10:
+      data->current_frame++;
+      break;
+    default:
+      /* do nothing */
+      break;
+  }
+
+  data->current_frame %= data->num_frames;
+  if (data->running < 10 && data->running > 0) {
+    data->running--;
+  } else if (data->running == 10) {
+    int hdistance = (fn_hero_get_x(hero) * FN_HALFTILE_WIDTH) -
+      actor->x;
+    Uint16 hdistance_abs = (hdistance > 0 ? hdistance : hdistance * -1);
+    Uint16 yt = actor->y;
+    Uint16 yb = actor->y + actor->h;
+    Uint16 hyt = fn_hero_get_y(hero) * FN_HALFTILE_HEIGHT -
+      FN_TILE_HEIGHT;
+    Uint16 hyb = hyt + 2 * FN_TILE_HEIGHT;
+    if (hdistance_abs < 8 * FN_HALFTILE_WIDTH &&
+        ((yt <= hyb && yb >= hyb) || (yt <= hyt && yb >= hyt))) {
+      int dir = 0;
+      if ((actor->type == FN_ACTOR_FAN_LEFT && hdistance <= 0) ||
+          (actor->type == FN_ACTOR_FAN_RIGHT && hdistance >= 0)) {
+        if (hdistance_abs != 0) {
+          dir = hdistance / hdistance_abs;
+        } else {
+          dir = 0;
+        }
+      }
+      fn_hero_set_x(hero, fn_hero_get_x(hero) + dir * 2);
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fan_blit(fn_actor_t * actor)
+{
+  fn_actor_fan_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame * 2);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = actor->y * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame * 2 + 1);
+  destrect.y += FN_TILE_HEIGHT * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_fan_shot(fn_actor_t * actor)
+{
+  fn_actor_fan_data_t * data = actor->data;
+  data->running = 9;
+  fn_level_add_actor(actor->level,
+      FN_ACTOR_STEAM, actor->x, actor->y);
+}
+
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 typedef void (* fn_actor_function_t)(fn_actor_t *);
 
 /**
@@ -5487,26 +5640,36 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
   },
   [FN_ACTOR_FAN_LEFT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_fan_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_fan_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_fan_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_fan_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_fan_shot,
   },
   [FN_ACTOR_FAN_RIGHT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_fan_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_fan_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_fan_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_fan_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_fan_shot,
   },
   [FN_ACTOR_BROKENWALL_BACKGROUND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
