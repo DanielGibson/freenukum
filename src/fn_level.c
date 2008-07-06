@@ -324,6 +324,9 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_BOX_RED_CHICKEN, x, y);
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
+        if (y > 0) {
+          lv->tiles[y][x] = lv->tiles[y-1][x];
+        }
         fn_level_add_initial_actor(lv,
             FN_ACTOR_UNSTABLEFLOOR, x, y);
         break;
