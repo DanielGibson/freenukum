@@ -1300,6 +1300,7 @@ void fn_actor_function_acme_create(fn_actor_t * actor)
   data->touching_hero = 0;
   actor->w = FN_TILE_WIDTH * 2;
   actor->h = FN_TILE_HEIGHT;
+  actor->is_in_foreground = 1;
 }
 
 /* --------------------------------------------------------------- */
