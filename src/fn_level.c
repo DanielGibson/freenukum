@@ -393,9 +393,11 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_BOX_BLUE_BALLOON, x, y);
         break;
       case 0x3024: /* camera */
+        /*
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
+        */
         fn_level_add_initial_actor(lv,
             FN_ACTOR_CAMERA, x, y);
         break;
@@ -729,6 +731,22 @@ fn_level_t * fn_level_load(int fd,
 
     i++;
   }
+
+  /* Put the correct tile behind the cameras. */
+  fn_list_t * cameras =
+    fn_level_get_items_of_type(lv,
+        FN_ACTOR_CAMERA);
+  fn_list_t * iter = NULL;
+  for (iter = fn_list_first(cameras);
+      iter != fn_list_last(cameras);
+      iter = fn_list_next(iter)) {
+    fn_actor_t * camera = iter->data;
+    Uint16 cameray = camera->y / FN_TILE_HEIGHT;
+    Uint16 camerax = camera->x / FN_TILE_WIDTH;
+    lv->tiles[cameray][camerax] =
+      lv->tiles[cameray+1][camerax];
+  }
+  fn_list_free(cameras);
   return lv;
 }
 
@@ -1017,13 +1035,15 @@ int fn_level_act(fn_level_t * lv) {
       iter = fn_list_next(iter)) {
     fn_shot_t * shot = (fn_shot_t *)iter->data;
 
-    res = fn_shot_act(shot);
-    if (res == 0) {
-      /* set the cleanup flag and free the memory */
-      cleanup = 1;
-      iter->data = 0;
-      fn_shot_free(shot); shot = NULL;
-      lv->num_shots--;
+    if (shot != NULL) {
+      res = fn_shot_act(shot);
+      if (res == 0) {
+        /* set the cleanup flag and free the memory */
+        cleanup = 1;
+        iter->data = 0;
+        fn_shot_free(shot); shot = NULL;
+        lv->num_shots--;
+      }
     }
   }
 

@@ -1,3 +1,4 @@
+	- No more solid parts behind cameras (LP: #242133)
 	- Added fullscreen mode (LP: #245274)
 	- Implemented glove slot which can expand floor
 	- Soda can flys away when shot by hero (LP: #242118)
