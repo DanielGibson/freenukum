@@ -354,7 +354,7 @@ void fn_borders_blit_inventory(
       inventorytiles[6] = OBJ_KEY_PINK;
     if (inventory & FN_INVENTORY_BOOT)
       inventorytiles[16] = OBJ_BOOT;
-    if (inventory & FN_INVENTORY_ROBOHAND)
+    if (inventory & FN_INVENTORY_GLOVE)
       inventorytiles[18] = OBJ_ROBOHAND;
     if (inventory & FN_INVENTORY_CLAMP)
       inventorytiles[20] = OBJ_CLAMP;

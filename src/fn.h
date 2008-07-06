@@ -90,7 +90,7 @@
 #define FN_INVENTORY_KEY_BLUE    (0x01 << 5)
 #define FN_INVENTORY_KEY_PINK    (0x01 << 4)
 #define FN_INVENTORY_BOOT        (0x01 << 3)
-#define FN_INVENTORY_ROBOHAND    (0x01 << 2)
+#define FN_INVENTORY_GLOVE       (0x01 << 2)
 #define FN_INVENTORY_CLAMP       (0x01 << 1)
 #define FN_INVENTORY_ACCESS_CARD (0x01 << 0)
 

@@ -383,7 +383,7 @@ int fn_game_start_in_level(
               break;
             case SDLK_6:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
-                  FN_INVENTORY_ROBOHAND);
+                  FN_INVENTORY_GLOVE);
               break;
             case SDLK_7:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |

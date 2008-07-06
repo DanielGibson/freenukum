@@ -381,4 +381,18 @@ void fn_level_fire_shot(fn_level_t * lv);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get a list containing all items in the level of a type.
+ *
+ * @param  lv    The level.
+ * @param  type  The type of which to get the items.
+ *
+ * @return The list. The user who called this function has to
+ *         call fn_list_free on it in order to free the memory.
+ */
+fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
+    fn_actor_type_e type);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */

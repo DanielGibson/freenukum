@@ -1754,6 +1754,18 @@ void fn_actor_function_accesscard_slot_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The states in which the golve slot can be.
+ */
+typedef enum fn_actor_glove_slot_state_e {
+  fn_actor_glove_slot_state_idle,
+  fn_actor_glove_slot_state_expanding,
+  fn_actor_glove_slot_state_shooting,
+  fn_actor_glove_slot_state_expanded
+} fn_actor_glove_slot_state_e;
+
+/* --------------------------------------------------------------- */
+
+/**
  * The glove slot.
  */
 typedef struct fn_actor_glove_slot_data_t {
@@ -1769,6 +1781,10 @@ typedef struct fn_actor_glove_slot_data_t {
    * The number of frames.
    */
   Uint8 num_frames;
+  /**
+   * The state of the slot.
+   */
+  fn_actor_glove_slot_state_e state;
 } fn_actor_glove_slot_data_t;
 
 /* --------------------------------------------------------------- */
@@ -1782,6 +1798,7 @@ void fn_actor_function_glove_slot_create(fn_actor_t * actor)
   data->tile = OBJ_GLOVE_SLOT;
   data->current_frame = 0;
   data->num_frames = 4;
+  data->state = fn_actor_glove_slot_state_idle;
   actor->data = data;
   actor->is_in_foreground = 0;
 }
@@ -1798,16 +1815,94 @@ void fn_actor_function_glove_slot_free(fn_actor_t * actor)
 
 void fn_actor_function_glove_slot_interact_start(fn_actor_t * actor)
 {
-  /* TODO set the correct state */
+  fn_actor_glove_slot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  switch(data->state)
+  {
+    case fn_actor_glove_slot_state_idle:
+      if (fn_hero_get_inventory(hero) & FN_INVENTORY_GLOVE) {
+        data->state = fn_actor_glove_slot_state_expanding;
+      } else {
+        data->state = fn_actor_glove_slot_state_shooting;
+      }
+      break;
+    case fn_actor_glove_slot_state_expanding:
+      /* nothing to do */
+      break;
+    case fn_actor_glove_slot_state_shooting:
+      /* nothing to do */
+      break;
+    case fn_actor_glove_slot_state_expanded:
+      /* nothing to do */
+      break;
+    default:
+      /* we got an invalid state. */
+      printf(__FILE__ ":%d: warning: glove slot"
+          " is in state %d which is invalud.\n",
+          __LINE__, data->state);
+      break;
+  }
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_actor_function_glove_slot_act(fn_actor_t * actor)
 {
-  fn_actor_access_card_slot_data_t * data = actor->data;
-  data->current_frame++;
-  data->current_frame %= data->num_frames;
+  fn_actor_glove_slot_data_t * data = actor->data;
+
+
+  switch(data->state)
+  {
+    case fn_actor_glove_slot_state_idle:
+      data->current_frame++;
+      data->current_frame %= data->num_frames;
+      break;
+    case fn_actor_glove_slot_state_expanding:
+      data->current_frame++;
+      data->current_frame %= data->num_frames;
+      {
+        fn_list_t * expandfloors =
+          fn_level_get_items_of_type(actor->level,
+              FN_ACTOR_EXPANDINGFLOOR);
+        Uint8 action = 0;
+        fn_list_t * iter = NULL;
+        for (iter = fn_list_first(expandfloors);
+            iter != fn_list_last(expandfloors);
+            iter = fn_list_next(iter)) {
+          fn_actor_t * floor = iter->data;
+          if (!fn_level_is_solid(actor->level,
+                (floor->x + floor->w) / FN_TILE_WIDTH,
+                (floor->y) / FN_TILE_HEIGHT)) {
+            fn_level_set_solid(actor->level,
+                (floor->x + floor->w) / FN_TILE_WIDTH,
+                (floor->y) / FN_TILE_HEIGHT, 1);
+            action = 1;
+            floor->w += FN_TILE_WIDTH;
+          }
+        }
+        fn_list_free(expandfloors); expandfloors = NULL;
+
+        if (!action) {
+          data->state = fn_actor_glove_slot_state_expanded;
+        }
+      }
+      break;
+    case fn_actor_glove_slot_state_shooting:
+      data->current_frame++;
+      data->current_frame %= data->num_frames;
+      /* nothing to do */
+      break;
+    case fn_actor_glove_slot_state_expanded:
+      /* nothing to do */
+      break;
+    default:
+      /* we got an invalid state. */
+      printf(__FILE__ ":%d: warning: glove slot"
+          " is in state %d which is invalud.\n",
+          __LINE__, data->state);
+      break;
+  }
+
   /* TODO expand the platform once activated or shoot when hero has
    * no glove yet and interacted. */
   /* TODO set the current frame to 0 for correct color. */
@@ -1817,10 +1912,10 @@ void fn_actor_function_glove_slot_act(fn_actor_t * actor)
 
 void fn_actor_function_glove_slot_blit(fn_actor_t * actor)
 {
+  fn_actor_glove_slot_data_t * data = actor->data;
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  fn_actor_access_card_slot_data_t * data = actor->data;
   Uint8 adder = (data->current_frame == 0 ? 0 : 1);
   SDL_Surface * tile = fn_tilecache_get_tile(tc,
       data->tile + adder);
@@ -2108,7 +2203,7 @@ void fn_actor_function_item_touch_start(fn_actor_t * actor)
           FN_ACTOR_SCORE_1000, actor->x, actor->y);
       break;
     case FN_ACTOR_GLOVE:
-      inventory |= FN_INVENTORY_ROBOHAND;
+      inventory |= FN_INVENTORY_GLOVE;
       fn_hero_set_inventory(hero, inventory);
       actor->is_alive = 0;
       fn_hero_add_score(hero, 1000);

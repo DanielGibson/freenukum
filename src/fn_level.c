@@ -893,10 +893,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
     if (actor != NULL) {
-      Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-      Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+      Uint16 xl = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+      Uint16 yt = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+      Uint16 xr = xl + fn_actor_get_w(actor) / FN_TILE_WIDTH;
+      Uint16 yb = yt + fn_actor_get_h(actor) / FN_TILE_HEIGHT;
 
-      if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      if (xr > x_start && yb > y_start && xl < x_end && yt < y_end) {
         if (!fn_actor_in_foreground(actor)) {
           fn_actor_blit(actor);
         }
@@ -917,10 +919,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
     if (actor != NULL) {
-      Uint16 x = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-      Uint16 y = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+      Uint16 xl = fn_actor_get_x(actor) / FN_TILE_WIDTH;
+      Uint16 yt = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
+      Uint16 xr = xl + fn_actor_get_w(actor) / FN_TILE_WIDTH;
+      Uint16 yb = yt + fn_actor_get_h(actor) / FN_TILE_HEIGHT;
 
-      if (x > x_start && y > y_start && x < x_end && y < y_end) {
+      if (xr > x_start && yb > y_start && xl < x_end && yt < y_end) {
         if (fn_actor_in_foreground(actor)) {
           fn_actor_blit(actor);
         }
@@ -1183,3 +1187,18 @@ void fn_level_fire_shot(fn_level_t * lv)
 
 /* --------------------------------------------------------------- */
 
+fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
+    fn_actor_type_e type)
+{
+  fn_list_t * ret = NULL;
+  fn_list_t * iter = NULL;
+  for (iter = fn_list_first(lv->actors);
+      iter != fn_list_last(lv->actors);
+      iter = fn_list_next(iter)) {
+    fn_actor_t * actor = iter->data;
+    if (actor->type == type) {
+      ret = fn_list_append(ret, actor);
+    }
+  }
+  return ret;
+}
