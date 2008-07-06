@@ -560,6 +560,9 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_WINDOWRIGHT_BACKGROUND, x, y);
         break;
       case 0x3040: /* the notebook */
+        if (x > 0) {
+          lv->tiles[y][x] = lv->tiles[y][x-1];
+        }
         fn_level_add_initial_actor(lv,
             FN_ACTOR_NOTEBOOK, x, y);
         break;
