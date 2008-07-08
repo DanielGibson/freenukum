@@ -26,6 +26,9 @@
  *
  *******************************************************************/
 
+#ifndef FN_LIST_H
+#define FN_LIST_H
+
 typedef struct fn_list_t fn_list_t;
 
 struct fn_list_t {
@@ -108,3 +111,4 @@ fn_list_t * fn_list_remove_all(fn_list_t * list, void * data);
 
 /* --------------------------------------------------------------- */
 
+#endif /* FN_LIST_H */

@@ -66,7 +66,7 @@ void fn_hero_init(
 
   hero->immunitycountdown = 0;
   hero->immunityduration = 16;
-  hero->hurtingobjects = 0;
+  hero->hurtingactors = NULL;
 }
 
 /* --------------------------------------------------------------- */
@@ -162,7 +162,7 @@ int fn_hero_act(
   if (hero->immunitycountdown > 0) {
     hero->immunitycountdown--;
   }
-  if (hero->immunitycountdown == 0 && hero->hurtingobjects > 0) {
+  if (hero->immunitycountdown == 0 && hero->hurtingactors != NULL) {
     hero->immunitycountdown = hero->immunityduration;
     fn_hero_set_health(hero, hero->health - 1);
   }
@@ -583,16 +583,20 @@ Uint64 fn_hero_get_score(fn_hero_t * hero)
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_increase_hurting_objects(fn_hero_t * hero)
+void fn_hero_increase_hurting_actors(fn_hero_t * hero,
+    fn_actor_t * actor)
 {
-  hero->hurtingobjects++;
+  hero->hurtingactors = fn_list_append(hero->hurtingactors,
+      actor);
 }
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_decrease_hurting_objects(fn_hero_t * hero)
+void fn_hero_decrease_hurting_actors(fn_hero_t * hero,
+    fn_actor_t * actor)
 {
-  hero->hurtingobjects--;
+  hero->hurtingactors = fn_list_remove_all(hero->hurtingactors,
+      actor);
 }
 
 /* --------------------------------------------------------------- */

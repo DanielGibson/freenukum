@@ -41,6 +41,7 @@ typedef struct fn_hero_t fn_hero_t;
 
 #include "fn_tilecache.h"
 #include "fn_actor.h"
+#include "fn_list.h"
 
 /* --------------------------------------------------------------- */
 
@@ -154,9 +155,9 @@ struct fn_hero_t {
   Uint8 immunityduration;
 
   /**
-   * The number of dangerous objects currently hurting the hero.
+   * The dangerous actors currently hurting the hero.
    */
-  Uint8 hurtingobjects;
+  fn_list_t * hurtingactors;
 };
 
 /* --------------------------------------------------------------- */
@@ -399,22 +400,26 @@ Uint64 fn_hero_get_score(fn_hero_t * hero);
 /* --------------------------------------------------------------- */
 
 /**
- * Increase the number of objects which can currently hurt the hero
+ * Increase the number of actors which can currently hurt the hero
  * because he touches them.
  *
- * @param  hero  The hero.
+ * @param  hero   The hero.
+ * @param  actor  The actor.
  */
-void fn_hero_increase_hurting_objects(fn_hero_t * hero);
+void fn_hero_increase_hurting_actors(fn_hero_t * hero,
+    fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
 /**
- * Decrease the number of objects which can currently hurt the hero
+ * Decrease the number of actors which can currently hurt the hero
  * because he touches them.
  *
  * @param  hero  The hero.
+ * @param  actor  The actor.
  */
-void fn_hero_decrease_hurting_objects(fn_hero_t * hero);
+void fn_hero_decrease_hurting_actors(fn_hero_t * hero,
+    fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
