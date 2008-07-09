@@ -735,7 +735,7 @@ void fn_actor_function_tankbot_hero_touch_start(fn_actor_t * actor)
 {
   fn_actor_tankbot_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (!data->was_shot) {
+  if (data->was_shot < 2) {
     fn_hero_increase_hurting_actors(hero, actor);
     data->touching_hero = 1;
   }
@@ -747,7 +747,7 @@ void fn_actor_function_tankbot_hero_touch_end(fn_actor_t * actor)
 {
   fn_actor_tankbot_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (!data->was_shot) {
+  if (data->was_shot < 2) {
     fn_hero_decrease_hurting_actors(hero, actor);
     data->touching_hero = 0;
   }
@@ -801,7 +801,6 @@ void fn_actor_function_tankbot_act(fn_actor_t * actor)
         actor->x += direction * FN_HALFTILE_WIDTH * 0.7;
       } else {
         /* Reached the end, so turn around */
-        /* TODO shoot here */
         data->direction = (
             data->direction == fn_horizontal_direction_left ?
             fn_horizontal_direction_right :
@@ -872,6 +871,239 @@ void fn_actor_function_tankbot_shot(fn_actor_t * actor)
   }
   if (!(data->was_shot == 2)) {
     data->was_shot++;
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
+ * The firewheel bot.
+ */
+typedef struct fn_actor_firewheelbot_data_t {
+  /**
+   * The direction to which the robot moves.
+   */
+  fn_horizontal_direction_e direction;
+  /**
+   * The tile number.
+   */
+  Uint16 tile;
+  /**
+   * The animation counter.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+  /**
+   * A counter counting how often the bot was hit by the hero.
+   * If 0, the bot is healthy. If 1, the bot was hit once and is
+   * damaged (pushes steam clouds out), if 2 the bot is killed.
+   */
+  Uint8 was_shot;
+  /**
+   * A flag indicating if the robot is currently touching the hero.
+   */
+  Uint8 touching_hero;
+  /**
+   * A flag indicating if the robot currently has fire on.
+   */
+  Uint8 fire_is_on;
+  /**
+   * A counter for the number of cycles how long the fire is on.
+   */
+  Uint8 counter;
+} fn_actor_firewheelbot_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_create(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = malloc(
+      sizeof(fn_actor_firewheelbot_data_t));
+  actor->data = data;
+  data->direction = fn_horizontal_direction_left;
+  data->tile = ANIM_FIREWHEEL_OFF;
+  data->current_frame = 0;
+  data->num_frames = 4;
+  data->was_shot = 0;
+  data->touching_hero = 0;
+  data->fire_is_on = 0;
+  data->counter = 0;
+  actor->w = FN_TILE_WIDTH * 2;
+  actor->h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_free(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  fn_hero_decrease_hurting_actors(hero, actor);
+
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_touch_start(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (data->was_shot < 2) {
+    fn_hero_increase_hurting_actors(hero, actor);
+    data->touching_hero = 1;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_touch_end(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (data->was_shot < 2) {
+    fn_hero_decrease_hurting_actors(hero, actor);
+    data->touching_hero = 0;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_act(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  if (data->was_shot == 2) {
+    /* create explosion */
+    actor->is_alive = 0;
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_EXPLOSION, actor->x + FN_HALFTILE_WIDTH,
+        actor->y);
+    fn_level_add_particle_firework(
+        actor->level, actor->x, actor->y, 8);
+    fn_hero_add_score(hero, 2500);
+  } else {
+    data->counter++;
+    if (data->counter % 2) {
+      data->current_frame++;
+      data->current_frame %= data->num_frames;
+    }
+
+    if (data->counter == 50) {
+      data->counter = 0;
+      data->fire_is_on = !(data->fire_is_on);
+      if (data->fire_is_on) {
+        data->tile = ANIM_FIREWHEEL_ON;
+      } else {
+        data->tile = ANIM_FIREWHEEL_OFF;
+      }
+    }
+
+    if (!fn_level_is_solid(actor->level,
+          (actor->x) / FN_TILE_WIDTH,
+          (actor->y) / FN_TILE_HEIGHT + 1) &&
+        !fn_level_is_solid(actor->level,
+          (actor->x) / FN_TILE_WIDTH + 1,
+          (actor->y) / FN_TILE_HEIGHT + 1)) {
+      /* still in the air, so let the robot fall down */
+      actor->y += FN_HALFTILE_HEIGHT;
+    } else {
+      /* on the floor, so let's walk */
+      int direction = (data->direction == fn_horizontal_direction_left ?
+          -1 : 2);
+      if (
+          /* check if the place next to the bot is free */
+          !fn_level_is_solid(actor->level,
+            (actor->x + FN_HALFTILE_WIDTH +
+             direction * FN_HALFTILE_WIDTH) / FN_TILE_WIDTH,
+            (actor->y) / FN_TILE_HEIGHT) &&
+          /* check if it is solid below this place */
+          fn_level_is_solid(actor->level,
+            (actor->x * FN_HALFTILE_WIDTH) / FN_TILE_WIDTH + direction,
+            (actor->y + FN_TILE_HEIGHT) / FN_TILE_HEIGHT + 1))
+      {
+        if (direction > 0) {
+          direction = 1;
+        }
+        actor->x += direction * FN_HALFTILE_WIDTH * 0.5;
+      } else {
+        /* Reached the end, so turn around */
+        data->direction = (
+            data->direction == fn_horizontal_direction_left ?
+            fn_horizontal_direction_right :
+            fn_horizontal_direction_left);
+        if (direction > 0) direction = 1;
+        direction *= -1;
+        actor->x += direction * FN_HALFTILE_WIDTH;
+      }
+      if (data->was_shot == 1) {
+        /* create steam clouds */
+        if (data->current_frame == 0) {
+          fn_level_add_actor(actor->level,
+              FN_ACTOR_STEAM, actor->x + FN_HALFTILE_WIDTH,
+              actor->y - FN_TILE_HEIGHT);
+        }
+      }
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_blit(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = NULL;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame) * 4);
+  destrect.x = actor->x * pixelsize;
+  destrect.y = (actor->y - FN_TILE_HEIGHT) * pixelsize;
+  destrect.w = actor->w * pixelsize;
+  destrect.h = actor->h * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame) * 4 + 1);
+  destrect.x += pixelsize * FN_TILE_WIDTH;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.x -= pixelsize * FN_TILE_WIDTH;
+  destrect.y += pixelsize * FN_TILE_HEIGHT;
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame) * 4 + 2);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  destrect.x += pixelsize * FN_TILE_WIDTH;
+  tile = fn_tilecache_get_tile(tc,
+      data->tile + (data->current_frame) * 4 + 3);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_firewheelbot_shot(fn_actor_t * actor)
+{
+  fn_actor_firewheelbot_data_t * data = actor->data;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+
+  if (!(data->fire_is_on)) {
+    if (data->was_shot == 1 && data->touching_hero) {
+      fn_hero_decrease_hurting_actors(hero, actor);
+      data->touching_hero = 0;
+    }
+    if (!(data->was_shot == 2)) {
+      data->was_shot++;
+    }
   }
 }
 
@@ -5069,15 +5301,22 @@ void
   (fn_actor_t *) =
 {
   [FN_ACTOR_FIREWHEELBOT] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_firewheelbot_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_firewheelbot_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_firewheelbot_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
+      fn_actor_function_firewheelbot_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_firewheelbot_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_firewheelbot_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_firewheelbot_shot,
   },
   [FN_ACTOR_FLAMEGNOMEBOT] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
