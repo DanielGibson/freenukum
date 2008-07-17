@@ -335,6 +335,8 @@ int fn_game_start_in_level(
     SDL_PushEvent(&event);
   }
 
+  Uint8 directions = 0;
+
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
@@ -443,9 +445,14 @@ int fn_game_start_in_level(
                   srcrect.x -= pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
-                fn_hero_set_direction(hero,
-                    fn_horizontal_direction_left);
-                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                directions |= FNK_LEFT_ENABLED;
+                if (directions & FNK_RIGHT_ENABLED) {
+                  fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+                } else {
+                  fn_hero_set_direction(hero,
+                      fn_horizontal_direction_left);
+                  fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                }
                 fn_hero_update_animation(hero);
               }
               doupdate = 1;
@@ -457,9 +464,14 @@ int fn_game_start_in_level(
                   srcrect.x += pixelsize * FN_HALFTILE_WIDTH;
                 }
               } else {
-                fn_hero_set_direction(hero,
-                    fn_horizontal_direction_right);
-                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                directions |= FNK_RIGHT_ENABLED;
+                if (directions & FNK_LEFT_ENABLED) {
+                  fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+                } else {
+                  fn_hero_set_direction(hero,
+                      fn_horizontal_direction_right);
+                  fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+                }
                 fn_hero_update_animation(hero);
               }
               doupdate = 1;
@@ -485,9 +497,26 @@ int fn_game_start_in_level(
               doupdate = 1;
               break;
             case SDLK_LEFT:
-            case SDLK_RIGHT:
-              fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+              directions &= ~FNK_LEFT_ENABLED;
+              if (directions & FNK_RIGHT_ENABLED) {
+                fn_hero_set_direction(hero,
+                    fn_horizontal_direction_right);
+                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+              } else {
+                fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+              }
               fn_hero_update_animation(hero);
+              break;
+            case SDLK_RIGHT:
+              directions &= ~FNK_RIGHT_ENABLED;
+              if (directions & FNK_LEFT_ENABLED) {
+                  fn_hero_set_direction(hero,
+                      fn_horizontal_direction_left);
+                  fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
+              } else {
+                fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
+              }
+              break;
             case SDLK_LALT:
               fn_hero_fire_stop(hero);
               fn_hero_update_animation(hero);
