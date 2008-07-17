@@ -270,19 +270,18 @@ int fn_game_start_in_level(
   {
     fprintf(stderr, "Could not open file %s\n", backdropfile);
     perror("Can't open file");
-    goto cleanup;
+  } else {
+    fn_tileheader_t h;
+    fn_tile_loadheader(fd, &h);
+    backdrop = fn_drop_load(fd,
+        pixelsize,
+        screen->flags,
+        screen->format);
+    if (backdrop == NULL) {
+      printf("could not load backdrop");
+    }
+    close(fd);
   }
-
-  fn_tileheader_t h;
-  fn_tile_loadheader(fd, &h);
-  backdrop = fn_drop_load(fd,
-      pixelsize,
-      screen->flags,
-      screen->format);
-  if (backdrop == NULL) {
-    printf("could not load backdrop");
-  }
-  close(fd);
 
   char levelfile[1024];
   snprintf(levelfile, 1024, "%s/WORLDAL%X.DN%d",
