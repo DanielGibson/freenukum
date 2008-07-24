@@ -3,7 +3,7 @@ svgfile = $(srcdir)/../scalable/freenukum.svg
 freenukum.png: $(svgfile)
 	convert -scale 64x64 -background none $(svgfile) freenukum.png
 
-icondir = $(datadir)/icons/hicolor/16x16/apps
+icondir = $(datadir)/icons/hicolor/64x64/apps
 icon_DATA = freenukum.png
 
 clean:
