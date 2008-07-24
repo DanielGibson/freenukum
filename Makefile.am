@@ -1,5 +1,6 @@
 SUBDIRS = \
-					src
+					src \
+					data
 
 man6_MANS = doc/freenukum.6
 

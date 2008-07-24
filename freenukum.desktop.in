@@ -2,6 +2,7 @@
 Version=@PACKAGE_VERSION@
 Name=@PACKAGE_NAME@
 Type=Application
+Icon=freenukum
 Comment=Clone of the original Duke Nukum 1 Jump'n Run game
 Exec=freenukum
 TryExec=freenukum
