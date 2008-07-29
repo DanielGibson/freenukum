@@ -36,6 +36,7 @@
 
 /* --------------------------------------------------------------- */
 
+#include "config.h"
 #include "fn.h"
 #include "fn_msgbox.h"
 #include "fn_tilecache.h"

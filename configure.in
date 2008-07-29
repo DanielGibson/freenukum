@@ -1,23 +1,58 @@
 AC_INIT(Freenukum, 0.2.9, http://launchpad.net/freenukum/)
 AM_INIT_AUTOMAKE(freenukum, 0.2.9)
 
+dnl #
+dnl # Compile testprograms?
+dnl #
 AC_ARG_ENABLE(testprograms,
-    [  --enable-testprograms   Compile the test programs],
-    [BUILD_TESTPROGRAMS="yes"])
+      [  --enable-testprograms   Compile the test programs],
+      enable_testprograms=$enableval, enable_testprograms=no)
 
-AM_CONDITIONAL(TESTPROGRAMS, test x"$BUILD_TESTPROGRAMS" = xyes)
+AM_CONDITIONAL(TESTPROGRAMS, test x"$enable_testprograms" = xyes)
+
+dnl #
+dnl # Check for sdl-ttf if it's specified
+dnl #
+AC_ARG_ENABLE(sdlttf,
+      [  --enable-sdl-ttf=[yes,no]  Check for SDL-TTF library],
+      [ enable_sdlttf="$enableval" ],
+      [ enable_sdlttf="yes" ])
+if test "x$enable_sdlttf" = "xyes"; then
+  AC_CHECK_HEADERS(SDL/SDL_ttf.h,
+      [ sdlttf_headers="yes" ],
+      [ sdlttf_headers="no" ])
+  AC_CHECK_LIB(SDL_ttf,
+      TTF_OpenFont,
+      [ sdlttf_lib="yes" ],
+      [ sdlttf_lib="no" ])
+  if test "x$sdlttf_headers" = "xyes" -a "x$sdlttf_lib" = "xyes"; then
+    have_sdlttf="yes"
+  else
+    have_sdlttf="no"
+  fi
+fi
+
 
 AC_PROG_CC
 
 AC_CONFIG_SRCDIR(src)
 
-AC_PATH_PROG(SDLCONFIG, sdl-config, yes)
+AC_CHECK_PROG([sdlconfig], [sdl-config], "yes", "no")
+
+if test "x$sdlconfig" != "xyes"; then
+  AC_MSG_ERROR([
+      The sdl-config program was not found.
+      You have to install the sdl development package.
+      ])
+fi
 
 AC_CHECK_PROG(CONVERT, convert, "yes", "no", [$PATH])
 AM_CONDITIONAL(CREATEICONS, test x"$CONVERT" = xyes)
 
 CFLAGS="$CFLAGS -Wall -Werror "`sdl-config --cflags`
 LDFLAGS="$LDFLAGS "`sdl-config --libs`
+
+AC_CONFIG_HEADER(src/config.h)
 
 AC_OUTPUT([Makefile
            src/Makefile 
@@ -36,3 +71,10 @@ AC_OUTPUT([Makefile
            data/icons/256x256/Makefile
            data/icons/scalable/Makefile
            ])
+
+echo
+echo Build testing programs............ : $enable_testprograms
+echo Use SDL ttf library............... : $have_sdlttf
+echo
+echo configure complete, now type \'make\'
+echo
