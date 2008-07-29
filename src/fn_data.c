@@ -67,9 +67,12 @@ int fn_data_try_to_get_file(char * filename)
         close(fd);
       }
 
-    } if (filename[i] == '/') {
+    }
+    if (filename[i] == '/') {
+      /* output disabled because it confuses users
       fn_error_printf(1024 * 2, "File %s not found.",
           filename);
+          */
       return -1;
     }
   }

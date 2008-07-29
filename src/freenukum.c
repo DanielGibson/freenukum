@@ -26,6 +26,10 @@
  *
  *******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include <SDL.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -34,9 +38,12 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_SDL_SDL_TTF_H
+#include <SDL/SDL_ttf.h>
+#endif /* HAVE_SDL_SDL_TTF_H */
+
 /* --------------------------------------------------------------- */
 
-#include "config.h"
 #include "fn.h"
 #include "fn_msgbox.h"
 #include "fn_tilecache.h"
@@ -48,6 +55,57 @@
 #include "fn_settings.h"
 #include "fn_game.h"
 #include "fn_data.h"
+
+/* --------------------------------------------------------------- */
+
+#ifdef HAVE_SDL_SDL_TTF_H
+TTF_Font * loadfont(pixelsize)
+{
+  TTF_Font * font = NULL;
+  /* TODO read from more paths */
+  font = TTF_OpenFont("/usr/share/fonts/truetype/linux-libertine/"
+      "LinLibertine_Re.ttf", 10 * pixelsize);
+  if (!font) {
+    printf("TTF_OpenFont: %s\n", TTF_GetError());
+  }
+  return font;
+}
+
+void texttoscreen(SDL_Surface * screen,
+    TTF_Font * font,
+    char * message)
+{
+  SDL_Rect destrect;
+  destrect.x = 0;
+  destrect.y = 0;
+  SDL_Color color = { 255, 255, 255 };
+  SDL_Surface * text = NULL;
+
+  char * iter = message;
+  char * end = message + strlen(message);
+  while (iter < end) {
+    char * linebreak = strchr(iter, '\n');
+    if (linebreak == NULL) {
+      /* last line */
+      if (strlen(iter) > 0) {
+        text = TTF_RenderText_Solid(font, iter, color);
+        SDL_BlitSurface(text, NULL, screen, &destrect);
+        SDL_FreeSurface(text);
+      }
+      iter = end;
+    } else {
+      /* line in between */
+      *linebreak = 0;
+      text = TTF_RenderText_Solid(font, iter, color);
+      SDL_BlitSurface(text, NULL, screen, &destrect);
+      destrect.y += text->h;
+      SDL_FreeSurface(text);
+      *linebreak = '\n';
+      iter = linebreak + 1;
+    }
+  }
+}
+#endif /* HAVE_SDL_SDL_TTF_H */
 
 /* --------------------------------------------------------------- */
 
@@ -172,7 +230,30 @@ int main(int argc, char ** argv)
     res = fn_data_check(datapath, episodes + 1);
     if (res == -1 && episodes == 0) {
       /* we found zero episodes */
-      printf("Could not load any episode.\n");
+      char message[1024];
+      snprintf(message, 1024,
+          "Could not load data files.\n"
+          "You can download the shareware episode for free from\n"
+          "http://www.3drealms.com/duke1/\n"
+          "Copy the data files to\n"
+          "%s",
+          datapath);
+      printf("%s\n", message);
+#ifdef HAVE_SDL_SDL_TTF_H
+      TTF_Font * font = NULL;
+      if (TTF_Init() != -1) {
+        font = loadfont(pixelsize);
+      }
+      if (font) {
+        texttoscreen(screen, font, message);
+
+        SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+        /* TODO replace this by key input */
+        usleep(5000000);
+        TTF_CloseFont(font);
+        font = NULL;
+      }
+#endif
       goto data_check_failed;
     } else if (res != -1) {
       /* we found the currently requested episode */
@@ -192,7 +273,7 @@ int main(int argc, char ** argv)
     fn_error_printf(1024, "Could not load tiles.\n"
         "Copy the original game files to %s.\n"
         "They can be downloaded free of charge from\n"
-        "http://www.3drealms.com/duke1/index.html" , datapath);
+        "http://www.3drealms.com/duke1/", datapath);
     /* TODO show text in screen maybe? */
     goto tilecache_failed;
   }

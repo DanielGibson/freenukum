@@ -27,6 +27,7 @@ if test "x$enable_sdlttf" = "xyes"; then
       [ sdlttf_lib="no" ])
   if test "x$sdlttf_headers" = "xyes" -a "x$sdlttf_lib" = "xyes"; then
     have_sdlttf="yes"
+    LDFLAGS="$LDFLAGS -lSDL_ttf"
   else
     have_sdlttf="no"
   fi
