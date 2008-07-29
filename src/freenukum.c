@@ -71,6 +71,8 @@ TTF_Font * loadfont(pixelsize)
   return font;
 }
 
+/* --------------------------------------------------------------- */
+
 void texttoscreen(SDL_Surface * screen,
     TTF_Font * font,
     char * message)
