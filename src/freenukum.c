@@ -38,9 +38,17 @@
 #include <string.h>
 #include <sys/stat.h>
 
+
 #ifdef HAVE_SDL_SDL_TTF_H
 #include <SDL/SDL_ttf.h>
+
+#ifdef HAVE_LIBCURL
+#define HAVE_AUTOMATIC_DOWNLOAD 1
+#include <curl/curl.h>
+#endif
+
 #endif /* HAVE_SDL_SDL_TTF_H */
+
 
 /* --------------------------------------------------------------- */
 
@@ -82,6 +90,7 @@ void texttoscreen(SDL_Surface * screen,
   destrect.y = 0;
   SDL_Color color = { 255, 255, 255 };
   SDL_Surface * text = NULL;
+  int textheight = 0;
 
   char * iter = message;
   char * end = message + strlen(message);
@@ -98,10 +107,13 @@ void texttoscreen(SDL_Surface * screen,
     } else {
       /* line in between */
       *linebreak = 0;
-      text = TTF_RenderText_Solid(font, iter, color);
-      SDL_BlitSurface(text, NULL, screen, &destrect);
-      destrect.y += text->h;
-      SDL_FreeSurface(text);
+      if (strlen(iter) > 0) {
+        text = TTF_RenderText_Solid(font, iter, color);
+        textheight = text->h;
+        SDL_BlitSurface(text, NULL, screen, &destrect);
+        SDL_FreeSurface(text);
+      }
+      destrect.y += textheight;
       *linebreak = '\n';
       iter = linebreak + 1;
     }
@@ -231,15 +243,36 @@ int main(int argc, char ** argv)
   while (res != -1) {
     res = fn_data_check(datapath, episodes + 1);
     if (res == -1 && episodes == 0) {
-      /* we found zero episodes */
+      /* we found no episodes */
+      int can_download = 0;
+      char downloadinfo[1024] = "";
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
+      /*
+       * TODO check if dosbox is installed before setting can_download
+       */
+      can_download = 1;
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
+      if (can_download) {
+        snprintf(downloadinfo, 1024,
+            "\n"
+            "I can try to download the files automatically.\n"
+            "Press 'd' to try automatic download.\n"
+            "Press any other key to close this window.");
+      } else {
+        snprintf(downloadinfo, 1024,
+            "\n"
+            "Press any key to close this window.");
+      }
       char message[1024];
       snprintf(message, 1024,
           "Could not load data files.\n"
           "You can download the shareware episode for free from\n"
           "http://www.3drealms.com/duke1/\n"
           "Copy the data files to\n"
-          "%s",
-          datapath);
+          "%s\n"
+          "%s\n",
+          datapath,
+          downloadinfo);
       printf("%s\n", message);
 #ifdef HAVE_SDL_SDL_TTF_H
       TTF_Font * font = NULL;

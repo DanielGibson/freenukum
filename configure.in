@@ -33,9 +33,14 @@ if test "x$enable_sdlttf" = "xyes"; then
   fi
 fi
 
+dnl #
+dnl # Check for libcurl
+dnl #
 LIBCURL_CHECK_CONFIG(curl,,
                      [have_curl="yes"],
                      [have_curl="no"])
+
+dnl #---------------------------------------------------------------
 
 AC_PROG_CC
 
