@@ -33,6 +33,9 @@ if test "x$enable_sdlttf" = "xyes"; then
   fi
 fi
 
+LIBCURL_CHECK_CONFIG(curl,,
+                     [have_curl="yes"],
+                     [have_curl="no"])
 
 AC_PROG_CC
 
@@ -71,11 +74,26 @@ AC_OUTPUT([Makefile
            data/icons/128x128/Makefile
            data/icons/256x256/Makefile
            data/icons/scalable/Makefile
+           m4/Makefile
            ])
 
 echo
 echo Build testing programs............ : $enable_testprograms
 echo Use SDL ttf library............... : $have_sdlttf
+echo Use libcurl....................... : $have_curl
+if test "x$have_sdlttf" != "xyes"; then
+  echo
+  echo Freenukum can display messages about missing data
+  echo files in its display window instead of the command-line.
+  echo You need to install libSDL-ttf for that feature.
+fi
+if test "x$have_sdlttf" != "xyes" -o "x$have_curl" != "xyes"; then
+  echo
+  echo Freenukum can automatically download the game data
+  echo if none is installed. You need to install the libSDL-ttf
+  echo as well as libcurl for that feature.
+fi
 echo
 echo configure complete, now type \'make\'
 echo
+
