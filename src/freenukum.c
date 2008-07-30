@@ -68,16 +68,65 @@
 
 /* --------------------------------------------------------------- */
 
+char * font_base_directories[] = {
+  "/usr/share/fonts",
+  "/usr/share/fonts/truetype",
+  "/usr/local/share/fonts",
+  "/usr/local/share/fonts/truetype",
+  "/usr/share/fonts/TTF",
+  0
+};
+
+char * fonts[] = {
+  "/DejaVuSans.ttf",
+  "/DejavuSerif.ttf",
+  "/linux-libertine/LinLibertine.ttf",
+  "/linux-libertine/LinLibertine_Re.ttf",
+  "/freefont/FreeMono.ttf",
+  "/freefont/FreeSans.ttf",
+  "/freefont/FreeSerif.ttf",
+  "/dustin/Balker.ttf",
+  "/dustin/Dustismo.ttf",
+  "/kochi/kochi-gothic.ttf",
+  "/kochi/kochi-mincho.ttf",
+  "/msttcorefonts/arial.ttf",
+  "/msttcorefonts/Arial.ttf",
+  "/msttcorefonts/Arial_Black.ttf",
+  "/msttcorefonts/times.ttf",
+  "/msttcorefonts/verdana.ttf",
+  "/ttf-bitstream-vera/Vera.ttf",
+  "/ttf-dejavu/DejaVuSans.ttf",
+  "/ttf-dejavu/DejaVuSansMono.ttf",
+  "/unfonts/UnBatang.ttf",
+  "/unfonts/UnDotum.ttf",
+  0
+};
+
+/* --------------------------------------------------------------- */
+
 #ifdef HAVE_SDL_SDL_TTF_H
 TTF_Font * loadfont(fontsize)
 {
   TTF_Font * font = NULL;
-  /* TODO read from more paths */
-  font = TTF_OpenFont("/usr/share/fonts/truetype/linux-libertine/"
-      "LinLibertine_Re.ttf", fontsize);
-  if (!font) {
-    printf("TTF_OpenFont: %s\n", TTF_GetError());
+  char path[256] = "";
+
+  int i = 0;
+  int j = 0;
+  while (fonts[i] != 0) {
+    while (font_base_directories[j] != 0) {
+      snprintf(path, 256, "%s%s",
+          font_base_directories[j], fonts[i]);
+      font = TTF_OpenFont(path, fontsize);
+      if (font) {
+        return font;
+      }
+      j++;
+    }
+    i++;
+    j=0;
   }
+
+  printf("Could not find any font.");
   return font;
 }
 #endif /* HAVE_SDL_SDL_TTF_H */
