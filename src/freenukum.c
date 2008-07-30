@@ -322,7 +322,7 @@ int main(int argc, char ** argv)
           }
         }
 #ifdef HAVE_AUTOMATIC_DOWNLOAD
-        if (input == 'd') {
+        if (can_download && input == 'd') {
           succeeded =
             fn_data_download(screen, font, fontsize, datapath);
 
