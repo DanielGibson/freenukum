@@ -544,6 +544,38 @@ int fn_data_download(
     return 0;
   }
 
+  snprintf(message, 1024,
+      "Download complete. I will start the installation\n"
+      "routine in a new window. Press ENTER until the\n"
+      "installation is complete.\n"
+      "Press ENTER to continue.\n");
+  destrect.y += 2 * fontheight;
+  fn_data_display_text(screen, 0, destrect.y, font,
+      message);
+  SDL_UpdateRect(screen,
+      0, 0, screen->w, screen->h);
+  SDL_Event event;
+  char input = 0;
+  while (input == 0) {
+    res = SDL_WaitEvent(&event);
+    if (res == 1) {
+      switch(event.type) {
+        case SDL_KEYDOWN:
+          switch(event.key.keysym.sym) {
+            case SDLK_RETURN:
+              input = 'c';
+              break;
+            default:
+              /* do nothing */
+              break;
+          }
+        default:
+          /* do nothing on other events */
+          break;
+      }
+    }
+  }
+
   int install_ok = fn_data_install(temppath,
       datapath);
   if (install_ok) {
