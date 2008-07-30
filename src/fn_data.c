@@ -355,6 +355,8 @@ int fn_data_download(
       0);
   curl_easy_setopt(curl, CURLOPT_NOSIGNAL,
       0);
+  curl_easy_setopt(curl, CURLOPT_FTP_USE_EPSV,
+      0);
   Uint32 black = SDL_MapRGB(screen->format, 0, 0, 0);
   SDL_FillRect(screen, NULL, black);
   char message[255] = "";
