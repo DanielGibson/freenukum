@@ -1,23 +1,82 @@
 AC_INIT(Freenukum, 0.2.9, http://launchpad.net/freenukum/)
 AM_INIT_AUTOMAKE(freenukum, 0.2.9)
 
+dnl #
+dnl # Compile testprograms?
+dnl #
 AC_ARG_ENABLE(testprograms,
-    [  --enable-testprograms   Compile the test programs],
-    [BUILD_TESTPROGRAMS="yes"])
+      [  --enable-testprograms   Compile the test programs],
+      enable_testprograms=$enableval, enable_testprograms=no)
 
-AM_CONDITIONAL(TESTPROGRAMS, test x"$BUILD_TESTPROGRAMS" = xyes)
+AM_CONDITIONAL(TESTPROGRAMS, test x"$enable_testprograms" = xyes)
+
+dnl #
+dnl # Check for sdl-ttf if it's specified
+dnl #
+AC_ARG_ENABLE(sdlttf,
+      [  --enable-sdl-ttf=[yes,no]  Check for SDL-TTF library],
+      [ enable_sdlttf="$enableval" ],
+      [ enable_sdlttf="yes" ])
+if test "x$enable_sdlttf" = "xyes"; then
+  AC_CHECK_HEADERS(SDL/SDL_ttf.h,
+      [ sdlttf_headers="yes" ],
+      [ sdlttf_headers="no" ])
+  AC_CHECK_LIB(SDL_ttf,
+      TTF_OpenFont,
+      [ sdlttf_lib="yes" ],
+      [ sdlttf_lib="no" ])
+  if test "x$sdlttf_headers" = "xyes" -a "x$sdlttf_lib" = "xyes"; then
+    have_sdlttf="yes"
+    LDFLAGS="$LDFLAGS -lSDL_ttf"
+  else
+    have_sdlttf="no"
+  fi
+fi
+
+dnl #
+dnl # Check for libcurl
+dnl #
+LIBCURL_CHECK_CONFIG(curl,,
+                     [have_curl="yes"],
+                     [have_curl="no"])
+if test "x$have_curl" = "xyes"; then
+  LDFLAGS="$LDFLAGS $LIBCURL"
+fi
+
+dnl #
+dnl # Check for libzip
+dnl #
+PKG_CHECK_MODULES(LIBZIP, libzip,
+                   [have_libzip="yes"],
+                   [have_libzip="no"])
+if test "x$have_libzip" = "xyes"; then
+  AC_DEFINE([HAVE_LIBZIP], [1], [Define to 1 if libzip is available])
+  CFLAGS="$CFLAGS $LIBZIP_CFLAGS"
+  LDFLAGS="$LDFLAGS $LIBZIP_LIBS"
+fi
+
+dnl #---------------------------------------------------------------
 
 AC_PROG_CC
 
 AC_CONFIG_SRCDIR(src)
 
-AC_PATH_PROG(SDLCONFIG, sdl-config, yes)
+AC_CHECK_PROG([sdlconfig], [sdl-config], "yes", "no")
+
+if test "x$sdlconfig" != "xyes"; then
+  AC_MSG_ERROR([
+      The sdl-config program was not found.
+      You have to install the sdl development package.
+      ])
+fi
 
 AC_CHECK_PROG(CONVERT, convert, "yes", "no", [$PATH])
 AM_CONDITIONAL(CREATEICONS, test x"$CONVERT" = xyes)
 
 CFLAGS="$CFLAGS -Wall -Werror "`sdl-config --cflags`
 LDFLAGS="$LDFLAGS "`sdl-config --libs`
+
+AC_CONFIG_HEADER(src/config.h)
 
 AC_OUTPUT([Makefile
            src/Makefile 
@@ -35,4 +94,28 @@ AC_OUTPUT([Makefile
            data/icons/128x128/Makefile
            data/icons/256x256/Makefile
            data/icons/scalable/Makefile
+           m4/Makefile
            ])
+
+echo
+echo Build testing programs............ : $enable_testprograms
+echo Use SDL ttf library............... : $have_sdlttf
+echo Use libcurl....................... : $have_curl
+echo Use libzip........................ : $have_libzip
+if test "x$have_sdlttf" != "xyes"; then
+  echo
+  echo Freenukum can display messages about missing data
+  echo files in its display window instead of the command-line.
+  echo You need to install libSDL-ttf for that feature.
+fi
+if test "x$have_sdlttf" != "xyes" -o "x$have_curl" != "xyes" -o \
+  "x$have_libzip" != "xyes"; then
+  echo
+  echo Freenukum can automatically download the game data
+  echo if none is installed. You need to install the libSDL-ttf
+  echo as well as libcurl and libzip for that feature.
+fi
+echo
+echo configure complete, now type \'make\'
+echo
+

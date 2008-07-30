@@ -26,6 +26,20 @@
  *
  *******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#ifdef HAVE_SDL_SDL_TTF_H
+#ifdef HAVE_LIBCURL
+#ifdef HAVE_LIBZIP
+#define HAVE_AUTOMATIC_DOWNLOAD 1
+#endif /* HAVE_LIBZIP */
+#endif /* HAVE_LIBCURL */
+#endif /* HAVE_SDL_SDL_TTF_H */
+
+/* --------------------------------------------------------------- */
+
 #include <SDL.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -33,6 +47,10 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
+
+#ifdef HAVE_SDL_SDL_TTF_H
+#include <SDL/SDL_ttf.h>
+#endif /* HAVE_SDL_SDL_TTF_H */
 
 /* --------------------------------------------------------------- */
 
@@ -47,6 +65,22 @@
 #include "fn_settings.h"
 #include "fn_game.h"
 #include "fn_data.h"
+
+/* --------------------------------------------------------------- */
+
+#ifdef HAVE_SDL_SDL_TTF_H
+TTF_Font * loadfont(fontsize)
+{
+  TTF_Font * font = NULL;
+  /* TODO read from more paths */
+  font = TTF_OpenFont("/usr/share/fonts/truetype/linux-libertine/"
+      "LinLibertine_Re.ttf", fontsize);
+  if (!font) {
+    printf("TTF_OpenFont: %s\n", TTF_GetError());
+  }
+  return font;
+}
+#endif /* HAVE_SDL_SDL_TTF_H */
 
 /* --------------------------------------------------------------- */
 
@@ -170,9 +204,121 @@ int main(int argc, char ** argv)
   while (res != -1) {
     res = fn_data_check(datapath, episodes + 1);
     if (res == -1 && episodes == 0) {
-      /* we found zero episodes */
-      printf("Could not load any episode.\n");
-      goto data_check_failed;
+      /* we found no episodes */
+      int succeeded = 0;
+      int can_download = fn_data_download_possible();
+      char downloadinfo[1024] = "";
+      if (can_download) {
+        snprintf(downloadinfo, 1024,
+            "\n"
+            "I can try to download the files automatically.\n"
+            "\n"
+            "Press ENTER for automatic download\n"
+            "Press ESCAPE to abort.");
+      } else {
+        snprintf(downloadinfo, 1024,
+            "\n"
+            "Press any key to close this window.");
+      }
+      char message_cmdline[1024];
+      char message_screen[1024];
+      snprintf(message_cmdline, 1024,
+          "Could not load data level and graphics files.\n"
+          "You can download the shareware episode for free from\n"
+          "http://www.3drealms.com/duke1/\n"
+          "Copy the data files to\n"
+          "%s\n", datapath);
+      snprintf(message_screen, 1024,
+          "%s\n"
+          "%s\n",
+          message_cmdline,
+          downloadinfo);
+      printf("%s\n", message_cmdline);
+#ifdef HAVE_SDL_SDL_TTF_H
+      TTF_Font * font = NULL;
+      int fontsize = 10 * pixelsize;
+      if (TTF_Init() != -1) {
+        font = loadfont(fontsize);
+      }
+      if (font) {
+        fn_data_display_text(screen, 0, 0, font, message_screen);
+        SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+
+        SDL_Event event;
+
+        char input = 0;
+        while (input == 0) {
+          res = SDL_WaitEvent(&event);
+          if (res == 1) {
+            switch(event.type) {
+              case SDL_QUIT:
+                input = 'q';
+                break;
+              case SDL_KEYDOWN:
+                switch(event.key.keysym.sym) {
+                  case SDLK_RETURN:
+                    input = 'd';
+                    break;
+                  case SDLK_ESCAPE:
+                    input = 'q';
+                    break;
+                  default:
+                    /* do nothing */
+                    break;
+                }
+              default:
+                /* do nothing on other events */
+                break;
+            }
+          }
+        }
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
+        if (input == 'd') {
+          succeeded =
+            fn_data_download(screen, font, fontsize, datapath);
+
+          if (!succeeded) {
+            input = 0;
+            Uint32 black = SDL_MapRGB(screen->format, 0, 0, 0);
+            SDL_FillRect(screen, NULL, black);
+            fn_data_display_text(screen, 0, 0, font,
+                "Download failed. Press ESCAPE to quit.");
+            SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+            
+            while (input == 0) {
+              res = SDL_WaitEvent(&event);
+              if (res == 1) {
+                switch(event.type) {
+                  case SDL_QUIT:
+                    input = 'q';
+                    break;
+                  case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym) {
+                      case SDLK_ESCAPE:
+                        input = 'q';
+                        break;
+                      default:
+                        /* do nothing */
+                        break;
+                    }
+                  default:
+                    /* do nothing on other events */
+                    break;
+                }
+              }
+            }
+          }
+
+          res = 0;
+        }
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
+        TTF_CloseFont(font);
+        font = NULL;
+      }
+#endif
+      if (!succeeded) {
+        goto data_check_failed;
+      }
     } else if (res != -1) {
       /* we found the currently requested episode */
       episodes++;
@@ -191,7 +337,7 @@ int main(int argc, char ** argv)
     fn_error_printf(1024, "Could not load tiles.\n"
         "Copy the original game files to %s.\n"
         "They can be downloaded free of charge from\n"
-        "http://www.3drealms.com/duke1/index.html" , datapath);
+        "http://www.3drealms.com/duke1/", datapath);
     /* TODO show text in screen maybe? */
     goto tilecache_failed;
   }

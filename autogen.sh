@@ -8,4 +8,7 @@ do
   fi
 done
 
+aclocal -I m4 --force
+automake --foreign --add-missing
 autoreconf --force --install
+

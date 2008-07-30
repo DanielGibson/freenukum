@@ -1,6 +1,9 @@
 SUBDIRS = \
 					src \
-					data
+					data \
+					m4
+
+ACLOCAL_AMFLAGS = -I m4
 
 man6_MANS = doc/freenukum.6
 
