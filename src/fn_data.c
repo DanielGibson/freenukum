@@ -547,7 +547,9 @@ int fn_data_download(
   snprintf(message, 1024,
       "Download complete. I will start the installation\n"
       "routine in a new window. Press ENTER until the\n"
-      "installation is complete.\n"
+      "installation is complete. Do not change any of the\n"
+      "input values, otherwise the installation will fail.\n"
+      "\n"
       "Press ENTER to continue.\n");
   destrect.y += 2 * fontheight;
   fn_data_display_text(screen, 0, destrect.y, font,
