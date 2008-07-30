@@ -29,6 +29,8 @@
 #ifndef FN_DATA_H
 #define FN_DATA_H
 
+#include <SDL.h>
+
 /* --------------------------------------------------------------- */
 
 /**
@@ -38,6 +40,26 @@
  * @param  episodenum  The number of the episode.
  */
 int fn_data_check(char * path, int episodenum);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if automatic download of shareware episode is possible
+ *
+ * @return  1 if it is possible, otherwise 0.
+ */
+int fn_data_download_possible(void);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Automatically download of shareware episode.
+ *
+ * @param  screen  The screen on which to show the download progress.
+ *
+ * @return 1 on success, 0 on failure.
+ */
+int fn_data_download(SDL_Surface * screen);
 
 /* --------------------------------------------------------------- */
 

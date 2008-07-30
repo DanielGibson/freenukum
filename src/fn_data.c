@@ -26,11 +26,18 @@
  *
  *******************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+/* --------------------------------------------------------------- */
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 /* --------------------------------------------------------------- */
 
@@ -158,4 +165,30 @@ int fn_data_check(char * dir, int episodenum)
 }
 
 /* --------------------------------------------------------------- */
+
+int fn_data_download_possible(void)
+{
+#ifndef HAVE_AUTOMATIC_DOWNLOAD
+  return 0;
+#else /* HAVE_AUTOMATIC_DOWNLOAD */
+#ifdef WIN32
+  /* we can run dos executables on win32 */
+  return 1;
+#else /* WIN32 */
+  int dosbox_successful = system("dosbox --version");
+  printf("dosbox_successful: %d\n", dosbox_successful);
+  return dosbox_successful == 0;
+#endif /* WIN32 */
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
+}
+
 /* --------------------------------------------------------------- */
+
+int fn_data_download(SDL_Surface * screen)
+{
+  printf("Attempt to download data files.\n");
+  return 0;
+}
+
+/* --------------------------------------------------------------- */
+

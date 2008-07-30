@@ -30,6 +30,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+/* --------------------------------------------------------------- */
+
 #include <SDL.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -38,17 +40,13 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
+#include <curl/curl.h>
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
 
 #ifdef HAVE_SDL_SDL_TTF_H
 #include <SDL/SDL_ttf.h>
-
-#ifdef HAVE_LIBCURL
-#define HAVE_AUTOMATIC_DOWNLOAD 1
-#include <curl/curl.h>
-#endif
-
 #endif /* HAVE_SDL_SDL_TTF_H */
-
 
 /* --------------------------------------------------------------- */
 
@@ -244,14 +242,9 @@ int main(int argc, char ** argv)
     res = fn_data_check(datapath, episodes + 1);
     if (res == -1 && episodes == 0) {
       /* we found no episodes */
-      int can_download = 0;
+      int succeeded = 0;
+      int can_download = fn_data_download_possible();
       char downloadinfo[1024] = "";
-#ifdef HAVE_AUTOMATIC_DOWNLOAD
-      /*
-       * TODO check if dosbox is installed before setting can_download
-       */
-      can_download = 1;
-#endif /* HAVE_AUTOMATIC_DOWNLOAD */
       if (can_download) {
         snprintf(downloadinfo, 1024,
             "\n"
@@ -263,33 +256,68 @@ int main(int argc, char ** argv)
             "\n"
             "Press any key to close this window.");
       }
-      char message[1024];
-      snprintf(message, 1024,
+      char message_cmdline[1024];
+      char message_screen[1024];
+      snprintf(message_cmdline, 1024,
           "Could not load data files.\n"
           "You can download the shareware episode for free from\n"
           "http://www.3drealms.com/duke1/\n"
           "Copy the data files to\n"
+          "%s\n", datapath);
+      snprintf(message_screen, 1024,
           "%s\n"
           "%s\n",
-          datapath,
+          message_cmdline,
           downloadinfo);
-      printf("%s\n", message);
+      printf("%s\n", message_cmdline);
 #ifdef HAVE_SDL_SDL_TTF_H
       TTF_Font * font = NULL;
       if (TTF_Init() != -1) {
         font = loadfont(pixelsize);
       }
       if (font) {
-        texttoscreen(screen, font, message);
-
+        texttoscreen(screen, font, message_screen);
         SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
-        /* TODO replace this by key input */
-        usleep(5000000);
+
+        SDL_Event event;
+
+        char input = 0;
+        while (input == 0) {
+          res = SDL_WaitEvent(&event);
+          if (res == 1) {
+            switch(event.type) {
+              case SDL_QUIT:
+                input = 'q';
+                break;
+              case SDL_KEYDOWN:
+                switch(event.key.keysym.sym) {
+                  case SDLK_d:
+                    input = 'd';
+                    break;
+                  default:
+                    input = 'q';
+                    break;
+                }
+              default:
+                /* do nothing on other events */
+                break;
+            }
+          }
+        }
+
+        if (input == 'd') {
+          succeeded = fn_data_download(screen);
+          res = 0;
+        } else {
+          succeeded = 0;
+        }
         TTF_CloseFont(font);
         font = NULL;
       }
 #endif
-      goto data_check_failed;
+      if (!succeeded) {
+        goto data_check_failed;
+      }
     } else if (res != -1) {
       /* we found the currently requested episode */
       episodes++;
