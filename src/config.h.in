@@ -110,11 +110,3 @@
 
 /* Define curl_free() as free() if our version of curl lacks curl_free. */
 #undef curl_free
-
-/* Define if it is possible to automatically download the shareware
- * episode. */
-#ifdef HAVE_SDL_SDL_TTF_H
-#ifdef HAVE_LIBCURL
-#define HAVE_AUTOMATIC_DOWNLOAD 1
-#endif /* HAVE_LIBCURL */
-#endif /* HAVE_SDL_SDL_TTF_H */

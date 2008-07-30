@@ -39,6 +39,9 @@ dnl #
 LIBCURL_CHECK_CONFIG(curl,,
                      [have_curl="yes"],
                      [have_curl="no"])
+if test "x$have_curl" = "xyes"; then
+  LDFLAGS="$LDFLAGS $LIBCURL"
+fi
 
 dnl #---------------------------------------------------------------
 

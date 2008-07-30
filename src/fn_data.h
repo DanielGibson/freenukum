@@ -29,6 +29,10 @@
 #ifndef FN_DATA_H
 #define FN_DATA_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include <SDL.h>
 
 /* --------------------------------------------------------------- */
@@ -55,13 +59,29 @@ int fn_data_download_possible(void);
 /**
  * Automatically download of shareware episode.
  *
- * @param  screen  The screen on which to show the download progress.
+ * @param  screen    The screen on which to show the download progress.
+ * @param  font      The font which is used for progress display.
+ * @param  fontheight  The height of the font.
+ * @param  datapath  The path to which the episode should be stored.
  *
  * @return 1 on success, 0 on failure.
  */
-int fn_data_download(SDL_Surface * screen);
+int fn_data_download(
+    SDL_Surface * screen,
+    TTF_Font * font,
+    int fontheight,
+    char * datapath);
 
 /* --------------------------------------------------------------- */
+
+#ifdef HAVE_SDL_SDL_TTF_H
+void fn_data_display_text(
+    SDL_Surface * screen,
+    int x,
+    int y,
+    TTF_Font * font,
+    char * message);
+#endif /* HAVE_SDL_SDL_TTF_H */
 
 #endif /* FN_DATA_H */
 

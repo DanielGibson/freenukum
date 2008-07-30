@@ -30,6 +30,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#ifdef HAVE_SDL_SDL_TTF_H
+#ifdef HAVE_LIBCURL
+#define HAVE_AUTOMATIC_DOWNLOAD 1
+#endif /* HAVE_LIBCURL */
+#endif /* HAVE_SDL_SDL_TTF_H */
+
 /* --------------------------------------------------------------- */
 
 #include <SDL.h>
@@ -39,10 +45,6 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
-
-#ifdef HAVE_AUTOMATIC_DOWNLOAD
-#include <curl/curl.h>
-#endif /* HAVE_AUTOMATIC_DOWNLOAD */
 
 #ifdef HAVE_SDL_SDL_TTF_H
 #include <SDL/SDL_ttf.h>
@@ -65,57 +67,16 @@
 /* --------------------------------------------------------------- */
 
 #ifdef HAVE_SDL_SDL_TTF_H
-TTF_Font * loadfont(pixelsize)
+TTF_Font * loadfont(fontsize)
 {
   TTF_Font * font = NULL;
   /* TODO read from more paths */
   font = TTF_OpenFont("/usr/share/fonts/truetype/linux-libertine/"
-      "LinLibertine_Re.ttf", 10 * pixelsize);
+      "LinLibertine_Re.ttf", fontsize);
   if (!font) {
     printf("TTF_OpenFont: %s\n", TTF_GetError());
   }
   return font;
-}
-
-/* --------------------------------------------------------------- */
-
-void texttoscreen(SDL_Surface * screen,
-    TTF_Font * font,
-    char * message)
-{
-  SDL_Rect destrect;
-  destrect.x = 0;
-  destrect.y = 0;
-  SDL_Color color = { 255, 255, 255 };
-  SDL_Surface * text = NULL;
-  int textheight = 0;
-
-  char * iter = message;
-  char * end = message + strlen(message);
-  while (iter < end) {
-    char * linebreak = strchr(iter, '\n');
-    if (linebreak == NULL) {
-      /* last line */
-      if (strlen(iter) > 0) {
-        text = TTF_RenderText_Solid(font, iter, color);
-        SDL_BlitSurface(text, NULL, screen, &destrect);
-        SDL_FreeSurface(text);
-      }
-      iter = end;
-    } else {
-      /* line in between */
-      *linebreak = 0;
-      if (strlen(iter) > 0) {
-        text = TTF_RenderText_Solid(font, iter, color);
-        textheight = text->h;
-        SDL_BlitSurface(text, NULL, screen, &destrect);
-        SDL_FreeSurface(text);
-      }
-      destrect.y += textheight;
-      *linebreak = '\n';
-      iter = linebreak + 1;
-    }
-  }
 }
 #endif /* HAVE_SDL_SDL_TTF_H */
 
@@ -249,8 +210,9 @@ int main(int argc, char ** argv)
         snprintf(downloadinfo, 1024,
             "\n"
             "I can try to download the files automatically.\n"
-            "Press 'd' to try automatic download.\n"
-            "Press any other key to close this window.");
+            "\n"
+            "Press ENTER for automatic download\n"
+            "Press ESCAPE to abort.");
       } else {
         snprintf(downloadinfo, 1024,
             "\n"
@@ -259,7 +221,7 @@ int main(int argc, char ** argv)
       char message_cmdline[1024];
       char message_screen[1024];
       snprintf(message_cmdline, 1024,
-          "Could not load data files.\n"
+          "Could not load data level and graphics files.\n"
           "You can download the shareware episode for free from\n"
           "http://www.3drealms.com/duke1/\n"
           "Copy the data files to\n"
@@ -272,11 +234,12 @@ int main(int argc, char ** argv)
       printf("%s\n", message_cmdline);
 #ifdef HAVE_SDL_SDL_TTF_H
       TTF_Font * font = NULL;
+      int fontsize = 10 * pixelsize;
       if (TTF_Init() != -1) {
-        font = loadfont(pixelsize);
+        font = loadfont(fontsize);
       }
       if (font) {
-        texttoscreen(screen, font, message_screen);
+        fn_data_display_text(screen, 0, 0, font, message_screen);
         SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
 
         SDL_Event event;
@@ -291,11 +254,14 @@ int main(int argc, char ** argv)
                 break;
               case SDL_KEYDOWN:
                 switch(event.key.keysym.sym) {
-                  case SDLK_d:
+                  case SDLK_RETURN:
                     input = 'd';
                     break;
-                  default:
+                  case SDLK_ESCAPE:
                     input = 'q';
+                    break;
+                  default:
+                    /* do nothing */
                     break;
                 }
               default:
@@ -304,13 +270,46 @@ int main(int argc, char ** argv)
             }
           }
         }
-
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
         if (input == 'd') {
-          succeeded = fn_data_download(screen);
+          succeeded =
+            fn_data_download(screen, font, fontsize, datapath);
+
+          if (!succeeded) {
+            input = 0;
+            Uint32 black = SDL_MapRGB(screen->format, 0, 0, 0);
+            SDL_FillRect(screen, NULL, black);
+            fn_data_display_text(screen, 0, 0, font,
+                "Download failed. Press ESCAPE to quit.");
+            SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+            
+            while (input == 0) {
+              res = SDL_WaitEvent(&event);
+              if (res == 1) {
+                switch(event.type) {
+                  case SDL_QUIT:
+                    input = 'q';
+                    break;
+                  case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym) {
+                      case SDLK_ESCAPE:
+                        input = 'q';
+                        break;
+                      default:
+                        /* do nothing */
+                        break;
+                    }
+                  default:
+                    /* do nothing on other events */
+                    break;
+                }
+              }
+            }
+          }
+
           res = 0;
-        } else {
-          succeeded = 0;
         }
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
         TTF_CloseFont(font);
         font = NULL;
       }
