@@ -43,6 +43,18 @@ if test "x$have_curl" = "xyes"; then
   LDFLAGS="$LDFLAGS $LIBCURL"
 fi
 
+dnl #
+dnl # Check for libzip
+dnl #
+PKG_CHECK_MODULES(LIBZIP, libzip,
+                   [have_libzip="yes"],
+                   [have_libzip="no"])
+if test "x$have_libzip" = "xyes"; then
+  AC_DEFINE([HAVE_LIBZIP], [1], [Define to 1 if libzip is available])
+  CFLAGS="$CFLAGS $LIBZIP_CFLAGS"
+  LDFLAGS="$LDFLAGS $LIBZIP_LIBS"
+fi
+
 dnl #---------------------------------------------------------------
 
 AC_PROG_CC
@@ -89,17 +101,19 @@ echo
 echo Build testing programs............ : $enable_testprograms
 echo Use SDL ttf library............... : $have_sdlttf
 echo Use libcurl....................... : $have_curl
+echo Use libzip........................ : $have_libzip
 if test "x$have_sdlttf" != "xyes"; then
   echo
   echo Freenukum can display messages about missing data
   echo files in its display window instead of the command-line.
   echo You need to install libSDL-ttf for that feature.
 fi
-if test "x$have_sdlttf" != "xyes" -o "x$have_curl" != "xyes"; then
+if test "x$have_sdlttf" != "xyes" -o "x$have_curl" != "xyes" -o \
+  "x$have_libzip" != "xyes"; then
   echo
   echo Freenukum can automatically download the game data
   echo if none is installed. You need to install the libSDL-ttf
-  echo as well as libcurl for that feature.
+  echo as well as libcurl and libzip for that feature.
 fi
 echo
 echo configure complete, now type \'make\'

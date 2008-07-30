@@ -33,7 +33,9 @@
 #ifndef HAVE_AUTOMATIC_DOWNLOAD
 #ifdef HAVE_SDL_SDL_TTF_H
 #ifdef HAVE_LIBCURL
+#ifdef HAVE_LIBZIP
 #define HAVE_AUTOMATIC_DOWNLOAD 1
+#endif /* HAVE_LIBZIP */
 #endif /* HAVE_LIBCURL */
 #endif /* HAVE_SDL_SDL_TTF_H */
 #endif /* HAVE_AUTOMATIC_DOWNLOAD */
@@ -41,6 +43,10 @@
 #ifdef HAVE_SDL_SDL_TTF_H
 #include <SDL/SDL_ttf.h>
 #endif /* HAVE_SDL_SDL_TTF_H */
+
+#ifdef HAVE_LIBZIP
+#include <zip.h>
+#endif /* HAVE_LIBZIP */
 
 /* --------------------------------------------------------------- */
 
@@ -61,6 +67,58 @@
 
 #include "fn_data.h"
 #include "fn_error.h"
+
+/* --------------------------------------------------------------- */
+
+char * fn_data_files[] = {
+  "ANIM0",
+  "ANIM1",
+  "ANIM2",
+  "ANIM3",
+  "ANIM4",
+  "ANIM5",
+  "BACK0",
+  "BACK1",
+  "BACK2",
+  "BACK3",
+  "BADGUY",
+  "BORDER",
+  "CREDITS",
+  "DN",
+  "DROP0",
+  "DUKE",
+  "DUKE1-B",
+  "DUKE1",
+  "END",
+  "FONT1",
+  "FONT2",
+  "MAN0",
+  "MAN1",
+  "MAN2",
+  "MAN3",
+  "MAN4",
+  "NUMBERS",
+  "OBJECT0",
+  "OBJECT1",
+  "OBJECT2",
+  "SOLID0",
+  "SOLID1",
+  "SOLID2",
+  "SOLID3",
+  "WORLDAL1",
+  "WORLDAL2",
+  "WORLDAL3",
+  "WORLDAL4",
+  "WORLDAL5",
+  "WORLDAL6",
+  "WORLDAL7",
+  "WORLDAL8",
+  "WORLDAL9",
+  "WORLDALA",
+  "WORLDALB",
+  "WORLDALC",
+  0
+};
 
 /* --------------------------------------------------------------- */
 
@@ -109,66 +167,16 @@ int fn_data_check(char * dir, int episodenum)
 {
   int fd = 0;
   int res = 0;
-  char * files[] = {
-    "ANIM0",
-    "ANIM1",
-    "ANIM2",
-    "ANIM3",
-    "ANIM4",
-    "ANIM5",
-    "BACK0",
-    "BACK1",
-    "BACK2",
-    "BACK3",
-    "BADGUY",
-    "BORDER",
-    "CREDITS",
-    "DN",
-    "DROP0",
-    "DUKE",
-    "DUKE1-B",
-    "DUKE1",
-    "END",
-    "FONT1",
-    "FONT2",
-    "MAN0",
-    "MAN1",
-    "MAN2",
-    "MAN3",
-    "MAN4",
-    "NUMBERS",
-    "OBJECT0",
-    "OBJECT1",
-    "OBJECT2",
-    "SOLID0",
-    "SOLID1",
-    "SOLID2",
-    "SOLID3",
-    "WORLDAL1",
-    "WORLDAL2",
-    "WORLDAL3",
-    "WORLDAL4",
-    "WORLDAL5",
-    "WORLDAL6",
-    "WORLDAL7",
-    "WORLDAL8",
-    "WORLDAL9",
-    "WORLDALA",
-    "WORLDALB",
-    "WORLDALC",
-    0
-  };
-
   int i = 0;
 
   /* check if all files exist */
   while (!res) {
-    if (files[i] == 0) {
+    if (fn_data_files[i] == 0) {
       res = 1;
     } else {
       char filename[1024];
       snprintf(filename, 1024, "%s/%s.DN%d",
-          dir, files[i], episodenum);
+          dir, fn_data_files[i], episodenum);
       fd = open(filename, O_RDONLY);
       if (fd == -1) {
         res = fn_data_try_to_get_file(filename);
@@ -288,6 +296,144 @@ int fn_data_downloaded_progress(void * cdata,
 
 /* --------------------------------------------------------------- */
 
+int fn_data_copy_from_zip(struct zip_file * sourcefile, FILE * destfile)
+{
+  char copybuf[1024 * 1024];
+
+  int do_copy = 1;
+  int nbytes = 0;
+  while (do_copy) {
+    nbytes = zip_fread(sourcefile, copybuf, 1024 * 1024);
+    if (nbytes == -1) {
+      return 0;
+    } else if (nbytes == 0) {
+      do_copy = 0;
+    } else {
+      fwrite(copybuf, nbytes, 1, destfile);
+    }
+  }
+  return 1;
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_data_install(
+    char * temppath,
+    char * datapath)
+{
+  int i = 0;
+  char command[1024] = "";
+  int res = 0;
+  snprintf(command, 1024,
+      "%s %s %s/%s",
+      "dosbox",
+      "-exit",
+      temppath,
+      "INSTALL.EXE");
+  int exec_failed = system(command);
+
+  if (exec_failed) {
+    printf("Execution of dosbox failed\n");
+    return 0;
+  }
+
+  /* copy the installed files. */
+  while (!res) {
+    if (fn_data_files[i] == 0) {
+      res = 1;
+    } else {
+      char srcname[1024] = "";
+      char destname[1024] = "";
+
+      snprintf(srcname, 1024,
+          "%s/DUKE/%s.DN1",
+          temppath, fn_data_files[i]);
+      snprintf(destname, 1024,
+          "%s/%s.DN1",
+          datapath, fn_data_files[i]);
+
+      if (rename(srcname, destname)) {
+        /* rename failed */
+        printf("Could not rename file %s to %s\n",
+            srcname, destname);
+        return 0;
+      }
+    }
+    i++;
+  }
+
+  return 1;
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_data_unpack(
+    char * file,
+    char * dirpath)
+{
+  int ziperr = 0;
+  int i = 0;
+  struct zip * archive = zip_open(file, ZIP_CHECKCONS, &ziperr);
+  char errbuf[100];
+  char destpath[1024];
+
+  if (archive == NULL) {
+    zip_error_to_str(errbuf, 100, ziperr, errno);
+    printf("Zip error: %s\n", errbuf);
+    return 0;
+  }
+
+  for (i = 0; i < zip_get_num_files(archive); i++) {
+    struct zip_file * zippedfile = zip_fopen_index(
+        archive, i, 0);
+    if (zippedfile == NULL) {
+      zip_error_to_str(errbuf, 100, ziperr, errno);
+      printf("Zip error: %s\n", errbuf);
+      zip_close(archive);
+      return 0;
+    }
+
+    const char * filename = zip_get_name(archive, i, 0);
+    if (filename == NULL) {
+      zip_error_to_str(errbuf, 100, ziperr, errno);
+      printf("Zip error: %s\n", errbuf);
+      zip_fclose(zippedfile);
+      zip_close(archive);
+      return 0;
+    }
+
+    snprintf(destpath, 1024,
+        "%s/%s", dirpath, filename);
+    printf("Unpacking to %s\n", destpath);
+
+    FILE * writefile = fopen(destpath, "wb");
+    if (!writefile) {
+      printf("fopen error: %s\n", strerror(errno));
+      zip_fclose(zippedfile);
+      zip_close(archive);
+      return 0;
+    }
+
+    int res = fn_data_copy_from_zip(zippedfile, writefile);
+
+    if (!res) {
+      printf("file extracting error\n");
+      zip_fclose(zippedfile);
+      zip_close(archive);
+      fclose(writefile);
+    }
+
+    fclose(writefile);
+    zip_fclose(zippedfile);
+  }
+
+  zip_close(archive);
+
+  return 1;
+}
+
+/* --------------------------------------------------------------- */
+
 int fn_data_download(
     SDL_Surface * screen,
     TTF_Font * font,
@@ -383,18 +529,30 @@ int fn_data_download(
   /* always clean up */
   curl_easy_cleanup(curl);
 
+  if (store.stream != NULL) {
+    fclose(store.stream);
+    store.stream = NULL;
+  }
+
   if (curlres != CURLE_OK) {
+    printf("Error: %s\n", curl_easy_strerror(curlres));
     return 0;
   }
 
-  if (0) {
+  int unpack_ok = fn_data_unpack(tempfile, temppath);
+  if (!unpack_ok) {
+    return 0;
+  }
+
+  int install_ok = fn_data_install(temppath,
+      datapath);
+  if (install_ok) {
     printf("File successfully downloaded\n");
     return 1;
   }
 
   return 0;
 }
-
 #endif /* HAVE_AUTOMATIC_DOWNLOAD */
 
 /* --------------------------------------------------------------- */

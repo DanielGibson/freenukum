@@ -32,7 +32,9 @@
 
 #ifdef HAVE_SDL_SDL_TTF_H
 #ifdef HAVE_LIBCURL
+#ifdef HAVE_LIBZIP
 #define HAVE_AUTOMATIC_DOWNLOAD 1
+#endif /* HAVE_LIBZIP */
 #endif /* HAVE_LIBCURL */
 #endif /* HAVE_SDL_SDL_TTF_H */
 

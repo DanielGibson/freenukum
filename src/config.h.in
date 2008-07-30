@@ -6,6 +6,9 @@
 /* Define to 1 if you have a functional curl library. */
 #undef HAVE_LIBCURL
 
+/* Define to 1 if libzip is available */
+#undef HAVE_LIBZIP
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
