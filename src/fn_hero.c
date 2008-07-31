@@ -118,8 +118,8 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  dstrect.x = FN_HALFTILE_WIDTH * pixelsize *
-    (fn_hero_get_x_halftile(hero) - 1);
+  dstrect.x = pixelsize *
+    (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
   dstrect.y = (FN_HALFTILE_HEIGHT * fn_hero_get_y_halftile(hero) -
       FN_TILE_HEIGHT) *
     pixelsize;
@@ -181,7 +181,7 @@ int fn_hero_act(
               fn_hero_get_x(hero) - FN_HALFTILE_WIDTH,
               fn_hero_get_y(hero)
               )) {
-          fn_hero_set_x_halftile(hero, fn_hero_get_x_halftile(hero) - 1);
+          fn_hero_set_x(hero, fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
           heromoved = 1;
         }
         break;
@@ -191,7 +191,7 @@ int fn_hero_act(
               fn_hero_get_y(hero)
               )) {
           /* there is no solid block left of our hero */
-          fn_hero_set_x_halftile(hero, fn_hero_get_x_halftile(hero) + 1);
+          fn_hero_set_x(hero, fn_hero_get_x(hero) + FN_HALFTILE_WIDTH);
           heromoved = 1;
         }
         break;
@@ -531,25 +531,6 @@ void fn_hero_set_x(
   {
     hero->x = x;
   }
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_hero_set_x_halftile(
-    fn_hero_t * hero, Uint16 x)
-{
-  if (hero->x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
-  {
-    hero->x = x * FN_HALFTILE_WIDTH;
-  }
-}
-
-/* --------------------------------------------------------------- */
-
-Uint16 fn_hero_get_x_halftile(
-    fn_hero_t * hero)
-{
-  return hero->x / FN_HALFTILE_WIDTH;
 }
 
 /* --------------------------------------------------------------- */

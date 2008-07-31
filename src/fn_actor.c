@@ -1374,8 +1374,8 @@ void fn_actor_function_lift_interact_start(fn_actor_t * actor)
   fn_actor_lift_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH == actor->x &&
-      fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT ==
+  if (fn_hero_get_x(hero) == actor->x &&
+      fn_hero_get_y(hero) ==
       actor->y - FN_TILE_HEIGHT) {
     data->state = fn_actor_lift_state_ascending;
   }
@@ -1393,8 +1393,8 @@ void fn_actor_function_lift_interact_end(fn_actor_t * actor)
   fn_actor_lift_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH == actor->x &&
-      fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT ==
+  if (fn_hero_get_x(hero) == actor->x &&
+      fn_hero_get_y(hero) ==
       actor->y - FN_TILE_HEIGHT) {
     data->state = fn_actor_lift_state_idle;
   } else {
@@ -1418,8 +1418,8 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
   if (data->state == fn_actor_lift_state_ascending ||
       (data->state == fn_actor_lift_state_idle && data->height > 0))
   {
-    if (fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH == actor->x &&
-        fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT ==
+    if (fn_hero_get_x(hero) == actor->x &&
+        fn_hero_get_y(hero) ==
         actor->y - FN_TILE_HEIGHT) {
     } else {
       data->state = fn_actor_lift_state_descending;
@@ -1574,8 +1574,8 @@ void fn_actor_function_acme_act(fn_actor_t * actor)
         Uint16 xl = actor->x;
         Uint16 xr = xl + actor->w;
         Uint16 y = actor->y;
-        Uint16 hxl = fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH;
-        Uint16 hxr = hxl + FN_TILE_WIDTH;
+        Uint32 hxl = fn_hero_get_x(hero);
+        Uint32 hxr = hxl + FN_TILE_WIDTH;
         Uint16 hy = fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT;
 
         if (y < hy && /* actor higher than hero */
@@ -3680,7 +3680,7 @@ void fn_actor_function_camera_blit(fn_actor_t * actor)
   SDL_Surface * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
-  size_t x = fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH;
+  size_t x = fn_hero_get_x(hero);
   if (x-1 > actor->x) {
     tile = fn_tilecache_get_tile(tc,
         ANIM_CAMERA_RIGHT);
@@ -3925,9 +3925,9 @@ void fn_actor_function_unstablefloor_touch_start(fn_actor_t * actor)
 {
   fn_actor_unstablefloor_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH >=
+  if (fn_hero_get_x(hero) >=
       actor->x &&
-      fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH <
+      fn_hero_get_x(hero)  <
       actor->x + actor->w) {
 
     if (!data->touched) {
@@ -3980,10 +3980,10 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
 
   if (
       /* hero is right of leftend */
-      fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH >=
+      fn_hero_get_x(hero) >=
       actor->x &&
       /* hero is left of rightend */
-      fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH <
+      fn_hero_get_x(hero) <
       actor->x + actor->w &&
       /* hero is directly above floor */
       (fn_hero_get_y_halftile(hero) + 2) * FN_HALFTILE_HEIGHT ==
@@ -5227,7 +5227,7 @@ void fn_actor_function_fan_act(fn_actor_t * actor)
   if (data->running < 10 && data->running > 0) {
     data->running--;
   } else if (data->running == 10) {
-    int hdistance = (fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH) -
+    int hdistance = fn_hero_get_x(hero) -
       actor->x;
     Uint16 hdistance_abs = (hdistance > 0 ? hdistance : hdistance * -1);
     Uint16 yt = actor->y;
@@ -5246,7 +5246,7 @@ void fn_actor_function_fan_act(fn_actor_t * actor)
           dir = 0;
         }
       }
-      fn_hero_set_x_halftile(hero, fn_hero_get_x_halftile(hero) + dir * 2);
+      fn_hero_set_x(hero, fn_hero_get_x(hero) + dir * FN_TILE_WIDTH);
     }
   }
 }
@@ -7658,8 +7658,7 @@ void fn_actor_free(fn_actor_t * actor)
 int fn_actor_touches_hero(fn_actor_t * actor)
 {
   Uint16 hero_x =
-    (fn_hero_get_x_halftile(fn_level_get_hero(actor->level))) *
-    FN_HALFTILE_WIDTH;
+    fn_hero_get_x(fn_level_get_hero(actor->level));
   Uint16 hero_y =
     (fn_hero_get_y_halftile(fn_level_get_hero(actor->level))-2) *
     FN_HALFTILE_HEIGHT;
@@ -7737,8 +7736,7 @@ Uint8 fn_actor_hero_can_interact(fn_actor_t * actor)
      * which the hero stands.
      */
     fn_hero_t * hero = fn_level_get_hero(actor->level);
-    return (fn_hero_get_x_halftile(hero) *
-        FN_HALFTILE_WIDTH == actor->x &&
+    return (fn_hero_get_x(hero) == actor->x &&
         fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT ==
         actor->y - FN_TILE_HEIGHT);
   }

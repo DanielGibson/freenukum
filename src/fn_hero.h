@@ -340,29 +340,6 @@ void fn_hero_set_x(
 /* --------------------------------------------------------------- */
 
 /**
- * Set the x position of the hero (in halftiles).
- *
- * @param  hero  The hero.
- * @param  x     The desired x position.
- */
-void fn_hero_set_x_halftile(
-    fn_hero_t * hero, Uint16 x);
-
-/* --------------------------------------------------------------- */
-
-/**
- * Get the x position of the hero.
- *
- * @param  hero  The hero.
- *
- * @return  The x position.
- */
-Uint16 fn_hero_get_x_halftile(
-    fn_hero_t * hero);
-
-/* --------------------------------------------------------------- */
-
-/**
  * Get the x position of the hero.
  *
  * @param  hero  The hero.
