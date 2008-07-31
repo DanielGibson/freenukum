@@ -487,7 +487,8 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_REDBALL_JUMPING, x, y);
         break;
       case 0x3032: /* we found our hero! */
-        fn_hero_enterlevel(lv->hero, x * 2, y * 2);
+        fn_hero_enterlevel(lv->hero,
+            x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT);
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
@@ -1113,10 +1114,12 @@ void fn_level_hero_interact_start(fn_level_t * lv)
     fn_actor_t * actor = (fn_actor_t *)iter->data;
     fn_hero_t * hero = fn_level_get_hero(lv);
 
-    if (actor->x >= (hero->x-2) * FN_HALFTILE_WIDTH &&
-        actor->x <= (hero->x+2) * FN_HALFTILE_WIDTH &&
-        actor->y >= (hero->y-2) * FN_HALFTILE_HEIGHT &&
-        actor->y <= (hero->y+2) * FN_HALFTILE_HEIGHT) {
+    if (actor->x >= (fn_hero_get_x(hero)-FN_TILE_WIDTH) &&
+        actor->x <= (fn_hero_get_x(hero)+FN_TILE_WIDTH) &&
+        actor->y >=
+        (fn_hero_get_y(hero)-FN_TILE_HEIGHT) &&
+        actor->y <=
+        (fn_hero_get_y(hero)+FN_TILE_HEIGHT)) {
 
       fn_level_hero_interact_stop(lv);
 
@@ -1204,8 +1207,8 @@ void fn_level_add_particle_firework(fn_level_t * lv,
 void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
-  Uint16 x = hero->x * FN_HALFTILE_WIDTH;
-  Uint16 y = (hero->y - 1) * FN_HALFTILE_HEIGHT - 4;
+  Uint32 x = fn_hero_get_x(hero);
+  Uint32 y = fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT - 4;
 
   if (hero->direction == fn_horizontal_direction_right) {
     x += FN_HALFTILE_WIDTH;

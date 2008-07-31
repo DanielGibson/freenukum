@@ -39,11 +39,11 @@
 
 void fn_hero_init(
     fn_hero_t * hero,
-    Uint16 x,
-    Uint16 y)
+    Uint32 x,
+    Uint32 y)
 {
-  hero->x = x;
-  hero->y = y;
+  fn_hero_set_x(hero, x);
+  fn_hero_set_y(hero, y);
 
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
@@ -73,11 +73,11 @@ void fn_hero_init(
 
 void fn_hero_enterlevel(
     fn_hero_t * hero,
-    Uint16 x,
-    Uint16 y)
+    Uint32 x,
+    Uint32 y)
 {
-  hero->x = x;
-  hero->y = y;
+  fn_hero_set_x(hero, x);
+  fn_hero_set_y(hero, y);
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
@@ -118,9 +118,9 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * (hero->x - 1);
-  dstrect.y = (FN_HALFTILE_HEIGHT * hero->y - FN_TILE_HEIGHT) *
-    pixelsize;
+  dstrect.x = pixelsize *
+    (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
+  dstrect.y = (fn_hero_get_y(hero) - FN_TILE_HEIGHT) * pixelsize;
   dstrect.w = pixelsize * FN_TILE_WIDTH;
   dstrect.h = pixelsize * FN_TILE_HEIGHT;
 
@@ -175,15 +175,21 @@ int fn_hero_act(
     /* our hero is moving */
     switch(hero->direction) {
       case fn_horizontal_direction_left:
-        if (!fn_hero_would_collide(hero, lv, hero->x-1, hero->y)) {
-          hero->x--;
+        if (!fn_hero_would_collide(hero, lv,
+              fn_hero_get_x(hero) - FN_HALFTILE_WIDTH,
+              fn_hero_get_y(hero)
+              )) {
+          fn_hero_set_x(hero, fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
           heromoved = 1;
         }
         break;
       case fn_horizontal_direction_right:
-        if (!fn_hero_would_collide(hero, lv, hero->x+1, hero->y)) {
+        if (!fn_hero_would_collide(hero, lv,
+              fn_hero_get_x(hero) + FN_HALFTILE_WIDTH,
+              fn_hero_get_y(hero)
+              )) {
           /* there is no solid block left of our hero */
-          hero->x++;
+          fn_hero_set_x(hero, fn_hero_get_x(hero) + FN_HALFTILE_WIDTH);
           heromoved = 1;
         }
         break;
@@ -217,8 +223,11 @@ int fn_hero_act(
       }
       int i = 0;
       for (i = 0; i < hero->verticalspeed; i++) {
-        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y-1)) {
-          hero->y--;
+        if (!fn_hero_would_collide(hero, lv,
+              fn_hero_get_x(hero),
+              fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT
+              )) {
+          fn_hero_set_y(hero, fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT);
           heromoved = 1;
         } else {
           /* we bumped against the ceiling */
@@ -233,15 +242,21 @@ int fn_hero_act(
 
       int i = 0;
       for (i = 0; i < hero->verticalspeed/2; i++) {
-        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
-          hero->y++;
+        if (!fn_hero_would_collide(hero, lv,
+              fn_hero_get_x(hero),
+              fn_hero_get_y(hero) + FN_HALFTILE_HEIGHT
+              )) {
+          fn_hero_set_y(hero, fn_hero_get_y(hero) + FN_HALFTILE_HEIGHT);
           heromoved = 1;
         }
       }
     }
   }
 
-  if (fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+  if (fn_hero_would_collide(hero, lv,
+        fn_hero_get_x(hero),
+        fn_hero_get_y(hero) + FN_HALFTILE_HEIGHT
+        )) {
     if (hero->flying == FN_HERO_FLYING_TRUE) {
       SDL_Event event;
       event.type = SDL_USEREVENT;
@@ -276,10 +291,10 @@ int fn_hero_act(
 /* --------------------------------------------------------------- */
 
 void fn_hero_replace(fn_hero_t * hero,
-    Uint16 x, Uint16 y)
+    Uint32 x, Uint32 y)
 {
-  hero->x = x;
-  hero->y = y;
+  fn_hero_set_x(hero, x);
+  fn_hero_set_y(hero, y);
   SDL_Event event;
   event.type = SDL_USEREVENT;
   event.user.code = fn_event_heromoved;
@@ -508,9 +523,9 @@ void fn_hero_jump(
 /* --------------------------------------------------------------- */
 
 void fn_hero_set_x(
-    fn_hero_t * hero, Uint16 x)
+    fn_hero_t * hero, Uint32 x)
 {
-  if (hero->x < FN_LEVEL_WIDTH * 2)
+  if (hero->x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
   {
     hero->x = x;
   }
@@ -518,7 +533,7 @@ void fn_hero_set_x(
 
 /* --------------------------------------------------------------- */
 
-Uint16 fn_hero_get_x(
+Uint32 fn_hero_get_x(
     fn_hero_t * hero)
 {
   return hero->x;
@@ -526,7 +541,18 @@ Uint16 fn_hero_get_x(
 
 /* --------------------------------------------------------------- */
 
-Uint16 fn_hero_get_y(
+void fn_hero_set_y(
+    fn_hero_t * hero, Uint32 y)
+{
+  if (hero->y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
+  {
+    hero->y = y;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+Uint32 fn_hero_get_y(
     fn_hero_t * hero)
 {
   return hero->y;
@@ -535,22 +561,22 @@ Uint16 fn_hero_get_y(
 /* --------------------------------------------------------------- */
 
 int fn_hero_would_collide(fn_hero_t * hero, void * level,
-    int halftile_x, int halftile_y)
+    Uint32 x, Uint32 y)
 {
   fn_level_t * lv = (fn_level_t *)level;
   if (lv == NULL) {
     return 1;
   }
-  if (halftile_x < 0 || halftile_x > FN_LEVEL_WIDTH * 2 ||
-      halftile_y < 0 || halftile_y > FN_LEVEL_HEIGHT * 2) {
+  if (x < 0 || x > FN_LEVEL_WIDTH * FN_TILE_WIDTH ||
+      y < 0 || y > FN_LEVEL_HEIGHT * FN_TILE_HEIGHT) {
     return 1;
   }
-  int i = 0;
-  int j = 0;
+  Uint32 i = 0;
+  Uint32 j = 0;
 
-  for (i = halftile_x; i < halftile_x + 2; i++) {
-    for (j = halftile_y-2; j < halftile_y+2; j++) {
-      if (fn_level_is_solid(lv, i/2, j/2)) {
+  for (i = x; i < x + FN_TILE_WIDTH; i += FN_HALFTILE_WIDTH) {
+    for (j = y-FN_TILE_HEIGHT; j < y+FN_TILE_HEIGHT; j++) {
+      if (fn_level_is_solid(lv, i/FN_TILE_WIDTH, j/FN_TILE_HEIGHT)) {
         return 1;
       }
     }

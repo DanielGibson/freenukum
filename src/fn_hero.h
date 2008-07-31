@@ -114,13 +114,13 @@ struct fn_hero_t {
   Uint8 health;
 
   /**
-   * The x position of our hero (in half-tiles).
+   * The x position of our hero (in pixels)
    */
-  Uint16 x;
+  Uint32 x;
   /**
-   * The y position of our hero (in half-tiles).
+   * The y position of our hero (in pixels)
    */
-  Uint16 y;
+  Uint32 y;
 
   /**
    * The score of the hero.
@@ -194,14 +194,14 @@ int fn_hero_act(fn_hero_t * hero,
 /* --------------------------------------------------------------- */
 
 /**
- * Put the hero to a new position.
+ * Put the hero to a new position (in pixels).
  *
  * @param  hero  The hero.
- * @param  x     The new x position of our hero (in half-tiles).
- * @param  y     The new y position of our hero (in half-tiles).
+ * @param  x     The new x position of our hero (in pixels).
+ * @param  y     The new y position of our hero (in pixels).
  */
 void fn_hero_replace(fn_hero_t * hero,
-    Uint16 x, Uint16 y);
+    Uint32 x, Uint32 y);
 
 /* --------------------------------------------------------------- */
 
@@ -219,13 +219,13 @@ void fn_hero_update_animation(
  * Initialize a hero.
  *
  * @param  hero  The hero that is to be initialized.
- * @param  x     The initial x position of our hero (in half-tiles)
- * @param  y     The initial x position of our hero (in half-tiles)
+ * @param  x     The initial x position of our hero (in pixels)
+ * @param  y     The initial x position of our hero (in pixels)
  */
 void fn_hero_init(
     fn_hero_t * hero,
-    Uint16 x,
-    Uint16 y);
+    Uint32 x,
+    Uint32 y);
 
 /* --------------------------------------------------------------- */
 
@@ -233,13 +233,13 @@ void fn_hero_init(
  * Update a hero for a new level.
  *
  * @param  hero  The hero that is to be updated.
- * @param  x     The initial x position of our hero (in half-tiles)
- * @param  y     The initial x position of our hero (in half-tiles)
+ * @param  x     The initial x position of our hero (in pixels)
+ * @param  y     The initial x position of our hero (in pixels)
  */
 void fn_hero_enterlevel(
     fn_hero_t * hero,
-    Uint16 x,
-    Uint16 y);
+    Uint32 x,
+    Uint32 y);
 
 /* --------------------------------------------------------------- */
 
@@ -329,13 +329,13 @@ void fn_hero_jump(
 /* --------------------------------------------------------------- */
 
 /**
- * Set the x position of the hero (in halftiles).
+ * Set the x position of the hero (in pixels).
  *
  * @param  hero  The hero.
  * @param  x     The desired x position.
  */
 void fn_hero_set_x(
-    fn_hero_t * hero, Uint16 x);
+    fn_hero_t * hero, Uint32 x);
 
 /* --------------------------------------------------------------- */
 
@@ -346,8 +346,19 @@ void fn_hero_set_x(
  *
  * @return  The x position.
  */
-Uint16 fn_hero_get_x(
+Uint32 fn_hero_get_x(
     fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the y position of the hero (in pixels).
+ *
+ * @param  hero  The hero.
+ * @param  y     The desired y position.
+ */
+void fn_hero_set_y(
+    fn_hero_t * hero, Uint32 y);
 
 /* --------------------------------------------------------------- */
 
@@ -358,7 +369,7 @@ Uint16 fn_hero_get_x(
  *
  * @return  The y position.
  */
-Uint16 fn_hero_get_y(
+Uint32 fn_hero_get_y(
     fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
@@ -368,13 +379,13 @@ Uint16 fn_hero_get_y(
  *
  * @param  hero        The hero.
  * @param  level       The level.
- * @param  halftile_x  The x halftile coordinate.
- * @param  halftile_y  The y halftile coordinate.
+ * @param  x           The x coordinate.
+ * @param  y           The y coordinate.
  *
  * @return 1 if hero collides, 0 if not.
  */
 int fn_hero_would_collide(fn_hero_t * hero, void * level,
-    int halftile_x, int halftile_y);
+    Uint32 x, Uint32 y);
 
 /* --------------------------------------------------------------- */
 
