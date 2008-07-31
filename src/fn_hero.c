@@ -37,13 +37,13 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_init(
+void fn_hero_init_halftile(
     fn_hero_t * hero,
     Uint16 x,
     Uint16 y)
 {
-  hero->x = x;
-  hero->y = y;
+  fn_hero_set_x_halftile(hero, x);
+  fn_hero_set_y_halftile(hero, y);
 
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
@@ -71,13 +71,13 @@ void fn_hero_init(
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_enterlevel(
+void fn_hero_enterlevel_halftile(
     fn_hero_t * hero,
     Uint16 x,
     Uint16 y)
 {
-  hero->x = x;
-  hero->y = y;
+  fn_hero_set_x_halftile(hero, x);
+  fn_hero_set_y_halftile(hero, y);
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
@@ -118,8 +118,10 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * (hero->x - 1);
-  dstrect.y = (FN_HALFTILE_HEIGHT * hero->y - FN_TILE_HEIGHT) *
+  dstrect.x = FN_HALFTILE_WIDTH * pixelsize *
+    (fn_hero_get_x_halftile(hero) - 1);
+  dstrect.y = (FN_HALFTILE_HEIGHT * fn_hero_get_y_halftile(hero) -
+      FN_TILE_HEIGHT) *
     pixelsize;
   dstrect.w = pixelsize * FN_TILE_WIDTH;
   dstrect.h = pixelsize * FN_TILE_HEIGHT;
@@ -175,7 +177,8 @@ int fn_hero_act(
     /* our hero is moving */
     switch(hero->direction) {
       case fn_horizontal_direction_left:
-        if (!fn_hero_would_collide_halftile(hero, lv, hero->x-1, hero->y)) {
+        if (!fn_hero_would_collide_halftile(hero, lv,
+              hero->x-1, hero->y)) {
           hero->x--;
           heromoved = 1;
         }
@@ -275,7 +278,7 @@ int fn_hero_act(
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_replace(fn_hero_t * hero,
+void fn_hero_replace_halftile(fn_hero_t * hero,
     Uint16 x, Uint16 y)
 {
   hero->x = x;
@@ -522,6 +525,17 @@ Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero)
 {
   return hero->x;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_set_y_halftile(
+    fn_hero_t * hero, Uint16 y)
+{
+  if (hero->y < FN_LEVEL_WIDTH * 2)
+  {
+    hero->y = y;
+  }
 }
 
 /* --------------------------------------------------------------- */

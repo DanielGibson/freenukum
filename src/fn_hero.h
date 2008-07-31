@@ -194,13 +194,13 @@ int fn_hero_act(fn_hero_t * hero,
 /* --------------------------------------------------------------- */
 
 /**
- * Put the hero to a new position.
+ * Put the hero to a new position (in half-tiles).
  *
  * @param  hero  The hero.
  * @param  x     The new x position of our hero (in half-tiles).
  * @param  y     The new y position of our hero (in half-tiles).
  */
-void fn_hero_replace(fn_hero_t * hero,
+void fn_hero_replace_halftile(fn_hero_t * hero,
     Uint16 x, Uint16 y);
 
 /* --------------------------------------------------------------- */
@@ -222,7 +222,7 @@ void fn_hero_update_animation(
  * @param  x     The initial x position of our hero (in half-tiles)
  * @param  y     The initial x position of our hero (in half-tiles)
  */
-void fn_hero_init(
+void fn_hero_init_halftile(
     fn_hero_t * hero,
     Uint16 x,
     Uint16 y);
@@ -236,7 +236,7 @@ void fn_hero_init(
  * @param  x     The initial x position of our hero (in half-tiles)
  * @param  y     The initial x position of our hero (in half-tiles)
  */
-void fn_hero_enterlevel(
+void fn_hero_enterlevel_halftile(
     fn_hero_t * hero,
     Uint16 x,
     Uint16 y);
@@ -348,6 +348,17 @@ void fn_hero_set_x_halftile(
  */
 Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the y position of the hero (in halftiles).
+ *
+ * @param  hero  The hero.
+ * @param  y     The desired y position.
+ */
+void fn_hero_set_y_halftile(
+    fn_hero_t * hero, Uint16 y);
 
 /* --------------------------------------------------------------- */
 
