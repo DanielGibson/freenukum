@@ -329,6 +329,17 @@ void fn_hero_jump(
 /* --------------------------------------------------------------- */
 
 /**
+ * Set the x position of the hero (in pixels).
+ *
+ * @param  hero  The hero.
+ * @param  x     The desired x position.
+ */
+void fn_hero_set_x(
+    fn_hero_t * hero, Uint32 x);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Set the x position of the hero (in halftiles).
  *
  * @param  hero  The hero.
@@ -348,6 +359,17 @@ void fn_hero_set_x_halftile(
  */
 Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the y position of the hero (in pixels).
+ *
+ * @param  hero  The hero.
+ * @param  y     The desired y position.
+ */
+void fn_hero_set_y(
+    fn_hero_t * hero, Uint32 y);
 
 /* --------------------------------------------------------------- */
 

@@ -37,13 +37,13 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_init_halftile(
+void fn_hero_init(
     fn_hero_t * hero,
-    Uint16 x,
-    Uint16 y)
+    Uint32 x,
+    Uint32 y)
 {
-  fn_hero_set_x_halftile(hero, x);
-  fn_hero_set_y_halftile(hero, y);
+  fn_hero_set_x(hero, x);
+  fn_hero_set_y(hero, y);
 
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
@@ -67,6 +67,16 @@ void fn_hero_init_halftile(
   hero->immunitycountdown = 0;
   hero->immunityduration = 16;
   hero->hurtingactors = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_init_halftile(
+    fn_hero_t * hero,
+    Uint16 x,
+    Uint16 y)
+{
+  fn_hero_init(hero, x * FN_HALFTILE_WIDTH, y * FN_HALFTILE_HEIGHT);
 }
 
 /* --------------------------------------------------------------- */
@@ -524,12 +534,23 @@ void fn_hero_jump(
 
 /* --------------------------------------------------------------- */
 
+void fn_hero_set_x(
+    fn_hero_t * hero, Uint32 x)
+{
+  if (hero->x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
+  {
+    hero->x = x;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_hero_set_x_halftile(
     fn_hero_t * hero, Uint16 x)
 {
-  if (hero->x < FN_LEVEL_WIDTH * 2)
+  if (hero->x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
   {
-    hero->x = x;
+    hero->x = x * FN_HALFTILE_WIDTH;
   }
 }
 
@@ -538,7 +559,18 @@ void fn_hero_set_x_halftile(
 Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero)
 {
-  return hero->x;
+  return hero->x / FN_HALFTILE_WIDTH;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_set_y(
+    fn_hero_t * hero, Uint32 y)
+{
+  if (hero->y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
+  {
+    hero->y = y;
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -546,9 +578,9 @@ Uint16 fn_hero_get_x_halftile(
 void fn_hero_set_y_halftile(
     fn_hero_t * hero, Uint16 y)
 {
-  if (hero->y < FN_LEVEL_HEIGHT * 2)
+  if (hero->y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
   {
-    hero->y = y;
+    hero->y = y * FN_HALFTILE_HEIGHT;
   }
 }
 
@@ -557,7 +589,7 @@ void fn_hero_set_y_halftile(
 Uint16 fn_hero_get_y_halftile(
     fn_hero_t * hero)
 {
-  return hero->y;
+  return hero->y / FN_HALFTILE_HEIGHT;
 }
 
 /* --------------------------------------------------------------- */
