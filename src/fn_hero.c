@@ -120,9 +120,7 @@ void fn_hero_blit(fn_hero_t * hero,
 
   dstrect.x = pixelsize *
     (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
-  dstrect.y = (FN_HALFTILE_HEIGHT * fn_hero_get_y_halftile(hero) -
-      FN_TILE_HEIGHT) *
-    pixelsize;
+  dstrect.y = (fn_hero_get_y(hero) - FN_TILE_HEIGHT) * pixelsize;
   dstrect.w = pixelsize * FN_TILE_WIDTH;
   dstrect.h = pixelsize * FN_TILE_HEIGHT;
 
@@ -229,7 +227,7 @@ int fn_hero_act(
               fn_hero_get_x(hero),
               fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT
               )) {
-          fn_hero_set_y_halftile(hero, fn_hero_get_y_halftile(hero) - 1);
+          fn_hero_set_y(hero, fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT);
           heromoved = 1;
         } else {
           /* we bumped against the ceiling */
@@ -248,7 +246,7 @@ int fn_hero_act(
               fn_hero_get_x(hero),
               fn_hero_get_y(hero) + FN_HALFTILE_HEIGHT
               )) {
-          fn_hero_set_y_halftile(hero, fn_hero_get_y_halftile(hero) + 1);
+          fn_hero_set_y(hero, fn_hero_get_y(hero) + FN_HALFTILE_HEIGHT);
           heromoved = 1;
         }
       }
@@ -550,25 +548,6 @@ void fn_hero_set_y(
   {
     hero->y = y;
   }
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_hero_set_y_halftile(
-    fn_hero_t * hero, Uint16 y)
-{
-  if (hero->y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
-  {
-    hero->y = y * FN_HALFTILE_HEIGHT;
-  }
-}
-
-/* --------------------------------------------------------------- */
-
-Uint16 fn_hero_get_y_halftile(
-    fn_hero_t * hero)
-{
-  return hero->y / FN_HALFTILE_HEIGHT;
 }
 
 /* --------------------------------------------------------------- */

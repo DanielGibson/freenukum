@@ -1576,7 +1576,7 @@ void fn_actor_function_acme_act(fn_actor_t * actor)
         Uint16 y = actor->y;
         Uint32 hxl = fn_hero_get_x(hero);
         Uint32 hxr = hxl + FN_TILE_WIDTH;
-        Uint16 hy = fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT;
+        Uint32 hy = fn_hero_get_y(hero);
 
         if (y < hy && /* actor higher than hero */
             xl < hxr &&
@@ -3980,14 +3980,11 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
 
   if (
       /* hero is right of leftend */
-      fn_hero_get_x(hero) >=
-      actor->x &&
+      fn_hero_get_x(hero) >= actor->x &&
       /* hero is left of rightend */
-      fn_hero_get_x(hero) <
-      actor->x + actor->w &&
+      fn_hero_get_x(hero) < actor->x + actor->w &&
       /* hero is directly above floor */
-      (fn_hero_get_y_halftile(hero) + 2) * FN_HALFTILE_HEIGHT ==
-      actor->y)
+      fn_hero_get_y(hero) + FN_TILE_HEIGHT == actor->y)
   {
     if (data->touched) {
       floorlength = 0;
@@ -5232,8 +5229,7 @@ void fn_actor_function_fan_act(fn_actor_t * actor)
     Uint16 hdistance_abs = (hdistance > 0 ? hdistance : hdistance * -1);
     Uint16 yt = actor->y;
     Uint16 yb = actor->y + actor->h;
-    Uint16 hyt = fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT -
-      FN_TILE_HEIGHT;
+    Uint32 hyt = fn_hero_get_y(hero) - FN_TILE_HEIGHT;
     Uint16 hyb = hyt + 2 * FN_TILE_HEIGHT;
     if (hdistance_abs < 8 * FN_HALFTILE_WIDTH &&
         ((yt <= hyb && yb >= hyb) || (yt <= hyt && yb >= hyt))) {
@@ -7657,13 +7653,12 @@ void fn_actor_free(fn_actor_t * actor)
 
 int fn_actor_touches_hero(fn_actor_t * actor)
 {
-  Uint16 hero_x =
+  Uint32 hero_x =
     fn_hero_get_x(fn_level_get_hero(actor->level));
-  Uint16 hero_y =
-    (fn_hero_get_y_halftile(fn_level_get_hero(actor->level))-2) *
-    FN_HALFTILE_HEIGHT;
-  Uint16 hero_w = FN_TILE_WIDTH;
-  Uint16 hero_h = FN_TILE_HEIGHT * 2;
+  Uint32 hero_y =
+    (fn_hero_get_y(fn_level_get_hero(actor->level))-FN_TILE_HEIGHT);
+  Uint32 hero_w = FN_TILE_WIDTH;
+  Uint32 hero_h = FN_TILE_HEIGHT * 2;
 
   if ((hero_x + hero_w) <= (actor->x)) {
     /* hero is left of actor */
@@ -7737,8 +7732,7 @@ Uint8 fn_actor_hero_can_interact(fn_actor_t * actor)
      */
     fn_hero_t * hero = fn_level_get_hero(actor->level);
     return (fn_hero_get_x(hero) == actor->x &&
-        fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT ==
-        actor->y - FN_TILE_HEIGHT);
+        fn_hero_get_y(hero) == actor->y - FN_TILE_HEIGHT);
   }
   fn_actor_function_t func =
     fn_actor_functions[

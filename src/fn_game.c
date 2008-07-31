@@ -311,8 +311,7 @@ int fn_game_start_in_level(
 
   srcrect.x = (fn_hero_get_x(hero)+FN_TILE_WIDTH) * pixelsize -
     dstrect.w / 2;
-  srcrect.y = fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT * pixelsize -
-    dstrect.h / 2;
+  srcrect.y = fn_hero_get_y(hero) * pixelsize - dstrect.h / 2;
   if (srcrect.x < 0) {
     srcrect.x = 0;
   }
@@ -536,7 +535,7 @@ int fn_game_start_in_level(
               break;
             case fn_event_heromoved:
               x = fn_hero_get_x(hero) / FN_HALFTILE_WIDTH;
-              y = fn_hero_get_y_halftile(hero);
+              y = fn_hero_get_y(hero) / FN_HALFTILE_HEIGHT;
               srcrect.x =
                 (x - FN_LEVELWINDOW_WIDTH) *
                 FN_HALFTILE_WIDTH * pixelsize;
@@ -591,7 +590,7 @@ int fn_game_start_in_level(
             case fn_event_herolanded:
               fn_level_add_actor(lv, FN_ACTOR_DUSTCLOUD,
                   fn_hero_get_x(hero),
-                  fn_hero_get_y_halftile(hero) * FN_HALFTILE_HEIGHT
+                  fn_hero_get_y(hero)
                   );
               break;
             default:

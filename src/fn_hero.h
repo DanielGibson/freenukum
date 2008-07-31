@@ -363,29 +363,6 @@ void fn_hero_set_y(
 /* --------------------------------------------------------------- */
 
 /**
- * Set the y position of the hero (in halftiles).
- *
- * @param  hero  The hero.
- * @param  y     The desired y position.
- */
-void fn_hero_set_y_halftile(
-    fn_hero_t * hero, Uint16 y);
-
-/* --------------------------------------------------------------- */
-
-/**
- * Get the y position of the hero.
- *
- * @param  hero  The hero.
- *
- * @return  The y position.
- */
-Uint16 fn_hero_get_y_halftile(
-    fn_hero_t * hero);
-
-/* --------------------------------------------------------------- */
-
-/**
  * Get the y position of the hero.
  *
  * @param  hero  The hero.

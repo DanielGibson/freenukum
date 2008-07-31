@@ -250,14 +250,14 @@ void fn_item_hero_check_touch(
     fn_hero_t * hero)
 {
   int hero_x = fn_hero_get_x(hero) / FN_HALFTILE_WIDTH;
-  int hero_y = fn_hero_get_y_halftile(hero);
+  int hero_y = fn_hero_get_y(hero) / FN_HALFTILE_HEIGHT;
   int item_x = item->x;
   int item_y = item->y;
   int touch = 0;
 
   if (hero_x > item_x - 2 && fn_hero_get_x(hero) / FN_HALFTILE_WIDTH < item_x + 2) {
     /* the same column */
-    if (hero_y > item_y - 2 && fn_hero_get_y_halftile(hero) < item_y + 4) {
+    if (hero_y > item_y - 2 && fn_hero_get_y(hero) / FN_HALFTILE_HEIGHT < item_y + 4) {
       /* touch */
       touch = 1;
     }

@@ -1117,9 +1117,9 @@ void fn_level_hero_interact_start(fn_level_t * lv)
     if (actor->x >= (fn_hero_get_x(hero)-FN_TILE_WIDTH) &&
         actor->x <= (fn_hero_get_x(hero)+FN_TILE_WIDTH) &&
         actor->y >=
-        (fn_hero_get_y_halftile(hero)-2) * FN_HALFTILE_HEIGHT &&
+        (fn_hero_get_y(hero)-FN_TILE_HEIGHT) &&
         actor->y <=
-        (fn_hero_get_y_halftile(hero)+2) * FN_HALFTILE_HEIGHT) {
+        (fn_hero_get_y(hero)+FN_TILE_HEIGHT)) {
 
       fn_level_hero_interact_stop(lv);
 
@@ -1208,7 +1208,7 @@ void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
   Uint32 x = fn_hero_get_x(hero);
-  Uint32 y = (fn_hero_get_y_halftile(hero) - 1) * FN_HALFTILE_HEIGHT - 4;
+  Uint32 y = fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT - 4;
 
   if (hero->direction == fn_horizontal_direction_right) {
     x += FN_HALFTILE_WIDTH;
