@@ -334,7 +334,7 @@ void fn_hero_jump(
  * @param  hero  The hero.
  * @param  x     The desired x position.
  */
-void fn_hero_set_x(
+void fn_hero_set_x_halftile(
     fn_hero_t * hero, Uint16 x);
 
 /* --------------------------------------------------------------- */
@@ -346,7 +346,7 @@ void fn_hero_set_x(
  *
  * @return  The x position.
  */
-Uint16 fn_hero_get_x(
+Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
@@ -358,7 +358,7 @@ Uint16 fn_hero_get_x(
  *
  * @return  The y position.
  */
-Uint16 fn_hero_get_y(
+Uint16 fn_hero_get_y_halftile(
     fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
@@ -373,7 +373,7 @@ Uint16 fn_hero_get_y(
  *
  * @return 1 if hero collides, 0 if not.
  */
-int fn_hero_would_collide(fn_hero_t * hero, void * level,
+int fn_hero_would_collide_halftile(fn_hero_t * hero, void * level,
     int halftile_x, int halftile_y);
 
 /* --------------------------------------------------------------- */

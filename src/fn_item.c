@@ -249,8 +249,8 @@ void fn_item_hero_check_touch(
     fn_item_t * item,
     fn_hero_t * hero)
 {
-  int hero_x = fn_hero_get_x(hero);
-  int hero_y = fn_hero_get_y(hero);
+  int hero_x = fn_hero_get_x_halftile(hero);
+  int hero_y = fn_hero_get_y_halftile(hero);
   int item_x = item->x;
   int item_y = item->y;
   int touch = 0;

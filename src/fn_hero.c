@@ -175,13 +175,13 @@ int fn_hero_act(
     /* our hero is moving */
     switch(hero->direction) {
       case fn_horizontal_direction_left:
-        if (!fn_hero_would_collide(hero, lv, hero->x-1, hero->y)) {
+        if (!fn_hero_would_collide_halftile(hero, lv, hero->x-1, hero->y)) {
           hero->x--;
           heromoved = 1;
         }
         break;
       case fn_horizontal_direction_right:
-        if (!fn_hero_would_collide(hero, lv, hero->x+1, hero->y)) {
+        if (!fn_hero_would_collide_halftile(hero, lv, hero->x+1, hero->y)) {
           /* there is no solid block left of our hero */
           hero->x++;
           heromoved = 1;
@@ -217,7 +217,7 @@ int fn_hero_act(
       }
       int i = 0;
       for (i = 0; i < hero->verticalspeed; i++) {
-        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y-1)) {
+        if (!fn_hero_would_collide_halftile(hero, lv, hero->x, hero->y-1)) {
           hero->y--;
           heromoved = 1;
         } else {
@@ -233,7 +233,7 @@ int fn_hero_act(
 
       int i = 0;
       for (i = 0; i < hero->verticalspeed/2; i++) {
-        if (!fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+        if (!fn_hero_would_collide_halftile(hero, lv, hero->x, hero->y+1)) {
           hero->y++;
           heromoved = 1;
         }
@@ -241,7 +241,7 @@ int fn_hero_act(
     }
   }
 
-  if (fn_hero_would_collide(hero, lv, hero->x, hero->y+1)) {
+  if (fn_hero_would_collide_halftile(hero, lv, hero->x, hero->y+1)) {
     if (hero->flying == FN_HERO_FLYING_TRUE) {
       SDL_Event event;
       event.type = SDL_USEREVENT;
@@ -507,7 +507,7 @@ void fn_hero_jump(
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_set_x(
+void fn_hero_set_x_halftile(
     fn_hero_t * hero, Uint16 x)
 {
   if (hero->x < FN_LEVEL_WIDTH * 2)
@@ -518,7 +518,7 @@ void fn_hero_set_x(
 
 /* --------------------------------------------------------------- */
 
-Uint16 fn_hero_get_x(
+Uint16 fn_hero_get_x_halftile(
     fn_hero_t * hero)
 {
   return hero->x;
@@ -526,7 +526,7 @@ Uint16 fn_hero_get_x(
 
 /* --------------------------------------------------------------- */
 
-Uint16 fn_hero_get_y(
+Uint16 fn_hero_get_y_halftile(
     fn_hero_t * hero)
 {
   return hero->y;
@@ -534,7 +534,7 @@ Uint16 fn_hero_get_y(
 
 /* --------------------------------------------------------------- */
 
-int fn_hero_would_collide(fn_hero_t * hero, void * level,
+int fn_hero_would_collide_halftile(fn_hero_t * hero, void * level,
     int halftile_x, int halftile_y)
 {
   fn_level_t * lv = (fn_level_t *)level;
