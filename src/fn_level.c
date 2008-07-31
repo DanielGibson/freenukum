@@ -487,7 +487,8 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_REDBALL_JUMPING, x, y);
         break;
       case 0x3032: /* we found our hero! */
-        fn_hero_enterlevel_halftile(lv->hero, x * 2, y * 2);
+        fn_hero_enterlevel(lv->hero,
+            x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT);
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }

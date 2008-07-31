@@ -1436,9 +1436,9 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
       } else {
         data->height++;
         actor->y -= FN_TILE_HEIGHT;
-        fn_hero_replace_halftile(hero,
-            actor->x/FN_HALFTILE_WIDTH,
-            actor->y/FN_HALFTILE_HEIGHT - 2);
+        fn_hero_replace(hero,
+            actor->x,
+            actor->y - FN_TILE_HEIGHT);
         fn_level_set_solid(level,
             actor->x/FN_TILE_WIDTH,
             actor->y/FN_TILE_HEIGHT,
@@ -3027,9 +3027,9 @@ void fn_actor_function_teleporter_interact_start(fn_actor_t * actor)
     fn_actor_t * otheractor = (fn_actor_t *)iter->data;
     if (otheractor->type == othertype) {
       fn_hero_t * hero = fn_level_get_hero(actor->level);
-      fn_hero_replace_halftile(hero,
-          otheractor->x / FN_HALFTILE_WIDTH,
-          otheractor->y / FN_HALFTILE_HEIGHT);
+      fn_hero_replace(hero,
+          otheractor->x,
+          otheractor->y);
       return;
     }
   }
