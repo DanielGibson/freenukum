@@ -114,13 +114,13 @@ struct fn_hero_t {
   Uint8 health;
 
   /**
-   * The x position of our hero (in half-tiles).
+   * The x position of our hero (in pixels)
    */
-  Uint16 x;
+  Uint32 x;
   /**
-   * The y position of our hero (in half-tiles).
+   * The y position of our hero (in pixels)
    */
-  Uint16 y;
+  Uint32 y;
 
   /**
    * The score of the hero.

@@ -546,7 +546,7 @@ Uint16 fn_hero_get_x_halftile(
 void fn_hero_set_y_halftile(
     fn_hero_t * hero, Uint16 y)
 {
-  if (hero->y < FN_LEVEL_WIDTH * 2)
+  if (hero->y < FN_LEVEL_HEIGHT * 2)
   {
     hero->y = y;
   }

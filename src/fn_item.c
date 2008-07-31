@@ -255,9 +255,9 @@ void fn_item_hero_check_touch(
   int item_y = item->y;
   int touch = 0;
 
-  if (hero_x > item_x - 2 && hero->x < item_x + 2) {
+  if (hero_x > item_x - 2 && fn_hero_get_x_halftile(hero) < item_x + 2) {
     /* the same column */
-    if (hero_y > item_y - 2 && hero->y < item_y + 4) {
+    if (hero_y > item_y - 2 && fn_hero_get_y_halftile(hero) < item_y + 4) {
       /* touch */
       touch = 1;
     }

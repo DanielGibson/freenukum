@@ -1113,10 +1113,14 @@ void fn_level_hero_interact_start(fn_level_t * lv)
     fn_actor_t * actor = (fn_actor_t *)iter->data;
     fn_hero_t * hero = fn_level_get_hero(lv);
 
-    if (actor->x >= (hero->x-2) * FN_HALFTILE_WIDTH &&
-        actor->x <= (hero->x+2) * FN_HALFTILE_WIDTH &&
-        actor->y >= (hero->y-2) * FN_HALFTILE_HEIGHT &&
-        actor->y <= (hero->y+2) * FN_HALFTILE_HEIGHT) {
+    if (actor->x >=
+        (fn_hero_get_x_halftile(hero)-2) * FN_HALFTILE_WIDTH &&
+        actor->x <=
+        (fn_hero_get_x_halftile(hero)+2) * FN_HALFTILE_WIDTH &&
+        actor->y >=
+        (fn_hero_get_y_halftile(hero)-2) * FN_HALFTILE_HEIGHT &&
+        actor->y <=
+        (fn_hero_get_y_halftile(hero)+2) * FN_HALFTILE_HEIGHT) {
 
       fn_level_hero_interact_stop(lv);
 
@@ -1204,8 +1208,8 @@ void fn_level_add_particle_firework(fn_level_t * lv,
 void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
-  Uint16 x = hero->x * FN_HALFTILE_WIDTH;
-  Uint16 y = (hero->y - 1) * FN_HALFTILE_HEIGHT - 4;
+  Uint16 x = fn_hero_get_x_halftile(hero) * FN_HALFTILE_WIDTH;
+  Uint16 y = (fn_hero_get_y_halftile(hero) - 1) * FN_HALFTILE_HEIGHT - 4;
 
   if (hero->direction == fn_horizontal_direction_right) {
     x += FN_HALFTILE_WIDTH;
