@@ -1,5 +1,5 @@
-AC_INIT(Freenukum, 0.2.9, http://launchpad.net/freenukum/)
-AM_INIT_AUTOMAKE(freenukum, 0.2.9)
+AC_INIT(Freenukum, 0.2.10, http://launchpad.net/freenukum/)
+AM_INIT_AUTOMAKE(freenukum, 0.2.10)
 
 dnl #
 dnl # Compile testprograms?
