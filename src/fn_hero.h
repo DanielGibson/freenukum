@@ -114,13 +114,9 @@ struct fn_hero_t {
   Uint8 health;
 
   /**
-   * The x position of our hero (in pixels)
+   * The position and bounds of the hero.
    */
-  Uint32 x;
-  /**
-   * The y position of our hero (in pixels)
-   */
-  Uint32 y;
+  SDL_Rect position;
 
   /**
    * The score of the hero.
@@ -158,6 +154,11 @@ struct fn_hero_t {
    * The dangerous actors currently hurting the hero.
    */
   fn_list_t * hurtingactors;
+
+  /**
+   * Draw collision bounds for debugging.
+   */
+  Uint8 draw_collision_bounds;
 };
 
 /* --------------------------------------------------------------- */
@@ -375,6 +376,30 @@ Uint32 fn_hero_get_y(
 /* --------------------------------------------------------------- */
 
 /**
+ * Get the width of our hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return  The width.
+ */
+Uint16 fn_hero_get_w(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the height of our hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return  The height.
+ */
+Uint16 fn_hero_get_h(
+    fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Calculate if our hero would  collide with a solid tile in the level.
  *
  * @param  hero        The hero.
@@ -472,6 +497,18 @@ Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero);
  * Set the last fetched letter.
  */
 void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Enable or disable the debug drawing of collision bounds
+ * for a hero.
+ *
+ * @param  hero    The hero.
+ * @param  enable  If 1, enable drawing. If 0, disable drawing.
+ */
+void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
+    Uint8 enable);
 
 /* --------------------------------------------------------------- */
 

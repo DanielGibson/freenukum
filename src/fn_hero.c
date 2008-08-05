@@ -43,8 +43,11 @@ void fn_hero_init(
     Uint32 x,
     Uint32 y)
 {
-  fn_hero_set_x(hero, x);
-  fn_hero_set_y(hero, y);
+  fn_hero_set_x(hero, x - FN_HALFTILE_WIDTH);
+  fn_hero_set_y(hero, y - FN_TILE_HEIGHT);
+
+  hero->position.w = FN_TILE_WIDTH;
+  hero->position.h = FN_TILE_HEIGHT * 2;
 
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
@@ -77,8 +80,8 @@ void fn_hero_enterlevel(
     Uint32 x,
     Uint32 y)
 {
-  fn_hero_set_x(hero, x);
-  fn_hero_set_y(hero, y);
+  fn_hero_set_x(hero, x - FN_HALFTILE_WIDTH);
+  fn_hero_set_y(hero, y - FN_TILE_HEIGHT);
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
@@ -119,11 +122,10 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  dstrect.x = pixelsize *
-    (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
-  dstrect.y = (fn_hero_get_y(hero) - FN_TILE_HEIGHT) * pixelsize;
-  dstrect.w = pixelsize * FN_TILE_WIDTH;
-  dstrect.h = pixelsize * FN_TILE_HEIGHT;
+  dstrect.x = pixelsize * fn_hero_get_x(hero);
+  dstrect.y = pixelsize * fn_hero_get_y(hero);
+  dstrect.w = pixelsize * fn_hero_get_w(hero);
+  dstrect.h = pixelsize * fn_hero_get_h(hero);
 
   tilenr = hero->tilenr;
   if (hero->immunitycountdown > hero->immunityduration - 1) {
@@ -149,6 +151,29 @@ void fn_hero_blit(fn_hero_t * hero,
   dstrect.x += dstrect.w;
   tile = fn_tilecache_get_tile(tilecache, tilenr+3);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
+
+  if (hero->draw_collision_bounds) {
+    dstrect.w = pixelsize;
+    dstrect.y = pixelsize * fn_hero_get_y(hero);
+    dstrect.x = pixelsize * fn_hero_get_x(hero);
+    dstrect.h = pixelsize * fn_hero_get_h(hero);
+    SDL_FillRect(target, &dstrect,
+        FN_COLLISION_DEBUG_COLOR(target->format));
+    dstrect.x = (fn_hero_get_x(hero) + fn_hero_get_w(hero) - 1) *
+      pixelsize;
+    SDL_FillRect(target, &dstrect,
+        FN_COLLISION_DEBUG_COLOR(target->format));
+    dstrect.x = fn_hero_get_x(hero) * pixelsize;
+    dstrect.y = fn_hero_get_y(hero) * pixelsize;
+    dstrect.h = pixelsize;
+    dstrect.w = fn_hero_get_w(hero) * pixelsize;
+    SDL_FillRect(target, &dstrect,
+        FN_COLLISION_DEBUG_COLOR(target->format));
+    dstrect.y = (fn_hero_get_y(hero) + fn_hero_get_h(hero) - 1) *
+      pixelsize;
+    SDL_FillRect(target, &dstrect,
+        FN_COLLISION_DEBUG_COLOR(target->format));
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -528,7 +553,7 @@ void fn_hero_set_x(
 {
   if (x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
   {
-    hero->x = x;
+    hero->position.x = x;
   }
 }
 
@@ -537,7 +562,7 @@ void fn_hero_set_x(
 Uint32 fn_hero_get_x(
     fn_hero_t * hero)
 {
-  return hero->x;
+  return hero->position.x;
 }
 
 /* --------------------------------------------------------------- */
@@ -547,7 +572,7 @@ void fn_hero_set_y(
 {
   if (y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
   {
-    hero->y = y;
+    hero->position.y = y;
   }
 }
 
@@ -556,7 +581,23 @@ void fn_hero_set_y(
 Uint32 fn_hero_get_y(
     fn_hero_t * hero)
 {
-  return hero->y;
+  return hero->position.y;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint16 fn_hero_get_w(
+    fn_hero_t * hero)
+{
+  return hero->position.w;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint16 fn_hero_get_h(
+    fn_hero_t * hero)
+{
+  return hero->position.h;
 }
 
 /* --------------------------------------------------------------- */
@@ -568,6 +609,37 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
   if (lv == NULL) {
     return 1;
   }
+
+  SDL_Rect herorect;
+  herorect.x = x;
+  herorect.y = y;
+  herorect.w = hero->position.w;
+  herorect.h = hero->position.h;
+
+  Uint16 i = 0;
+  Uint16 j = 0;
+
+  for (i = x - FN_TILE_WIDTH;
+      i < x + FN_TILE_WIDTH;
+      i += FN_TILE_WIDTH) {
+    for (j = y - FN_TILE_HEIGHT * 2;
+        j < FN_TILE_HEIGHT;
+        j += FN_TILE_HEIGHT) {
+      if (fn_level_is_solid(lv, i, j))
+      {
+        SDL_Rect obstacle;
+        obstacle.x = i;
+        obstacle.y = j;
+        obstacle.w = FN_TILE_WIDTH;
+        obstacle.h = FN_TILE_HEIGHT;
+
+        if (fn_collision_rect(&herorect, &obstacle)) {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
 
   /* FIXME Trying new collision detection...
   SDL_Rect herorect;
@@ -602,6 +674,7 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
   return 0;
   */
 
+  /* TODO this is the original implementation
   if (x < 0 || x > FN_LEVEL_WIDTH * FN_TILE_WIDTH ||
       y < 0 || y > FN_LEVEL_HEIGHT * FN_TILE_HEIGHT) {
     return 1;
@@ -616,6 +689,7 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
       }
     }
   }
+  */
 
   return 0;
 }
@@ -693,6 +767,14 @@ Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero)
 void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter)
 {
   hero->fetchedletter = letter;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
+    Uint8 enable)
+{
+  hero->draw_collision_bounds = enable;
 }
 
 /* --------------------------------------------------------------- */

@@ -74,9 +74,9 @@
 
 /* --------------------------------------------------------------- */
 
-#define FN_DEFAULT_PIXELSIZE     2
-#define FN_DEFAULT_FULLSCREEN    0
-#define FN_DEFAULT_DRAWCOLLISION 0
+#define FN_DEFAULT_PIXELSIZE           2
+#define FN_DEFAULT_FULLSCREEN          0
+#define FN_DEFAULT_DRAWCOLLISIONBOUNDS 0
 
 /* --------------------------------------------------------------- */
 
@@ -104,6 +104,11 @@
 /* --------------------------------------------------------------- */
 
 #define FN_SURFACE_FLAGS (SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT)
+
+/* --------------------------------------------------------------- */
+
+#define FN_COLLISION_DEBUG_COLOR(format) SDL_MapRGB(format, \
+    182, 6, 0)
 
 /* --------------------------------------------------------------- */
 

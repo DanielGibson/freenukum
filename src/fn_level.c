@@ -74,6 +74,7 @@ fn_level_t * fn_level_load(int fd,
       0,
       0,
       0);
+  lv->draw_collision_bounds = 0;
 
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
@@ -1239,3 +1240,17 @@ fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
   }
   return ret;
 }
+
+/* --------------------------------------------------------------- */
+
+void fn_level_set_draw_collision_bounds(fn_level_t * lv,
+    Uint8 enable)
+{
+  lv->draw_collision_bounds = enable;
+  if (lv->hero != NULL) {
+    fn_hero_set_draw_collision_bounds(lv->hero, enable);
+  }
+}
+
+/* --------------------------------------------------------------- */
+

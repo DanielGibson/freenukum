@@ -214,6 +214,11 @@ int fn_game_start_in_level(
   int doupdate = 1;
   int x = 0;
   int y = 0;
+  Uint8 draw_collision_bounds = 0;
+
+  fn_settings_get_bool(settings, "draw_collision_bounds",
+      &draw_collision_bounds);
+
   SDL_Surface * level = SDL_CreateRGBSurface(
             screen->flags,
             FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
@@ -303,6 +308,10 @@ int fn_game_start_in_level(
     goto cleanup;
   }
   close(fd);
+
+  if (draw_collision_bounds) {
+    fn_level_set_draw_collision_bounds(lv, draw_collision_bounds);
+  }
 
   dstrect.x = FN_TILE_WIDTH * pixelsize;
   dstrect.y = FN_TILE_HEIGHT * pixelsize;

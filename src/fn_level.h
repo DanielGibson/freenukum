@@ -132,6 +132,11 @@ struct fn_level_t {
    * The actor with which the hero interacts.
    */
   fn_actor_t * interactor;
+
+  /**
+   * Draw collision bounds for debugging.
+   */
+  Uint8 draw_collision_bounds;
 };
 
 /* --------------------------------------------------------------- */
@@ -392,6 +397,18 @@ void fn_level_fire_shot(fn_level_t * lv);
  */
 fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
     fn_actor_type_e type);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Enable or disable the debug drawing of collision bounds
+ * for a level.
+ *
+ * @param  lv      The level.
+ * @param  enable  If 1, enable drawing. If 0, disable drawing.
+ */
+void fn_level_set_draw_collision_bounds(fn_level_t * lv,
+    Uint8 enable);
 
 /* --------------------------------------------------------------- */
 

@@ -139,6 +139,7 @@ int main(int argc, char ** argv)
 
   long int pixelsize; /* pixel size */
   Uint8 fullscreen; /* Play fullscreen? */
+  Uint8 draw_collision_bounds = 0; /* draw collision bounds? */
 
   fn_tilecache_t tilecache; /* the main tilecache */
 
@@ -223,10 +224,8 @@ int main(int argc, char ** argv)
       &pixelsize, FN_DEFAULT_PIXELSIZE);
   fn_settings_get_bool_with_default(settings, "fullscreen",
       &fullscreen, FN_DEFAULT_FULLSCREEN);
-  /* FIXME currently unused
-  fn_settings_get_bool_with_default(settings, "drawcollision",
-      &drawcollision, FN_DEFAULT_DRAWCOLLISION);
-      */
+  fn_settings_get_bool_with_default(settings, "draw_collision_bounds",
+      &draw_collision_bounds, FN_DEFAULT_DRAWCOLLISIONBOUNDS);
 
   if (fullscreen) {
     videoflags |= SDL_FULLSCREEN;
