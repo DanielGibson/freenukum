@@ -525,7 +525,7 @@ void fn_hero_jump(
 void fn_hero_set_x(
     fn_hero_t * hero, Uint32 x)
 {
-  if (hero->x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
+  if (x < FN_LEVEL_WIDTH * FN_TILE_WIDTH)
   {
     hero->x = x;
   }
@@ -544,7 +544,7 @@ Uint32 fn_hero_get_x(
 void fn_hero_set_y(
     fn_hero_t * hero, Uint32 y)
 {
-  if (hero->y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
+  if (y < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
   {
     hero->y = y;
   }
