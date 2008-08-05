@@ -27,7 +27,7 @@ if test "x$enable_sdlttf" = "xyes"; then
       [ sdlttf_lib="no" ])
   if test "x$sdlttf_headers" = "xyes" -a "x$sdlttf_lib" = "xyes"; then
     have_sdlttf="yes"
-    LDFLAGS="$LDFLAGS -lSDL_ttf"
+    LIBS="$LIBS -lSDL_ttf"
   else
     have_sdlttf="no"
   fi
@@ -40,7 +40,7 @@ LIBCURL_CHECK_CONFIG(curl,,
                      [have_curl="yes"],
                      [have_curl="no"])
 if test "x$have_curl" = "xyes"; then
-  LDFLAGS="$LDFLAGS $LIBCURL"
+  LIBS="$LIBS $LIBCURL"
 fi
 
 dnl #
@@ -52,7 +52,7 @@ PKG_CHECK_MODULES(LIBZIP, libzip,
 if test "x$have_libzip" = "xyes"; then
   AC_DEFINE([HAVE_LIBZIP], [1], [Define to 1 if libzip is available])
   CFLAGS="$CFLAGS $LIBZIP_CFLAGS"
-  LDFLAGS="$LDFLAGS $LIBZIP_LIBS"
+  LIBS="$LIBS $LIBZIP_LIBS"
 fi
 
 dnl #---------------------------------------------------------------
@@ -73,8 +73,8 @@ fi
 AC_CHECK_PROG(CONVERT, convert, "yes", "no", [$PATH])
 AM_CONDITIONAL(CREATEICONS, test x"$CONVERT" = xyes)
 
-CFLAGS="$CFLAGS -Wall -Werror "`sdl-config --cflags`
-LDFLAGS="$LDFLAGS "`sdl-config --libs`
+CFLAGS="$CFLAGS "`sdl-config --cflags`
+LIBS="$LIBS `sdl-config --libs`"
 
 AC_CONFIG_HEADER(src/config.h)
 
