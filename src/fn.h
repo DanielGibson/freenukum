@@ -76,6 +76,7 @@
 
 #define FN_DEFAULT_PIXELSIZE     2
 #define FN_DEFAULT_FULLSCREEN    0
+#define FN_DEFAULT_DRAWCOLLISION 0
 
 /* --------------------------------------------------------------- */
 

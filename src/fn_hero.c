@@ -34,6 +34,7 @@
 #include "fn_object.h"
 #include "fn.h"
 #include "fn_level.h"
+#include "fn_collision.h"
 
 /* --------------------------------------------------------------- */
 
@@ -567,6 +568,40 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
   if (lv == NULL) {
     return 1;
   }
+
+  /* FIXME Trying new collision detection...
+  SDL_Rect herorect;
+  herorect.x = x - FN_HALFTILE_WIDTH;
+  herorect.y = y - FN_HALFTILE_HEIGHT;
+  herorect.w = FN_TILE_WIDTH;
+  herorect.h = FN_TILE_HEIGHT * 2;
+
+  Uint32 x_start = herorect.x / FN_TILE_WIDTH - 1;
+  Uint32 y_start = herorect.y / FN_TILE_HEIGHT - 2;
+
+  SDL_Rect solidrect;
+  solidrect.w = FN_TILE_WIDTH;
+  solidrect.h = FN_TILE_HEIGHT;
+
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 4; j++) {
+      if (fn_level_is_solid(lv,
+            x_start + i,
+            y_start + j)) {
+        solidrect.x = (x_start + i) * FN_TILE_WIDTH;
+        solidrect.y = (y_start + i) * FN_TILE_HEIGHT;
+
+        if (fn_collision_rect(&herorect, &solidrect)) {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
+  */
+
   if (x < 0 || x > FN_LEVEL_WIDTH * FN_TILE_WIDTH ||
       y < 0 || y > FN_LEVEL_HEIGHT * FN_TILE_HEIGHT) {
     return 1;

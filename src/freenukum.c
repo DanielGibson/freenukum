@@ -223,6 +223,10 @@ int main(int argc, char ** argv)
       &pixelsize, FN_DEFAULT_PIXELSIZE);
   fn_settings_get_bool_with_default(settings, "fullscreen",
       &fullscreen, FN_DEFAULT_FULLSCREEN);
+  /* FIXME currently unused
+  fn_settings_get_bool_with_default(settings, "drawcollision",
+      &drawcollision, FN_DEFAULT_DRAWCOLLISION);
+      */
 
   if (fullscreen) {
     videoflags |= SDL_FULLSCREEN;
