@@ -31,6 +31,7 @@
 #include "fn_object.h"
 #include "fn_infobox.h"
 #include "fn_error_cmdline.h"
+#include "fn_collision.h"
 
 /* --------------------------------------------------------------- */
 
@@ -7653,32 +7654,9 @@ void fn_actor_free(fn_actor_t * actor)
 
 int fn_actor_touches_hero(fn_actor_t * actor)
 {
-  Uint32 hero_x =
-    fn_hero_get_x(fn_level_get_hero(actor->level));
-  Uint32 hero_y =
-    (fn_hero_get_y(fn_level_get_hero(actor->level))-FN_TILE_HEIGHT);
-  Uint32 hero_w = FN_TILE_WIDTH;
-  Uint32 hero_h = FN_TILE_HEIGHT * 2;
-
-  if ((hero_x + hero_w) <= (actor->x)) {
-    /* hero is left of actor */
-    return 0;
-  }
-  if ((hero_x) >= (actor->x + actor->w)) {
-    /* hero is right of actor */
-    return 0;
-  }
-  if ((hero_y + hero_h) <= (actor->y)) {
-    /* hero is above actor */
-    return 0;
-  }
-  if ((hero_y) >= (actor->y + actor->h)) {
-    /* hero is below actor */
-    return 0;
-  }
-
-  /* in any other case, the hero touches the actor. */
-  return 1;
+  fn_hero_t * hero = fn_level_get_hero(actor->level);
+  return(fn_collision_rect_area(&(hero->position),
+        actor->x, actor->y, actor->w, actor->h));
 }
 
 /* --------------------------------------------------------------- */
