@@ -7763,6 +7763,12 @@ void fn_actor_blit(fn_actor_t * actor)
     fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_BLIT];
   if (func != NULL) {
     func(actor);
+    SDL_Surface * target = fn_level_get_surface(actor->level);
+    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+    if (actor->draw_collision_bounds) {
+      fn_collision_area_draw(target, pixelsize,
+          actor->x, actor->y, actor->w, actor->h);
+    }
   }
 }
 
@@ -7822,3 +7828,14 @@ Uint8 fn_actor_in_foreground(fn_actor_t * actor)
 {
   return actor->is_in_foreground;
 }
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
+    Uint8 enable)
+{
+  actor->draw_collision_bounds = enable;
+}
+
+/* --------------------------------------------------------------- */
+

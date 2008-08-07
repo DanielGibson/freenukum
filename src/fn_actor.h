@@ -254,6 +254,11 @@ struct fn_actor_t {
    * of hero).
    */
   Uint8 is_in_foreground;
+
+  /**
+   * Draw collision bounds for debugging.
+   */
+  Uint8 draw_collision_bounds;
 };
 
 /* --------------------------------------------------------------- */
@@ -452,5 +457,18 @@ Uint8 fn_actor_can_get_shot(fn_actor_t * actor);
 Uint8 fn_actor_in_foreground(fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
+
+/**
+ * Enable or disable the debug drawing of collision bounds
+ * for an actor.
+ *
+ * @param  actor   The actor.
+ * @param  enable  If 1, enable drawing. If 0, disable drawing.
+ */
+void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
+    Uint8 enable);
+
+/* --------------------------------------------------------------- */
+
 
 #endif /* FN_ACTOR_H */

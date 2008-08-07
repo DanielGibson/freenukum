@@ -761,6 +761,7 @@ fn_level_t * fn_level_load(int fd,
       lv->tiles[cameray+1][camerax];
   }
   fn_list_free(cameras);
+
   return lv;
 }
 
@@ -1153,11 +1154,16 @@ fn_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
     Uint16 x,
     Uint16 y)
 {
-  return fn_level_add_actor(
+  fn_actor_t * actor = fn_level_add_actor(
       lv,
       type,
       x * FN_TILE_WIDTH,
       y * FN_TILE_HEIGHT);
+  if (lv->draw_collision_bounds) {
+    fn_actor_set_draw_collision_bounds(
+        actor, lv->draw_collision_bounds);
+  }
+  return actor;
 }
 
 /* --------------------------------------------------------------- */
