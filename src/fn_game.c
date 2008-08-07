@@ -599,7 +599,7 @@ int fn_game_start_in_level(
             case fn_event_herolanded:
               fn_level_add_actor(lv, FN_ACTOR_DUSTCLOUD,
                   fn_hero_get_x(hero),
-                  fn_hero_get_y(hero)
+                  fn_hero_get_y(hero) + FN_TILE_HEIGHT
                   );
               break;
             default:
