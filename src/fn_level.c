@@ -1216,7 +1216,7 @@ void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
   Uint32 x = fn_hero_get_x(hero);
-  Uint32 y = fn_hero_get_y(hero) - FN_HALFTILE_HEIGHT - 4;
+  Uint32 y = fn_hero_get_y(hero) + 4;
 
   if (hero->direction == fn_horizontal_direction_right) {
     x += FN_HALFTILE_WIDTH;
