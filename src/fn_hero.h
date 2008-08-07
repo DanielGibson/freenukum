@@ -164,6 +164,11 @@ struct fn_hero_t {
    * Indicates if the hero just turned around.
    */
   Uint8 turned_around;
+
+  /**
+   * Indicates if the hero is currently moving horizontally.
+   */
+  Uint8 is_moving_horizontally;
 };
 
 /* --------------------------------------------------------------- */
@@ -259,6 +264,11 @@ void fn_hero_set_direction(
 void fn_hero_set_motion(
     fn_hero_t * hero,
     Uint8 motion);
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_hero_is_moving_horizontally(
+    fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

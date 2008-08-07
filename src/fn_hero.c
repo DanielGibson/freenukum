@@ -74,6 +74,8 @@ void fn_hero_init(
   hero->draw_collision_bounds = 0;
 
   hero->turned_around = 0;
+
+  hero->is_moving_horizontally = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -219,6 +221,9 @@ int fn_hero_act(
                 )) {
             fn_hero_set_x(hero, fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
             heromoved = 1;
+            hero->is_moving_horizontally = 1;
+          } else {
+            hero->is_moving_horizontally = 0;
           }
           break;
         case fn_horizontal_direction_right:
@@ -229,6 +234,9 @@ int fn_hero_act(
             /* there is no solid block left of our hero */
             fn_hero_set_x(hero, fn_hero_get_x(hero) + FN_HALFTILE_WIDTH);
             heromoved = 1;
+            hero->is_moving_horizontally = 1;
+          } else {
+            hero->is_moving_horizontally = 0;
           }
           break;
         default:
@@ -440,6 +448,14 @@ void fn_hero_set_motion(
     Uint8 motion)
 {
   hero->motion = motion;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_hero_is_moving_horizontally(
+    fn_hero_t * hero)
+{
+  return hero->is_moving_horizontally;
 }
 
 /* --------------------------------------------------------------- */

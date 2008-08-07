@@ -363,7 +363,6 @@ int fn_game_start_in_level(
     if (res == 1) {
       switch(event.type) {
         case SDL_QUIT:
-          printf("window close desired\n");
           goto cleanup;
           break;
         case SDL_KEYDOWN:

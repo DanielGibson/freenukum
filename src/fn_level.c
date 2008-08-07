@@ -1214,19 +1214,30 @@ void fn_level_add_particle_firework(fn_level_t * lv,
 void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
-  Uint32 x = fn_hero_get_x(hero);
-  Uint32 y = fn_hero_get_y(hero) + 4;
-
-  if (hero->direction == fn_horizontal_direction_right) {
-    x += FN_HALFTILE_WIDTH;
-  } else {
-    x -= FN_HALFTILE_WIDTH;
-  }
 
   if (lv->num_shots < fn_hero_get_firepower(lv->hero)) {
+    SDL_Rect * position = fn_hero_get_position(hero);
+    Uint32 x = 0;
+    Uint32 y = 0;
+    int direction = 0;
+
+    if (hero->direction == fn_horizontal_direction_right) {
+      x = position->x + position->w;
+      direction = 1;
+    } else {
+      x = position->x - FN_TILE_WIDTH;
+      direction = -1;
+    }
+    y = position->y + 4;
+
+    if (fn_hero_is_moving_horizontally(hero)) {
+      x += direction * FN_TILE_WIDTH;
+    }
+
     fn_level_add_shot(lv, hero->direction, x, y);
     lv->num_shots++;
   }
+
 }
 
 /* --------------------------------------------------------------- */
