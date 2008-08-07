@@ -7631,6 +7631,7 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
   actor->is_alive = 1;
   actor->touches_hero = 0;
   actor->is_in_foreground = 0;
+  actor->draw_collision_bounds = 0;
   func = fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_CREATE];
   if (func != NULL) {
     func(actor);

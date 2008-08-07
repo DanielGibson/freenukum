@@ -1144,6 +1144,9 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 {
   fn_actor_t * actor = fn_actor_create(lv, type, x, y);
   lv->actors = fn_list_append(lv->actors, actor);
+
+  fn_actor_set_draw_collision_bounds(
+      actor, lv->draw_collision_bounds);
   return actor;
 }
 
@@ -1159,10 +1162,6 @@ fn_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
       type,
       x * FN_TILE_WIDTH,
       y * FN_TILE_HEIGHT);
-  if (lv->draw_collision_bounds) {
-    fn_actor_set_draw_collision_bounds(
-        actor, lv->draw_collision_bounds);
-  }
   return actor;
 }
 
@@ -1256,6 +1255,15 @@ void fn_level_set_draw_collision_bounds(fn_level_t * lv,
   lv->draw_collision_bounds = enable;
   if (lv->hero != NULL) {
     fn_hero_set_draw_collision_bounds(lv->hero, enable);
+  }
+  fn_list_t * iter = NULL;
+  
+  for (iter = fn_list_first(lv->actors);
+      iter != fn_list_last(lv->actors);
+      iter = fn_list_next(iter)) {
+    fn_actor_t * actor = iter->data;
+    fn_actor_set_draw_collision_bounds(
+        actor, lv->draw_collision_bounds);
   }
 }
 
