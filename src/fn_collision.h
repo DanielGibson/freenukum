@@ -84,6 +84,42 @@ int fn_collision_rect_area(SDL_Rect * rect,
 /* --------------------------------------------------------------- */
 
 /**
+ * Check if two areas touch each other.
+ *
+ * @param  x1    The x coordinate of the first area.
+ * @param  y1    The y coordinate of the first area.
+ * @param  w1    The width of the first area.
+ * @param  h1    The height of the first area.
+ * @param  x2    The x coordinate of the second area.
+ * @param  y2    The y coordinate of the second area.
+ * @param  w2    The width of the second area.
+ * @param  h2    The height of the second area.
+ *
+ * @return 1 if the rectangles touch, otherwise 0.
+ */
+int fn_collision_touch_area_area(
+    Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
+    Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if an area and a rectangle touch each other.
+ *
+ * @param  rect    The rectangle.
+ * @param  x     The x coordinate of the area.
+ * @param  y     The y coordinate of the area.
+ * @param  w     The width of the area.
+ * @param  h     The height of the area.
+ *
+ * @return 1 if the rectangle and the area touch, otherwise 0.
+ */
+int fn_collision_touch_rect_area(SDL_Rect * rect,
+    Uint32 x, Uint32 y, Uint32 w, Uint32 h);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Debug drawing function for a collision area.
  *
  * @param  destination  The surface on which to draw.

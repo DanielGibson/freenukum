@@ -2658,7 +2658,7 @@ void fn_actor_function_item_shot(fn_actor_t * actor)
     case FN_ACTOR_BOX_BLUE_BALLOON:
       actor->is_alive = 0;
       fn_level_add_actor(lv, FN_ACTOR_BALLOON,
-          actor->x, actor->y);
+          actor->x, actor->y - FN_TILE_HEIGHT);
       fn_level_add_particle_firework(
           actor->level, actor->x, actor->y, 4);
       break;
@@ -3468,6 +3468,8 @@ void fn_actor_bombfire_create(fn_actor_t * actor)
 {
   fn_actor_bombfire_data_t * data = malloc(
       sizeof(fn_actor_bombfire_data_t));
+  actor->w = FN_TILE_WIDTH;
+  actor->h = FN_TILE_HEIGHT;
   actor->data = data;
   data->tile = ANIM_BOMBFIRE;
   data->current_frame = 0;
@@ -3904,11 +3906,10 @@ void fn_actor_function_unstablefloor_touch_start(fn_actor_t * actor)
 {
   fn_actor_unstablefloor_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (fn_hero_get_x(hero) >=
-      actor->x &&
-      fn_hero_get_x(hero)  <
-      actor->x + actor->w) {
-
+  if (fn_collision_touch_rect_area(
+        fn_hero_get_position(hero),
+        actor->x, actor->y, actor->w, actor->h))
+  {
     if (!data->touched) {
       data->touching = 1;
     } else {
@@ -3957,13 +3958,9 @@ void fn_actor_function_unstablefloor_act(fn_actor_t * actor)
     actor->h = FN_TILE_HEIGHT;
   }
 
-  if (
-      /* hero is right of leftend */
-      fn_hero_get_x(hero) >= actor->x &&
-      /* hero is left of rightend */
-      fn_hero_get_x(hero) < actor->x + actor->w &&
-      /* hero is directly above floor */
-      fn_hero_get_y(hero) + FN_TILE_HEIGHT == actor->y)
+  if (fn_collision_touch_rect_area(
+        fn_hero_get_position(hero),
+        actor->x, actor->y, actor->w, actor->h))
   {
     if (data->touched) {
       floorlength = 0;
@@ -7634,7 +7631,9 @@ void fn_actor_free(fn_actor_t * actor)
 int fn_actor_touches_hero(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  return(fn_collision_rect_area(&(hero->position),
+  return(
+      fn_collision_rect_area(
+        fn_hero_get_position(hero),
         actor->x, actor->y, actor->w, actor->h));
 }
 

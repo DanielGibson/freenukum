@@ -111,3 +111,23 @@ void fn_collision_rect_draw(SDL_Surface * destination,
 
 /* --------------------------------------------------------------- */
 
+int fn_collision_touch_area_area(
+    Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
+    Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2)
+{
+  int ret = fn_collision_areas(x1, y1, w1 + 1, h1 + 1,
+      x2, y2, w2 + 1, h2 + 1);
+  return ret;
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_collision_touch_rect_area(SDL_Rect * rect,
+    Uint32 x, Uint32 y, Uint32 w, Uint32 h)
+{
+  return fn_collision_touch_area_area(
+      x, y, w, h,
+      rect->x, rect->y, rect->w, rect->h);
+}
+
+/* --------------------------------------------------------------- */

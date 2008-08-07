@@ -518,4 +518,15 @@ void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the current position of the hero.
+ *
+ * @param  hero  The hero.
+ *
+ * @return The current position.
+ */
+SDL_Rect * fn_hero_get_position(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */

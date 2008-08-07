@@ -796,3 +796,8 @@ void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
 }
 
 /* --------------------------------------------------------------- */
+
+SDL_Rect * fn_hero_get_position(fn_hero_t * hero)
+{
+  return &(hero->position);
+}
