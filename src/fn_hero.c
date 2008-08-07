@@ -109,7 +109,8 @@ void fn_hero_enterlevel(
 void fn_hero_blit(fn_hero_t * hero,
     SDL_Surface * target,
     fn_tilecache_t * tilecache,
-    Uint8 pixelsize)
+    Uint8 pixelsize,
+    fn_level_t * level)
 {
   SDL_Rect dstrect;
   int tilenr;
@@ -154,6 +155,30 @@ void fn_hero_blit(fn_hero_t * hero,
 
   if (hero->draw_collision_bounds) {
     fn_collision_rect_draw(target, pixelsize, &(hero->position));
+
+    Uint16 i = 0;
+    Uint16 j = 0;
+
+    for (i = hero->position.x - FN_TILE_WIDTH;
+        i < hero->position.x + FN_TILE_WIDTH * 2;
+        i += FN_TILE_WIDTH) {
+      for (j = hero->position.y - FN_TILE_HEIGHT;
+          j < hero->position.y + FN_TILE_HEIGHT * 3;
+          j += FN_TILE_HEIGHT) {
+        Uint16 tile_x = i / FN_TILE_WIDTH;
+        Uint16 tile_y = j / FN_TILE_HEIGHT;
+        if (fn_level_is_solid(level, tile_x, tile_y))
+        {
+          SDL_Rect obstacle;
+          obstacle.x = tile_x * FN_TILE_WIDTH;
+          obstacle.y = tile_y * FN_TILE_HEIGHT;
+          obstacle.w = FN_TILE_WIDTH;
+          obstacle.h = FN_TILE_HEIGHT;
+
+          fn_collision_rect_draw(target, pixelsize, &obstacle);
+        }
+      }
+    }
   }
 }
 
@@ -601,16 +626,18 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
   Uint16 j = 0;
 
   for (i = x - FN_TILE_WIDTH;
-      i < x + FN_TILE_WIDTH;
+      i < x + FN_TILE_WIDTH * 2;
       i += FN_TILE_WIDTH) {
-    for (j = y - FN_TILE_HEIGHT * 2;
-        j < FN_TILE_HEIGHT;
+    for (j = y - FN_TILE_HEIGHT;
+        j < y + FN_TILE_HEIGHT * 3;
         j += FN_TILE_HEIGHT) {
-      if (fn_level_is_solid(lv, i, j))
+      Uint16 tile_x = i / FN_TILE_WIDTH;
+      Uint16 tile_y = j / FN_TILE_HEIGHT;
+      if (fn_level_is_solid(lv, tile_x, tile_y))
       {
         SDL_Rect obstacle;
-        obstacle.x = i;
-        obstacle.y = j;
+        obstacle.x = tile_x * FN_TILE_WIDTH;
+        obstacle.y = tile_y * FN_TILE_HEIGHT;
         obstacle.w = FN_TILE_WIDTH;
         obstacle.h = FN_TILE_HEIGHT;
 

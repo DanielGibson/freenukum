@@ -171,7 +171,8 @@ void fn_hero_blit(
     fn_hero_t * hero,
     SDL_Surface * target,
     fn_tilecache_t * tilecache,
-    Uint8 pixelsize);
+    Uint8 pixelsize,
+    fn_level_t * level);
 
 /* --------------------------------------------------------------- */
 

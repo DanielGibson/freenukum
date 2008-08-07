@@ -942,7 +942,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   fn_hero_blit(lv->hero,
       lv->surface,
       lv->tilecache,
-      lv->pixelsize);
+      lv->pixelsize,
+      lv);
 
   /* blit the actors in the foreground */
   for (iter = fn_list_first(lv->actors);

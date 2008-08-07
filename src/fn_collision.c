@@ -44,26 +44,22 @@ int fn_collision_areas(
     Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
     Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2)
 {
-  if (x1 + w1 < x2)
+  if (x1 + w1 <= x2)
   {
     return 0;
   }
-  if (x2 + w2 < x1)
+  if (x2 + w2 <= x1)
   {
     return 0;
   }
-  if (y1 + h1 < y2)
+  if (y1 + h1 <= y2)
   {
     return 0;
   }
-  if (y2 + h2 < y1)
+  if (y2 + h2 <= y1)
   {
     return 0;
   }
-  printf("Rect1: x%d, y%d, w%d, h%d\n"
-      "Rect2: x%d, y%d, w%d, h%d\n",
-      x1, y1, w1, h1,
-      x2, y2, w2, h2);
   return 1;
 }
 
