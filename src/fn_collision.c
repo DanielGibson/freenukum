@@ -26,6 +26,7 @@
  *
  *******************************************************************/
 
+#include "fn.h"
 #include "fn_collision.h"
 
 /* --------------------------------------------------------------- */
@@ -80,13 +81,37 @@ int fn_collision_rect_area(SDL_Rect * rect,
 
 void fn_collision_area_draw(SDL_Surface * destination,
     Uint8 pixelsize,
-    Uint32 x, Uint32 y, Uint32 w, Uint32 h);
+    Uint32 x, Uint32 y, Uint32 w, Uint32 h)
+{
+  Uint32 color = FN_COLLISION_DEBUG_COLOR(destination->format);
+  SDL_Rect destrect;
+
+  destrect.x = pixelsize * x;
+  destrect.y = pixelsize * y;
+  destrect.w = pixelsize;
+  destrect.h = pixelsize * h;
+
+  SDL_FillRect(destination, &destrect, color);
+  destrect.x += (w - 1) * pixelsize;
+  SDL_FillRect(destination, &destrect, color);
+  destrect.x = x * pixelsize;
+  destrect.y = y * pixelsize;
+  destrect.h = pixelsize;
+  destrect.w = w * pixelsize;
+  SDL_FillRect(destination, &destrect, color);
+  destrect.y = (y + h - 1) * pixelsize;
+  SDL_FillRect(destination, &destrect, color);
+}
 
 /* --------------------------------------------------------------- */
 
 void fn_collision_rect_draw(SDL_Surface * destination,
     Uint8 pixelsize,
-    SDL_Rect * rect);
+    SDL_Rect * rect)
+{
+  fn_collision_area_draw(destination, pixelsize,
+      rect->x, rect->y, rect->w, rect->h);
+}
 
 /* --------------------------------------------------------------- */
 

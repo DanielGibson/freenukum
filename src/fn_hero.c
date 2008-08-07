@@ -122,7 +122,7 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  dstrect.x = pixelsize * fn_hero_get_x(hero);
+  dstrect.x = pixelsize * (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
   dstrect.y = pixelsize * fn_hero_get_y(hero);
   dstrect.w = pixelsize * fn_hero_get_w(hero);
   dstrect.h = pixelsize * fn_hero_get_h(hero);
@@ -153,26 +153,7 @@ void fn_hero_blit(fn_hero_t * hero,
   SDL_BlitSurface(tile, NULL, target, &dstrect);
 
   if (hero->draw_collision_bounds) {
-    dstrect.w = pixelsize;
-    dstrect.y = pixelsize * fn_hero_get_y(hero);
-    dstrect.x = pixelsize * fn_hero_get_x(hero);
-    dstrect.h = pixelsize * fn_hero_get_h(hero);
-    SDL_FillRect(target, &dstrect,
-        FN_COLLISION_DEBUG_COLOR(target->format));
-    dstrect.x = (fn_hero_get_x(hero) + fn_hero_get_w(hero) - 1) *
-      pixelsize;
-    SDL_FillRect(target, &dstrect,
-        FN_COLLISION_DEBUG_COLOR(target->format));
-    dstrect.x = fn_hero_get_x(hero) * pixelsize;
-    dstrect.y = fn_hero_get_y(hero) * pixelsize;
-    dstrect.h = pixelsize;
-    dstrect.w = fn_hero_get_w(hero) * pixelsize;
-    SDL_FillRect(target, &dstrect,
-        FN_COLLISION_DEBUG_COLOR(target->format));
-    dstrect.y = (fn_hero_get_y(hero) + fn_hero_get_h(hero) - 1) *
-      pixelsize;
-    SDL_FillRect(target, &dstrect,
-        FN_COLLISION_DEBUG_COLOR(target->format));
+    fn_collision_rect_draw(target, pixelsize, &(hero->position));
   }
 }
 
