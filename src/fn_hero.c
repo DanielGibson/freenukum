@@ -71,6 +71,9 @@ void fn_hero_init(
   hero->immunitycountdown = 0;
   hero->immunityduration = 16;
   hero->hurtingactors = NULL;
+  hero->draw_collision_bounds = 0;
+
+  hero->turned_around = 0;
 }
 
 /* --------------------------------------------------------------- */
@@ -205,29 +208,33 @@ int fn_hero_act(
 
   if (hero->motion == FN_HERO_MOTION_WALKING) {
     /* our hero is moving */
-    switch(hero->direction) {
-      case fn_horizontal_direction_left:
-        if (!fn_hero_would_collide(hero, lv,
-              fn_hero_get_x(hero) - FN_HALFTILE_WIDTH,
-              fn_hero_get_y(hero)
-              )) {
-          fn_hero_set_x(hero, fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
-          heromoved = 1;
-        }
-        break;
-      case fn_horizontal_direction_right:
-        if (!fn_hero_would_collide(hero, lv,
-              fn_hero_get_x(hero) + FN_HALFTILE_WIDTH,
-              fn_hero_get_y(hero)
-              )) {
-          /* there is no solid block left of our hero */
-          fn_hero_set_x(hero, fn_hero_get_x(hero) + FN_HALFTILE_WIDTH);
-          heromoved = 1;
-        }
-        break;
-      default:
-        /* do nothing else */
-        break;
+    if (hero->turned_around) {
+      hero->turned_around = 0;
+    } else {
+      switch(hero->direction) {
+        case fn_horizontal_direction_left:
+          if (!fn_hero_would_collide(hero, lv,
+                fn_hero_get_x(hero) - FN_HALFTILE_WIDTH,
+                fn_hero_get_y(hero)
+                )) {
+            fn_hero_set_x(hero, fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
+            heromoved = 1;
+          }
+          break;
+        case fn_horizontal_direction_right:
+          if (!fn_hero_would_collide(hero, lv,
+                fn_hero_get_x(hero) + FN_HALFTILE_WIDTH,
+                fn_hero_get_y(hero)
+                )) {
+            /* there is no solid block left of our hero */
+            fn_hero_set_x(hero, fn_hero_get_x(hero) + FN_HALFTILE_WIDTH);
+            heromoved = 1;
+          }
+          break;
+        default:
+          /* do nothing else */
+          break;
+      }
     }
   }
 
@@ -420,7 +427,10 @@ void fn_hero_set_direction(
     fn_hero_t * hero,
     fn_horizontal_direction_e direction)
 {
-  hero->direction = direction;
+  if (hero->direction != direction) {
+    hero->turned_around = 1;
+    hero->direction = direction;
+  }
 }
 
 /* --------------------------------------------------------------- */

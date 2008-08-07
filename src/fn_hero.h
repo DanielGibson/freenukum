@@ -159,6 +159,11 @@ struct fn_hero_t {
    * Draw collision bounds for debugging.
    */
   Uint8 draw_collision_bounds;
+
+  /**
+   * Indicates if the hero just turned around.
+   */
+  Uint8 turned_around;
 };
 
 /* --------------------------------------------------------------- */
