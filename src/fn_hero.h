@@ -540,7 +540,7 @@ SDL_Rect * fn_hero_get_position(fn_hero_t * hero);
 /* --------------------------------------------------------------- */
 
 /**
- * Try to push the hero to a direction by a given offset.
+ * Try to push the hero to a horizontal direction by a given offset.
  *
  * @param  hero       The hero.
  * @param  level      The level inside which the hero currently is.
@@ -548,7 +548,8 @@ SDL_Rect * fn_hero_get_position(fn_hero_t * hero);
  *
  * @return  The offset by which the hero finally could be moved.
  */
-Sint8 fn_hero_push(fn_hero_t * hero, fn_level_t * level, Sint8 offset);
+Sint8 fn_hero_push_horizontally(
+    fn_hero_t * hero, fn_level_t * level, Sint8 offset);
 
 /* --------------------------------------------------------------- */
 

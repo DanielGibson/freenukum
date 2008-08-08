@@ -820,7 +820,8 @@ SDL_Rect * fn_hero_get_position(fn_hero_t * hero)
 
 /* --------------------------------------------------------------- */
 
-Sint8 fn_hero_push(fn_hero_t * hero, fn_level_t * level, Sint8 offset)
+Sint8 fn_hero_push_horizontally(
+    fn_hero_t * hero, fn_level_t * level, Sint8 offset)
 {
   if (offset == 0) {
     return 0;

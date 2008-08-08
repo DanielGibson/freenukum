@@ -5228,7 +5228,7 @@ void fn_actor_function_fan_act(fn_actor_t * actor)
       Uint16 hdistance_abs =
         (hdistance > 0 ? hdistance : -hdistance);
       if (hdistance_abs < 8 * FN_HALFTILE_WIDTH) {
-        fn_hero_push(
+        fn_hero_push_horizontally(
             hero,
             actor->level,
             fandirection * FN_TILE_WIDTH);
