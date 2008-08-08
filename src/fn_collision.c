@@ -31,16 +31,16 @@
 
 /* --------------------------------------------------------------- */
 
-int fn_collision_rect(SDL_Rect * r1, SDL_Rect * r2)
+int fn_collision_overlap_rect_rect(SDL_Rect * r1, SDL_Rect * r2)
 {
-  return fn_collision_areas(
+  return fn_collision_overlap_area_area(
       r1->x, r1->y, r1->w, r1->h,
       r2->x, r2->y, r2->w, r2->h);
 }
 
 /* --------------------------------------------------------------- */
 
-int fn_collision_areas(
+int fn_collision_overlap_area_area(
     Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
     Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2)
 {
@@ -65,10 +65,10 @@ int fn_collision_areas(
 
 /* --------------------------------------------------------------- */
 
-int fn_collision_rect_area(SDL_Rect * rect,
+int fn_collision_overlap_rect_area(SDL_Rect * rect,
     Uint32 x, Uint32 y, Uint32 w, Uint32 h)
 {
-  return fn_collision_areas(
+  return fn_collision_overlap_area_area(
       rect->x, rect->y, rect->w, rect->h,
       x, y, w, h);
 }
@@ -115,7 +115,7 @@ int fn_collision_touch_area_area(
     Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
     Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2)
 {
-  int ret = fn_collision_areas(x1, y1, w1 + 1, h1 + 1,
+  int ret = fn_collision_overlap_area_area(x1, y1, w1 + 1, h1 + 1,
       x2, y2, w2 + 1, h2 + 1);
   return ret;
 }

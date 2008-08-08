@@ -43,7 +43,7 @@
  *
  * @return 1 if the rectangles overlap, otherwise 0.
  */
-int fn_collision_rect(SDL_Rect * r1, SDL_Rect * r2);
+int fn_collision_overlap_rect_rect(SDL_Rect * r1, SDL_Rect * r2);
 
 /* --------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ int fn_collision_rect(SDL_Rect * r1, SDL_Rect * r2);
  *
  * @return 1 if the areas overalp, otherwise 0.
  */
-int fn_collision_areas(
+int fn_collision_overlap_area_area(
     Uint32 x1, Uint32 y1, Uint32 w1, Uint32 h1,
     Uint32 x2, Uint32 y2, Uint32 w2, Uint32 h2);
 
@@ -78,7 +78,7 @@ int fn_collision_areas(
  *
  * @return 1 if the rectangle overalps the area, otherwise 0.
  */
-int fn_collision_rect_area(SDL_Rect * rect,
+int fn_collision_overlap_rect_area(SDL_Rect * rect,
     Uint32 x, Uint32 y, Uint32 w, Uint32 h);
 
 /* --------------------------------------------------------------- */

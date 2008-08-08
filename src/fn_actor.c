@@ -7632,7 +7632,7 @@ int fn_actor_touches_hero(fn_actor_t * actor)
 {
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   return(
-      fn_collision_rect_area(
+      fn_collision_overlap_rect_area(
         fn_hero_get_position(hero),
         actor->x, actor->y, actor->w, actor->h));
 }

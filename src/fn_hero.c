@@ -667,7 +667,7 @@ int fn_hero_would_collide(fn_hero_t * hero, void * level,
         obstacle.w = FN_TILE_WIDTH;
         obstacle.h = FN_TILE_HEIGHT;
 
-        if (fn_collision_rect(&herorect, &obstacle)) {
+        if (fn_collision_overlap_rect_rect(&herorect, &obstacle)) {
           return 1;
         }
       }
