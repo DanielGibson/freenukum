@@ -817,3 +817,67 @@ SDL_Rect * fn_hero_get_position(fn_hero_t * hero)
 {
   return &(hero->position);
 }
+
+/* --------------------------------------------------------------- */
+
+Sint8 fn_hero_push(fn_hero_t * hero, fn_level_t * level, Sint8 offset)
+{
+  if (offset == 0) {
+    return 0;
+  }
+  hero->position.x += offset;
+
+  if (!fn_hero_collides_with_solid(hero, level)) {
+    /* no solids in the way */
+    return offset;
+  }
+
+  /* there was a solid in the way */
+  Uint8 offset_abs = (offset < 0 ? -offset : offset);
+  Sint8 direction = offset / offset_abs;
+
+  Uint8 i = 0;
+  for (i = 0; i < offset_abs; i++) {
+    hero->position.x -= direction;
+    if (!fn_hero_collides_with_solid(hero, level)) {
+      return i * direction;
+    }
+  }
+  return 0;
+}
+
+/* --------------------------------------------------------------- */
+
+int fn_hero_collides_with_solid(fn_hero_t * hero, fn_level_t * level)
+{
+  SDL_Rect * pos = fn_hero_get_position(hero);
+  Uint16 i = 0;
+  Uint16 j = 0;
+  for (i = pos->x - FN_TILE_WIDTH;
+      i < pos->x + FN_TILE_WIDTH * 2;
+      i += FN_TILE_WIDTH) {
+    for (j = pos->y - FN_TILE_HEIGHT;
+        j < pos->y + FN_TILE_HEIGHT * 3;
+        j += FN_TILE_HEIGHT) {
+      Uint16 tile_x = i / FN_TILE_WIDTH;
+      Uint16 tile_y = j / FN_TILE_HEIGHT;
+      if (fn_level_is_solid(level, tile_x, tile_y))
+      {
+        SDL_Rect obstacle;
+        obstacle.x = tile_x * FN_TILE_WIDTH;
+        obstacle.y = tile_y * FN_TILE_HEIGHT;
+        obstacle.w = FN_TILE_WIDTH;
+        obstacle.h = FN_TILE_HEIGHT;
+
+        if (fn_collision_overlap_rect_rect(
+              pos, &obstacle)) {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+/* --------------------------------------------------------------- */
+

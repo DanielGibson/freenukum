@@ -539,4 +539,29 @@ SDL_Rect * fn_hero_get_position(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Try to push the hero to a direction by a given offset.
+ *
+ * @param  hero       The hero.
+ * @param  level      The level inside which the hero currently is.
+ * @param  offset     The offset. Can be positive or negative.
+ *
+ * @return  The offset by which the hero finally could be moved.
+ */
+Sint8 fn_hero_push(fn_hero_t * hero, fn_level_t * level, Sint8 offset);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if the hero collides with a solid.
+ *
+ * @param  hero       The hero.
+ * @param  level      The level inside which the hero currently is.
+ *
+ * @return  1 if the hero collides, otherwise 0.
+ */
+int fn_hero_collides_with_solid(fn_hero_t * hero, fn_level_t * level);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_HERO_H */

@@ -5200,25 +5200,39 @@ void fn_actor_function_fan_act(fn_actor_t * actor)
   if (data->running < 10 && data->running > 0) {
     data->running--;
   } else if (data->running == 10) {
-    int hdistance = fn_hero_get_x(hero) -
-      actor->x;
-    Uint16 hdistance_abs = (hdistance > 0 ? hdistance : hdistance * -1);
-    Uint16 yt = actor->y;
-    Uint16 yb = actor->y + actor->h;
-    Uint32 hyt = fn_hero_get_y(hero) - FN_TILE_HEIGHT;
-    Uint16 hyb = hyt + 2 * FN_TILE_HEIGHT;
-    if (hdistance_abs < 8 * FN_HALFTILE_WIDTH &&
-        ((yt <= hyb && yb >= hyb) || (yt <= hyt && yb >= hyt))) {
-      int dir = 0;
-      if ((actor->type == FN_ACTOR_FAN_LEFT && hdistance <= 0) ||
-          (actor->type == FN_ACTOR_FAN_RIGHT && hdistance >= 0)) {
-        if (hdistance_abs != 0) {
-          dir = hdistance / hdistance_abs;
-        } else {
-          dir = 0;
-        }
+    SDL_Rect * heropos = fn_hero_get_position(hero);
+
+    if (fn_collision_overlap_vertical_rect_area(heropos,
+          actor->y, actor->h)) {
+      int hdistance = fn_collision_distance_horizontal_rect_area(
+          heropos, actor->x, actor->w);
+
+      int fandirection = 0;
+      if (actor->type == FN_ACTOR_FAN_LEFT) {
+        fandirection = -1;
+      } else {
+        fandirection = 1;
       }
-      fn_hero_set_x(hero, fn_hero_get_x(hero) + dir * FN_TILE_WIDTH);
+
+      if (fandirection < 0 && hdistance < 0) {
+        return;
+      }
+      if (fandirection > 0 && hdistance > 0) {
+        return;
+      }
+
+      if (hdistance == 0) {
+        hdistance = FN_HALFTILE_WIDTH * fandirection;
+      }
+
+      Uint16 hdistance_abs =
+        (hdistance > 0 ? hdistance : -hdistance);
+      if (hdistance_abs < 8 * FN_HALFTILE_WIDTH) {
+        fn_hero_push(
+            hero,
+            actor->level,
+            fandirection * FN_TILE_WIDTH);
+      }
     }
   }
 }

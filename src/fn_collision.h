@@ -120,6 +120,93 @@ int fn_collision_touch_rect_area(SDL_Rect * rect,
 /* --------------------------------------------------------------- */
 
 /**
+ * Get the horizontal distance of two areas.
+ *
+ * @param  x1  The x coordinate of the first area.
+ * @param  w1  The width of the first area.
+ * @param  x2  The x coordinate of the second area.
+ * @param  w2  The width of the second area.
+ *
+ * @return The distance between the two areas.
+ */
+int fn_collision_distance_horizontal_area_area(
+    Uint32 x1, Uint32 w1, Uint32 x2, Uint32 w2);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the horizontal distance of an area and a rectangle.
+ *
+ * @param  rect  The rectangle.
+ * @param  x     The x coordinate of the area.
+ * @param  w     The width of the area.
+ *
+ * @return The distance between the two areas.
+ */
+int fn_collision_distance_horizontal_rect_area(
+    SDL_Rect * rect, Uint32 x, Uint32 w);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if two horizontal areas overlap.
+ *
+ * @param  y1  The y coordinate of the first area.
+ * @param  h1  The height of the first area.
+ * @param  y2  The y coordinate of the second area.
+ * @param  h2  The height of the second area.
+ *
+ * @return 1 if the areas overlap, 0 if they don't.
+ */
+int fn_collision_overlap_vertical_area_area(
+    Uint32 y1, Uint32 h1, Uint32 y2, Uint32 h2);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if a horizontal area and a rectangle overlap.
+ *
+ * @param  rect  The rectangle.
+ * @param  y     The y coordinate of the area.
+ * @param  h     The height of the area.
+ *
+ * @return The distance between the two areas.
+ */
+int fn_collision_overlap_vertical_rect_area(
+    SDL_Rect * rect, Uint32 y, Uint32 h);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the vertical distance of two areas.
+ *
+ * @param  y1  The y coordinate of the first area.
+ * @param  h1  The height of the first area.
+ * @param  y2  The y coordinate of the second area.
+ * @param  h2  The height of the second area.
+ *
+ * @return The distance between the two areas.
+ */
+int fn_collision_distance_vertical_area_area(
+    Uint32 y1, Uint32 h1, Uint32 y2, Uint32 h2);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the vertical distance of an area and a rectangle.
+ *
+ * @param  rect  The rectangle.
+ * @param  y     The y coordinate of the area.
+ * @param  h     The height of the area.
+ *
+ * @return The distance between the two areas.
+ */
+int fn_collision_distance_vertical_rect_area(
+    SDL_Rect * rect, Uint32 y, Uint32 h);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Debug drawing function for a collision area.
  *
  * @param  destination  The surface on which to draw.
