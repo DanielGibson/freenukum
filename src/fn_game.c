@@ -34,6 +34,7 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_hero.h"
 #include "fn_game.h"
 #include "fn_borders.h"
 #include "fn_picture_splash.h"
@@ -212,8 +213,6 @@ int fn_game_start_in_level(
   SDL_Event event;
   int res = 0;
   int doupdate = 1;
-  int x = 0;
-  int y = 0;
   Uint8 draw_collision_bounds = 0;
 
   fn_settings_get_bool(settings, "draw_collision_bounds",
@@ -542,29 +541,34 @@ int fn_game_start_in_level(
               doupdate = 1;
               break;
             case fn_event_heromoved:
-              x = fn_hero_get_x(hero) / FN_HALFTILE_WIDTH;
-              y = fn_hero_get_y(hero) / FN_HALFTILE_HEIGHT;
-              srcrect.x =
-                (x - FN_LEVELWINDOW_WIDTH) *
-                FN_HALFTILE_WIDTH * pixelsize;
-              if (srcrect.x < 0) {
-                srcrect.x = 0;
-              } else if (srcrect.x + srcrect.w >
-                  FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize) {
-                srcrect.x = FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize -
-                  srcrect.w;
-              }
-              srcrect.y =
-                (y - FN_LEVELWINDOW_HEIGHT - 2) *
-                FN_HALFTILE_HEIGHT * pixelsize;
-              if (srcrect.y < 0) {
-                srcrect.y = 0;
-              } else if (srcrect.y + srcrect.h >
-                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize)
               {
-                srcrect.y =
-                  FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize -
-                  srcrect.h;
+                SDL_Rect * heropos = fn_hero_get_position(hero);
+                srcrect.x = pixelsize *
+                  (heropos->x + heropos->w / 2 -
+                   FN_LEVELWINDOW_WIDTH * FN_TILE_WIDTH / 2);
+                if (srcrect.x < 0) {
+                  srcrect.x = 0;
+                }
+                srcrect.y = pixelsize *
+                  (heropos->y -
+                   FN_LEVELWINDOW_HEIGHT * FN_TILE_HEIGHT / 2);
+                if (srcrect.y < 0) {
+                  srcrect.y = 0;
+                }
+                if (srcrect.x + srcrect.w >
+                    FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize)
+                {
+                  srcrect.x =
+                    FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize -
+                    srcrect.w;
+                }
+                if (srcrect.y + srcrect.h >
+                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize)
+                {
+                  srcrect.y =
+                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize -
+                    srcrect.h;
+                }
               }
               break;
             case fn_event_heroscored:

@@ -1322,10 +1322,6 @@ typedef enum fn_actor_lift_state_e {
  */
 typedef struct fn_actor_lift_data_t {
   /**
-   * The current height of the lift.
-   */
-  Uint16 height;
-  /**
    * The state of the lift.
    */
   fn_actor_lift_state_e state;
@@ -1342,7 +1338,6 @@ void fn_actor_function_lift_create(fn_actor_t * actor)
 {
   fn_actor_lift_data_t * data = malloc(
       sizeof(fn_actor_lift_data_t));
-  data->height = 0;
   data->state = fn_actor_lift_state_idle;
   actor->data = data;
   actor->w = FN_TILE_WIDTH;
@@ -1375,9 +1370,10 @@ void fn_actor_function_lift_interact_start(fn_actor_t * actor)
   fn_actor_lift_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (fn_hero_get_x(hero) == actor->x &&
-      fn_hero_get_y(hero) ==
-      actor->y - FN_TILE_HEIGHT) {
+  SDL_Rect * heropos = fn_hero_get_position(hero);
+  if (fn_collision_touch_rect_area(
+        heropos, actor->x, actor->y, actor->w, actor->h) &&
+      heropos->y + heropos->h == actor->y) {
     data->state = fn_actor_lift_state_ascending;
   }
 }
@@ -1394,9 +1390,10 @@ void fn_actor_function_lift_interact_end(fn_actor_t * actor)
   fn_actor_lift_data_t * data = actor->data;
   fn_hero_t * hero = fn_level_get_hero(actor->level);
 
-  if (fn_hero_get_x(hero) == actor->x &&
-      fn_hero_get_y(hero) ==
-      actor->y - FN_TILE_HEIGHT) {
+  SDL_Rect * heropos = fn_hero_get_position(hero);
+  if (fn_collision_touch_rect_area(
+        heropos, actor->x, actor->y, actor->w, actor->h) &&
+      heropos->x == actor->x) {
     data->state = fn_actor_lift_state_idle;
   } else {
     data->state = fn_actor_lift_state_descending;
@@ -1417,12 +1414,14 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
   fn_level_t * level = actor->level;
 
   if (data->state == fn_actor_lift_state_ascending ||
-      (data->state == fn_actor_lift_state_idle && data->height > 0))
+      (data->state == fn_actor_lift_state_idle &&
+       actor->h > FN_TILE_HEIGHT))
   {
-    if (fn_hero_get_x(hero) == actor->x &&
-        fn_hero_get_y(hero) ==
-        actor->y - FN_TILE_HEIGHT) {
-    } else {
+    /* check if hero leaves elevator. */
+    SDL_Rect * heropos = fn_hero_get_position(hero);
+    if (!fn_collision_touch_rect_area(heropos,
+          actor->x, actor->y, actor->w, actor->h) ||
+        actor->x != heropos->x) {
       data->state = fn_actor_lift_state_descending;
     }
   }
@@ -1435,28 +1434,34 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
             actor->y/FN_TILE_HEIGHT-3)) {
         data->state = fn_actor_lift_state_idle;
       } else {
-        data->height++;
-        actor->y -= FN_TILE_HEIGHT;
-        fn_hero_replace(hero,
-            actor->x,
-            actor->y - FN_TILE_HEIGHT);
-        fn_level_set_solid(level,
-            actor->x/FN_TILE_WIDTH,
-            actor->y/FN_TILE_HEIGHT,
-            1);
+        Sint8 offset = fn_hero_push_vertically(
+            hero, level, -FN_TILE_HEIGHT);
+        if (-offset < FN_TILE_HEIGHT) {
+          offset = fn_hero_push_vertically(hero, level, -offset);
+          data->state = fn_actor_lift_state_idle;
+        } else {
+          actor->h -= offset;
+          actor->y += offset;
+
+          fn_level_set_solid(level,
+              actor->x/FN_TILE_WIDTH,
+              actor->y/FN_TILE_HEIGHT,
+              1);
+        }
+
       }
       break;
     case fn_actor_lift_state_descending:
       {
         int i = 0;
         for (i = 0; i < 2; i++) {
-          if (data->height != 0) {
+          if (actor->h > FN_TILE_HEIGHT) {
             fn_level_set_solid(level,
                 actor->x/FN_TILE_WIDTH,
                 actor->y/FN_TILE_HEIGHT,
                 0);
             actor->y += FN_TILE_HEIGHT;
-            data->height--;
+            actor->h -= FN_TILE_HEIGHT;
           } else {
             data->state = fn_actor_lift_state_idle;
           }
@@ -1464,7 +1469,7 @@ void fn_actor_function_lift_act(fn_actor_t * actor)
       }
       break;
     case fn_actor_lift_state_idle:
-      /* nothing to do, we stay where we are. */
+      /* nothing to do, we stay where we are */
       break;
     default:
       /* we are in an invalid state. */
@@ -1487,7 +1492,6 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  fn_actor_lift_data_t * data = actor->data;
   SDL_Surface * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -1498,7 +1502,7 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
 
   int i = 0;
   tile = fn_tilecache_get_tile(tc, SOLID_START + 23);
-  for (i = 0; i < data->height * 2; i++) {
+  for (i = 0; i < actor->h - FN_TILE_HEIGHT; i += FN_HALFTILE_HEIGHT) {
     destrect.y += FN_HALFTILE_HEIGHT * pixelsize;
     SDL_BlitSurface(tile, NULL, target, &destrect);
   }
@@ -7701,8 +7705,8 @@ Uint8 fn_actor_hero_can_interact(fn_actor_t * actor)
      * which the hero stands.
      */
     fn_hero_t * hero = fn_level_get_hero(actor->level);
-    return (fn_hero_get_x(hero) == actor->x &&
-        fn_hero_get_y(hero) == actor->y - FN_TILE_HEIGHT);
+    SDL_Rect * heropos = fn_hero_get_position(hero);
+    return (actor->x == heropos->x);
   }
   fn_actor_function_t func =
     fn_actor_functions[

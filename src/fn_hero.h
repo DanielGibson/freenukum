@@ -554,6 +554,20 @@ Sint8 fn_hero_push_horizontally(
 /* --------------------------------------------------------------- */
 
 /**
+ * Try to push the hero to a vertical direction by a given offset.
+ *
+ * @param  hero       The hero.
+ * @param  level      The level inside which the hero currently is.
+ * @param  offset     The offset. Can be positive or negative.
+ *
+ * @return  The offset by which the hero finally could be moved.
+ */
+Sint8 fn_hero_push_vertically(
+    fn_hero_t * hero, fn_level_t * level, Sint8 offset);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Check if the hero collides with a solid.
  *
  * @param  hero       The hero.

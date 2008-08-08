@@ -830,6 +830,12 @@ Sint8 fn_hero_push_horizontally(
 
   if (!fn_hero_collides_with_solid(hero, level)) {
     /* no solids in the way */
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    event.user.code = fn_event_heromoved;
+    event.user.data1 = hero;
+    event.user.data2 = 0;
+    SDL_PushEvent(&event);
     return offset;
   }
 
@@ -841,6 +847,53 @@ Sint8 fn_hero_push_horizontally(
   for (i = 0; i < offset_abs; i++) {
     hero->position.x -= direction;
     if (!fn_hero_collides_with_solid(hero, level)) {
+      SDL_Event event;
+      event.type = SDL_USEREVENT;
+      event.user.code = fn_event_heromoved;
+      event.user.data1 = hero;
+      event.user.data2 = 0;
+      SDL_PushEvent(&event);
+      return i * direction;
+    }
+  }
+  return 0;
+}
+
+/* --------------------------------------------------------------- */
+
+Sint8 fn_hero_push_vertically(
+    fn_hero_t * hero, fn_level_t * level, Sint8 offset)
+{
+  if (offset == 0) {
+    return 0;
+  }
+  hero->position.y += offset;
+
+  if (!fn_hero_collides_with_solid(hero, level)) {
+    /* no solids in the way */
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    event.user.code = fn_event_heromoved;
+    event.user.data1 = hero;
+    event.user.data2 = 0;
+    SDL_PushEvent(&event);
+    return offset;
+  }
+
+  /* there was a solid in the way */
+  Uint8 offset_abs = (offset < 0 ? -offset : offset);
+  Sint8 direction = offset / offset_abs;
+
+  Uint8 i = 0;
+  for (i = 0; i < offset_abs; i++) {
+    hero->position.y -= direction;
+    if (!fn_hero_collides_with_solid(hero, level)) {
+      SDL_Event event;
+      event.type = SDL_USEREVENT;
+      event.user.code = fn_event_heromoved;
+      event.user.data1 = hero;
+      event.user.data2 = 0;
+      SDL_PushEvent(&event);
       return i * direction;
     }
   }

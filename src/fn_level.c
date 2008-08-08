@@ -30,6 +30,7 @@
 #include "fn_actor.h"
 #include "fn_hero.h"
 #include "fn_object.h"
+#include "fn_collision.h"
 
 /* --------------------------------------------------------------- */
 
@@ -1115,20 +1116,21 @@ void fn_level_hero_interact_start(fn_level_t * lv)
       iter != NULL;
       iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
-    fn_hero_t * hero = fn_level_get_hero(lv);
 
-    if (actor->x >= (fn_hero_get_x(hero)-FN_TILE_WIDTH) &&
-        actor->x <= (fn_hero_get_x(hero)+FN_TILE_WIDTH) &&
-        actor->y >=
-        (fn_hero_get_y(hero)-FN_TILE_HEIGHT) &&
-        actor->y <=
-        (fn_hero_get_y(hero)+FN_TILE_HEIGHT)) {
+    if (fn_actor_hero_can_interact(actor)) {
 
-      fn_level_hero_interact_stop(lv);
+      fn_hero_t * hero = fn_level_get_hero(lv);
+      SDL_Rect * heropos = fn_hero_get_position(hero);
 
-      if (fn_actor_hero_can_interact(actor)) {
+      if (fn_collision_touch_rect_area(heropos,
+            /* TODO replace this direct access to actor's 
+             * implementation secrets */
+            actor->x, actor->y, actor->w, actor->h)) {
+        fn_level_hero_interact_stop(lv);
+
         lv->interactor = actor;
         fn_actor_hero_interact_start(actor);
+        printf("Interactition started.\n");
         return;
       }
     }
