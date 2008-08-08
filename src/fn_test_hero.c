@@ -111,7 +111,7 @@ int main(int argc, char ** argv)
 
   /* here comes the hero!!!!! */
   fn_hero_init(&hero, 0, 0);
-  fn_hero_blit(&hero, screen, &tc, pixelsize);
+  fn_hero_blit(&hero, screen, &tc, pixelsize, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   timer = SDL_AddTimer(250, animate, NULL);
@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
             SDL_FillRect(screen, NULL, 0);
             fn_hero_update_animation(&hero);
             fn_hero_next_animationframe(&hero);
-            fn_hero_blit(&hero, screen, &tc, pixelsize);
+            fn_hero_blit(&hero, screen, &tc, pixelsize, NULL);
             SDL_UpdateRect(screen, 0, 0, 0, 0);
           }
           break;

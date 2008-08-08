@@ -177,6 +177,16 @@ typedef void (*fn_hero_changed_f)(fn_hero_t *);
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Blit the hero.
+ *
+ * @param  hero        The hero.
+ * @param  target      The target surface.
+ * @param  tilecache   The tilecache to use.
+ * @param  pixelsize   The pixelsize.
+ * @param  level       The level to which the hero is blit.
+ *                     Can be NULL in order to blit without a level.
+ */
 void fn_hero_blit(
     fn_hero_t * hero,
     SDL_Surface * target,

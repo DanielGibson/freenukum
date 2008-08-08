@@ -36,8 +36,13 @@
 
 /* --------------------------------------------------------------- */
 
-#define SOLID_START                      BACKGROUND_END
-#define SOLID_END                              (8 * 48)
+#define SOLID_START                              BACKGROUND_END
+#define SOLID_END                                      (8 * 48)
+#define SOLID_BLACK                   (SOLID_START +        65)
+#define SOLID_CONVEYORBELT            (SOLID_START +      0x1C)
+#define SOLID_CONVEYORBELT_LEFTEND  (SOLID_CONVEYORBELT +    0)
+#define SOLID_CONVEYORBELT_CENTER   (SOLID_CONVEYORBELT +    4)
+#define SOLID_CONVEYORBELT_RIGHTEND (SOLID_CONVEYORBELT +    6)
 
 #define SOLID_EXPANDINGFLOOR     (SOLID_END -        1)
 

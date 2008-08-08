@@ -154,6 +154,13 @@ fn_level_t * fn_level_load(int fd,
         fn_level_add_initial_actor(lv,
           FN_ACTOR_SHOOTABLE_WALL, x, y);
         break;
+      case 0x1C00: /* center conveyor */
+        lv->tiles[y][x] = SOLID_BLACK; 
+        lv->solid[y][x] = 1;
+
+        fn_level_add_initial_actor(lv,
+          FN_ACTOR_CONVEYOR_RIGHTMOVING_CENTER, x, y);
+        break;
       case 0x3000: /* grey box, empty */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
@@ -167,33 +174,25 @@ fn_level_t * fn_level_load(int fd,
           FN_ACTOR_LIFT, x, y);
         break;
       case 0x3002: /* left end of left-moving conveyor */
-        if (x > 0) {
-          lv->tiles[y][x] = lv->tiles[y][x-1];
-        }
+        lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
           FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND, x, y);
         break;
       case 0x3003: /* right end of left-moving conveyor */
-        if (x > 0) {
-          lv->tiles[y][x] = lv->tiles[y][x-1];
-        }
+        lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
             FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND, x, y);
         break;
       case 0x3004: /* left end of right-moving conveyor */
-        if (x > 0) {
-          lv->tiles[y][x] = lv->tiles[y][x-1];
-        }
+        lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
             FN_ACTOR_CONVEYOR_RIGHTMOVING_LEFTEND, x, y);
         break;
       case 0x3005: /* right end of right-moving conveyor */
-        if (x > 0) {
-          lv->tiles[y][x] = lv->tiles[y][x-1];
-        }
+        lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
             FN_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND, x, y);

@@ -108,6 +108,7 @@ fn_test_hero_SOURCES = fn_test_hero.c \
 											 fn_msgbox.h         fn_msgbox.c \
 											 fn_text.h           fn_text.c \
 											 fn_list.h           fn_list.c \
+											 fn_collision.h      fn_collision.c \
                        fn.h
 
 fn_test_infobox_SOURCES = fn_test_infobox.c \
@@ -137,6 +138,7 @@ fn_test_level_loader_SOURCES = fn_test_level_loader.c \
 															 fn_msgbox.h         fn_msgbox.c \
 															 fn_text.h           fn_text.c \
 															 fn_list.h           fn_list.c \
+															 fn_collision.h      fn_collision.c \
 															 fn.h
 
 fn_test_msgbox_SOURCES = fn_test_msgbox.c \

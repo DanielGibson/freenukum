@@ -172,15 +172,17 @@ void fn_hero_blit(fn_hero_t * hero,
           j += FN_TILE_HEIGHT) {
         Uint16 tile_x = i / FN_TILE_WIDTH;
         Uint16 tile_y = j / FN_TILE_HEIGHT;
-        if (fn_level_is_solid(level, tile_x, tile_y))
-        {
-          SDL_Rect obstacle;
-          obstacle.x = tile_x * FN_TILE_WIDTH;
-          obstacle.y = tile_y * FN_TILE_HEIGHT;
-          obstacle.w = FN_TILE_WIDTH;
-          obstacle.h = FN_TILE_HEIGHT;
+        if (level != NULL) {
+          if (fn_level_is_solid(level, tile_x, tile_y))
+          {
+            SDL_Rect obstacle;
+            obstacle.x = tile_x * FN_TILE_WIDTH;
+            obstacle.y = tile_y * FN_TILE_HEIGHT;
+            obstacle.w = FN_TILE_WIDTH;
+            obstacle.h = FN_TILE_HEIGHT;
 
-          fn_collision_rect_draw(target, pixelsize, &obstacle);
+            fn_collision_rect_draw(target, pixelsize, &obstacle);
+          }
         }
       }
     }
