@@ -4071,10 +4071,6 @@ void fn_actor_function_expandingfloor_blit(fn_actor_t * actor)
  */
 typedef struct fn_actor_conveyor_data_t {
   /**
-   * The base tile for the animation.
-   */
-  Uint16 tile;
-  /**
    * The animation counter.
    */
   Uint8 current_frame;
@@ -4086,10 +4082,6 @@ typedef struct fn_actor_conveyor_data_t {
    * The direction to which the conveyor runs.
    */
   fn_horizontal_direction_e direction;
-  /**
-   * Flag indicating if the conveyor is a left-end piece.
-   */
-  Uint8 leftend;
 } fn_actor_conveyor_data_t;
 
 /* --------------------------------------------------------------- */
@@ -4102,48 +4094,43 @@ void fn_actor_function_conveyor_create(fn_actor_t * actor)
   actor->is_in_foreground = 0;
   actor->w = FN_TILE_WIDTH;
   actor->h = FN_TILE_HEIGHT;
+  fn_level_t * level = actor->level;
 
   data->current_frame = 0;
-  data->leftend = 0;
+
+  data->num_frames = 4;
 
   switch(actor->type) {
-    case FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND:
-      data->direction = fn_horizontal_direction_left;
-      data->num_frames = 4;
-      data->tile = SOLID_CONVEYORBELT_LEFTEND;
-      data->leftend = 1;
-      break;
-    case FN_ACTOR_CONVEYOR_RIGHTMOVING_LEFTEND:
-      data->direction = fn_horizontal_direction_right;
-      data->num_frames = 4;
-      data->tile = SOLID_CONVEYORBELT_LEFTEND;
-      data->leftend = 1;
-      break;
     case FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND:
       data->direction = fn_horizontal_direction_left;
-      data->num_frames = 4;
-      data->tile = SOLID_CONVEYORBELT_RIGHTEND;
       break;
     case FN_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND:
       data->direction = fn_horizontal_direction_right;
-      data->num_frames = 4;
-      data->tile = SOLID_CONVEYORBELT_RIGHTEND;
-      break;
-    case FN_ACTOR_CONVEYOR_LEFTMOVING_CENTER:
-      data->direction = fn_horizontal_direction_left;
-      data->num_frames = 2;
-      data->tile = SOLID_CONVEYORBELT_CENTER;
-      break;
-    case FN_ACTOR_CONVEYOR_RIGHTMOVING_CENTER:
-      data->direction = fn_horizontal_direction_right;
-      data->num_frames = 2;
-      data->tile = SOLID_CONVEYORBELT_CENTER;
       break;
     default: /* error */
       printf(__FILE__ ":%d: warning: conveyor #%d"
           " added which is no conveyor\n",
           __LINE__, actor->type);
       break;
+  }
+
+  /* find the beginning of the conveyor belt */
+  Uint8 found_begin = 0;
+  Uint16 tile = 0;
+  while(!found_begin) {
+    actor->x -= FN_TILE_WIDTH;
+    actor->w += FN_TILE_WIDTH;
+    tile = fn_level_get_tile(level,
+        actor->x / FN_TILE_WIDTH, actor->y / FN_TILE_HEIGHT);
+    if (tile == SOLID_CONVEYORBELT_LEFTEND ||
+        actor->x == 0 ||
+        tile == 0) {
+      found_begin = 1;
+      fn_level_set_tile(level,
+          actor->x / FN_TILE_WIDTH,
+          actor->y / FN_TILE_HEIGHT,
+          SOLID_BLACK);
+    }
   }
 }
 
@@ -4153,18 +4140,6 @@ void fn_actor_function_conveyor_free(fn_actor_t * actor)
 {
   fn_actor_conveyor_data_t * data = actor->data;
   free(data); actor->data = NULL; data = NULL;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_actor_function_conveyor_touch_start(fn_actor_t * actor)
-{
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_actor_function_conveyor_touch_end(fn_actor_t * actor)
-{
 }
 
 /* --------------------------------------------------------------- */
@@ -4182,19 +4157,17 @@ void fn_actor_function_conveyor_act(fn_actor_t * actor)
     data->current_frame %= data->num_frames;
   }
 
-  SDL_Rect * heropos = fn_hero_get_position(fn_level_get_hero(actor->level));
-
-  int direction = (data->direction == fn_horizontal_direction_right ?
-      1 : -1);
   fn_hero_t * hero = fn_level_get_hero(actor->level);
-  if (data->leftend) {
-    /* TODO */
-  } else {
-    if (heropos->x >= actor->x && heropos->x < actor->x + actor->w &&
-        heropos->y + heropos->h == actor->y) {
-      fn_hero_push_horizontally(
-          hero, actor->level, direction * FN_TILE_WIDTH);
-    }
+  SDL_Rect * heropos = fn_hero_get_position(hero);
+
+  int direction = (
+      data->direction == fn_horizontal_direction_right ?  1 : -1);
+  if (
+      heropos->x + heropos->w > actor->x &&
+      heropos->x < actor->x + actor->w &&
+      heropos->y + heropos->h == actor->y) {
+    fn_hero_push_horizontally(
+        hero, actor->level, direction * FN_HALFTILE_WIDTH);
   }
 }
 
@@ -4206,14 +4179,32 @@ void fn_actor_function_conveyor_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_conveyor_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
-      data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
   destrect.x = actor->x * pixelsize;
   destrect.y = actor->y * pixelsize;
   destrect.w = actor->w * pixelsize;
-  destrect.h = actor->w * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  destrect.h = actor->h * pixelsize;
+
+  Uint16 i = 0;
+
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      SOLID_CONVEYORBELT_LEFTEND + data->current_frame);
+
+  for (i = actor->x; i < actor->x + actor->w; i+= FN_TILE_WIDTH) {
+    destrect.x = i * pixelsize;
+    if (i + FN_TILE_WIDTH == actor->x + actor->w) {
+      /* last element */
+      tile = fn_tilecache_get_tile(tc,
+          SOLID_CONVEYORBELT_RIGHTEND + data->current_frame);
+    }
+
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+
+    tile = fn_tilecache_get_tile(tc,
+        SOLID_CONVEYORBELT_CENTER + data->current_frame % 2);
+  }
+
 }
 
 /* --------------------------------------------------------------- */
@@ -5991,66 +5982,13 @@ void
       fn_actor_function_expandingfloor_blit,
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
-  [FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND] = {
-    [FN_ACTOR_FUNCTION_CREATE]              =
-      fn_actor_function_conveyor_create,
-    [FN_ACTOR_FUNCTION_FREE]                =
-      fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
-    [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_conveyor_act,
-    [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_conveyor_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
-  },
   [FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
       fn_actor_function_conveyor_create,
     [FN_ACTOR_FUNCTION_FREE]                =
       fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
-    [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_conveyor_act,
-    [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_conveyor_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
-  },
-  [FN_ACTOR_CONVEYOR_LEFTMOVING_CENTER] = {
-    [FN_ACTOR_FUNCTION_CREATE]              =
-      fn_actor_function_conveyor_create,
-    [FN_ACTOR_FUNCTION_FREE]                =
-      fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
-    [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_conveyor_act,
-    [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_conveyor_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
-  },
-  [FN_ACTOR_CONVEYOR_RIGHTMOVING_LEFTEND] = {
-    [FN_ACTOR_FUNCTION_CREATE]              =
-      fn_actor_function_conveyor_create,
-    [FN_ACTOR_FUNCTION_FREE]                =
-      fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
     [FN_ACTOR_FUNCTION_ACT]                 =
@@ -6064,27 +6002,8 @@ void
       fn_actor_function_conveyor_create,
     [FN_ACTOR_FUNCTION_FREE]                =
       fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
-    [FN_ACTOR_FUNCTION_ACT]                 =
-      fn_actor_function_conveyor_act,
-    [FN_ACTOR_FUNCTION_BLIT]                =
-      fn_actor_function_conveyor_blit,
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL,
-  },
-  [FN_ACTOR_CONVEYOR_RIGHTMOVING_CENTER] = {
-    [FN_ACTOR_FUNCTION_CREATE]              =
-      fn_actor_function_conveyor_create,
-    [FN_ACTOR_FUNCTION_FREE]                =
-      fn_actor_function_conveyor_free,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
-      fn_actor_function_conveyor_touch_start,
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      =
-      fn_actor_function_conveyor_touch_end,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
     [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
     [FN_ACTOR_FUNCTION_ACT]                 =

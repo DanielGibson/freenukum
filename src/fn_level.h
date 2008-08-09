@@ -171,6 +171,22 @@ void fn_level_free(fn_level_t * lv);
 /* --------------------------------------------------------------- */
 
 /**
+ * Set a tile on a certain position inside the level.
+ *
+ * @param  lv    The level.
+ * @param  x     The x coordinate.
+ * @param  y     The y coordinate.
+ * @param  tile  The tile number.
+ */
+void fn_level_set_tile(
+    fn_level_t * lv,
+    size_t x,
+    size_t y,
+    Uint16 tile);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Get a tile from a certain position inside the level.
  *
  * @param  lv  The level.

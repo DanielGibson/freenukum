@@ -158,8 +158,10 @@ fn_level_t * fn_level_load(int fd,
         lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
 
+        /*
         fn_level_add_initial_actor(lv,
           FN_ACTOR_CONVEYOR_RIGHTMOVING_CENTER, x, y);
+          */
         break;
       case 0x3000: /* grey box, empty */
         if (x > 0) {
@@ -174,10 +176,8 @@ fn_level_t * fn_level_load(int fd,
           FN_ACTOR_LIFT, x, y);
         break;
       case 0x3002: /* left end of left-moving conveyor */
-        lv->tiles[y][x] = SOLID_BLACK; 
+        lv->tiles[y][x] = SOLID_CONVEYORBELT_LEFTEND;
         lv->solid[y][x] = 1;
-        fn_level_add_initial_actor(lv,
-          FN_ACTOR_CONVEYOR_LEFTMOVING_LEFTEND, x, y);
         break;
       case 0x3003: /* right end of left-moving conveyor */
         lv->tiles[y][x] = SOLID_BLACK; 
@@ -186,10 +186,8 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND, x, y);
         break;
       case 0x3004: /* left end of right-moving conveyor */
-        lv->tiles[y][x] = SOLID_BLACK; 
+        lv->tiles[y][x] = SOLID_CONVEYORBELT_LEFTEND;
         lv->solid[y][x] = 1;
-        fn_level_add_initial_actor(lv,
-            FN_ACTOR_CONVEYOR_RIGHTMOVING_LEFTEND, x, y);
         break;
       case 0x3005: /* right end of right-moving conveyor */
         lv->tiles[y][x] = SOLID_BLACK; 
@@ -802,8 +800,25 @@ void fn_level_free(fn_level_t * lv)
 
 /* --------------------------------------------------------------- */
 
+void fn_level_set_tile(
+    fn_level_t * lv,
+    size_t x,
+    size_t y,
+    Uint16 tile)
+{
+  if (x > FN_LEVEL_WIDTH || y > FN_LEVEL_HEIGHT) {
+    return;
+  }
+  lv->tiles[y][x] = tile;
+}
+
+/* --------------------------------------------------------------- */
+
 Uint16 fn_level_get_tile(fn_level_t * lv, size_t x, size_t y)
 {
+  if (x > FN_LEVEL_WIDTH || y > FN_LEVEL_HEIGHT) {
+    return 0;
+  }
   return lv->tiles[y][x];
 }
 
@@ -1129,7 +1144,6 @@ void fn_level_hero_interact_start(fn_level_t * lv)
 
         lv->interactor = actor;
         fn_actor_hero_interact_start(actor);
-        printf("Interactition started.\n");
         return;
       }
     }
