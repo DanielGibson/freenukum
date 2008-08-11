@@ -2067,6 +2067,10 @@ typedef struct fn_actor_glove_slot_data_t {
    * The state of the slot.
    */
   fn_actor_glove_slot_state_e state;
+  /**
+   * The countdown for state shooting.
+   */
+  Uint8 countdown;
 } fn_actor_glove_slot_data_t;
 
 /* --------------------------------------------------------------- */
@@ -2081,6 +2085,7 @@ void fn_actor_function_glove_slot_create(fn_actor_t * actor)
   data->current_frame = 0;
   data->num_frames = 4;
   data->state = fn_actor_glove_slot_state_idle;
+  data->countdown = 0;
   actor->data = data;
   actor->is_in_foreground = 0;
 }
@@ -2106,6 +2111,7 @@ void fn_actor_function_glove_slot_interact_start(fn_actor_t * actor)
         data->state = fn_actor_glove_slot_state_expanding;
       } else {
         data->state = fn_actor_glove_slot_state_shooting;
+        data->countdown = 20;
       }
       break;
     case fn_actor_glove_slot_state_expanding:
@@ -2172,6 +2178,20 @@ void fn_actor_function_glove_slot_act(fn_actor_t * actor)
     case fn_actor_glove_slot_state_shooting:
       data->current_frame++;
       data->current_frame %= data->num_frames;
+
+      data->countdown--;
+      if (data->countdown % 4 == 0) {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_HOSTILESHOT_RIGHT,
+            actor->x, actor->y);
+      } else if (data->countdown % 4 == 2) {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_HOSTILESHOT_LEFT,
+            actor->x, actor->y);
+      }
+      if (data->countdown == 0) {
+        data->state = fn_actor_glove_slot_state_idle;
+      }
       /* nothing to do */
       break;
     case fn_actor_glove_slot_state_expanded:
