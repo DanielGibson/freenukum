@@ -1605,15 +1605,6 @@ void fn_actor_function_acme_act(fn_actor_t * actor)
         }
       }
       break;
-      /*
-      if (fn_hero_get_x(hero) >= actor->x / FN_HALFTILE_WIDTH &&
-        fn_hero_get_x(hero) <= (actor->x / FN_HALFTILE_WIDTH)+2 &&
-        fn_hero_get_y(hero) >= actor->y / FN_HALFTILE_HEIGHT)
-      {
-        data->counter++;
-      }
-      break;
-      */
     case 1:
     case 3:
     case 5:
