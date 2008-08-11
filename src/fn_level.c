@@ -902,7 +902,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /*
   SDL_FillRect(lv->surface, sourcerect, 0);
   */
-  SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
+  if (backdrop1 != NULL) {
+    SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
+  } else {
+    SDL_FillRect(lv->surface, sourcerect, 0);
+  }
+
   for (j = y_start; j != y_end; j++)
   {
     for (i = x_start; i != x_end; i++)
