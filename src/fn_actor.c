@@ -2192,7 +2192,6 @@ void fn_actor_function_glove_slot_act(fn_actor_t * actor)
       if (data->countdown == 0) {
         data->state = fn_actor_glove_slot_state_idle;
       }
-      /* nothing to do */
       break;
     case fn_actor_glove_slot_state_expanded:
       /* nothing to do */
