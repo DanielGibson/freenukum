@@ -428,4 +428,17 @@ void fn_level_set_draw_collision_bounds(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Check if a rectangle would collide with solids in a level.
+ *
+ * @param  lv     The level.
+ * @param  rect   The rectangle.
+ *
+ * @return 1 if the rectangle would collide, otherwise 0.
+ */
+Uint8 fn_level_solid_collides(fn_level_t * lv,
+    SDL_Rect * rect);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */

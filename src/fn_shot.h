@@ -72,6 +72,11 @@ struct fn_shot_t {
    * The down until the shot is to be removed.
    */
   Uint8 countdown;
+
+  /**
+   * Flag indicating if collision bounds are drawn.
+   */
+  Uint8 draw_collision_bounds;
 };
 
 /* --------------------------------------------------------------- */
@@ -186,6 +191,41 @@ fn_level_t * fn_shot_get_level(fn_shot_t * shot);
  * @return 1 if they overlap, otherwise 0.
  */
 Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if a shot touches an actor.
+ *
+ * @param  shot   The shot.
+ * @param  actor  The actor.
+ *
+ * @return 1 if they touch, otherwise 0.
+ */
+Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Enable or disable the drawing of collision bounds for a shot.
+ *
+ * @param  shot    The shot.
+ * @param  enable  If 0, disable drawing, else enable.
+ */
+void fn_shot_set_draw_collision_bounds(
+    fn_shot_t * shot, Uint8 enable);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if the shot hits a solid tile
+ *
+ * @param  shot   The shot.
+ *
+ * @return 1 if the shot hits solid tile, otherwise 0.
+ */
+Uint8 fn_shot_hits_solid(
+    fn_shot_t * shot);
 
 /* --------------------------------------------------------------- */
 

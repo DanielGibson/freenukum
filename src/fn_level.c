@@ -1194,6 +1194,8 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
   fn_shot_t * shot = fn_shot_create(lv,
       x, y, direction);
   lv->shots = fn_list_append(lv->shots, shot);
+  fn_shot_set_draw_collision_bounds(shot,
+      lv->draw_collision_bounds);
   return shot;
 }
 
@@ -1295,6 +1297,36 @@ void fn_level_set_draw_collision_bounds(fn_level_t * lv,
     fn_actor_set_draw_collision_bounds(
         actor, lv->draw_collision_bounds);
   }
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_level_solid_collides(fn_level_t * lv,
+    SDL_Rect * rect)
+{
+  Uint16 i = 0;
+  Uint16 j = 0;
+  SDL_Rect solidrect;
+  solidrect.w = FN_TILE_WIDTH;
+  solidrect.h = FN_TILE_HEIGHT;
+
+  for (i = rect->x / FN_TILE_WIDTH;
+      i < (rect->x + rect->w) / FN_TILE_WIDTH + 1;
+      i++) {
+    for (j = rect->y / FN_TILE_WIDTH;
+        j < (rect->y + rect->h) / FN_TILE_HEIGHT + 1;
+        j++)
+    {
+      if (fn_level_is_solid(lv, i, j)) {
+        solidrect.x = i * FN_TILE_WIDTH;
+        solidrect.y = j * FN_TILE_HEIGHT;
+        if (fn_collision_overlap_rect_rect(&solidrect, rect)) {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
 }
 
 /* --------------------------------------------------------------- */

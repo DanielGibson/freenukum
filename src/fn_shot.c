@@ -37,14 +37,15 @@ fn_shot_t * fn_shot_create(fn_level_t * level,
 {
   fn_shot_t * shot = malloc(sizeof(fn_shot_t));
   shot->level = level;
-  shot->position.x = x;
+  shot->position.x = x + 4;
   shot->position.y = y;
   shot->position.w = FN_TILE_WIDTH;
-  shot->position.h = FN_HALFTILE_HEIGHT / 2;
+  shot->position.h = FN_TILE_HEIGHT - 4;
   shot->is_alive = 1;
   shot->direction = direction;
   shot->counter = 0;
   shot->countdown = 2;
+  shot->draw_collision_bounds = 0;
 
   if ((shot->position.x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH) {
     shot->position.x = shot->position.x -
@@ -94,19 +95,14 @@ Uint8 fn_shot_act(fn_shot_t * shot)
       fn_actor_t * actor = (fn_actor_t *)iter->data;
 
       if (fn_actor_can_get_shot(actor) &&
-          fn_shot_overlaps_actor(shot, actor) &&
+          fn_shot_touches_actor(shot, actor) &&
           fn_actor_shot(actor)) {
         shot->countdown = 1;
       }
     }
   }
   if (shot->countdown == 2) {
-    Uint8 subtraction =
-      (shot->direction == fn_horizontal_direction_right ? 1 : 0);
-    if (fn_level_is_solid(shot->level,
-          (shot->position.x / FN_TILE_WIDTH) + subtraction,
-          (shot->position.y + FN_HALFTILE_HEIGHT) / FN_TILE_HEIGHT))
-    {
+    if (fn_shot_hits_solid(shot)) {
       shot->countdown = 1;
       fn_level_add_actor(shot->level,
           FN_ACTOR_EXPLOSION,
@@ -132,6 +128,10 @@ void fn_shot_blit(fn_shot_t * shot)
     destrect.w = shot->position.w * pixelsize;
     destrect.h = shot->position.h * pixelsize;
     SDL_BlitSurface(tile, NULL, target, &destrect);
+
+    if (shot->draw_collision_bounds) {
+      fn_collision_rect_draw(target, pixelsize, &(shot->position));
+    }
   }
 }
 
@@ -181,8 +181,33 @@ fn_level_t * fn_shot_get_level(fn_shot_t * shot)
 
 Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor)
 {
-  SDL_Rect * actorpos = fn_actor_get_pos(actor);
+  SDL_Rect * actorpos = fn_actor_get_position(actor);
   return fn_collision_overlap_rect_rect(actorpos, &(shot->position));
 }
 
 /* --------------------------------------------------------------- */
+
+Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_actor_t * actor)
+{
+  SDL_Rect * actorpos = fn_actor_get_position(actor);
+  return fn_collision_touch_rect_rect(actorpos, &(shot->position));
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_shot_set_draw_collision_bounds(
+    fn_shot_t * shot, Uint8 enable)
+{
+  shot->draw_collision_bounds = enable;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_shot_hits_solid(
+    fn_shot_t * shot)
+{
+  return fn_level_solid_collides(shot->level, &(shot->position));
+}
+
+/* --------------------------------------------------------------- */
+
