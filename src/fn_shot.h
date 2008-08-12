@@ -49,14 +49,9 @@ struct fn_shot_t {
   fn_level_t * level;
 
   /**
-   * The current x position (in pixels).
+   * The position of the shot.
    */
-  Uint16 x;
-
-  /**
-   * The current y position (in pixels).
-   */
-  Uint16 y;
+  SDL_Rect position;
 
   /**
    * Flag that indicates if the shot is (still) alive.

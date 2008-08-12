@@ -28,6 +28,7 @@
 
 #include "fn_shot.h"
 #include "fn_object.h"
+#include "fn_collision.h"
 
 /* --------------------------------------------------------------- */
 
@@ -36,20 +37,23 @@ fn_shot_t * fn_shot_create(fn_level_t * level,
 {
   fn_shot_t * shot = malloc(sizeof(fn_shot_t));
   shot->level = level;
-  shot->x = x;
-  shot->y = y;
+  shot->position.x = x;
+  shot->position.y = y;
+  shot->position.w = FN_TILE_WIDTH;
+  shot->position.h = FN_HALFTILE_HEIGHT / 2;
   shot->is_alive = 1;
   shot->direction = direction;
   shot->counter = 0;
   shot->countdown = 2;
 
-  if ((shot->x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH) {
-    shot->x = shot->x - ((shot->x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH);
+  if ((shot->position.x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH) {
+    shot->position.x = shot->position.x -
+      ((shot->position.x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH);
   }
   if (shot->direction == fn_horizontal_direction_right) {
-    shot->x -= FN_TILE_WIDTH;
+    shot->position.x -= FN_TILE_WIDTH;
   } else {
-    shot->x += FN_TILE_WIDTH;
+    shot->position.x += FN_TILE_WIDTH;
   }
 
   return shot;
@@ -76,9 +80,9 @@ Uint8 fn_shot_act(fn_shot_t * shot)
 
   if (shot->countdown == 2) {
     if (shot->direction == fn_horizontal_direction_right) {
-      shot->x += FN_TILE_WIDTH;
+      shot->position.x += FN_TILE_WIDTH;
     } else {
-      shot->x -= FN_TILE_WIDTH;
+      shot->position.x -= FN_TILE_WIDTH;
     }
 
     fn_list_t * iter = NULL;
@@ -100,13 +104,13 @@ Uint8 fn_shot_act(fn_shot_t * shot)
     Uint8 subtraction =
       (shot->direction == fn_horizontal_direction_right ? 1 : 0);
     if (fn_level_is_solid(shot->level,
-          (shot->x / FN_TILE_WIDTH) + subtraction,
-          (shot->y + FN_HALFTILE_HEIGHT) / FN_TILE_HEIGHT))
+          (shot->position.x / FN_TILE_WIDTH) + subtraction,
+          (shot->position.y + FN_HALFTILE_HEIGHT) / FN_TILE_HEIGHT))
     {
       shot->countdown = 1;
       fn_level_add_actor(shot->level,
           FN_ACTOR_EXPLOSION,
-          shot->x, shot->y);
+          shot->position.x, shot->position.y);
     }
   }
   return shot->is_alive;
@@ -123,10 +127,10 @@ void fn_shot_blit(fn_shot_t * shot)
     SDL_Surface * tile = fn_tilecache_get_tile(tc,
         OBJ_SHOT+shot->counter);
     Uint8 pixelsize = fn_level_get_pixelsize(shot->level);
-    destrect.x = shot->x * pixelsize;
-    destrect.y = shot->y * pixelsize;
-    destrect.w = FN_TILE_WIDTH * pixelsize;
-    destrect.h = FN_TILE_HEIGHT * pixelsize;
+    destrect.x = shot->position.x * pixelsize;
+    destrect.y = shot->position.y * pixelsize;
+    destrect.w = shot->position.w * pixelsize;
+    destrect.h = shot->position.h * pixelsize;
     SDL_BlitSurface(tile, NULL, target, &destrect);
   }
 }
@@ -142,14 +146,14 @@ void fn_shot_gets_out_of_sight(fn_shot_t * shot)
 
 Uint16 fn_shot_get_x(fn_shot_t * shot)
 {
-  return shot->x;
+  return shot->position.x;
 }
 
 /* --------------------------------------------------------------- */
 
 Uint16 fn_shot_get_y(fn_shot_t * shot)
 {
-  return shot->y;
+  return shot->position.y;
 }
 
 /* --------------------------------------------------------------- */
@@ -177,36 +181,8 @@ fn_level_t * fn_shot_get_level(fn_shot_t * shot)
 
 Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor)
 {
-  Uint16 shot_x_start = fn_shot_get_x(shot);
-  Uint16 shot_y_start = fn_shot_get_y(shot);
-  Uint16 shot_x_end = shot_x_start + fn_shot_get_w(shot);
-  Uint16 shot_y_end = shot_y_start + fn_shot_get_h(shot);
-  Uint16 actor_x_start = fn_actor_get_x(actor);
-  Uint16 actor_y_start = fn_actor_get_y(actor);
-  Uint16 actor_x_end = actor_x_start + fn_actor_get_w(actor);
-  Uint16 actor_y_end = actor_y_start + fn_actor_get_h(actor);
-
-  if (shot_x_end < actor_x_start) {
-    /* shot is further left than actor. */
-    return 0;
-  }
-
-  if (actor_x_end < shot_x_start) {
-    /* shot is further right than actor */
-    return 0;
-  }
-
-  if (shot_y_end < actor_y_start) {
-    /* shot is above actor. */
-    return 0;
-  }
-
-  if (actor_y_end < shot_y_start) {
-    /* shot is below actor. */
-    return 0;
-  }
-
-  return 1;
+  SDL_Rect * actorpos = fn_actor_get_pos(actor);
+  return fn_collision_overlap_rect_rect(actorpos, &(shot->position));
 }
 
 /* --------------------------------------------------------------- */
