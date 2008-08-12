@@ -85,8 +85,8 @@ void fn_hero_enterlevel(
     Uint32 x,
     Uint32 y)
 {
-  fn_hero_set_x(hero, x - FN_HALFTILE_WIDTH);
-  fn_hero_set_y(hero, y - FN_TILE_HEIGHT);
+  fn_hero_set_x(hero, x);
+  fn_hero_set_y(hero, y);
   hero->direction = fn_horizontal_direction_right;
   hero->motion = FN_HERO_MOTION_NONE;
   hero->flying = FN_HERO_FLYING_FALSE;
