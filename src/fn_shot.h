@@ -229,4 +229,37 @@ Uint8 fn_shot_hits_solid(
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Push a shot to a side. This function also does all the calculation
+ * which is necessary for the shot to collide.
+ *
+ * @param  shot    The shot.
+ * @param  offset  The offset to which the shot gets pushed.
+ */
+void fn_shot_push(fn_shot_t * shot, Sint16 offset);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the information if the shot is still alive.
+ *
+ * @param  shot   The shot.
+ *
+ * @return 1 if the shot is still alive, otherwise 0.
+ */
+Uint8 fn_shot_is_alive(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Return the current position of the shot.
+ *
+ * @param  shot   The shot.
+ *
+ * @return  The current position of the shot.
+ */
+SDL_Rect * fn_shot_get_position(fn_shot_t * shot);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_SHOT_H */

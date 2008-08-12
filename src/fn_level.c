@@ -1193,7 +1193,14 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 {
   fn_shot_t * shot = fn_shot_create(lv,
       x, y, direction);
+
+  int addition = (direction == fn_horizontal_direction_right ?
+      1 : -1);
+
   lv->shots = fn_list_append(lv->shots, shot);
+
+  fn_shot_push(shot, addition * FN_HALFTILE_WIDTH);
+
   fn_shot_set_draw_collision_bounds(shot,
       lv->draw_collision_bounds);
   return shot;
@@ -1238,27 +1245,10 @@ void fn_level_fire_shot(fn_level_t * lv)
 
   if (lv->num_shots < fn_hero_get_firepower(lv->hero)) {
     SDL_Rect * position = fn_hero_get_position(hero);
-    Uint32 x = 0;
-    Uint32 y = 0;
-    int direction = 0;
 
-    if (hero->direction == fn_horizontal_direction_right) {
-      x = position->x + position->w;
-      direction = 1;
-    } else {
-      x = position->x - FN_TILE_WIDTH;
-      direction = -1;
-    }
-    y = position->y + 4;
-
-    if (fn_hero_is_moving_horizontally(hero)) {
-      x += direction * FN_TILE_WIDTH;
-    }
-
-    fn_level_add_shot(lv, hero->direction, x, y);
+    fn_level_add_shot(lv, hero->direction, position->x, position->y);
     lv->num_shots++;
   }
-
 }
 
 /* --------------------------------------------------------------- */

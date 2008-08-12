@@ -37,25 +37,16 @@ fn_shot_t * fn_shot_create(fn_level_t * level,
 {
   fn_shot_t * shot = malloc(sizeof(fn_shot_t));
   shot->level = level;
-  shot->position.x = x + 4;
-  shot->position.y = y;
-  shot->position.w = FN_TILE_WIDTH;
+  shot->position.w = 4;
   shot->position.h = FN_TILE_HEIGHT - 4;
+
+  shot->position.x = x + FN_HALFTILE_WIDTH - shot->position.w / 2;
+  shot->position.y = y + FN_TILE_HEIGHT - shot->position.h;
   shot->is_alive = 1;
   shot->direction = direction;
   shot->counter = 0;
   shot->countdown = 2;
   shot->draw_collision_bounds = 0;
-
-  if ((shot->position.x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH) {
-    shot->position.x = shot->position.x -
-      ((shot->position.x + FN_HALFTILE_WIDTH) % FN_TILE_WIDTH);
-  }
-  if (shot->direction == fn_horizontal_direction_right) {
-    shot->position.x -= FN_TILE_WIDTH;
-  } else {
-    shot->position.x += FN_TILE_WIDTH;
-  }
 
   return shot;
 }
@@ -81,32 +72,11 @@ Uint8 fn_shot_act(fn_shot_t * shot)
 
   if (shot->countdown == 2) {
     if (shot->direction == fn_horizontal_direction_right) {
-      shot->position.x += FN_TILE_WIDTH;
+      fn_shot_push(shot, FN_HALFTILE_WIDTH);
+      fn_shot_push(shot, FN_HALFTILE_WIDTH);
     } else {
-      shot->position.x -= FN_TILE_WIDTH;
-    }
-
-    fn_list_t * iter = NULL;
-    fn_level_t * lv = fn_shot_get_level(shot);
-
-    for (iter = fn_list_first(lv->actors);
-        iter != NULL && shot->countdown != 1;
-        iter = fn_list_next(iter)) {
-      fn_actor_t * actor = (fn_actor_t *)iter->data;
-
-      if (fn_actor_can_get_shot(actor) &&
-          fn_shot_touches_actor(shot, actor) &&
-          fn_actor_shot(actor)) {
-        shot->countdown = 1;
-      }
-    }
-  }
-  if (shot->countdown == 2) {
-    if (fn_shot_hits_solid(shot)) {
-      shot->countdown = 1;
-      fn_level_add_actor(shot->level,
-          FN_ACTOR_EXPLOSION,
-          shot->position.x, shot->position.y);
+      fn_shot_push(shot, -FN_HALFTILE_WIDTH);
+      fn_shot_push(shot, -FN_HALFTILE_WIDTH);
     }
   }
   return shot->is_alive;
@@ -123,9 +93,11 @@ void fn_shot_blit(fn_shot_t * shot)
     SDL_Surface * tile = fn_tilecache_get_tile(tc,
         OBJ_SHOT+shot->counter);
     Uint8 pixelsize = fn_level_get_pixelsize(shot->level);
-    destrect.x = shot->position.x * pixelsize;
+    destrect.x =
+      (shot->position.x + shot->position.w / 2 - FN_HALFTILE_WIDTH) *
+      pixelsize;
     destrect.y = shot->position.y * pixelsize;
-    destrect.w = shot->position.w * pixelsize;
+    destrect.w = FN_TILE_WIDTH * pixelsize;
     destrect.h = shot->position.h * pixelsize;
     SDL_BlitSurface(tile, NULL, target, &destrect);
 
@@ -207,6 +179,54 @@ Uint8 fn_shot_hits_solid(
     fn_shot_t * shot)
 {
   return fn_level_solid_collides(shot->level, &(shot->position));
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_shot_push(fn_shot_t * shot, Sint16 offset)
+{
+  if (shot->countdown == 2) {
+    shot->position.x += offset;
+    fn_list_t * iter = NULL;
+    for (iter = fn_list_first(shot->level->actors);
+        iter != NULL && shot->countdown != 1;
+        iter = fn_list_next(iter)) {
+      fn_actor_t * actor = (fn_actor_t *)iter->data;
+
+      if (fn_actor_can_get_shot(actor) &&
+          fn_shot_touches_actor(shot, actor) &&
+          fn_actor_shot(actor)) {
+        shot->countdown = 1;
+      }
+    }
+  }
+  if (shot->countdown == 2) {
+    if (fn_shot_hits_solid(shot)) {
+      shot->countdown = 1;
+      if (offset > 0) {
+        shot->position.x -= offset;
+      } else {
+        shot->position.x += offset;
+      }
+      fn_level_add_actor(shot->level,
+          FN_ACTOR_EXPLOSION,
+          shot->position.x, shot->position.y);
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_shot_is_alive(fn_shot_t * shot)
+{
+  return shot->countdown == 2;
+}
+
+/* --------------------------------------------------------------- */
+
+SDL_Rect * fn_shot_get_position(fn_shot_t * shot)
+{
+  return &(shot->position);
 }
 
 /* --------------------------------------------------------------- */
