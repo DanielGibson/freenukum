@@ -120,6 +120,19 @@ int fn_collision_touch_rect_area(SDL_Rect * rect,
 /* --------------------------------------------------------------- */
 
 /**
+ * Check if two rectangles touch.
+ *
+ * @param  rect1    The first rectangle.
+ * @param  rect2    The first rectangle.
+ *
+ * @return 1 if the rectangles touch, otherwise 0.
+ */
+int fn_collision_touch_rect_rect(SDL_Rect * rect1,
+    SDL_Rect * rect2);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Get the horizontal distance of two areas.
  *
  * @param  x1  The x coordinate of the first area.

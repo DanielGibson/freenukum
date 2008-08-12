@@ -753,8 +753,8 @@ fn_level_t * fn_level_load(int fd,
       iter != fn_list_last(cameras);
       iter = fn_list_next(iter)) {
     fn_actor_t * camera = iter->data;
-    Uint16 cameray = camera->y / FN_TILE_HEIGHT;
-    Uint16 camerax = camera->x / FN_TILE_WIDTH;
+    Uint16 cameray = camera->position.y / FN_TILE_HEIGHT;
+    Uint16 camerax = camera->position.x / FN_TILE_WIDTH;
     lv->tiles[cameray][camerax] =
       lv->tiles[cameray+1][camerax];
   }
@@ -1141,10 +1141,9 @@ void fn_level_hero_interact_start(fn_level_t * lv)
       fn_hero_t * hero = fn_level_get_hero(lv);
       SDL_Rect * heropos = fn_hero_get_position(hero);
 
-      if (fn_collision_touch_rect_area(heropos,
-            /* TODO replace this direct access to actor's 
-             * implementation secrets */
-            actor->x, actor->y, actor->w, actor->h)) {
+      if (fn_collision_touch_rect_rect(heropos,
+            fn_actor_get_position(actor)))
+      {
         fn_level_hero_interact_stop(lv);
 
         lv->interactor = actor;

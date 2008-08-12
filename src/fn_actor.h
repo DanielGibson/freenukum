@@ -36,6 +36,10 @@ typedef enum fn_actor_type_e fn_actor_type_e;
 
 /* --------------------------------------------------------------- */
 
+#include <SDL.h>
+
+/* --------------------------------------------------------------- */
+
 #include "fn_level.h"
 
 /* --------------------------------------------------------------- */
@@ -213,24 +217,9 @@ struct fn_actor_t {
   fn_actor_type_e type;
 
   /**
-   * The current x position (in pixels).
+   * The current position of the actor.
    */
-  Uint16 x;
-
-  /**
-   * The current y position (in pixels).
-   */
-  Uint16 y;
-
-  /**
-   * The width of the actor (in pixels).
-   */
-  Uint16 w;
-
-  /**
-   * The height of the actor (in pixels).
-   */
-  Uint16 h;
+  SDL_Rect position;
 
   /**
    * Private data - depends on type.
@@ -468,5 +457,15 @@ void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Get the current position of the actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return A rectangle containing the current position of the actor.
+ */
+SDL_Rect * fn_actor_get_position(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
 
 #endif /* FN_ACTOR_H */
