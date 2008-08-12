@@ -1906,6 +1906,137 @@ void fn_actor_function_fire_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 
 /**
+ * The rotating mill.
+ */
+typedef struct fn_actor_mill_data_t {
+  /**
+   * The tile number which is to be blitted to the level.
+   */
+  Uint16 tile;
+  /**
+   * The animation counter.
+   */
+  Uint8 current_frame;
+  /**
+   * The number of frames.
+   */
+  Uint8 num_frames;
+  /**
+   * The number of lives that the mill still has.
+   */
+  Uint8 lives;
+} fn_actor_mill_data_t;
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_create(fn_actor_t * actor)
+{
+  fn_actor_mill_data_t * data = malloc(
+      sizeof(fn_actor_mill_data_t));
+  actor->data = data;
+  actor->is_in_foreground = 0;
+  actor->position.w = FN_TILE_WIDTH;
+  actor->position.h = FN_TILE_HEIGHT;
+  data->tile = OBJ_ROTATECYLINDER;
+  data->current_frame = 0;
+  data->num_frames = 5;
+  data->lives = 10;
+
+  while (!fn_level_is_solid(actor->level,
+        actor->position.x / FN_TILE_WIDTH,
+        actor->position.y / FN_TILE_HEIGHT - 1)) {
+    actor->position.y -= FN_TILE_HEIGHT;
+    actor->position.h += FN_TILE_HEIGHT;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_free(fn_actor_t * actor)
+{
+  fn_actor_mill_data_t * data = actor->data;
+  free(data); actor->data = NULL; data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_hero_touch_start(fn_actor_t * actor)
+{
+  /* TODO check if this is okay or if we need to go beyond 0 */
+  fn_hero_set_health(fn_level_get_hero(actor->level), 0);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_act(fn_actor_t * actor)
+{
+  fn_actor_mill_data_t * data = actor->data;
+  data->current_frame++;
+  data->current_frame %= data->num_frames;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_blit(fn_actor_t * actor)
+{
+  fn_actor_mill_data_t * data = actor->data;
+
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+      data->tile + data->current_frame);
+  destrect.x = actor->position.x * pixelsize;
+  destrect.y = actor->position.y * pixelsize;
+  destrect.w = FN_TILE_WIDTH * pixelsize;
+  destrect.h = FN_TILE_HEIGHT * pixelsize;
+
+  int i = 0;
+  for (i = 0; i < (actor->position.h / FN_TILE_HEIGHT); i++) {
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+    destrect.y += FN_TILE_HEIGHT * pixelsize;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_mill_shot(fn_actor_t * actor)
+{
+  fn_actor_mill_data_t * data = actor->data;
+  
+  if (data->lives > 0) {
+    data->lives--;
+    fn_level_add_particle_firework(
+        actor->level,
+        actor->position.x + actor->position.w / 2,
+        actor->position.y + actor->position.h / 2,
+        4);
+  } else {
+    /* TODO add removal animation (destroyed body) */
+    actor->is_alive = 0;
+    fn_hero_add_score(fn_level_get_hero(actor->level), 20000);
+    fn_level_add_particle_firework(
+        actor->level,
+        actor->position.x + actor->position.w / 2,
+        actor->position.y + actor->position.h / 2,
+        20);
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_SCORE_10000,
+        actor->position.x,
+        actor->position.y + actor->position.h / 2 - FN_TILE_HEIGHT);
+    fn_level_add_actor(actor->level,
+        FN_ACTOR_SCORE_10000,
+        actor->position.x,
+        actor->position.y + actor->position.h / 2);
+  }
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
+/**
  * The accesscard slot.
  */
 typedef struct fn_actor_acces_card_slot_data_t {
@@ -7164,15 +7295,21 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_MILL] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_mill_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_mill_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    =
+      fn_actor_function_mill_hero_touch_start,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_mill_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_mill_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_mill_shot,
   },
   [FN_ACTOR_LASERBEAM] = {
     [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
