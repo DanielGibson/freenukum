@@ -72,9 +72,11 @@ Uint8 fn_shot_act(fn_shot_t * shot)
 
   if (shot->countdown == 2) {
     if (shot->direction == fn_horizontal_direction_right) {
+      /* push twice so that every position gets covered. */
       fn_shot_push(shot, FN_HALFTILE_WIDTH);
       fn_shot_push(shot, FN_HALFTILE_WIDTH);
     } else {
+      /* push twice so that every position gets covered. */
       fn_shot_push(shot, -FN_HALFTILE_WIDTH);
       fn_shot_push(shot, -FN_HALFTILE_WIDTH);
     }
@@ -203,14 +205,11 @@ void fn_shot_push(fn_shot_t * shot, Sint16 offset)
   if (shot->countdown == 2) {
     if (fn_shot_hits_solid(shot)) {
       shot->countdown = 1;
-      if (offset > 0) {
-        shot->position.x -= offset;
-      } else {
-        shot->position.x += offset;
-      }
+
       fn_level_add_actor(shot->level,
           FN_ACTOR_EXPLOSION,
-          shot->position.x, shot->position.y);
+          shot->position.x + shot->position.w / 2 - FN_HALFTILE_WIDTH,
+          shot->position.y);
     }
   }
 }
