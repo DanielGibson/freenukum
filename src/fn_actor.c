@@ -1962,8 +1962,11 @@ void fn_actor_function_mill_free(fn_actor_t * actor)
 
 void fn_actor_function_mill_hero_touch_start(fn_actor_t * actor)
 {
-  /* TODO check if this is okay or if we need to go beyond 0 */
-  fn_hero_set_health(fn_level_get_hero(actor->level), 0);
+  fn_actor_mill_data_t * data = actor->data;
+  if (data->lives > 0) {
+    /* TODO check if this is okay or if we need to go beyond 0 */
+    fn_hero_set_health(fn_level_get_hero(actor->level), 0);
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -1971,8 +1974,11 @@ void fn_actor_function_mill_hero_touch_start(fn_actor_t * actor)
 void fn_actor_function_mill_act(fn_actor_t * actor)
 {
   fn_actor_mill_data_t * data = actor->data;
-  data->current_frame++;
-  data->current_frame %= data->num_frames;
+  if (data->lives > 0) {
+    fn_actor_mill_data_t * data = actor->data;
+    data->current_frame++;
+    data->current_frame %= data->num_frames;
+  }
 }
 
 /* --------------------------------------------------------------- */
