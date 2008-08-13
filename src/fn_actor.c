@@ -1990,8 +1990,8 @@ void fn_actor_function_mill_shot(fn_actor_t * actor)
 {
   fn_actor_mill_data_t * data = actor->data;
   
+  data->lives--;
   if (data->lives > 0) {
-    data->lives--;
     fn_level_add_particle_firework(
         actor->level,
         actor->position.x + actor->position.w / 2,
