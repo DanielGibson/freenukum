@@ -487,7 +487,7 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3032: /* we found our hero! */
         fn_hero_enterlevel(lv->hero,
-            x * FN_TILE_WIDTH, y * FN_TILE_HEIGHT);
+            x * FN_TILE_WIDTH, (y - 1) * FN_TILE_HEIGHT);
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
