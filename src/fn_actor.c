@@ -939,7 +939,7 @@ void fn_actor_function_firewheelbot_create(fn_actor_t * actor)
   data->touching_hero = 0;
   data->fire_is_on = 0;
   data->counter = 0;
-  actor->position.w = FN_TILE_WIDTH * 2;
+  actor->position.w = FN_TILE_WIDTH;
   actor->position.h = FN_TILE_HEIGHT;
 }
 
@@ -1010,51 +1010,27 @@ void fn_actor_function_firewheelbot_act(fn_actor_t * actor)
       }
     }
 
-    if (!fn_level_is_solid(actor->level,
-          (actor->position.x) / FN_TILE_WIDTH,
-          (actor->position.y) / FN_TILE_HEIGHT + 1) &&
-        !fn_level_is_solid(actor->level,
-          (actor->position.x) / FN_TILE_WIDTH + 1,
-          (actor->position.y) / FN_TILE_HEIGHT + 1)) {
-      /* still in the air, so let the robot fall down */
-      actor->position.y += FN_HALFTILE_HEIGHT;
-    } else {
-      /* on the floor, so let's walk */
-      int direction = (data->direction == fn_horizontal_direction_left ?
-          -1 : 2);
-      if (
-          /* check if the place next to the bot is free */
-          !fn_level_is_solid(actor->level,
-            (actor->position.x + FN_HALFTILE_WIDTH +
-             direction * FN_HALFTILE_WIDTH) / FN_TILE_WIDTH,
-            (actor->position.y) / FN_TILE_HEIGHT) &&
-          /* check if it is solid below this place */
-          fn_level_is_solid(actor->level,
-            (actor->position.x * FN_HALFTILE_WIDTH) /
-            FN_TILE_WIDTH + direction,
-            (actor->position.y + FN_TILE_HEIGHT) / FN_TILE_HEIGHT + 1))
-      {
-        if (direction > 0) {
-          direction = 1;
-        }
-        actor->position.x += direction * FN_HALFTILE_WIDTH * 0.5;
-      } else {
-        /* Reached the end, so turn around */
-        data->direction = (
-            data->direction == fn_horizontal_direction_left ?
-            fn_horizontal_direction_right :
-            fn_horizontal_direction_left);
-        if (direction > 0) direction = 1;
-        direction *= -1;
-        actor->position.x += direction * FN_HALFTILE_WIDTH;
-      }
-      if (data->was_shot == 1) {
-        /* create steam clouds */
-        if (data->current_frame == 0) {
-          fn_level_add_actor(actor->level,
-              FN_ACTOR_STEAM, actor->position.x + FN_HALFTILE_WIDTH,
-              actor->position.y - FN_TILE_HEIGHT);
-        }
+    int direction = (data->direction == fn_horizontal_direction_left ?
+          -1 : 1);
+    if (!fn_level_push_rect_standing_on_solid_ground(
+        actor->level,
+        &(actor->position),
+        direction * FN_HALFTILE_WIDTH / 2,
+        FN_HALFTILE_HEIGHT))
+    {
+      /* push was not successful, so we reverse the direction */
+      data->direction =
+        (data->direction == fn_horizontal_direction_left ?
+         fn_horizontal_direction_right :
+         fn_horizontal_direction_left);
+    }
+
+    if (data->was_shot == 1) {
+      /* create steam clouds */
+      if (data->current_frame == 0) {
+        fn_level_add_actor(actor->level,
+            FN_ACTOR_STEAM, actor->position.x + FN_HALFTILE_WIDTH,
+            actor->position.y - FN_TILE_HEIGHT);
       }
     }
   }
@@ -1074,9 +1050,11 @@ void fn_actor_function_firewheelbot_blit(fn_actor_t * actor)
   
   tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame) * 4);
-  destrect.x = actor->position.x * pixelsize;
+  destrect.x = (actor->position.x +
+      actor->position.w / 2
+      - FN_TILE_WIDTH) * pixelsize;
   destrect.y = (actor->position.y - FN_TILE_HEIGHT) * pixelsize;
-  destrect.w = actor->position.w * pixelsize;
+  destrect.w = FN_TILE_WIDTH * 2 * pixelsize;
   destrect.h = actor->position.h * pixelsize;
   SDL_BlitSurface(tile, NULL, target, &destrect);
 

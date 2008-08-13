@@ -441,4 +441,68 @@ Uint8 fn_level_solid_collides(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
+/**
+ * Check if a rectangle stands completely on solid ground in a level.
+ * Completely means that the whole width of the rectangle has solid
+ * ground directly below.
+ *
+ * @param  lv     The level.
+ * @param  rect   The rectangle.
+ * 
+ * @return 1 if the rectangle stands on solid ground, otherwise 0.
+ */
+Uint8 fn_level_stands_on_solid_ground_completely(fn_level_t * lv,
+    SDL_Rect * rect);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Check if a rectangle stands partially on solid ground in a level.
+ * Partially means that not the whole width of the rectangle must
+ * stand on ground, but only part of it.
+ *
+ * @param  lv     The level.
+ * @param  rect   The rectangle.
+ * 
+ * @return 1 if the rectangle stands on solid ground, otherwise 0.
+ */
+Uint8 fn_level_stands_on_solid_ground_partially(fn_level_t * lv,
+    SDL_Rect * rect);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Push a rectangle which is standing on solid ground.
+ * If the rectangle would no longer stand on solid ground,
+ * this is shown in the return value.
+ *
+ * @param  level    The level inside which the rectangle is.
+ * @param  rect     The rectangle.
+ * @param  offset   The horizontal offset by which to push.
+ * @param  gravity  The vertical speed by which the rect falls down.
+ *
+ * @return 1 if the push was successful, otherwise 0.
+ */
+Uint8 fn_level_push_rect_standing_on_solid_ground(
+    fn_level_t * level, SDL_Rect * rect, Sint8 offset, Uint8 gravity);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Let a rectangle fall down within a level.
+ * This is possible, if it overlaps with no solid parts and if
+ * it does not stand on any ground at all.
+ *
+ * @param  level     The level inside which the rectangle is.
+ * @param  rect      The rectangle.
+ * @param  dist      The distance for which to check.
+ *
+ * @return The number of pixels by which the rect can fall down
+ *         (maximally the same value as dist).
+ */
+Uint8 fn_level_rect_fall_down(
+    fn_level_t * level, SDL_Rect * rect, Uint8 dist);
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_LEVEL_H */
