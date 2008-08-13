@@ -3151,7 +3151,7 @@ void fn_actor_function_teleporter_interact_start(fn_actor_t * actor)
       fn_hero_t * hero = fn_level_get_hero(actor->level);
       fn_hero_replace(hero,
           otheractor->position.x,
-          otheractor->position.y);
+          otheractor->position.y - FN_TILE_HEIGHT);
       return;
     }
   }
