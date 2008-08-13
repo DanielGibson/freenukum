@@ -3438,6 +3438,130 @@ void fn_actor_function_particle_blit(fn_actor_t * actor)
 /* --------------------------------------------------------------- */
 /* --------------------------------------------------------------- */
 
+typedef enum fn_actor_rocket_state_e {
+  fn_actor_rocket_state_idle,
+  fn_actor_rocket_state_flying
+} fn_actor_rocket_state_e;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * The rocket.
+ */
+typedef struct fn_actor_rocket_data_t {
+  /**
+   * The state.
+   */
+  fn_actor_rocket_state_e state;
+} fn_actor_rocket_data_t;
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Create a rocket.
+ *
+ * @param  actor  The rocket actor.
+ */
+void fn_actor_function_rocket_create(fn_actor_t * actor)
+{
+  fn_actor_rocket_data_t * data = malloc(
+      sizeof(fn_actor_rocket_data_t));
+  actor->data = data;
+  data->state = fn_actor_rocket_state_idle;
+  actor->position.w = FN_TILE_WIDTH;
+  actor->position.h = FN_TILE_HEIGHT;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_rocket_free(fn_actor_t * actor)
+{
+  fn_actor_rocket_data_t * data = actor->data;
+  free(data); data = NULL; actor->data = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_rocket_act(fn_actor_t * actor)
+{
+  fn_actor_rocket_data_t * data = actor->data;
+  if (data->state == fn_actor_rocket_state_idle) {
+    /* idle, so do nothing */
+    return;
+  }
+  if (data->state == fn_actor_rocket_state_flying) {
+    actor->position.y -= FN_HALFTILE_HEIGHT;
+    if (fn_level_solid_collides(actor->level, &(actor->position))) {
+      Uint16 tile_x = actor->position.x / FN_TILE_WIDTH;
+      Uint16 tile_y = actor->position.y / FN_TILE_HEIGHT;
+      fn_level_set_solid(actor->level, tile_x, tile_y, 0);
+      fn_level_set_tile(actor->level, tile_x, tile_y,
+          fn_level_get_tile(actor->level, tile_x, tile_y - 1));
+      actor->is_alive = 0;
+    }
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_rocket_blit(fn_actor_t * actor)
+{
+  fn_actor_rocket_data_t * data = actor->data;
+  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
+  SDL_Surface * target = fn_level_get_surface(actor->level);
+  SDL_Rect destrect;
+  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
+  SDL_Surface * tile = fn_tilecache_get_tile(tc, OBJ_ROCKET);
+  destrect.x = actor->position.x * pixelsize;
+  destrect.y = (actor->position.y - FN_TILE_HEIGHT * 3) * pixelsize;
+  destrect.w = FN_TILE_WIDTH * pixelsize;
+  destrect.h = FN_TILE_HEIGHT * pixelsize;
+
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 1);
+  destrect.y += FN_TILE_HEIGHT * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+  destrect.y += FN_TILE_HEIGHT * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+  destrect.y += FN_TILE_HEIGHT * pixelsize;
+
+  tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 2);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 3);
+  destrect.x -= FN_TILE_WIDTH * pixelsize;
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+  destrect.x += FN_TILE_WIDTH * 2 * pixelsize;
+  tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 4);
+  SDL_BlitSurface(tile, NULL, target, &destrect);
+
+  if (data->state == fn_actor_rocket_state_flying) {
+    destrect.x -= FN_TILE_WIDTH * pixelsize;
+    destrect.y += FN_TILE_HEIGHT * pixelsize;
+    tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 6);
+    SDL_BlitSurface(tile, NULL, target, &destrect);
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_function_rocket_shot(fn_actor_t * actor)
+{
+  fn_actor_rocket_data_t * data = actor->data;
+  data->state = fn_actor_rocket_state_flying;
+  /* TODO create animation */
+  Uint16 tile_x = actor->position.x / FN_TILE_WIDTH;
+  Uint16 tile_y = (actor->position.y + actor->position.h) /
+    FN_TILE_HEIGHT;
+  fn_level_set_solid(actor->level, tile_x, tile_y, 0);
+  fn_level_set_tile(actor->level, tile_x, tile_y,
+      fn_level_get_tile(actor->level, tile_x, tile_y + 1));
+}
+
+/* --------------------------------------------------------------- */
+/* --------------------------------------------------------------- */
+
 typedef struct fn_actor_bomb_data_t {
   /**
    * The tile number for the tilecache.
@@ -5924,15 +6048,20 @@ void
     [FN_ACTOR_FUNCTION_SHOT]                = NULL,
   },
   [FN_ACTOR_ROCKET] = {
-    [FN_ACTOR_FUNCTION_CREATE]              = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_FREE]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_ACT]                 = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_BLIT]                = NULL, /* TODO */
-    [FN_ACTOR_FUNCTION_SHOT]                = NULL, /* TODO */
+    [FN_ACTOR_FUNCTION_CREATE]              =
+      fn_actor_function_rocket_create,
+    [FN_ACTOR_FUNCTION_FREE]                =
+      fn_actor_function_rocket_free,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_START]    = NULL,
+    [FN_ACTOR_FUNCTION_HERO_TOUCH_END]      = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_START] = NULL,
+    [FN_ACTOR_FUNCTION_HERO_INTERACT_END]   = NULL,
+    [FN_ACTOR_FUNCTION_ACT]                 =
+      fn_actor_function_rocket_act,
+    [FN_ACTOR_FUNCTION_BLIT]                =
+      fn_actor_function_rocket_blit,
+    [FN_ACTOR_FUNCTION_SHOT]                =
+      fn_actor_function_rocket_shot,
   },
   [FN_ACTOR_BOMB] = {
     [FN_ACTOR_FUNCTION_CREATE]              =
