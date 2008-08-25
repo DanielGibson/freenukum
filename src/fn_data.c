@@ -241,7 +241,9 @@ struct FtpFile {
 
 struct ProgressData {
   SDL_Surface * screen;
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
   TTF_Font * font;
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
   int x;
   int y;
   int height;

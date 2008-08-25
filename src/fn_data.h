@@ -56,6 +56,7 @@ int fn_data_download_possible(void);
 
 /* --------------------------------------------------------------- */
 
+#ifdef HAVE_AUTOMATIC_DOWNLOAD
 /**
  * Automatically download of shareware episode.
  *
@@ -71,6 +72,7 @@ int fn_data_download(
     TTF_Font * font,
     int fontheight,
     char * datapath);
+#endif /* HAVE_AUTOMATIC_DOWNLOAD */
 
 /* --------------------------------------------------------------- */
 
