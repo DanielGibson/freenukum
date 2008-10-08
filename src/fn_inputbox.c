@@ -54,7 +54,7 @@ fn_inputbox_answer_t fn_inputbox_show(
 
   char * buffer = malloc(strlen(msg) + answer_len + 30);
   strcpy(buffer, msg);
-  char * walker = buffer + strlen(buffer) + 1;
+  char * walker = buffer + strlen(buffer);
   *walker = '\n';
   walker++;
 
@@ -62,10 +62,7 @@ fn_inputbox_answer_t fn_inputbox_show(
     *walker = ' ';
     walker++;
   }
-  *walker = '\n';
-  walker++;
-
-  sprintf(walker, "OK (Enter)   Abort (Esc)\n");
+  sprintf(walker, "\n\n\nOK (Enter)   Abort (Esc)\n");
 
   msgbox = fn_msgbox(
       pixelsize,
@@ -93,8 +90,8 @@ fn_inputbox_answer_t fn_inputbox_show(
 
   inputfield_rect.w = inputfield_surface->w;
   inputfield_rect.h = inputfield_surface->h;
-  inputfield_rect.x = FN_FONT_WIDTH * 2 * pixelsize;
-  inputfield_rect.y = msgbox->h - FN_FONT_HEIGHT * 2 * pixelsize;
+  inputfield_rect.x = FN_FONT_WIDTH * pixelsize;
+  inputfield_rect.y = msgbox->h - FN_FONT_HEIGHT * 4 * pixelsize;
 
   /* backup the background */
   temp = SDL_CreateRGBSurface(screen->flags,
@@ -103,12 +100,16 @@ fn_inputbox_answer_t fn_inputbox_show(
       0, 0, 0, 0);
   SDL_BlitSurface(screen, &dstrect, temp, NULL);
 
-  SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
-  SDL_UpdateRect(screen, 0, 0, 0, 0);
-
   fn_inputfield_t * inputfield = fn_inputfield_new(
       answer,
       answer_len);
+
+  fn_inputfield_blit(inputfield, inputfield_surface,
+      tilecache, pixelsize);
+  SDL_BlitSurface(inputfield_surface, NULL, msgbox,
+      &inputfield_rect);
+  SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
+  SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (1) {
     res = SDL_WaitEvent(&event);

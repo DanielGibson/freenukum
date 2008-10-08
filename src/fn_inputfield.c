@@ -76,7 +76,6 @@ void fn_inputfield_pressed_backspace(fn_inputfield_t * field)
     field->cursor--;
     field->fillstate--;
   }
-  fn_inputfield_print(field);
 }
 
 /* --------------------------------------------------------------- */
@@ -88,7 +87,6 @@ void fn_inputfield_pressed_delete(fn_inputfield_t * field)
     field->data[i] = field->data[i+1];
   }
   field->fillstate--;
-  fn_inputfield_print(field);
 }
 
 /* --------------------------------------------------------------- */
@@ -98,7 +96,6 @@ void fn_inputfield_pressed_left(fn_inputfield_t * field)
   if (field->cursor > 0) {
     field->cursor--;
   }
-  fn_inputfield_print(field);
 }
 
 /* --------------------------------------------------------------- */
@@ -108,7 +105,6 @@ void fn_inputfield_pressed_right(fn_inputfield_t * field)
   if (field->cursor < field->fillstate) {
     field->cursor++;
   }
-  fn_inputfield_print(field);
 }
 
 /* --------------------------------------------------------------- */
@@ -125,7 +121,6 @@ void fn_inputfield_pressed_symbol(fn_inputfield_t * field,
     field->cursor++;
     field->fillstate++;
   }
-  fn_inputfield_print(field);
 }
 
 /* --------------------------------------------------------------- */

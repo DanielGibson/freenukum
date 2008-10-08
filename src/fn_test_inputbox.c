@@ -77,12 +77,12 @@ int main(int argc, char ** argv) {
     exit(1);
   }
 
-  char answer[10] = "";
+  char answer[30] = "";
   fn_inputbox_answer_t entered =
     fn_inputbox_show(pixelsize, &tilecache, screen,
         "Please enter your name:",
         answer,
-        10);
+        30);
 
   if (entered == fn_inputbox_answer_ok) {
     printf("Okay.\n");
