@@ -49,4 +49,12 @@ SDL_Surface * fn_msgbox(
 
 /* --------------------------------------------------------------- */
 
+void fn_msgbox_get_text_information(
+    char * text,
+    Uint8 * columns,
+    Uint8 * rows
+    );
+
+/* --------------------------------------------------------------- */
+
 #endif /* FN_MSGBOX_H */
