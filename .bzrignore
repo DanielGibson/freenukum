@@ -53,3 +53,4 @@ data/icons/96x96/freenukum.png
 src/config.h
 src/stamp-h1
 core
+src/fn_test_inputbox
