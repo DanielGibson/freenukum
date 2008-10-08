@@ -40,6 +40,41 @@
 
 /* --------------------------------------------------------------- */
 
+Uint8 fn_msgbox_get_line_length(
+    char * line)
+{
+  Uint8 length = 0;
+  char * walker = line;
+  while (*walker != '\n' && *walker != '\0') {
+    walker++;
+    length++;
+  }
+  return length;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_msgbox_get_text_information(
+    char * text,
+    Uint8 * columns,
+    Uint8 * rows
+    )
+{
+  *columns = 0;
+  *rows = 0;
+  char * walker = text;
+
+  while (*walker != '\0') {
+    Uint8 current_line_len = fn_msgbox_get_line_length(walker);
+    *columns = MAX(*columns, current_line_len);
+    (*rows)++;
+
+    walker += current_line_len + 1;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 SDL_Surface * fn_msgbox(
     Uint8 pixelsize,
     Uint32 flags,
@@ -48,32 +83,17 @@ SDL_Surface * fn_msgbox(
     char * text
     )
 {
-  char * walker;
   Uint8 columns = 0;
   Uint8 rows = 0;
-  char * mytext;
-  char * linemarker;
   SDL_Surface * msgbox;
   Uint8 i, j;
   int tilenr;
   SDL_Rect r;
 
-  mytext = malloc(strlen(text)+1);
-  strcpy(mytext, text);
-  walker = mytext;
-
-  linemarker = walker;
-
-  while (*walker != '\0') {
-    if (*walker == '\n') {
-      *walker = '\0';
-      columns = MAX(strlen(linemarker), columns);
-      *walker = '\n';
-      linemarker = walker + 1;
-      rows++;
-    }
-    walker++;
-  }
+  fn_msgbox_get_text_information(
+      text,
+      &columns,
+      &rows);
 
   msgbox = SDL_CreateRGBSurface(
       flags,
@@ -119,11 +139,9 @@ SDL_Surface * fn_msgbox(
   fn_text_print(msgbox,
       &r,
       tilecache,
-      mytext,
+      text,
       pixelsize);
   
-  free(mytext);
-
   return msgbox;
 }
 
