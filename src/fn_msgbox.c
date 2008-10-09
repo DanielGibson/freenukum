@@ -56,8 +56,8 @@ Uint8 fn_msgbox_get_line_length(
 
 void fn_msgbox_get_text_information(
     char * text,
-    Uint8 * columns,
-    Uint8 * rows
+    Uint16 * columns,
+    Uint16 * rows
     )
 {
   *columns = 0;
@@ -69,7 +69,10 @@ void fn_msgbox_get_text_information(
     *columns = MAX(*columns, current_line_len);
     (*rows)++;
 
-    walker += current_line_len + 1;
+    walker += current_line_len;
+    if (*walker == '\n') {
+      walker++;
+    }
   }
 }
 
@@ -83,8 +86,8 @@ SDL_Surface * fn_msgbox(
     char * text
     )
 {
-  Uint8 columns = 0;
-  Uint8 rows = 0;
+  Uint16 columns = 0;
+  Uint16 rows = 0;
   SDL_Surface * msgbox;
   Uint8 i, j;
   int tilenr;

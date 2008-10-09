@@ -77,7 +77,7 @@ int main(int argc, char ** argv) {
     exit(1);
   }
 
-  fn_menu_t * menu = fn_menu_create("Testmenu");
+  fn_menu_t * menu = fn_menu_create("Testmenu\nTest\nTest\n\n");
   fn_menu_append_entry(menu, 's', "S)tart game", 's');
   fn_menu_append_entry(menu, 'h', "H)ello", 'h');
   fn_menu_append_entry(menu, 'd', "D)emo game", 'd');

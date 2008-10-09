@@ -109,15 +109,24 @@ char fn_menu_get_choice(fn_menu_t * menu,
     SDL_Surface * screen)
 {
   /* TODO This is a dirty workaround which should be removed. */
-  char * placeholder = malloc(menu->num_entries * menu->width + 4);
-  char * walker = placeholder;
+  Uint16 textrows = 0;
+  Uint16 textcols = 0;
+
+  fn_msgbox_get_text_information(menu->text, &textcols, &textrows);
+
+  textcols = MAX(textcols, menu->width);
+
+  char * placeholder =
+    malloc((menu->num_entries + textrows) * textcols + 4);
   int i = 0;
-  while (i < menu->width + 2) {
+  sprintf(placeholder, "%s", menu->text);
+  char * walker = placeholder + strlen(menu->text);
+  while (i < textcols + 2) {
     *walker = ' ';
     walker++;
     i++;
   }
-  while (i < menu->width + menu->num_entries + 2) {
+  while (i < textcols + menu->num_entries + 2) {
     *walker = '\n';
     walker++;
     i++;
@@ -173,7 +182,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
     {
       targetrect.w = FN_FONT_WIDTH * pixelsize * menu->width;
       targetrect.x = FN_FONT_WIDTH * pixelsize * 2;
-      targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + 1);
+      targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + textrows + 1);
       targetrect.h = FN_FONT_HEIGHT * pixelsize;
       entry = (fn_menuentry_t *)iter->data;
       fn_text_print(
