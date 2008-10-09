@@ -226,7 +226,15 @@ char fn_menu_get_choice(fn_menu_t * menu,
               entry = (fn_menuentry_t *)menu->currententry->data;
               break;
             default:
-              /* TODO check for keys in menu */
+              for (iter = fn_list_first(menu->entries);
+                  iter != fn_list_last(menu->entries) && !choice;
+                  iter = fn_list_next(iter))
+              {
+                entry = (fn_menuentry_t *)iter->data;
+                if (entry->shortcut == event.key.keysym.sym) {
+                  choice = entry->shortcut;
+                }
+              }
               break;
           }
           break;
