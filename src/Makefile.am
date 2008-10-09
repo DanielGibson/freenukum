@@ -8,6 +8,7 @@ INCLUDES = \
 freenukum_SOURCES = fn.h \
 										fn_object.h \
 										fn_actor.h          fn_actor.c \
+										fn_menu.h           fn_menu.c \
 										fn_borders.h        fn_borders.c \
 										fn_bot.h            fn_bot.c \
 										fn_draw.h           fn_draw.c \

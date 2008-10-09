@@ -27,6 +27,7 @@
  *******************************************************************/
 
 #include "fn_mainmenu.h"
+#include "fn_menu.h"
 #include "fn_msgbox.h"
 
 /* --------------------------------------------------------------- */
@@ -35,116 +36,79 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
     Uint8 pixelsize,
     SDL_Surface * screen)
 {
-  SDL_Surface * msgbox;
-  SDL_Surface * temp;
-  SDL_Rect dstrect;
-
-  int res = 0;
   int choice = 0;
   char * msg =
     "\n"
     "  FREENUKUM MAIN MENU \n"
     "  ------------------- \n"
-    "\n"
-    " S)tart a new game \n"
-    " R)estore an old game \n"
-    " I)nstructions \n"
-    " O)rdering information \n"
-    " G)ame setup \n"
-    " F)ullscreen toggle \n"
-    " E)pisode change\n"
-    " H)igh scores \n"
-    " P)reviews/Main Demo! \n"
-    " V)iew user demo \n"
-    " T)itle screen \n"
-    " C)redits \n"
-    " Q)uit to DOS \n"
     "\n";
+  fn_menu_t * menu = fn_menu_create(msg);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_START,
+      "S)tart a new game",
+      FN_MENUCHOICE_START);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_RESTORE,
+      "R)estore an old game",
+      FN_MENUCHOICE_RESTORE);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_INSTRUCTIONS,
+      "I)nstructions",
+      FN_MENUCHOICE_INSTRUCTIONS);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_ORDERINGINFO,
+      "O)rdering information",
+      FN_MENUCHOICE_ORDERINGINFO);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_FULLSCREENTOGGLE,
+      "F)ullscreen toggle",
+      FN_MENUCHOICE_FULLSCREENTOGGLE);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_EPISODECHANGE,
+      "E)pisode change",
+      FN_MENUCHOICE_EPISODECHANGE);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_HIGHSCORES,
+      "H)igh scores",
+      FN_MENUCHOICE_HIGHSCORES);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_PREVIEWS,
+      "P)reviews/Main Demo!",
+      FN_MENUCHOICE_PREVIEWS);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_VIEWUSERDEMO,
+      "V)iew user demo",
+      FN_MENUCHOICE_VIEWUSERDEMO);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_TITLESCREEN,
+      "T)itle screen",
+      FN_MENUCHOICE_TITLESCREEN);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_CREDITS,
+      "C)redits",
+      FN_MENUCHOICE_CREDITS);
+  fn_menu_append_entry(
+      menu,
+      FN_MENUCHOICE_QUIT,
+      "Q)it to DOS",
+      FN_MENUCHOICE_QUIT);
 
-  SDL_Event event;
+  choice = fn_menu_get_choice(menu, tilecache, pixelsize, screen);
 
-  msgbox = fn_msgbox(pixelsize,
-      screen->flags,
-      screen->format,
-      tilecache,
-      msg);
-
-  dstrect.x = ((screen->w)-(msgbox->w))/2;
-  dstrect.y = ((screen->h)-(msgbox->h))/2;
-  dstrect.w = msgbox->w;
-  dstrect.h = msgbox->h;
-
-  temp = SDL_CreateRGBSurface(screen->flags,
-      dstrect.w, dstrect.h,
-      screen->format->BitsPerPixel,
-      0, 0, 0, 0);
-  SDL_BlitSurface(screen, &dstrect, temp, NULL);
-
-  SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
-  SDL_FreeSurface(msgbox);
-  SDL_UpdateRect(screen, 0, 0, 0, 0);
-
-  while (!choice) {
-    res = SDL_WaitEvent(&event);
-    if (res == 1) {
-      switch(event.type) {
-        case SDL_KEYDOWN:
-          switch(event.key.keysym.sym) {
-            case SDLK_s:
-            case SDLK_RETURN:
-              choice = FN_MENUCHOICE_START;
-              break;
-            case SDLK_r:
-              choice = FN_MENUCHOICE_RESTORE;
-              break;
-            case SDLK_i:
-              choice = FN_MENUCHOICE_INSTRUCTIONS;
-              break;
-            case SDLK_o:
-              choice = FN_MENUCHOICE_ORDERINGINFO;
-              break;
-            case SDLK_g:
-              choice = FN_MENUCHOICE_SETUP;
-              break;
-            case SDLK_f:
-              choice = FN_MENUCHOICE_FULLSCREENTOGGLE;
-              break;
-            case SDLK_e:
-              choice = FN_MENUCHOICE_EPISODECHANGE;
-              break;
-            case SDLK_h:
-              choice = FN_MENUCHOICE_HIGHSCORES;
-              break;
-            case SDLK_p:
-              choice = FN_MENUCHOICE_PREVIEWS;
-              break;
-            case SDLK_v:
-              choice = FN_MENUCHOICE_VIEWUSERDEMO;
-              break;
-            case SDLK_t:
-              choice = FN_MENUCHOICE_TITLESCREEN;
-              break;
-            case SDLK_c:
-              choice = FN_MENUCHOICE_CREDITS;
-              break;
-            case SDLK_q:
-            case SDLK_ESCAPE:
-              choice = FN_MENUCHOICE_QUIT;
-              break;
-            default:
-              /* ignore other input */
-              break;
-          }
-        case SDL_VIDEOEXPOSE:
-          SDL_UpdateRect(screen, 0, 0, 0, 0);
-          break;
-        default:
-          /* ignore other events */
-          break;
-      }
-    }
+  if (choice == '\0') {
+    choice = FN_MENUCHOICE_QUIT;
   }
-  SDL_BlitSurface(temp, NULL, screen, &dstrect);
-  SDL_FreeSurface(temp);
+
   return choice;
 }

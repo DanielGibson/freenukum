@@ -126,7 +126,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
     walker++;
     i++;
   }
-  while (i < textcols + menu->num_entries + 2) {
+  while (i < textcols + menu->num_entries + 3) {
     *walker = '\n';
     walker++;
     i++;
@@ -182,7 +182,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
         iter = fn_list_next(iter))
     {
       targetrect.w = FN_FONT_WIDTH * pixelsize * menu->width;
-      targetrect.x = FN_FONT_WIDTH * pixelsize * 2;
+      targetrect.x = FN_FONT_WIDTH * pixelsize * 3;
       targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + textrows + 1);
       targetrect.h = FN_FONT_HEIGHT * pixelsize;
       entry = (fn_menuentry_t *)iter->data;
@@ -194,7 +194,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
           pixelsize
           );
       if (iter == menu->currententry) {
-        targetrect.x -= FN_FONT_WIDTH * pixelsize;
+        targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
         SDL_BlitSurface(
             fn_tilecache_get_tile(
               tilecache,

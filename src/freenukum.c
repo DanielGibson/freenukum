@@ -431,10 +431,6 @@ int main(int argc, char ** argv)
         fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
             "Orderinginfo not implemented yet.\n");
         break;
-      case FN_MENUCHOICE_SETUP:
-        fn_infobox_show((Uint8)pixelsize, &tilecache, screen,
-            "Setup not implemented yet.\n");
-        break;
       case FN_MENUCHOICE_FULLSCREENTOGGLE:
         {
           int res = SDL_WM_ToggleFullScreen(screen);
