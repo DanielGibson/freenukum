@@ -86,6 +86,24 @@ fn_list_t * fn_list_next(fn_list_t * list)
 
 /* --------------------------------------------------------------- */
 
+fn_list_t * fn_list_previous(fn_list_t * list, fn_list_t * entry)
+{
+  if (list != NULL) {
+    if (list == entry) {
+      /* entry is the first element */
+      return NULL;
+    }
+    fn_list_t * iter = list;
+    while (fn_list_next(iter) != entry) {
+      iter = fn_list_next(iter);
+    }
+    return iter;
+  }
+  return NULL;
+}
+
+/* --------------------------------------------------------------- */
+
 void fn_list_free(fn_list_t * list)
 {
   fn_list_t * todelete = list;

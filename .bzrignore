@@ -54,3 +54,4 @@ src/config.h
 src/stamp-h1
 core
 src/fn_test_inputbox
+src/fn_test_menu

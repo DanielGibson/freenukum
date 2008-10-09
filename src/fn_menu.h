@@ -1,11 +1,11 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    A simple linked list
+ * File:    Main menu
  *
  * *****************************************************************
  *
- * Copyright 2007-2008 Wolfgang Silbermayr
+ * Copyright 2008 Wolfgang Silbermayr
  *
  * *****************************************************************
  *
@@ -26,101 +26,85 @@
  *
  *******************************************************************/
 
-#ifndef FN_LIST_H
-#define FN_LIST_H
+#ifndef FN_MENU_H
+#define FN_MENU_H
 
-typedef struct fn_list_t fn_list_t;
+/* --------------------------------------------------------------- */
 
-struct fn_list_t {
+#include <SDL.h>
+
+/* --------------------------------------------------------------- */
+
+#include "fn_msgbox.h"
+#include "fn_list.h"
+
+/* --------------------------------------------------------------- */
+
+typedef struct fn_menuentry_t {
   /**
-   * The next list item.
+   * Shortcut for the entry.
    */
-  fn_list_t * next;
+  char shortcut;
   /**
-   * The data item.
+   * Name which is shown to the user.
    */
-  void * data;
-};
+  char * name;
+  /**
+   * The value which is returned on choice.
+   */
+  char value;
+} fn_menuentry_t;
 
 /* --------------------------------------------------------------- */
 
-/**
- * Append an item to the list.
- *
- * @param  list  The list.
- * @param  data  The data object to append.
- *
- * @return The new list.
- */
-fn_list_t * fn_list_append(fn_list_t * list,
-    void * data);
+typedef struct fn_menu_t {
+  /**
+   * The header text
+   */
+  char * text;
+  /**
+   * The list of entries.
+   */
+  fn_list_t * entries;
+  /**
+   * The currently active entry.
+   */
+  fn_list_t * currententry;
+  /**
+   * The number of entries.
+   */
+  Uint16 num_entries;
+  /**
+   * The width of the window (in letters).
+   */
+  Uint16 width;
+} fn_menu_t;
 
 /* --------------------------------------------------------------- */
 
-/**
- * Get the first iterator.
- *
- * @param  list  The list.
- *
- * @return The first object.
- */
-fn_list_t * fn_list_first(fn_list_t * list);
+fn_menu_t * fn_menu_create(char * text);
 
 /* --------------------------------------------------------------- */
 
-/**
- * Get the last iterator.
- *
- * @param  list  The list.
- *
- * @return The last object.
- */
-fn_list_t * fn_list_last(fn_list_t * list);
+void fn_menu_free(fn_menu_t * menu);
 
 /* --------------------------------------------------------------- */
 
-/**
- * Set an iterator to the next list element.
- *
- * @param  list  The current list iterator.
- *
- * @return The new iterator.
- */
-fn_list_t * fn_list_next(fn_list_t * list);
+char fn_menu_get_choice(
+    fn_menu_t * menu,
+    fn_tilecache_t * tilecache,
+    Uint8 pixelsize,
+    SDL_Surface * screen
+    );
 
 /* --------------------------------------------------------------- */
 
-/**
- * Set an iterator to the previous list element.
- *
- * @param  list   The list.
- * @param  entry  The entry for which to get the previous element.
- *
- * @return The new iterator.
- */
-fn_list_t * fn_list_previous(fn_list_t * list, fn_list_t * entry);
+void fn_menu_append_entry(
+    fn_menu_t * menu,
+    char shortcut,
+    char * name,
+    char value);
 
 /* --------------------------------------------------------------- */
 
-/**
- * Free a list.
- *
- * @param  list  The list.
- */
-void fn_list_free(fn_list_t * list);
-
-/* --------------------------------------------------------------- */
-
-/**
- * Remove all occurrences of a list item.
- *
- * @param  list  The list.
- * @param  data  The data to remove.
- *
- * @return The changed list.
- */
-fn_list_t * fn_list_remove_all(fn_list_t * list, void * data);
-
-/* --------------------------------------------------------------- */
-
-#endif /* FN_LIST_H */
+#endif /* FN_MENU_H */

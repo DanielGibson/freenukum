@@ -44,6 +44,7 @@ noinst_PROGRAMS = fn_test_tilecache \
                   fn_test_hero \
                   fn_test_infobox \
                   fn_test_inputbox \
+									fn_test_menu \
                   fn_test_mainmenu \
                   fn_test_level_loader \
                   fn_test_msgbox \
@@ -120,6 +121,16 @@ fn_test_infobox_SOURCES = fn_test_infobox.c \
 													fn_msgbox.h         fn_msgbox.c \
 													fn_text.h           fn_text.c \
                           fn.h
+
+fn_test_menu_SOURCES = fn_test_menu.c \
+                       fn_menu.h              fn_menu.c \
+											 fn_list.h              fn_list.c \
+											 fn_tilecache.h         fn_tilecache.c \
+											 fn_tile.h              fn_tile.c \
+											 fn_draw.h              fn_draw.c \
+											 fn_msgbox.h            fn_msgbox.c \
+											 fn_text.h              fn_text.c \
+											 fn.h
 
 fn_test_inputbox_SOURCES = fn_test_inputbox.c \
 													 fn_inputbox.h       fn_inputbox.c \
