@@ -171,7 +171,8 @@ char fn_menu_get_choice(fn_menu_t * menu,
   SDL_TimerID tick = 0;
   tick = SDL_AddTimer(80, fn_menu_timer_triggered, 0);
 
-  while (!choice) {
+  int choice_made = 0;
+  while (!choice_made) {
 
     fn_list_t * iter = NULL;
     SDL_BlitSurface(box, NULL, target, NULL);
@@ -216,6 +217,10 @@ char fn_menu_get_choice(fn_menu_t * menu,
             case SDLK_RETURN:
               entry = (fn_menuentry_t *)menu->currententry->data;
               choice = entry->shortcut;
+              choice_made = 1;
+              break;
+            case SDLK_ESCAPE:
+              choice_made = 1;
               break;
             case SDLK_DOWN:
               menu->currententry = fn_list_next(menu->currententry);
@@ -242,6 +247,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
                 entry = (fn_menuentry_t *)iter->data;
                 if (entry->shortcut == event.key.keysym.sym) {
                   choice = entry->shortcut;
+                  choice_made = 1;
                 }
               }
               break;
