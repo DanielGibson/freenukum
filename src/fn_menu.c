@@ -256,6 +256,29 @@ char fn_menu_get_choice(fn_menu_t * menu,
               break;
           }
           break;
+        case SDL_MOUSEBUTTONDOWN:
+          if (event.button.button == SDL_BUTTON_LEFT) {
+            /* we only use left mouse button in the menu */
+            int x = (event.button.x - destrect.x) / pixelsize
+              - FN_FONT_WIDTH * 3;
+            int y = (event.button.y - destrect.y) / pixelsize
+              - FN_FONT_HEIGHT * (textrows + 1);
+            if (x > 0 && x < FN_FONT_WIDTH * menu->width) {
+              int menuitem = y / FN_FONT_HEIGHT;
+              if (menuitem >= 0 && menuitem < menu->num_entries) {
+                i = 0;
+                iter = fn_list_first(menu->entries);
+                while (i < menuitem) {
+                  iter = fn_list_next(iter);
+                  i++;
+                }
+                entry = (fn_menuentry_t *)iter->data;
+                choice = entry->shortcut;
+                choice_made = 1;
+              }
+            }
+          }
+          break;
         case SDL_VIDEOEXPOSE:
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;

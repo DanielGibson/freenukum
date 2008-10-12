@@ -1,4 +1,4 @@
-	- Menu can now be controlled by cursor keys
+	- Menu can now be controlled by cursor keys and mouse
 	- Improved collision detection system
 	- Implemented rocket (LP: #257550)
 	- Added rotating mill (LP: #242120)
