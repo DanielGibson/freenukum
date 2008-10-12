@@ -81,6 +81,13 @@ void fn_infobox_show(
           SDL_FreeSurface(temp);
           return;
           break;
+        case SDL_MOUSEBUTTONDOWN:
+          if (event.button.button == SDL_BUTTON_LEFT) {
+            SDL_BlitSurface(temp, NULL, screen, &dstrect);
+            SDL_FreeSurface(temp);
+            return;
+          }
+          break;
         case SDL_VIDEOEXPOSE:
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;

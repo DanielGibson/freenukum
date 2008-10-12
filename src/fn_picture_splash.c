@@ -136,6 +136,11 @@ int fn_picture_splash_show_with_message(char * datapath,
               /* ignore other keys */
               break;
           }
+        case SDL_MOUSEBUTTONDOWN:
+          if (event.button.button == SDL_BUTTON_LEFT) {
+            return 1;
+          }
+          break;
         case SDL_VIDEOEXPOSE:
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
