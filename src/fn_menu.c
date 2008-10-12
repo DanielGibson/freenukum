@@ -168,6 +168,9 @@ char fn_menu_get_choice(fn_menu_t * menu,
   int animationframe = 0;
   int res = 0;
 
+  SDL_EnableKeyRepeat(
+      SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
   SDL_TimerID tick = 0;
   tick = SDL_AddTimer(80, fn_menu_timer_triggered, 0);
 
@@ -268,6 +271,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
     }
   }
 
+  SDL_EnableKeyRepeat(0, 0);
   SDL_RemoveTimer(tick);
   SDL_FreeSurface(target);
   SDL_FreeSurface(box);
