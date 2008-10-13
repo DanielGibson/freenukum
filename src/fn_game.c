@@ -531,6 +531,42 @@ int fn_game_start_in_level(
               break;
           }
           break;
+        case SDL_MOUSEBUTTONDOWN:
+          switch(event.button.button) {
+            case SDL_BUTTON_LEFT:
+              fn_hero_fire_start(hero);
+              fn_level_fire_shot(lv);
+              fn_hero_update_animation(hero);
+              break;
+            case SDL_BUTTON_RIGHT:
+              fn_hero_set_flying(hero, FN_HERO_FLYING_TRUE);
+              fn_hero_update_animation(hero);
+              break;
+            case SDL_BUTTON_MIDDLE:
+              fn_level_hero_interact_start(lv);
+              doupdate = 1;
+              break;
+            default:
+              /* do nothing on other buttons. */
+              break;
+          }
+          break;
+        case SDL_MOUSEBUTTONUP:
+          switch(event.button.button) {
+            case SDL_BUTTON_LEFT:
+              fn_hero_fire_stop(hero);
+              fn_hero_update_animation(hero);
+              break;
+            case SDL_BUTTON_RIGHT:
+              break;
+            case SDL_BUTTON_MIDDLE:
+              fn_level_hero_interact_stop(lv);
+              doupdate = 1;
+              break;
+            default:
+              /* do nothing on other buttons. */
+              break;
+          }
         case SDL_VIDEOEXPOSE:
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
