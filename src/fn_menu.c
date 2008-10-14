@@ -179,6 +179,15 @@ char fn_menu_get_choice(fn_menu_t * menu,
   SDL_TimerID tick = 0;
   tick = SDL_AddTimer(80, fn_menu_timer_triggered, 0);
 
+  SDL_Rect pointrect;
+  pointrect.x = FN_FONT_WIDTH * pixelsize + destrect.x;
+  pointrect.w = FN_FONT_WIDTH * pixelsize;
+  pointrect.y = FN_FONT_HEIGHT * pixelsize + destrect.y;
+  pointrect.h = FN_FONT_HEIGHT * pixelsize;
+
+  int updateWholeMenu = 0;
+  int updateWholeScreen = 1;
+
   int choice_made = 0;
   while (!choice_made) {
 
@@ -203,6 +212,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
           );
       if (iter == menu->currententry) {
         targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
+        pointrect.y = targetrect.y + destrect.y;
         SDL_BlitSurface(
             fn_tilecache_get_tile(
               tilecache,
@@ -215,7 +225,24 @@ char fn_menu_get_choice(fn_menu_t * menu,
     }
 
     SDL_BlitSurface(target, NULL, screen, &destrect);
-    SDL_UpdateRect(screen, 0, 0, 0, 0);
+    if (updateWholeScreen) {
+      SDL_UpdateRect(screen, 0, 0, 0, 0);
+      updateWholeMenu = 0;
+      updateWholeScreen = 0;
+    } else if (updateWholeMenu) {
+      SDL_UpdateRect(screen,
+          destrect.x,
+          destrect.y,
+          destrect.w,
+          destrect.h);
+      updateWholeMenu = 0;
+    } else {
+      SDL_UpdateRect(screen,
+          pointrect.x,
+          pointrect.y,
+          pointrect.w,
+          pointrect.h);
+    }
 
     res = SDL_WaitEvent(&event);
     if (res == 1) {
@@ -236,6 +263,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
                 menu->currententry = fn_list_first(menu->entries);
               }
               entry = (fn_menuentry_t *)menu->currententry->data;
+              updateWholeMenu = 1;
               break;
             case SDLK_UP:
               if (menu->currententry == fn_list_first(menu->entries)) {
@@ -246,6 +274,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
                     menu->entries, menu->currententry);
               }
               entry = (fn_menuentry_t *)menu->currententry->data;
+              updateWholeMenu = 1;
               break;
             default:
               for (iter = fn_list_first(menu->entries);
