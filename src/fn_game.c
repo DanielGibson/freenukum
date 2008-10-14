@@ -343,6 +343,8 @@ int fn_game_start_in_level(
 
   Uint8 directions = 0;
 
+  int updateWholeScreen = 1;
+
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
@@ -354,7 +356,16 @@ int fn_game_start_in_level(
           backdrop,
           NULL);
       SDL_BlitSurface(level, &srcrect, screen, &dstrect);
-      SDL_UpdateRect(screen, 0, 0, 0, 0);
+      if (updateWholeScreen) {
+        SDL_UpdateRect(screen, 0, 0, 0, 0);
+        updateWholeScreen = 0;
+      } else {
+        SDL_UpdateRect(screen,
+            dstrect.x,
+            dstrect.y,
+            dstrect.w,
+            dstrect.h);
+      }
       doupdate = 0;
     }
 
@@ -373,38 +384,47 @@ int fn_game_start_in_level(
             case SDLK_1:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_KEY_RED);
+              updateWholeScreen = 1;
               break;
             case SDLK_2:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_KEY_GREEN);
+              updateWholeScreen = 1;
               break;
             case SDLK_3:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_KEY_BLUE);
+              updateWholeScreen = 1;
               break;
             case SDLK_4:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_KEY_PINK);
+              updateWholeScreen = 1;
               break;
             case SDLK_5:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_BOOT);
+              updateWholeScreen = 1;
               break;
             case SDLK_6:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_GLOVE);
+              updateWholeScreen = 1;
               break;
             case SDLK_7:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_CLAMP);
+              updateWholeScreen = 1;
               break;
             case SDLK_8:
               fn_hero_set_inventory(hero, fn_hero_get_inventory(hero) |
                   FN_INVENTORY_ACCESS_CARD);
+              updateWholeScreen = 1;
               break;
             case SDLK_9:
               fn_hero_set_firepower(hero, fn_hero_get_firepower(hero) +
                   1);
+              updateWholeScreen = 1;
               break;
             case SDLK_0:
               lv->levelpassed = 1;
@@ -613,6 +633,8 @@ int fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_score(hero));
+              /* TODO separately update this area. */
+              updateWholeScreen = 1;
               break;
             case fn_event_hero_firepower_changed:
               fn_borders_blit_firepower(
@@ -620,6 +642,8 @@ int fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_firepower(hero));
+              /* TODO separately update this area. */
+              updateWholeScreen = 1;
               break;
             case fn_event_hero_inventory_changed:
               fn_borders_blit_inventory(
@@ -627,6 +651,8 @@ int fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_inventory(hero));
+              /* TODO separately update this area. */
+              updateWholeScreen = 1;
               break;
             case fn_event_hero_health_changed:
               fn_borders_blit_life(
@@ -634,6 +660,8 @@ int fn_game_start_in_level(
                   tilecache,
                   pixelsize,
                   fn_hero_get_health(hero));
+              /* TODO separately update this area. */
+              updateWholeScreen = 1;
               break;
             case fn_event_herolanded:
               fn_level_add_actor(lv, FN_ACTOR_DUSTCLOUD,
