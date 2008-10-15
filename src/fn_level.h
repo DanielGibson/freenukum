@@ -73,6 +73,11 @@ struct fn_level_t {
   Uint16 tiles[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
 
   /**
+   * The surface which contains the always fixed tiles.
+   */
+  SDL_Surface * surface_fixed;
+
+  /**
    * The surface for blitting the level.
    */
   SDL_Surface * surface;

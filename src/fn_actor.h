@@ -246,6 +246,16 @@ struct fn_actor_t {
    * Draw collision bounds for debugging.
    */
   Uint8 draw_collision_bounds;
+
+  /**
+   * Is the actor visible in the currently shown area?
+   */
+  Uint8 is_visible;
+
+  /**
+   * Does the actor act even if outside the visible area?
+   */
+  Uint8 acts_while_invisible;
 };
 
 /* --------------------------------------------------------------- */
@@ -465,6 +475,28 @@ void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
  * @return A rectangle containing the current position of the actor.
  */
 SDL_Rect * fn_actor_get_position(fn_actor_t * actor);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Set the visibility of the actor.
+ *
+ * @param  actor       The actor.
+ * @param  visibility  If 1 set the actor visible,
+ *                     if 0 set it invisible.
+ */
+void fn_actor_set_visible(fn_actor_t * actor, Uint8 visibility);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the visibility of the actor.
+ *
+ * @param  actor  The actor.
+ *
+ * @return 1 if the actor is visible, 0 if invisible.
+ */
+Uint8 fn_actor_is_visible(fn_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 

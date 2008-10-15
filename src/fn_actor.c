@@ -8033,6 +8033,8 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
   actor->touches_hero = 0;
   actor->is_in_foreground = 0;
   actor->draw_collision_bounds = 0;
+  actor->is_visible = 0;
+  actor->acts_while_invisible = 0;
   func = fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_CREATE];
   if (func != NULL) {
     func(actor);
@@ -8153,7 +8155,8 @@ int fn_actor_act(fn_actor_t * actor)
   fn_actor_check_hero_touch(actor);
   fn_actor_function_t func =
     fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_ACT];
-  if (func != NULL) {
+  if (func != NULL)
+  {
     func(actor);
   }
   return actor->is_alive;
@@ -8246,4 +8249,18 @@ void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
 SDL_Rect * fn_actor_get_position(fn_actor_t * actor)
 {
   return &(actor->position);
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_actor_set_visible(fn_actor_t * actor, Uint8 visibility)
+{
+  actor->is_visible = visibility;
+}
+
+/* --------------------------------------------------------------- */
+
+Uint8 fn_actor_is_visible(fn_actor_t * actor)
+{
+  return actor->is_visible;
 }

@@ -71,6 +71,16 @@ fn_level_t * fn_level_load(int fd,
   lv->pixelsize = pixelsize;
   lv->tilecache = tilecache;
 
+  lv->surface_fixed = SDL_CreateRGBSurface(
+      screen->flags,
+      FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
+      FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
+      screen->format->BitsPerPixel,
+      0,
+      0,
+      0,
+      0);
+
   lv->surface = SDL_CreateRGBSurface(
       screen->flags,
       FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
@@ -765,6 +775,34 @@ fn_level_t * fn_level_load(int fd,
   }
   fn_list_free(cameras);
 
+  /*
+   * Blit everything fixed to lv->surface_fixed.
+   */
+  Uint32 transparent;
+  transparent = SDL_MapRGB(lv->surface_fixed->format, 100, 1, 1);
+  SDL_SetColorKey(lv->surface, SDL_SRCCOLORKEY, transparent);
+  SDL_FillRect(lv->surface_fixed, NULL, transparent);
+
+  SDL_Rect r;
+  r.w = FN_TILE_WIDTH * lv->pixelsize;
+  r.h = FN_TILE_HEIGHT * lv->pixelsize;
+
+  Uint16 y = 0;
+  Uint16 x = 0;
+  SDL_Surface * tile = NULL;
+  for (y = 0; y < FN_LEVEL_HEIGHT; y++) {
+    for (x = 0; x < FN_LEVEL_WIDTH; x++) {
+      tilenr = fn_level_get_tile(lv, x, y);
+      tile = NULL;
+      if (tilenr > 1 && tilenr < (48 * 8)) {
+        r.x = x * FN_TILE_WIDTH * lv->pixelsize;
+        r.y = y * FN_TILE_WIDTH * lv->pixelsize;
+        tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
+        SDL_BlitSurface(tile, NULL, lv->surface_fixed, &r);
+      }
+    }
+  }
+
   return lv;
 }
 
@@ -799,6 +837,9 @@ void fn_level_free(fn_level_t * lv)
     }
   }
   fn_list_free(lv->actors);
+
+  SDL_FreeSurface(lv->surface);
+  SDL_FreeSurface(lv->surface_fixed);
 
   free(lv);
 }
@@ -863,8 +904,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * backdrop1,
     SDL_Surface * backdrop2)
 {
-  int j = 0;
-  int i = 0;
   int x_start = 0;
   int x_end = FN_LEVEL_WIDTH;
   int y_start = 0;
@@ -890,14 +929,15 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     if (y_start < 0) {
       y_start = 0;
     }
-    y_end = y_start + (sourcerect->h / FN_TILE_HEIGHT / lv->pixelsize) * 2;
+    y_end =
+      y_start +
+      (sourcerect->h / FN_TILE_HEIGHT / lv->pixelsize) * 2;
     if (y_end > FN_LEVEL_HEIGHT) {
       y_end = FN_LEVEL_HEIGHT;
       y_start = y_end - FN_LEVELWINDOW_HEIGHT * 2;
     }
   }
 
-  SDL_Surface * tile = NULL;
   r.x = 0;
   r.y = 0;
   r.w = FN_TILE_WIDTH * lv->pixelsize;
@@ -908,11 +948,19 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_FillRect(lv->surface, sourcerect, 0);
   */
   if (backdrop1 != NULL) {
-    SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
+    SDL_BlitSurface(backdrop1, NULL, target, targetrect);
   } else {
     SDL_FillRect(lv->surface, sourcerect, 0);
   }
 
+  SDL_BlitSurface(
+      lv->surface_fixed, sourcerect,
+      lv->surface, sourcerect);
+
+  /*
+  SDL_Surface * tile = NULL;
+  int j = 0;
+  int i = 0;
   for (j = y_start; j != y_end; j++)
   {
     for (i = x_start; i != x_end; i++)
@@ -926,11 +974,11 @@ void fn_level_blit_to_surface(fn_level_t * lv,
         tile = NULL;
         if (tilenr == 0) {
           if (backdrop1 != NULL) {
-            /* Do nothing, the backdrop1 is already in the background */
+            // Do nothing, the backdrop1 is already in the background //
           }
         } else if (tilenr == 1) {
           if (backdrop2 != NULL) {
-            /* TODO copy second backdrop buffer */
+            // TODO copy second backdrop buffer //
           }
         } else if (tilenr < (48 * 8)) {
           tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
@@ -943,6 +991,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       }
     }
   }
+*/
 
   /* blit the actors in the background */
   for (iter = fn_list_first(lv->actors);
@@ -957,9 +1006,12 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       Uint16 yb = yt + fn_actor_get_h(actor) / FN_TILE_HEIGHT;
 
       if (xr > x_start && yb > y_start && xl < x_end && yt < y_end) {
+        fn_actor_set_visible(actor, 1);
         if (!fn_actor_in_foreground(actor)) {
           fn_actor_blit(actor);
         }
+      } else {
+        fn_actor_set_visible(actor, 0);
       }
     }
   }
@@ -977,16 +1029,9 @@ void fn_level_blit_to_surface(fn_level_t * lv,
       iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
-    if (actor != NULL) {
-      Uint16 xl = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-      Uint16 yt = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
-      Uint16 xr = xl + fn_actor_get_w(actor) / FN_TILE_WIDTH;
-      Uint16 yb = yt + fn_actor_get_h(actor) / FN_TILE_HEIGHT;
-
-      if (xr > x_start && yb > y_start && xl < x_end && yt < y_end) {
-        if (fn_actor_in_foreground(actor)) {
-          fn_actor_blit(actor);
-        }
+    if (actor != NULL && fn_actor_is_visible(actor)) {
+      if (fn_actor_in_foreground(actor)) {
+        fn_actor_blit(actor);
       }
     }
   }
@@ -1094,18 +1139,22 @@ int fn_level_act(fn_level_t * lv) {
     lv->shots = fn_list_remove_all(lv->shots, NULL);
   }
 
+  int sum = 0;
 
   for (iter = fn_list_first(lv->actors);
       iter != NULL;
       iter = fn_list_next(iter)) {
     fn_actor_t * actor = (fn_actor_t *)iter->data;
 
-    res = fn_actor_act(actor);
-    if (res == 0) {
-      /* set the cleanup flag and free the memory */
-      cleanup = 1;
-      iter->data = NULL;
-      fn_actor_free(actor); actor = NULL;
+    if  (actor->acts_while_invisible || actor->is_visible) {
+      sum++;
+      res = fn_actor_act(actor);
+      if (res == 0) {
+        /* set the cleanup flag and free the memory */
+        cleanup = 1;
+        iter->data = NULL;
+        fn_actor_free(actor); actor = NULL;
+      }
     }
   }
 
