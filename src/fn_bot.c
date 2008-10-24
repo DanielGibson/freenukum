@@ -33,22 +33,21 @@
 
 #include "fn_bot.h"
 #include "fn_object.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 fn_bot_t * fn_bot_create(
     fn_bot_type_e type,
     fn_hero_t * hero,
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
+    fn_environment_t * env,
     size_t x,
     size_t y)
 {
   fn_bot_t * bot = malloc(sizeof(fn_bot_t));
   bot->x = x;
   bot->y = y;
-  bot->pixelsize = pixelsize;
-  bot->tilecache = tilecache;
+  bot->environment = env;
   bot->type = type;
   bot->hero = hero;
 
@@ -112,10 +111,12 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
 {
   SDL_Rect dstrect;
   SDL_Surface * tile = NULL;
-  dstrect.x = bot->x * bot->pixelsize * FN_HALFTILE_WIDTH;
-  dstrect.y = bot->y * bot->pixelsize * FN_HALFTILE_HEIGHT;
-  dstrect.w = FN_TILE_WIDTH * bot->pixelsize;
-  dstrect.h = FN_TILE_HEIGHT * bot->pixelsize;
+  fn_environment_t * env = bot->environment;
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  dstrect.x = bot->x * pixelsize * FN_HALFTILE_WIDTH;
+  dstrect.y = bot->y * pixelsize * FN_HALFTILE_HEIGHT;
+  dstrect.w = FN_TILE_WIDTH * pixelsize;
+  dstrect.h = FN_TILE_HEIGHT * pixelsize;
   switch(bot->type) {
     case FN_BOT_TYPE_FIREWHEEL:
       /* TODO */
@@ -128,26 +129,26 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
       break;
     case FN_BOT_TYPE_FOOTBOT:
       {
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 2);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
+        dstrect.x += FN_TILE_WIDTH * pixelsize;
 
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 3);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x -= FN_TILE_WIDTH * bot->pixelsize;
-        dstrect.y -= FN_TILE_HEIGHT * bot->pixelsize;
+        dstrect.x -= FN_TILE_WIDTH * pixelsize;
+        dstrect.y -= FN_TILE_HEIGHT * pixelsize;
 
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 0);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
+        dstrect.x += FN_TILE_WIDTH * pixelsize;
 
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 1);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
       }
@@ -171,23 +172,23 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
     case FN_BOT_TYPE_TANKBOT:
       /* TODO */
       {
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        tile = fn_environment_get_tile(env,
             ANIM_CARBOT);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
-        dstrect.x += FN_TILE_WIDTH * bot->pixelsize;
-        tile = fn_tilecache_get_tile(bot->tilecache,
+        dstrect.x += FN_TILE_WIDTH * pixelsize;
+        tile = fn_environment_get_tile(env,
             ANIM_CARBOT + 1);
         SDL_BlitSurface(tile, NULL, target, &dstrect);
       }
       break;
     case FN_BOT_TYPE_WALLCRAWLER_LEFT:
-      tile = fn_tilecache_get_tile(bot->tilecache,
+      tile = fn_environment_get_tile(env,
           ANIM_WALLCRAWLERBOT_LEFT);
       SDL_BlitSurface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_BOT_TYPE_WALLCRAWLER_RIGHT:
-      tile = fn_tilecache_get_tile(bot->tilecache,
+      tile = fn_environment_get_tile(env,
           ANIM_WALLCRAWLERBOT_RIGHT);
       SDL_BlitSurface(tile, NULL, target, &dstrect);
       /* TODO */

@@ -37,29 +37,26 @@
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
-    Uint32 flags, SDL_PixelFormat * format)
+SDL_Surface * fn_picture_load(int fd, 
+    fn_environment_t * env)
 {
     SDL_Surface * picture;
     SDL_Rect r;
     size_t num_read = 0;
 
-    picture = SDL_CreateRGBSurface(
-              flags,     /* flags */
-              FN_WINDOW_WIDTH * pixelsize,   /* width */
-              FN_WINDOW_HEIGHT * pixelsize,  /* height */
-              format->BitsPerPixel,    /* depth */
-              0,                 /* Rmask */
-              0,                 /* Gmask */
-              0,                 /* Bmask */
-              0                  /* Amask */
-              );
+    picture = fn_environment_create_surface(
+        env,
+        FN_WINDOW_WIDTH,
+        FN_WINDOW_HEIGHT
+        );
 
     size_t num_loads = FN_PICTURE_WIDTH * FN_PICTURE_HEIGHT;
     size_t i = 0;
 
     fn_byterow_t br[num_loads];
     char readbuf[num_loads];
+
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
     r.x = 0;
     r.y = 0;

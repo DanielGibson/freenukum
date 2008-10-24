@@ -35,14 +35,13 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_environment.h"
 #include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_infobox_show(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     char * msg);
 
 /* --------------------------------------------------------------- */

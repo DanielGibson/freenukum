@@ -37,8 +37,7 @@
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
-    Uint32 flags, SDL_PixelFormat * format)
+SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
 {
     SDL_Surface * drop;
     SDL_Rect r;
@@ -46,16 +45,11 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
     fn_tileheader_t h;
     SDL_Surface * tile;
 
-    drop = SDL_CreateRGBSurface(
-            flags,          /* flags */
-            FN_DROP_WIDTH * FN_TILE_WIDTH * pixelsize,  /* width */
-            FN_DROP_HEIGHT * FN_TILE_WIDTH * pixelsize, /* height */
-            format->BitsPerPixel,   /* depth */
-            0,              /* Rmask */
-            0,              /* Gmask */
-            0,              /* Bmask */
-            0               /* Amask */
-            );
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
+
+    drop = fn_environment_create_surface(env,
+            FN_DROP_WIDTH * FN_TILE_WIDTH,
+            FN_DROP_HEIGHT * FN_TILE_WIDTH);
 
     size_t num_loads = FN_DROP_WIDTH *  FN_DROP_HEIGHT;
 
@@ -70,9 +64,7 @@ SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
     while(num_read != num_loads)
     {
         tile = fn_tile_load(fd,
-            pixelsize,
-            flags,
-            format,
+            env,
             &h,
             0);
         SDL_BlitSurface(tile, NULL, drop, &r);

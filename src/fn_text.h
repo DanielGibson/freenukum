@@ -36,13 +36,14 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_tilecache.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_text_printletter(
     SDL_Surface * target,
     SDL_Rect * r,
-    fn_tilecache_t * tc,
+    fn_environment_t * env,
     char c);
 
 /* --------------------------------------------------------------- */
@@ -50,9 +51,8 @@ void fn_text_printletter(
 void fn_text_print(
     SDL_Surface * target,
     SDL_Rect * r,
-    fn_tilecache_t * tc,
-    char * text,
-    Uint8 pixelsize);
+    fn_environment_t * env,
+    char * text);
 
 /* --------------------------------------------------------------- */
 

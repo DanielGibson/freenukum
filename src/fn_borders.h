@@ -31,45 +31,32 @@
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
+#include "fn_environment.h"
 #include "fn_tilecache.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_life(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 life);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_score(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    unsigned long long score);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_firepower(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 firepower);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_inventory(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 inventory);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */

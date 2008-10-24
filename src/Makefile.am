@@ -33,6 +33,7 @@ freenukum_SOURCES = fn.h \
 										fn_list.h           fn_list.c \
 										fn_data.h           fn_data.c \
 										fn_collision.h      fn_collision.c \
+										fn_environment.h    fn_environment.c \
 										freenukum.c
 
 if TESTPROGRAMS

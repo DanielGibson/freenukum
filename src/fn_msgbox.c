@@ -79,10 +79,7 @@ void fn_msgbox_get_text_information(
 /* --------------------------------------------------------------- */
 
 SDL_Surface * fn_msgbox(
-    Uint8 pixelsize,
-    Uint32 flags,
-    SDL_PixelFormat * format,
-    fn_tilecache_t * tilecache,
+    fn_environment_t * env,
     char * text
     )
 {
@@ -98,16 +95,11 @@ SDL_Surface * fn_msgbox(
       &columns,
       &rows);
 
-  msgbox = SDL_CreateRGBSurface(
-      flags,
-      FN_FONT_WIDTH * pixelsize * (columns + 2),
-      FN_FONT_HEIGHT * pixelsize * (rows + 2),
-      format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0
-      );
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  msgbox = fn_environment_create_surface(
+      env,
+      FN_FONT_WIDTH * (columns + 2),
+      FN_FONT_HEIGHT * (rows + 2));
   r.w = pixelsize * FN_TILE_WIDTH;
   r.h = pixelsize * FN_TILE_HEIGHT;
 
@@ -127,7 +119,7 @@ SDL_Surface * fn_msgbox(
       r.x = j * pixelsize * FN_FONT_WIDTH;
       r.y = i * pixelsize * FN_FONT_HEIGHT;
       SDL_BlitSurface(
-          fn_tilecache_get_tile(tilecache, tilenr),
+          fn_environment_get_tile(env, tilenr),
           NULL,
           msgbox,
           &r);
@@ -141,9 +133,8 @@ SDL_Surface * fn_msgbox(
 
   fn_text_print(msgbox,
       &r,
-      tilecache,
-      text,
-      pixelsize);
+      env,
+      text);
   
   return msgbox;
 }

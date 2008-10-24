@@ -34,6 +34,9 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <SDL.h>
+#ifdef HAVE_SDL_SDL_TTF_H
+#include <SDL/SDL_ttf.h>
+#endif /* HAVE_SDL_SDL_TTF_H */
 
 /* --------------------------------------------------------------- */
 

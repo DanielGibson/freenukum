@@ -45,6 +45,7 @@ typedef struct fn_level_t fn_level_t;
 #include "fn_shot.h"
 #include "fn_bot.h"
 #include "fn_list.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
@@ -83,19 +84,9 @@ struct fn_level_t {
   SDL_Surface * surface;
 
   /**
-   * The screen surface.
+   * The environment in which the level runs.
    */
-  SDL_Surface * screen;
-
-  /**
-   * The pixel size.
-   */
-  Uint8 pixelsize;
-  
-  /**
-   * The tile cache.
-   */
-  fn_tilecache_t * tilecache;
+  fn_environment_t * environment;
 
   /**
    * The actors inside the level.
@@ -137,11 +128,6 @@ struct fn_level_t {
    * The actor with which the hero interacts.
    */
   fn_actor_t * interactor;
-
-  /**
-   * Draw collision bounds for debugging.
-   */
-  Uint8 draw_collision_bounds;
 };
 
 /* --------------------------------------------------------------- */
@@ -149,19 +135,16 @@ struct fn_level_t {
 /**
  * Load a level from a file.
  *
- * @param  fd  An already opened file descriptor to the level file.
- * @param  pixelsize  The size of a single pixel.
- * @param  tilecache  The tilecache from which to show the tiles.
- * @param  screen     The screen on which the level will be displayed.
+ * @param  fd    An already opened file descriptor to the level file.
+ * @param  env   The environment of the game.
+ * @param  hero  The hero of the game.
  *
  * @return  The fully loaded level. If it was not possible to load
  *          the level, NULL is returned. Examine errno in order
  *          to find out what error occured.
  */
 fn_level_t * fn_level_load(int fd,
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
@@ -422,18 +405,6 @@ fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
 /* --------------------------------------------------------------- */
 
 /**
- * Enable or disable the debug drawing of collision bounds
- * for a level.
- *
- * @param  lv      The level.
- * @param  enable  If 1, enable drawing. If 0, disable drawing.
- */
-void fn_level_set_draw_collision_bounds(fn_level_t * lv,
-    Uint8 enable);
-
-/* --------------------------------------------------------------- */
-
-/**
  * Check if a rectangle would collide with solids in a level.
  *
  * @param  lv     The level.
@@ -507,6 +478,17 @@ Uint8 fn_level_push_rect_standing_on_solid_ground(
  */
 Uint8 fn_level_rect_fall_down(
     fn_level_t * level, SDL_Rect * rect, Uint8 dist);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Get the environment of the level.
+ *
+ * @param  level    The level.
+ *
+ * @return The environment.
+ */
+fn_environment_t * fn_level_get_environment(fn_level_t * level);
 
 /* --------------------------------------------------------------- */
 

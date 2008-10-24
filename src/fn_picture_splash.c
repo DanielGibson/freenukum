@@ -51,27 +51,22 @@
 
 /* --------------------------------------------------------------- */
 
-int fn_picture_splash_show(char * datapath,
-    char * filename,
-    Uint8 pixelsize,
-    SDL_Surface * screen)
+int fn_picture_splash_show(
+    fn_environment_t * env,
+    char * filename)
 {
-  return fn_picture_splash_show_with_message(datapath,
+  return fn_picture_splash_show_with_message(
+      env,
       filename,
-      pixelsize,
-      screen,
-      NULL,
       NULL,
       0,0);
 }
 
 /* --------------------------------------------------------------- */
 
-int fn_picture_splash_show_with_message(char * datapath,
+int fn_picture_splash_show_with_message(
+    fn_environment_t * env,
     char * filename,
-    Uint8 pixelsize,
-    SDL_Surface * screen,
-    fn_tilecache_t * tilecache,
     char * msg,
     Uint8 x,
     Uint8 y)
@@ -82,8 +77,9 @@ int fn_picture_splash_show_with_message(char * datapath,
   SDL_Event event;
   SDL_Surface * picture;
 
+  char * datapath = fn_environment_get_datapath(env);
   path = malloc(strlen(datapath) + strlen(filename) + 1);
-  sprintf(path, "%s%s", datapath, filename);
+  sprintf(path, "%s/%s", datapath, filename);
   fd = open(path, O_RDONLY);
 
   if (fd == -1) {
@@ -94,23 +90,20 @@ int fn_picture_splash_show_with_message(char * datapath,
   }
   free(path);
 
-  Uint32 flags = screen->flags;
+  picture = fn_picture_load(fd, env);
 
-  picture = fn_picture_load(fd, pixelsize, flags, screen->format);
-
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_BlitSurface(picture, NULL, screen, NULL);
 
 
-  if (tilecache != NULL && msg != NULL) {
+  if (fn_environment_tilecache_loaded(env) && msg != NULL) {
     SDL_Surface * msgbox;
     SDL_Rect dstrect;
 
-    msgbox = fn_msgbox(pixelsize,
-        screen->flags,
-        screen->format,
-        tilecache,
+    msgbox = fn_msgbox(env,
         msg);
 
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
     dstrect.x = x * pixelsize;
     dstrect.y = y * pixelsize;
 

@@ -48,11 +48,9 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h)
 
 SDL_Surface * fn_tile_load(
         int fd,
-        Uint8 pixelsize,
-        Uint32 flags,
-        SDL_PixelFormat * format,
+        fn_environment_t * env,
         fn_tileheader_t * h,
-        Uint8 transparent_enable)
+        Uint8 transparent)
 {
     SDL_Surface * tile;
     SDL_Rect r;
@@ -60,23 +58,12 @@ SDL_Surface * fn_tile_load(
     fn_byterow_t br = {0, 0, 0, 0, 0};
     char readbuf[5];
 
-    tile = SDL_CreateRGBSurface(
-            flags,
-            h->width * 8 * pixelsize,
-            h->height * pixelsize,
-            format->BitsPerPixel,
-            0,
-            0,
-            0,
-            0
-            );
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
-    Uint32 transparent;
-    if (transparent_enable) {
-      transparent = SDL_MapRGB(tile->format, 100, 1, 1);
-    } else {
-      transparent = SDL_MapRGB(tile->format, 0, 0, 0);
-    }
+    tile = fn_environment_create_surface(
+        env,
+        h->width * 8,
+        h->height);
 
     size_t num_loads = h->width * h->height;
     
@@ -84,6 +71,12 @@ SDL_Surface * fn_tile_load(
     r.y = 0;
     r.w = 8 * pixelsize;
     r.h = 1 * pixelsize;
+
+    Uint32 transparent_color = (
+        transparent ?
+        0 :
+        fn_environment_get_transparent(env));
+
 
     while (num_read < num_loads)
     {
@@ -97,7 +90,7 @@ SDL_Surface * fn_tile_load(
                 tile,
                 r,
                 &br,
-                transparent,
+                transparent_color,
                 pixelsize);
         r.x += 8 * pixelsize;
         r.x %= (8 * h->width * pixelsize);
@@ -106,14 +99,6 @@ SDL_Surface * fn_tile_load(
         if (r.x == 0)
             r.y += pixelsize;
         num_read++;
-    }
-
-    if (transparent_enable) {
-      if (SDL_SetColorKey(tile, SDL_SRCCOLORKEY, transparent) != 0)
-      {
-        SDL_FreeSurface(tile);
-        return NULL;
-      }
     }
 
     return tile;

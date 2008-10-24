@@ -40,7 +40,7 @@
 void fn_text_printletter(
     SDL_Surface * target,
     SDL_Rect * r,
-    fn_tilecache_t * tc,
+    fn_environment_t * env,
     char c)
 {
   int tilenr;
@@ -50,7 +50,7 @@ void fn_text_printletter(
   else
     tilenr = c - 'a' + FONT_ASCII_LOWERCASE;
   SDL_BlitSurface(
-      fn_tilecache_get_tile(tc, tilenr),
+      fn_environment_get_tile(env, tilenr),
       NULL,
       target,
       r);
@@ -61,9 +61,8 @@ void fn_text_printletter(
 void fn_text_print(
     SDL_Surface * target,
     SDL_Rect * r,
-    fn_tilecache_t * tilecache,
-    char * text,
-    Uint8 pixelsize)
+    fn_environment_t * env,
+    char * text)
 {
   SDL_Rect dstrect;
 
@@ -76,6 +75,7 @@ void fn_text_print(
     dstrect.x = 0;
     dstrect.y = 0;
   }
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.w = pixelsize * FN_FONT_WIDTH;
   dstrect.h = pixelsize * FN_FONT_HEIGHT;
 
@@ -88,7 +88,7 @@ void fn_text_print(
     } else {
       fn_text_printletter(target,
           &dstrect,
-          tilecache,
+          env,
           *walker);
       dstrect.x += pixelsize * FN_FONT_WIDTH;
     }

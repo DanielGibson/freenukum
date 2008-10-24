@@ -2088,6 +2088,7 @@ void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
   fn_level_t * level = actor->level;
   fn_hero_t * hero = fn_level_get_hero(level);
   Uint8 inventory = fn_hero_get_inventory(hero);
+  fn_environment_t * env = fn_level_get_environment(level);
 
   if (inventory & FN_INVENTORY_ACCESS_CARD) {
     fn_list_t * iter = NULL;
@@ -2109,11 +2110,7 @@ void fn_actor_function_accesscard_slot_interact_start(fn_actor_t * actor)
     inventory &= ~FN_INVENTORY_ACCESS_CARD;
     fn_hero_set_inventory(hero, inventory);
   } else {
-    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-    fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-    SDL_Surface * screen = actor->level->screen;
-
-    fn_infobox_show(pixelsize, tc, screen,
+    fn_infobox_show(env,
         "You don't have the access card\n");
   }
 }
@@ -4494,12 +4491,10 @@ void fn_actor_function_surveillancescreen_free(fn_actor_t * actor)
 void fn_actor_function_surveillancescreen_interact_start(
     fn_actor_t * actor)
 {
-  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * screen = actor->level->screen;
+  fn_environment_t * env = fn_level_get_environment(actor->level);
 
   /* TODO show real note instead of this dummy */
-  fn_infobox_show(pixelsize, tc, screen, "Not implemented yet.\n");
+  fn_infobox_show(env, "Not implemented yet.\n");
 }
 
 /* --------------------------------------------------------------- */
@@ -4659,12 +4654,10 @@ void fn_actor_function_notebook_free(fn_actor_t * actor)
 
 void fn_actor_function_notebook_interact_start(fn_actor_t * actor)
 {
-  Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-  fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * screen = actor->level->screen;
+  fn_environment_t * env = fn_level_get_environment(actor->level);
 
   /* TODO show real note instead of this dummy */
-  fn_infobox_show(pixelsize, tc, screen, "Not implemented yet.\n");
+  fn_infobox_show(env, "Not implemented yet.\n");
 }
 
 /* --------------------------------------------------------------- */
@@ -5149,11 +5142,8 @@ void fn_actor_function_keyhole_interact_start(fn_actor_t * actor)
       }
     }
   } else if (data->counter != 5) {
-    Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-    fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-    SDL_Surface * screen = actor->level->screen;
-
-    fn_infobox_show(pixelsize, tc, screen, msg);
+    fn_environment_t * env = fn_level_get_environment(actor->level);
+    fn_infobox_show(env, msg);
   }
 }
 
@@ -8032,7 +8022,6 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
   actor->is_alive = 1;
   actor->touches_hero = 0;
   actor->is_in_foreground = 0;
-  actor->draw_collision_bounds = 0;
   actor->is_visible = 0;
   actor->acts_while_invisible = 0;
   func = fn_actor_functions[actor->type][FN_ACTOR_FUNCTION_CREATE];
@@ -8172,7 +8161,10 @@ void fn_actor_blit(fn_actor_t * actor)
     func(actor);
     SDL_Surface * target = fn_level_get_surface(actor->level);
     Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-    if (actor->draw_collision_bounds) {
+    Uint8 draw_collision_bounds =
+      fn_environment_get_draw_collision_bounds(
+          fn_level_get_environment(actor->level));
+    if (draw_collision_bounds) {
       fn_collision_area_draw(target, pixelsize,
           actor->position.x, actor->position.y, actor->position.w, actor->position.h);
     }
@@ -8234,14 +8226,6 @@ Uint8 fn_actor_can_get_shot(fn_actor_t * actor)
 Uint8 fn_actor_in_foreground(fn_actor_t * actor)
 {
   return actor->is_in_foreground;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_actor_set_draw_collision_bounds(fn_actor_t * actor,
-    Uint8 enable)
-{
-  actor->draw_collision_bounds = enable;
 }
 
 /* --------------------------------------------------------------- */

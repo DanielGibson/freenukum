@@ -38,28 +38,28 @@
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_tile(
-    SDL_Surface * screen,
+    fn_environment_t * env,
+    SDL_Surface * target,
     SDL_Surface * tile,
     int x,
-    int y,
-    Uint8 pixelsize)
+    int y)
 {
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   SDL_Rect dstrect;
   dstrect.x = FN_HALFTILE_WIDTH * pixelsize * x;
   dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * y;
   SDL_BlitSurface(
       tile,
       NULL,
-      screen,
+      target,
       &dstrect);
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_array(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
+    fn_environment_t * env,
+    SDL_Surface * target,
     int * borders,
     Uint8 width,
     Uint8 height,
@@ -71,11 +71,11 @@ void fn_borders_blit_array(
   for (i = 0; i < width * height; i++) {
     if ((pos = borders [i]) >= 0) {
       fn_borders_blit_tile(
-          screen,
-          fn_tilecache_get_tile(tc, tile_base + pos),
+          env,
+          target,
+          fn_environment_get_tile(env, tile_base + pos),
           i % width,
-          i / width,
-          pixelsize);
+          i / width);
     }
   }
 
@@ -84,9 +84,7 @@ void fn_borders_blit_array(
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize)
+    fn_environment_t * env)
 {
   static int borders
     [ (2*FN_WINDOW_HEIGHT/FN_TILE_HEIGHT)
@@ -171,23 +169,19 @@ void fn_borders_blit(
   };
 
   fn_borders_blit_array(
-    screen,
-    tc,
-    pixelsize,
-    borders,
-    2 * FN_WINDOW_WIDTH / FN_TILE_WIDTH,
-    2 * FN_WINDOW_HEIGHT / FN_TILE_HEIGHT,
-    BORD_GREY_START
-    );
+      env,
+      env->screen,
+      borders,
+      2 * FN_WINDOW_WIDTH / FN_TILE_WIDTH,
+      2 * FN_WINDOW_HEIGHT / FN_TILE_HEIGHT,
+      BORD_GREY_START
+      );
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_life(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 life)
+    fn_environment_t * env)
 {
   SDL_Surface * lifesurface;
   SDL_Rect dstrect;
@@ -204,10 +198,12 @@ void fn_borders_blit_life(
     OBJ_NONHEALTH,
   };
 
-  for (i = 0; i < life; i++) {
+  for (i = 0; i < fn_environment_get_health(env); i++) {
     *(lifetiles + i) = OBJ_HEALTH;
   }
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   lifesurface = SDL_CreateRGBSurface(
       screen->flags,
       FN_FONT_WIDTH * pixelsize * FN_NUM_MAXLIFE,
@@ -219,7 +215,7 @@ void fn_borders_blit_life(
       0);
 
   fn_borders_blit_array(
-      lifesurface, tc, pixelsize, lifetiles, FN_NUM_MAXLIFE, 1, 0
+      env, lifesurface, lifetiles, FN_NUM_MAXLIFE, 1, 0
       );
 
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
@@ -234,41 +230,40 @@ void fn_borders_blit_life(
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_score(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    unsigned long long score)
+    fn_environment_t * env)
 {
   SDL_Surface * scoresurface;
   SDL_Rect dstrect;
 
   char scoretext[FN_SCORE_DIGITS+1];
 
-  sprintf(scoretext, "%08llu", score);
+  scoresurface = fn_environment_create_surface(
+      env,
+      FN_FONT_WIDTH * FN_SCORE_DIGITS,
+      FN_FONT_HEIGHT);
 
-  scoresurface = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_FONT_WIDTH * pixelsize * FN_SCORE_DIGITS,
-      FN_FONT_HEIGHT * pixelsize,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0);
+  sprintf(scoretext, "%08llu",
+      (long long unsigned int)fn_environment_get_score(env));
+
+  fn_environment_create_surface(
+      env,
+      FN_FONT_WIDTH * FN_SCORE_DIGITS,
+      FN_FONT_HEIGHT);
 
   fn_text_print(
       scoresurface,
       NULL,
-      tc,
-      scoretext,
-      pixelsize
+      env,
+      scoretext
       );
 
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 3 * pixelsize * FN_FONT_HEIGHT;
   dstrect.w = FN_NUM_MAXLIFE * FN_FONT_WIDTH * pixelsize;
   dstrect.h = FN_TILE_HEIGHT * pixelsize;
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_BlitSurface(scoresurface, NULL, screen, &dstrect);
   SDL_FreeSurface(scoresurface);
 }
@@ -276,10 +271,7 @@ void fn_borders_blit_score(
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_firepower(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 firepower)
+    fn_environment_t * env)
 {
   SDL_Surface * firepowersurface;
   SDL_Rect dstrect;
@@ -295,30 +287,28 @@ void fn_borders_blit_firepower(
     -1, -1, -1,      -1, -1, -1, -1, -1
   };
 
-  for (i = 0; i < firepower; i++) {
+  for (i = 0; i < fn_environment_get_firepower(env); i++) {
     *(firepowertiles + FN_NUM_MAXFIREPOWER * 4 + i*2) = OBJ_SHOT;
   }
 
-  firepowersurface = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_TILE_WIDTH * pixelsize * FN_NUM_MAXFIREPOWER,
-      FN_TILE_HEIGHT * pixelsize * 2,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0);
+  firepowersurface = fn_environment_create_surface(
+      env,
+      FN_TILE_WIDTH * FN_NUM_MAXFIREPOWER,
+      FN_TILE_HEIGHT * 2);
 
   fn_borders_blit_array(
-      firepowersurface, tc, pixelsize, firepowertiles,
+      env,
+      firepowersurface, firepowertiles,
       FN_NUM_MAXFIREPOWER * 2, 4, 0
       );
 
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 12 * pixelsize * FN_FONT_HEIGHT;
   dstrect.w = FN_NUM_MAXFIREPOWER * FN_TILE_WIDTH * pixelsize;
   dstrect.h = FN_TILE_HEIGHT * 2 * pixelsize;
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_BlitSurface(firepowersurface, NULL, screen, &dstrect);
   SDL_FreeSurface(firepowersurface);
 }
@@ -326,10 +316,7 @@ void fn_borders_blit_firepower(
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_inventory(
-    SDL_Surface * screen,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize,
-    Uint8 inventory)
+    fn_environment_t * env)
 {
   SDL_Surface * inventorysurface;
   SDL_Rect dstrect;
@@ -343,6 +330,7 @@ void fn_borders_blit_inventory(
     -1, -1, -1, -1, -1, -1, -1, -1
   };
 
+  Uint8 inventory = fn_environment_get_inventory(env);
   for (i = 0; i < FN_SIZE_INVENTORY; i++) {
     if (inventory & FN_INVENTORY_KEY_RED)
       inventorytiles[0] = OBJ_KEY_RED;
@@ -362,26 +350,24 @@ void fn_borders_blit_inventory(
       inventorytiles[22] = OBJ_ACCESS_CARD;
   }
 
-  inventorysurface = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_TILE_WIDTH * pixelsize * FN_SIZE_INVENTORY/2,
-      FN_TILE_HEIGHT * pixelsize * 2,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0);
+  inventorysurface = fn_environment_create_surface(
+      env,
+      FN_TILE_WIDTH * FN_SIZE_INVENTORY/2,
+      FN_TILE_HEIGHT * 2);
 
   fn_borders_blit_array(
-      inventorysurface, tc, pixelsize, inventorytiles,
+      env,
+      inventorysurface, inventorytiles,
       FN_NUM_MAXFIREPOWER * 2, 4, 0
       );
 
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.x = 30 * pixelsize * FN_FONT_WIDTH;
   dstrect.y = 18 * pixelsize * FN_FONT_HEIGHT;
   dstrect.w = FN_NUM_MAXFIREPOWER * FN_TILE_WIDTH * pixelsize;
   dstrect.h = FN_TILE_HEIGHT * 2 * pixelsize;
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_BlitSurface(inventorysurface, NULL, screen, &dstrect);
   SDL_FreeSurface(inventorysurface);
 }

@@ -38,11 +38,11 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_hero_init(
-    fn_hero_t * hero,
+fn_hero_t * fn_hero_create(
     Uint32 x,
     Uint32 y)
 {
+  fn_hero_t * hero = malloc(sizeof(fn_hero_t));
   fn_hero_set_x(hero, x - FN_HALFTILE_WIDTH);
   fn_hero_set_y(hero, y - FN_TILE_HEIGHT);
 
@@ -71,11 +71,19 @@ void fn_hero_init(
   hero->immunitycountdown = 0;
   hero->immunityduration = 16;
   hero->hurtingactors = NULL;
-  hero->draw_collision_bounds = 0;
 
   hero->turned_around = 0;
 
   hero->is_moving_horizontally = 0;
+
+  return hero;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_delete(fn_hero_t * hero)
+{
+  free(hero); hero = NULL;
 }
 
 /* --------------------------------------------------------------- */
@@ -113,8 +121,6 @@ void fn_hero_enterlevel(
 
 void fn_hero_blit(fn_hero_t * hero,
     SDL_Surface * target,
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
     fn_level_t * level)
 {
   SDL_Rect dstrect;
@@ -127,6 +133,9 @@ void fn_hero_blit(fn_hero_t * hero,
   if (hero->immunitycountdown % 2 != 0) {
     return;
   }
+
+  fn_environment_t * env = fn_level_get_environment(level);
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   dstrect.x = pixelsize * (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);
   dstrect.y = pixelsize * fn_hero_get_y(hero);
@@ -142,23 +151,23 @@ void fn_hero_blit(fn_hero_t * hero,
     }
   }
 
-  tile = fn_tilecache_get_tile(tilecache, tilenr);
+  tile = fn_environment_get_tile(env, tilenr);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
 
   dstrect.x += dstrect.w;
-  tile = fn_tilecache_get_tile(tilecache, tilenr+1);
+  tile = fn_environment_get_tile(env, tilenr+1);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
 
   dstrect.x -= dstrect.w;
   dstrect.y += dstrect.h;
-  tile = fn_tilecache_get_tile(tilecache, tilenr+2);
+  tile = fn_environment_get_tile(env, tilenr+2);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
 
   dstrect.x += dstrect.w;
-  tile = fn_tilecache_get_tile(tilecache, tilenr+3);
+  tile = fn_environment_get_tile(env, tilenr+3);
   SDL_BlitSurface(tile, NULL, target, &dstrect);
 
-  if (hero->draw_collision_bounds) {
+  if (fn_environment_get_draw_collision_bounds(env)) {
     fn_collision_rect_draw(target, pixelsize, &(hero->position));
 
     Uint16 i = 0;
@@ -753,14 +762,6 @@ Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero)
 void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter)
 {
   hero->fetchedletter = letter;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
-    Uint8 enable)
-{
-  hero->draw_collision_bounds = enable;
 }
 
 /* --------------------------------------------------------------- */

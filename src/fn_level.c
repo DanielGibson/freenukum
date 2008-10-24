@@ -40,9 +40,7 @@
 /* --------------------------------------------------------------- */
 
 fn_level_t * fn_level_load(int fd,
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     fn_hero_t * hero)
 {
   size_t i = 0;
@@ -53,8 +51,7 @@ fn_level_t * fn_level_load(int fd,
   Uint8 lowertile;
 
   lv->hero = hero;
-
-  lv->screen = screen;
+  lv->environment = env;
 
   lv->animated_frames = 0;
 
@@ -68,29 +65,16 @@ fn_level_t * fn_level_load(int fd,
   lv->interactor = NULL;
 
   lv->do_play = 1;
-  lv->pixelsize = pixelsize;
-  lv->tilecache = tilecache;
 
-  lv->surface_fixed = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0);
+  lv->surface_fixed = fn_environment_create_surface(
+      env,
+      FN_TILE_WIDTH * FN_LEVEL_WIDTH,
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
 
-  lv->surface = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-      FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0);
-  lv->draw_collision_bounds = 0;
+  lv->surface = fn_environment_create_surface(
+      env,
+      FN_TILE_WIDTH * FN_LEVEL_WIDTH,
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
 
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {
@@ -255,8 +239,8 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = fn_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_FOOTBOT, lv->hero, lv->tilecache,
-              lv->pixelsize, x*2, y*2));
+              FN_BOT_TYPE_FOOTBOT, lv->hero, env,
+              x*2, y*2));
         break;
       case 0x300d: /* tankbot */
         if (x > 0) {
@@ -784,8 +768,9 @@ fn_level_t * fn_level_load(int fd,
   SDL_FillRect(lv->surface_fixed, NULL, transparent);
 
   SDL_Rect r;
-  r.w = FN_TILE_WIDTH * lv->pixelsize;
-  r.h = FN_TILE_HEIGHT * lv->pixelsize;
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  r.w = FN_TILE_WIDTH * pixelsize;
+  r.h = FN_TILE_HEIGHT * pixelsize;
 
   Uint16 y = 0;
   Uint16 x = 0;
@@ -795,9 +780,9 @@ fn_level_t * fn_level_load(int fd,
       tilenr = fn_level_get_tile(lv, x, y);
       tile = NULL;
       if (tilenr > 1 && tilenr < (48 * 8)) {
-        r.x = x * FN_TILE_WIDTH * lv->pixelsize;
-        r.y = y * FN_TILE_WIDTH * lv->pixelsize;
-        tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
+        r.x = x * FN_TILE_WIDTH * pixelsize;
+        r.y = y * FN_TILE_WIDTH * pixelsize;
+        tile = fn_environment_get_tile(env, tilenr);
         SDL_BlitSurface(tile, NULL, lv->surface_fixed, &r);
       }
     }
@@ -911,27 +896,30 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_Rect r;
   fn_list_t * iter = NULL;
 
+  fn_environment_t * env = fn_level_get_environment(lv);
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+
   /* calculate the bounds of the area we have to blit. */
   if (sourcerect) {
-    x_start = (sourcerect->x / FN_TILE_WIDTH / lv->pixelsize)
+    x_start = (sourcerect->x / FN_TILE_WIDTH / pixelsize)
       - (FN_LEVELWINDOW_WIDTH / 2);
     if (x_start < 0) {
       x_start = 0;
     }
-    x_end = x_start + (sourcerect->w / FN_TILE_WIDTH / lv->pixelsize) * 2;
+    x_end = x_start + (sourcerect->w / FN_TILE_WIDTH / pixelsize) * 2;
     if (x_end > FN_LEVEL_WIDTH) {
       x_end = FN_LEVEL_WIDTH;
       x_start = x_end - FN_LEVELWINDOW_WIDTH * 2;
     }
 
-    y_start = (sourcerect->y / FN_TILE_HEIGHT / lv->pixelsize)
+    y_start = (sourcerect->y / FN_TILE_HEIGHT / pixelsize)
       - (FN_LEVELWINDOW_HEIGHT / 2);
     if (y_start < 0) {
       y_start = 0;
     }
     y_end =
       y_start +
-      (sourcerect->h / FN_TILE_HEIGHT / lv->pixelsize) * 2;
+      (sourcerect->h / FN_TILE_HEIGHT / pixelsize) * 2;
     if (y_end > FN_LEVEL_HEIGHT) {
       y_end = FN_LEVEL_HEIGHT;
       y_start = y_end - FN_LEVELWINDOW_HEIGHT * 2;
@@ -940,8 +928,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
 
   r.x = 0;
   r.y = 0;
-  r.w = FN_TILE_WIDTH * lv->pixelsize;
-  r.h = FN_TILE_HEIGHT * lv->pixelsize;
+  r.w = FN_TILE_WIDTH * pixelsize;
+  r.h = FN_TILE_HEIGHT * pixelsize;
 
   /* load the background tiles */
   /*
@@ -1019,8 +1007,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   /* blit the hero */
   fn_hero_blit(lv->hero,
       lv->surface,
-      lv->tilecache,
-      lv->pixelsize,
       lv);
 
   /* blit the actors in the foreground */
@@ -1078,16 +1064,18 @@ SDL_Surface * fn_level_get_surface(fn_level_t * lv)
 
 /* --------------------------------------------------------------- */
 
+/* TODO this is deprecated! remove it. */
 fn_tilecache_t * fn_level_get_tilecache(fn_level_t * lv)
 {
-  return lv->tilecache;
+  return fn_environment_get_tilecache(lv->environment);
 }
 
 /* --------------------------------------------------------------- */
 
+/* TODO this is deprecated! remove it. */
 Uint8 fn_level_get_pixelsize(fn_level_t * lv)
 {
-  return lv->pixelsize;
+  return fn_environment_get_pixelsize(lv->environment);
 }
 
 /* --------------------------------------------------------------- */
@@ -1218,8 +1206,6 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
   fn_actor_t * actor = fn_actor_create(lv, type, x, y);
   lv->actors = fn_list_append(lv->actors, actor);
 
-  fn_actor_set_draw_collision_bounds(
-      actor, lv->draw_collision_bounds);
   return actor;
 }
 
@@ -1255,8 +1241,11 @@ fn_shot_t * fn_level_add_shot(fn_level_t * lv,
 
   fn_shot_push(shot, addition * FN_HALFTILE_WIDTH);
 
+  Uint8 draw_collision_bounds =
+    fn_environment_get_draw_collision_bounds(lv->environment);
+
   fn_shot_set_draw_collision_bounds(shot,
-      lv->draw_collision_bounds);
+      draw_collision_bounds);
   return shot;
 }
 
@@ -1321,26 +1310,6 @@ fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
     }
   }
   return ret;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_level_set_draw_collision_bounds(fn_level_t * lv,
-    Uint8 enable)
-{
-  lv->draw_collision_bounds = enable;
-  if (lv->hero != NULL) {
-    fn_hero_set_draw_collision_bounds(lv->hero, enable);
-  }
-  fn_list_t * iter = NULL;
-  
-  for (iter = fn_list_first(lv->actors);
-      iter != fn_list_last(lv->actors);
-      iter = fn_list_next(iter)) {
-    fn_actor_t * actor = iter->data;
-    fn_actor_set_draw_collision_bounds(
-        actor, lv->draw_collision_bounds);
-  }
 }
 
 /* --------------------------------------------------------------- */
@@ -1482,3 +1451,11 @@ Uint8 fn_level_rect_fall_down(
 }
 
 /* --------------------------------------------------------------- */
+
+fn_environment_t * fn_level_get_environment(fn_level_t * level)
+{
+  return level->environment;
+}
+
+/* --------------------------------------------------------------- */
+

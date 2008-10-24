@@ -27,14 +27,13 @@
  *******************************************************************/
 
 #include "fn_mainmenu.h"
+#include "fn_environment.h"
 #include "fn_menu.h"
 #include "fn_msgbox.h"
 
 /* --------------------------------------------------------------- */
 
-int fn_mainmenu(fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
-    SDL_Surface * screen)
+int fn_mainmenu(fn_environment_t * env)
 {
   int choice = 0;
   char * msg =
@@ -104,7 +103,7 @@ int fn_mainmenu(fn_tilecache_t * tilecache,
       "Q)it to DOS",
       FN_MENUCHOICE_QUIT);
 
-  choice = fn_menu_get_choice(menu, tilecache, pixelsize, screen);
+  choice = fn_menu_get_choice(menu, env);
 
   if (choice == '\0') {
     choice = FN_MENUCHOICE_QUIT;

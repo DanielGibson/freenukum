@@ -36,6 +36,7 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_tilecache.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
@@ -44,19 +45,16 @@
  * This function waits for input of the Escape or Return key, then
  * it returns.
  * 
- * @param  datapath   The directory where the data files are stored.
+ * @param  env        The environment.
  * @param  filename   The filename of the picture to show.
  *                    Usually one of: BADGUY.DN1, CREDITS.DN1, DN.DN1, DUKE.DN1
- * @param  pixelsize  The pixel size.
- * @param  screen     The surface to which the image is finally blitted.
  *
  * @return 1 on success, otherwise 0 (if for example the file could not be
  *         read. In that case, it also calls the fn_error_printf function).
  */
-int fn_picture_splash_show(char * datapath,
-    char * filename,
-    Uint8 pixelsize,
-    SDL_Surface * screen);
+int fn_picture_splash_show(
+    fn_environment_t * env,
+    char * filename);
 
 /* --------------------------------------------------------------- */
 
@@ -65,13 +63,9 @@ int fn_picture_splash_show(char * datapath,
  * This function waits for input of the Escape or Return key, then
  * it returns.
  * 
- * @param  datapath   The directory where the data files are stored.
+ * @param  env        The environment.
  * @param  filename   The filename of the picture to show.
  *                    Usually one of: BADGUY.DN1, CREDITS.DN1, DN.DN1, DUKE.DN1
- * @param  pixelsize  The pixel size.
- * @param  screen     The surface to which the image is finally blitted.
- * @param  tilecache  The tilecache from which the fonts are loaded.
- *                    If this is NULL, no message will be displayed.
  * @param  message    A string containing the message. Must have a
  *                    trailing \n otherwise the last line will be omitted.
  *                    If this is NULL, no message will be displayed.
@@ -81,11 +75,9 @@ int fn_picture_splash_show(char * datapath,
  * @return 1 on success, otherwise 0 (if for example the file could not be
  *         read. In that case, it also calls the fn_error_printf function).
  */
-int fn_picture_splash_show_with_message(char * datapath,
+int fn_picture_splash_show_with_message(
+    fn_environment_t * env,
     char * filename,
-    Uint8 pixelsize,
-    SDL_Surface * screen,
-    fn_tilecache_t * tilecache,
     char * message,
     Uint8 x,
     Uint8 y);
