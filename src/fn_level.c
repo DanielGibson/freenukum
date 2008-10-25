@@ -899,6 +899,20 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   fn_environment_t * env = fn_level_get_environment(lv);
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
+  /* load the background tiles */
+  /*
+  SDL_FillRect(lv->surface, sourcerect, 0);
+  */
+  if (backdrop1 != NULL) {
+    SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
+  } else {
+    SDL_FillRect(lv->surface, sourcerect, 0);
+  }
+
+  SDL_BlitSurface(
+      lv->surface_fixed, sourcerect,
+      lv->surface, sourcerect);
+
   /* calculate the bounds of the area we have to blit. */
   if (sourcerect) {
     x_start = (sourcerect->x / FN_TILE_WIDTH / pixelsize)
@@ -930,20 +944,6 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   r.y = 0;
   r.w = FN_TILE_WIDTH * pixelsize;
   r.h = FN_TILE_HEIGHT * pixelsize;
-
-  /* load the background tiles */
-  /*
-  SDL_FillRect(lv->surface, sourcerect, 0);
-  */
-  if (backdrop1 != NULL) {
-    SDL_BlitSurface(backdrop1, NULL, target, targetrect);
-  } else {
-    SDL_FillRect(lv->surface, sourcerect, 0);
-  }
-
-  SDL_BlitSurface(
-      lv->surface_fixed, sourcerect,
-      lv->surface, sourcerect);
 
   /*
   SDL_Surface * tile = NULL;
