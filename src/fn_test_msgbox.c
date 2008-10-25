@@ -41,15 +41,14 @@ int main(int argc, char ** argv)
 {
     SDL_Surface * screen;
     SDL_Surface * msgbox;
-    Uint8 width = 13;
-    Uint8 height = 9;
-    Uint8 pixelsize = 2;
-    fn_tilecache_t tc;
     int res;
     int quit = 0;
     SDL_Event event;
     char * homedir;
     char tilespath[1024];
+
+    fn_environment_t * env = fn_environment_create();
+    fn_environment_load_tilecache(env);
 
     char * msg =
         " FREENUKUM MAIN MENU\n"
@@ -76,43 +75,10 @@ int main(int argc, char ** argv)
 
     snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
-    fn_tilecache_init(&tc, pixelsize);
-
-    if (SDL_Init(SDL_INIT_VIDEO) == -1)
-    {
-        fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-        return -1;
-    }
-
-    screen = SDL_SetVideoMode(
-            FN_TILE_WIDTH * pixelsize * width,
-            FN_TILE_HEIGHT * pixelsize * height,
-            FN_COLOR_DEPTH,
-            FN_SURFACE_FLAGS);
-
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-        return -1;
-    }
-
-    res = fn_tilecache_loadtiles(
-        &tc,
-        screen->flags,
-        screen->format,
-        tilespath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", tilespath);
-        exit(1);
-    }
+    screen = fn_environment_get_screen(env);
 
     msgbox = fn_msgbox(
-        pixelsize,
-        screen->flags,
-        screen->format,
-        &tc,
+        env,
         msg);
 
     SDL_BlitSurface(msgbox, NULL, screen, NULL);

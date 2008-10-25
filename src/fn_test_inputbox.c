@@ -37,49 +37,15 @@
 
 int main(int argc, char ** argv) {
   SDL_Surface * screen;
-  fn_tilecache_t tilecache;
-  Uint8 pixelsize = 2;
 
-  char * homedir;
-  char tilespath[1024];
+  fn_environment_t * env = fn_environment_create();
+  fn_environment_load_tilecache(env);
   
-  int res;
-
-  homedir = getenv("HOME");
-  if (homedir == NULL) {
-    printf("%s\n", "HOME directory path not set.");
-    exit(1);
-  }
-  snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
-
-  fn_tilecache_init(&tilecache, pixelsize);
-
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-    fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-    return -1;
-  }
-
-  screen = SDL_SetVideoMode(
-      FN_WINDOW_WIDTH * pixelsize,
-      FN_WINDOW_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
-      FN_SURFACE_FLAGS);
-  if (screen == NULL) {
-    fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-    return -1;
-  }
-
-  res = fn_tilecache_loadtiles(
-      &tilecache, screen->flags, screen->format, tilespath);
-  if (res == -1) {
-    printf("Could not load tiles.\n");
-    printf("Copy the original game files to %s.\n", tilespath);
-    exit(1);
-  }
+  screen = fn_environment_get_screen(env);
 
   char answer[30] = "";
   fn_inputbox_answer_t entered =
-    fn_inputbox_show(pixelsize, &tilecache, screen,
+    fn_inputbox_show(env,
         "Please enter your name:",
         answer,
         30);

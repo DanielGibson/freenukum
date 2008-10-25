@@ -74,8 +74,8 @@ SDL_Surface * fn_tile_load(
 
     Uint32 transparent_color = (
         transparent ?
-        0 :
-        fn_environment_get_transparent(env));
+        fn_environment_get_transparent(env) :
+        0);
 
 
     while (num_read < num_loads)

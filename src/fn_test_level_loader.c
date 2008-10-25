@@ -69,7 +69,6 @@ int main(int argc, char ** argv)
 {
     fn_level_t * lv = NULL;
     int fd;
-    fn_tilecache_t tc;
     Uint8 pixelsize = 1;
     int quit = 0;
     int res;
@@ -79,8 +78,10 @@ int main(int argc, char ** argv)
     char * homedir;
     char tilespath[1024];
     char levelfile[1024];
-    fn_hero_t hero;
-    fn_hero_init(&hero, 0, 0);
+    fn_hero_t * hero;
+    fn_hero_create(0, 0);
+    fn_environment_t * env = fn_environment_create();
+    fn_environment_load_tilecache(env);
 
     int argok = 0;
     char levelnumber;
@@ -122,8 +123,6 @@ int main(int argc, char ** argv)
 
     printf("Use the arrow keys to navigate through the level\n");
 
-    fn_tilecache_init(&tc, pixelsize);
-
     fd = open(levelfile, O_RDONLY);
 
     if (fd == -1)
@@ -150,18 +149,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    res = fn_tilecache_loadtiles(&tc,
-        screen->flags,
-        screen->format,
-        tilespath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", tilespath);
-        exit(1);
-    }
-
-    lv = fn_level_load(fd, pixelsize, &tc, screen, &hero);
+    lv = fn_level_load(fd, env, hero);
     if (lv == NULL)
     {
         close(fd);

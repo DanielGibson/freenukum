@@ -127,16 +127,16 @@ void fn_inputfield_pressed_symbol(fn_inputfield_t * field,
 
 void fn_inputfield_blit(fn_inputfield_t * field,
     SDL_Surface * target,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize
+    fn_environment_t * env
     )
 {
   Uint32 cursorcolor = SDL_MapRGB(target->format,
       0x88, 0x88, 0x88);
   SDL_FillRect(target, NULL, 0);
-  fn_text_print(target, NULL, tc,
-      field->data, pixelsize);
+  fn_text_print(target, NULL, env,
+      field->data);
   SDL_Rect cursorrect;
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   cursorrect.x = field->cursor * FN_FONT_WIDTH * pixelsize -
     pixelsize / 2;
   cursorrect.y = pixelsize;

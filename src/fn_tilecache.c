@@ -152,7 +152,7 @@ int fn_tilecache_loadtiles(fn_tilecache_t * tc,
         0
     };
 
-    path = malloc(strlen(directory) + 12);
+    path = malloc(strlen(directory) + 15);
 
     if (path == NULL)
     {
@@ -161,27 +161,28 @@ int fn_tilecache_loadtiles(fn_tilecache_t * tc,
 
     while (files[i] != 0)
     {
-        snprintf(path, strlen(directory) + 12, "%s/%s",
+        snprintf(path, strlen(directory) + 15, "%s/%s",
             directory, files[i]);
         fd = open(path, O_RDONLY);
         if (fd == -1)
         {
-            return -1;
-        }
+          printf("Failed to open file %s\n", path);
+        } else {
 
-        fn_tile_loadheader(fd, &header);
-        res =
-          fn_tilecache_loadfile(tc,
-              env,
-              fd,
-              size[i],
-              &header,
-              transparent[i]);
-        close(fd);
+          fn_tile_loadheader(fd, &header);
+          res =
+            fn_tilecache_loadfile(tc,
+                env,
+                fd,
+                size[i],
+                &header,
+                transparent[i]);
+          close(fd);
 
-        if (res != 0)
-        {
-            return -1;
+          if (res != 0)
+          {
+            printf("Failed loading file %s\n", path);
+          }
         }
         i++;
     }
@@ -210,6 +211,11 @@ int fn_tilecache_loadfile(
         if (tc->tiles[tc->size] == NULL)
         {
             return -1;
+        } else {
+          SDL_UpdateRect(tc->tiles[tc->size],
+              0, 0,
+              tc->tiles[tc->size]->w,
+              tc->tiles[tc->size]->h);
         }
         tc->size++;
         num_tiles--;

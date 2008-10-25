@@ -58,14 +58,15 @@ int sumuntil(Uint8 * ar, size_t s)
 
 void blithex(SDL_Surface * target,
     SDL_Rect * r,
-    fn_tilecache_t * tc,
-    int x,
-    Uint8 pixelsize)
+    fn_environment_t * env,
+    int x)
 {
   int tilenr;
   char dst[3];
   snprintf(dst, 3, "%02X", x);
   int i;
+
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   for (i = 0; i < strlen(dst); i++) {
     if(dst[i] >= ' ' && dst[i] <= 'Z')
@@ -73,7 +74,7 @@ void blithex(SDL_Surface * target,
     else
       tilenr = dst[i] - 'a' + FONT_ASCII_LOWERCASE;
     SDL_BlitSurface(
-        fn_tilecache_get_tile(tc, tilenr),
+        fn_environment_get_tile(env, tilenr),
         NULL,
         target,
         r);
@@ -85,170 +86,151 @@ void blithex(SDL_Surface * target,
 
 int main(int argc, char ** argv)
 {
-    SDL_Surface * screen;
-    fn_tilecache_t tc;
-    size_t i = 0;
-    size_t j = 0;
-    int pixelsize = 1;
-    int res;
-    int quit = 0;
-    SDL_Event event;
+  SDL_Surface * screen;
+  size_t i = 0;
+  size_t j = 0;
 
-    char * homedir;
-    char datapath[1024];
+  Uint8 pixelsize = 1;
+  int res;
+  int quit = 0;
+  SDL_Event event;
+  fn_environment_t * env;
+  env = fn_environment_create();
+  fn_environment_load_tilecache(env);
 
-    fn_error_set_handler(fn_error_print_commandline);
+  fn_error_set_handler(fn_error_print_commandline);
 
-    homedir = getenv("HOME");
-    if (homedir == NULL) {
-      fn_error_print("$HOME environment variable is not set.");
-      exit(1);
-    }
 
-    snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
+  Uint8 size[] = {
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    48,
+    50,
+    50,
+    50,
+    48,
+    48,
+    48,
+    48,
+    48,
+    50,
+    50,
+    48,
+    48,
+    0
+  };
 
-    fn_tilecache_init(&tc, pixelsize);
+  if (SDL_Init(SDL_INIT_VIDEO) == -1)
+  {
+    fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
+    return -1;
+  }
 
-    Uint8 size[] = {
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        48,
-        50,
-        50,
-        50,
-        48,
-        48,
-        48,
-        48,
-        48,
-        50,
-        50,
-        48,
-        48,
-        0
-    };
+  screen = SDL_SetVideoMode(
+      FN_TILE_WIDTH * pixelsize * (50+1),
+      FN_TILE_HEIGHT * pixelsize * (26+1),
+      FN_COLOR_DEPTH,
+      FN_SURFACE_FLAGS);
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1)
-    {
-        fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-        return -1;
-    }
+  if (screen == NULL)
+  {
+    fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
+    return -1;
+  }
 
-    screen = SDL_SetVideoMode(
-            FN_TILE_WIDTH * pixelsize * (50+1),
-            FN_TILE_HEIGHT * pixelsize * (26+1),
-            FN_COLOR_DEPTH,
-            FN_SURFACE_FLAGS);
 
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-        return -1;
-    }
+  SDL_Rect r;
+  r.x = 0;
+  r.y = 0;
+  r.w = FN_TILE_WIDTH * pixelsize;
+  r.h = FN_TILE_HEIGHT * pixelsize;
 
-    res = fn_tilecache_loadtiles(
-        &tc,
-        screen->flags,
-        screen->format,
-        datapath);
-    if (res == -1)
-    {
-        printf("Could not load tiles.\n");
-        printf("Copy the original game files to %s.\n", datapath);
-        return -1;
-    }
-
-    SDL_Rect r;
+  for (i = 0; i != 26; i++) {
     r.x = 0;
+    r.y = (i+1) * FN_TILE_HEIGHT * pixelsize;
+    blithex(screen,
+        &r,
+        env,
+        i);
+  }
+
+  for (i = 0; i != 50; i++) {
+    r.x = (i+1) * FN_TILE_WIDTH * pixelsize;
     r.y = 0;
-    r.w = FN_TILE_WIDTH * pixelsize;
-    r.h = FN_TILE_HEIGHT * pixelsize;
+    blithex(screen,
+        &r,
+        env,
+        i);
+  }
 
-    for (i = 0; i != 26; i++) {
-      r.x = 0;
-      r.y = (i+1) * FN_TILE_HEIGHT * pixelsize;
-      blithex(screen,
-          &r,
-          &tc,
-          i,
-          pixelsize);
-    }
-
-    for (i = 0; i != 50; i++) {
+  for (j = 0; j != 26; j++)
+  {
+    for(i = 0; i != size[j]; i++)
+    {
       r.x = (i+1) * FN_TILE_WIDTH * pixelsize;
-      r.y = 0;
-      blithex(screen,
-          &r,
-          &tc,
-          i,
-          pixelsize);
+      r.y = (j+1) * FN_TILE_HEIGHT * pixelsize;
+      SDL_Surface * tile =
+        fn_environment_get_tile(env, sumuntil(size, j)+i);
+      SDL_BlitSurface(
+          tile, NULL,
+          screen, &r);
     }
-    
-    for (j = 0; j != 26; j++)
+  }
+  SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+  while (quit == 0)
+  {
+    res = SDL_WaitEvent(&event);
+    if (res == 1)
     {
-        for(i = 0; i != size[j]; i++)
-        {
-            r.x = (i+1) * FN_TILE_WIDTH * pixelsize;
-            r.y = (j+1) * FN_TILE_HEIGHT * pixelsize;
-            SDL_BlitSurface(fn_tilecache_get_tile(&tc, sumuntil(size, j)+i), NULL, 
-                    screen, &r);
-        }
+      int multiplier = 1;
+      switch(event.type)
+      {
+        case SDL_QUIT:
+          quit = 1;
+          break;
+        case SDL_KEYDOWN:
+          if (event.key.keysym.mod & KMOD_CTRL)
+          {
+            multiplier = 160;
+          }
+          else
+          {
+            multiplier = 16;
+          }
+          switch(event.key.keysym.sym)
+          {
+            case SDLK_q:
+            case SDLK_ESCAPE:
+              quit = 1;
+              break;
+            default:
+              /* do nothing, ignoring other keys. */
+              break;
+          }
+        case SDL_VIDEOEXPOSE:
+          SDL_UpdateRect(screen, 0, 0, 0, 0);
+          break;
+        default:
+          /* do nothing */
+          break;
+      }
     }
-    SDL_UpdateRect(screen, 0, 0, 0, 0);
+  }
 
-    fn_tilecache_destroy(&tc);
+  fn_environment_delete(env);
 
-    while (quit == 0)
-    {
-        res = SDL_WaitEvent(&event);
-        if (res == 1)
-        {
-            int multiplier = 1;
-            switch(event.type)
-            {
-                case SDL_QUIT:
-                    quit = 1;
-                    break;
-                case SDL_KEYDOWN:
-                    if (event.key.keysym.mod & KMOD_CTRL)
-                    {
-                        multiplier = 160;
-                    }
-                    else
-                    {
-                        multiplier = 16;
-                    }
-                    switch(event.key.keysym.sym)
-                    {
-                        case SDLK_q:
-                        case SDLK_ESCAPE:
-                            quit = 1;
-                            break;
-                        default:
-                            /* do nothing, ignoring other keys. */
-                            break;
-                    }
-                case SDL_VIDEOEXPOSE:
-                    SDL_UpdateRect(screen, 0, 0, 0, 0);
-                    break;
-                default:
-                    /* do nothing */
-                    break;
-            }
-        }
-    }
-
-    return 0;
+  return 0;
 }
 

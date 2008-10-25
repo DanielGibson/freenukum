@@ -42,10 +42,11 @@
 int main(int argc, char ** argv)
 {
     int fd;
-    Uint8 pixelsize = 3;
     int res;
     int quit = 0;
     SDL_Event event;
+    fn_environment_t * env = fn_environment_create();
+    fn_environment_load_tilecache(env);
 
     if (argc != 2)
     {
@@ -61,26 +62,10 @@ int main(int argc, char ** argv)
     SDL_Surface * screen;
     SDL_Surface * picture;
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1)
-    {
-        fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-        return -1;
-    }
-
-    screen = SDL_SetVideoMode(
-            FN_WINDOW_WIDTH * pixelsize,
-            FN_WINDOW_HEIGHT * pixelsize,
-            FN_COLOR_DEPTH,
-            FN_SURFACE_FLAGS);
-
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-        return -1;
-    }
+    screen = fn_environment_get_screen(env);
 
     picture = fn_picture_load(
-        fd, pixelsize, screen->flags, screen->format);
+        fd, env);
 
     SDL_BlitSurface(picture, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
