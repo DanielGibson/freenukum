@@ -240,20 +240,16 @@ char fn_menu_get_choice(fn_menu_t * menu,
     if (res == 1) {
       switch(event.type) {
         case SDL_KEYDOWN:
-          printf("Key\n");
           switch(event.key.keysym.sym) {
             case SDLK_RETURN:
-              printf("  Return\n");
               entry = (fn_menuentry_t *)menu->currententry->data;
               choice = entry->shortcut;
               choice_made = 1;
               break;
             case SDLK_ESCAPE:
-              printf("  Escape\n");
               choice_made = 1;
               break;
             case SDLK_DOWN:
-              printf("  Down\n");
               menu->currententry = fn_list_next(menu->currententry);
               if (menu->currententry == fn_list_last(menu->entries)) {
                 menu->currententry = fn_list_first(menu->entries);
@@ -262,7 +258,6 @@ char fn_menu_get_choice(fn_menu_t * menu,
               updateWholeMenu = 1;
               break;
             case SDLK_UP:
-              printf("  Up\n");
               if (menu->currententry == fn_list_first(menu->entries)) {
                 menu->currententry = fn_list_previous(
                     menu->entries, fn_list_last(menu->entries));
@@ -288,7 +283,6 @@ char fn_menu_get_choice(fn_menu_t * menu,
           }
           break;
         case SDL_MOUSEBUTTONDOWN:
-          printf("MouseButton\n");
           if (event.button.button == SDL_BUTTON_LEFT) {
             /* we only use left mouse button in the menu */
             int x = (event.button.x - destrect.x) / pixelsize
@@ -312,11 +306,9 @@ char fn_menu_get_choice(fn_menu_t * menu,
           }
           break;
         case SDL_VIDEOEXPOSE:
-          printf("VideoExpose\n");
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
         case SDL_USEREVENT:
-          printf("Userevent\n");
           /* timer tick */
           animationframe++;
           animationframe %= 4;

@@ -64,7 +64,6 @@ void fn_game_start(
     fn_environment_t * env)
 {
   int res;
-  fn_hero_t * hero = fn_hero_create(0, 0);
 
   /* Initialize Random Number Generator. */
   srand(time(NULL));
@@ -128,8 +127,7 @@ void fn_game_start(
       if (interlevel) {
         /* interlevel */
         success = fn_game_start_in_level(2,
-            env,
-            hero);
+            env);
         level++;
         if (level == 2) {
           level++;
@@ -138,8 +136,7 @@ void fn_game_start(
       } else {
         /* real level */
         success = fn_game_start_in_level(level,
-            env,
-            hero);
+            env);
         interlevel = 1;
       }
     }
@@ -150,14 +147,11 @@ void fn_game_start(
     }
   }
 
-  fn_hero_delete(hero); hero = NULL;
-
 }
 
 int fn_game_start_in_level(
     int levelnumber,
-    fn_environment_t * env,
-    fn_hero_t * hero)
+    fn_environment_t * env)
 {
   int returnvalue = 0;
   int fd = 0;
@@ -167,6 +161,8 @@ int fn_game_start_in_level(
   SDL_Event event;
   int res = 0;
   int doupdate = 1;
+
+  fn_hero_t * hero = fn_environment_get_hero(env);
 
   SDL_Surface * level = fn_environment_create_surface(
       env,
@@ -248,7 +244,7 @@ int fn_game_start_in_level(
     goto cleanup;
   }
 
-  lv = fn_level_load(fd, env, hero);
+  lv = fn_level_load(fd, env);
   if (lv == NULL)
   {
     close(fd);

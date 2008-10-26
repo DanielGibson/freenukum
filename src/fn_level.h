@@ -54,11 +54,6 @@ typedef struct fn_level_t fn_level_t;
  */
 struct fn_level_t {
   /**
-   * Stores our hero.
-   */
-  fn_hero_t * hero;
-
-  /**
    * Stores the raw data loaded from the level.
    */
   Uint16 raw[FN_LEVEL_HEIGHT][FN_LEVEL_WIDTH];
@@ -137,15 +132,13 @@ struct fn_level_t {
  *
  * @param  fd    An already opened file descriptor to the level file.
  * @param  env   The environment of the game.
- * @param  hero  The hero of the game.
  *
  * @return  The fully loaded level. If it was not possible to load
  *          the level, NULL is returned. Examine errno in order
  *          to find out what error occured.
  */
 fn_level_t * fn_level_load(int fd,
-    fn_environment_t * env,
-    fn_hero_t * hero);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

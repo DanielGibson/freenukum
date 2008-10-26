@@ -43,6 +43,7 @@ typedef struct fn_environment_t fn_environment_t;
 #include "fn.h"
 #include "fn_settings.h"
 #include "fn_tilecache.h"
+#include "fn_hero.h"
 
 /* --------------------------------------------------------------- */
 
@@ -131,6 +132,11 @@ struct fn_environment_t {
    * The score of the player.
    */
   Uint32 score;
+
+  /**
+   * The hero.
+   */
+  fn_hero_t * hero;
 };
 
 /* --------------------------------------------------------------- */
@@ -369,6 +375,10 @@ Uint8 fn_environment_tilecache_loaded(fn_environment_t * env);
 /* --------------------------------------------------------------- */
 
 Uint8 fn_environment_store_settings(fn_environment_t * env);
+
+/* --------------------------------------------------------------- */
+
+fn_hero_t * fn_environment_get_hero(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

@@ -40,8 +40,7 @@
 /* --------------------------------------------------------------- */
 
 fn_level_t * fn_level_load(int fd,
-    fn_environment_t * env,
-    fn_hero_t * hero)
+    fn_environment_t * env)
 {
   size_t i = 0;
   fn_level_t * lv = malloc(sizeof(fn_level_t));
@@ -50,7 +49,6 @@ fn_level_t * fn_level_load(int fd,
   Uint8 uppertile;
   Uint8 lowertile;
 
-  lv->hero = hero;
   lv->environment = env;
 
   lv->animated_frames = 0;
@@ -94,6 +92,8 @@ fn_level_t * fn_level_load(int fd,
       lv->tiles[y][x] = tilenr / 0x20;
       lv->solid[y][x] = (tilenr >= 0x1800);
     }
+
+    fn_hero_t * hero = fn_environment_get_hero(env);
 
     switch(tilenr) {
       case 0x0080: /* written text on black screen */
@@ -239,7 +239,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         lv->bots = fn_list_append(lv->bots, fn_bot_create(
-              FN_BOT_TYPE_FOOTBOT, lv->hero, env,
+              FN_BOT_TYPE_FOOTBOT, hero, env,
               x*2, y*2));
         break;
       case 0x300d: /* tankbot */
@@ -485,7 +485,7 @@ fn_level_t * fn_level_load(int fd,
             FN_ACTOR_REDBALL_JUMPING, x, y);
         break;
       case 0x3032: /* we found our hero! */
-        fn_hero_enterlevel(lv->hero,
+        fn_hero_enterlevel(hero,
             x * FN_TILE_WIDTH, (y - 1) * FN_TILE_HEIGHT);
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
@@ -945,41 +945,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   r.w = FN_TILE_WIDTH * pixelsize;
   r.h = FN_TILE_HEIGHT * pixelsize;
 
-  /*
-  SDL_Surface * tile = NULL;
-  int j = 0;
-  int i = 0;
-  for (j = y_start; j != y_end; j++)
-  {
-    for (i = x_start; i != x_end; i++)
-    {
-      r.x = i * FN_TILE_WIDTH * lv->pixelsize;
-      r.y = j * FN_TILE_HEIGHT * lv->pixelsize;
-      if (r.x < FN_TILE_WIDTH * lv->pixelsize * FN_LEVEL_WIDTH &&
-          r.y < FN_TILE_HEIGHT * lv->pixelsize * FN_LEVEL_HEIGHT)
-      {
-        int tilenr = fn_level_get_tile(lv, i, j);
-        tile = NULL;
-        if (tilenr == 0) {
-          if (backdrop1 != NULL) {
-            // Do nothing, the backdrop1 is already in the background //
-          }
-        } else if (tilenr == 1) {
-          if (backdrop2 != NULL) {
-            // TODO copy second backdrop buffer //
-          }
-        } else if (tilenr < (48 * 8)) {
-          tile = fn_tilecache_get_tile(lv->tilecache, tilenr);
-        } else {
-          tile = fn_tilecache_get_tile(lv->tilecache, 0);
-        }
-        if (tile != NULL) {
-          SDL_BlitSurface(tile, NULL, lv->surface, &r);
-        }
-      }
-    }
-  }
-*/
+  fn_hero_t * hero = fn_environment_get_hero(env);
 
   /* blit the actors in the background */
   for (iter = fn_list_first(lv->actors);
@@ -1005,7 +971,7 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   }
 
   /* blit the hero */
-  fn_hero_blit(lv->hero,
+  fn_hero_blit(hero,
       lv->surface,
       lv);
 
@@ -1087,7 +1053,7 @@ int fn_level_keep_on_playing(fn_level_t * lv) {
 /* --------------------------------------------------------------- */
 
 fn_hero_t * fn_level_get_hero(fn_level_t * lv) {
-  return lv->hero;
+  return fn_environment_get_hero(lv->environment);
 }
 
 /* --------------------------------------------------------------- */
@@ -1097,11 +1063,13 @@ int fn_level_act(fn_level_t * lv) {
   int res = 0;
   int cleanup = 0;
 
+  fn_hero_t * hero = fn_environment_get_hero(lv->environment);
+
   lv->animated_frames ++;
   lv->animated_frames %= 1;
   if (lv->animated_frames == 0) {
     /* do some action, not just animation */
-    fn_hero_act(lv->hero, lv);
+    fn_hero_act(hero, lv);
   }
 
   for (iter = fn_list_first(lv->shots);
@@ -1152,8 +1120,8 @@ int fn_level_act(fn_level_t * lv) {
     lv->actors = fn_list_remove_all(lv->actors, NULL);
   }
 
-  fn_hero_next_animationframe(lv->hero);
-  fn_hero_update_animation(lv->hero);
+  fn_hero_next_animationframe(hero);
+  fn_hero_update_animation(hero);
 
   return 1;
 };
@@ -1286,7 +1254,7 @@ void fn_level_fire_shot(fn_level_t * lv)
 {
   fn_hero_t * hero = fn_level_get_hero(lv);
 
-  if (lv->num_shots < fn_hero_get_firepower(lv->hero)) {
+  if (lv->num_shots < fn_hero_get_firepower(hero)) {
     SDL_Rect * position = fn_hero_get_position(hero);
 
     fn_level_add_shot(lv, hero->direction, position->x, position->y);

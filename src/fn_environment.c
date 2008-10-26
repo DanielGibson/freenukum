@@ -141,6 +141,7 @@ fn_environment_t * fn_environment_create()
   env->firepower = 1;
   env->inventory = 0x00;
   env->score = 0;
+  env->hero = fn_hero_create(0, 0);
 
   /* create all the path variables */
   char * homepath = getenv("HOME");
@@ -272,6 +273,9 @@ void fn_environment_delete(fn_environment_t * env)
   }
   if (env->screen != NULL) {
     SDL_FreeSurface(env->screen); env->screen = NULL;
+  }
+  if (env->hero != NULL) {
+    fn_hero_delete(env->hero); env->hero = NULL;
   }
   free(env);
 
@@ -585,6 +589,13 @@ Uint8 fn_environment_store_settings(fn_environment_t * env)
         env->configfilepath, strerror(errno));
   }
   return res;
+}
+
+/* --------------------------------------------------------------- */
+
+fn_hero_t * fn_environment_get_hero(fn_environment_t * env)
+{
+  return env->hero;
 }
 
 /* --------------------------------------------------------------- */

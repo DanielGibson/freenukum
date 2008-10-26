@@ -63,8 +63,7 @@ void fn_game_start(
  */
 int fn_game_start_in_level(
     int levelnumber,
-    fn_environment_t * env,
-    fn_hero_t * hero);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
