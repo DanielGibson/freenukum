@@ -62,10 +62,14 @@ fn_inputbox_answer_t fn_inputbox_show(
   }
   sprintf(walker, "\n\n\nOK (Enter)   Abort (Esc)\n");
 
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  inputfield_surface = fn_environment_create_surface(env,
+      FN_FONT_WIDTH * answer_len,
+      FN_FONT_HEIGHT);
+
   msgbox = fn_msgbox(env, buffer);
 
   SDL_Surface * screen = fn_environment_get_screen(env);
-  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   dstrect.x = ((screen->w) - (msgbox->w))/2;
   dstrect.y = ((screen->h) - (msgbox->h))/2;
