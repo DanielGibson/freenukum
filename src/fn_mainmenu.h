@@ -54,17 +54,13 @@
 /**
  * Show the main menu and return the choice the user made.
  *
- * @param  tilecache   The tilecache from which the tiles are loaded.
- * @param  pixelsize   The pixel size on the screen.
- * @param  screen      The screen on which the menu is shown.
+ * @param  env   The game environment.
  *
  * @return The choice that the user made. This is one of the
  *         FN_MENUCHOICE_* defined values.
  */
 int fn_mainmenu(
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
-    SDL_Surface * screen);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

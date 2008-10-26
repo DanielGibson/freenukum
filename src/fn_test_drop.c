@@ -35,6 +35,7 @@
 #include "fn_drop.h"
 #include "fn.h"
 #include "fn_tile.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
@@ -55,6 +56,8 @@ int main(int argc, char ** argv)
         fprintf(stderr, "filename is usually something like DROP1.DN1\n");
         return -1;
     }
+
+    fn_environment_t * env = fn_environment_create();
 
     fd = open(argv[1], O_RDONLY);
 
@@ -81,7 +84,7 @@ int main(int argc, char ** argv)
 
     fn_tile_loadheader(fd, &h);
 
-    drop = fn_drop_load(fd, pixelsize, screen->flags, screen->format);
+    drop = fn_drop_load(fd, env);
 
     SDL_BlitSurface(drop, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);

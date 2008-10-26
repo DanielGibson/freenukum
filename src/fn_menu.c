@@ -109,9 +109,7 @@ Uint32 fn_menu_timer_triggered(
 /* --------------------------------------------------------------- */
 
 char fn_menu_get_choice(fn_menu_t * menu,
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
-    SDL_Surface * screen)
+    fn_environment_t * env)
 {
   /* TODO This is a dirty workaround which should be removed. */
   Uint16 textrows = 0;
@@ -139,31 +137,22 @@ char fn_menu_get_choice(fn_menu_t * menu,
   *walker = '\0';
 
   SDL_Surface * box = fn_msgbox(
-      pixelsize,
-      screen->flags,
-      screen->format,
-      tilecache,
+      env,
       placeholder);
   free(placeholder);
 
-  SDL_Surface * target = SDL_CreateRGBSurface(
-      screen->flags,
+  SDL_Surface * target =
+    fn_environment_create_surface_with_aboslute_size(env,
       box->w,
-      box->h,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0
-      );
+      box->h);
 
   SDL_Rect targetrect;
 
   fn_menuentry_t * entry = NULL;
 
   SDL_Rect destrect;
-  destrect.x = ((screen->w)-(target->w))/2;
-  destrect.y = ((screen->h)-(target->h))/2;
+  destrect.x = ((fn_environment_get_screen(env)->w)-(target->w))/2;
+  destrect.y = ((fn_environment_get_screen(env)->h)-(target->h))/2;
   destrect.w = target->w;
   destrect.h = target->h;
 
@@ -178,6 +167,8 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   SDL_TimerID tick = 0;
   tick = SDL_AddTimer(80, fn_menu_timer_triggered, 0);
+
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   SDL_Rect pointrect;
   pointrect.x = FN_FONT_WIDTH * pixelsize + destrect.x;
@@ -206,16 +197,15 @@ char fn_menu_get_choice(fn_menu_t * menu,
       fn_text_print(
           target,
           &targetrect,
-          tilecache,
-          entry->name,
-          pixelsize
+          env,
+          entry->name
           );
       if (iter == menu->currententry) {
         targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
         pointrect.y = targetrect.y + destrect.y;
         SDL_BlitSurface(
-            fn_tilecache_get_tile(
-              tilecache,
+            fn_environment_get_tile(
+              env,
               OBJ_POINT + animationframe),
             NULL,
             target,
@@ -224,7 +214,9 @@ char fn_menu_get_choice(fn_menu_t * menu,
       i++;
     }
 
-    SDL_BlitSurface(target, NULL, screen, &destrect);
+    SDL_Surface * screen = fn_environment_get_screen(env);
+    SDL_BlitSurface(target, NULL,
+        screen, &destrect);
     if (updateWholeScreen) {
       SDL_UpdateRect(screen, 0, 0, 0, 0);
       updateWholeMenu = 0;

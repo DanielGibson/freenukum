@@ -36,18 +36,18 @@
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 /**
  * Loads a backdrop from a file.
  * @param  fd            The file descriptor of the already opened file.
- * @param  pixelsize     The multiplicator how big one pixel is.
- * @param  flags         The flags for SDL CreateRGBSurface.
- * @param  format        The sdl picture format.
+ * @param  env           The environment.
+ *
+ * @return The loaded backrdop.
  */
-SDL_Surface * fn_drop_load(int fd, Uint8 pixelsize,
-    Uint32 flags, SDL_PixelFormat * format);
+SDL_Surface * fn_drop_load(int fd, fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

@@ -30,6 +30,10 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_error_cmdline.h"
+
+/* --------------------------------------------------------------- */
+
 void fn_error_print_commandline(char * message)
 {
   fprintf(stderr, "%s\n", message);

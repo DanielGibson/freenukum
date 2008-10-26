@@ -38,26 +38,17 @@
 #include "fn_hero.h"
 #include "fn_tilecache.h"
 #include "fn_settings.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 /**
  * Start the game from the beginning including the intro sequence.
  *
- * @param  pixelsize  The size of a single pixel.
- * @param  tilecache  The tile cache to use.
- * @param  screen     The output screen.
- * @param  datapath   The path where all the game data is stored.
- * @param  episode    The episode in which we start.
- * @param  settings   The game settings object.
+ * @param  env        The environent.
  */
 void fn_game_start(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
-    char * datapath,
-    Uint8 episode,
-    fn_settings_t * settings);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
@@ -65,25 +56,14 @@ void fn_game_start(
  * Start the game from a certain level.
  *
  * @param  levelnumber  The level number (must be between 1 and 12).
- * @param  pixelsize    The size of a single pixel.
- * @param  tilecache    The tile cache to use.
- * @param  screen       The output screen.
- * @param  datapath     The path whele all the game data is stored.
+ * @param  env          The environment.
  * @param  hero         The hero to use.
- * @param  episode      The episode in which we start.
- * @param  settings     The game settings object.
  *
  * @return Non-zero if the level was completed successfully, else zero.
  */
 int fn_game_start_in_level(
     int levelnumber,
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
-    char * datapath,
-    fn_hero_t * hero,
-    Uint8 episode,
-    fn_settings_t * settings);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

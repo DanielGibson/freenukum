@@ -36,9 +36,7 @@
 /* --------------------------------------------------------------- */
 
 void fn_infobox_show(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     char * msg)
 {
   SDL_Surface * msgbox;
@@ -50,12 +48,10 @@ void fn_infobox_show(
   SDL_Event event;
 
   msgbox = fn_msgbox(
-      pixelsize,
-      screen->flags,
-      screen->format,
-      tilecache,
+      env,
       msg);
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   dstrect.x = ((screen->w) - (msgbox->w))/2;
   dstrect.y = ((screen->h) - (msgbox->h))/2;
   dstrect.w = msgbox->w;

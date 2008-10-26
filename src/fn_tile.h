@@ -35,15 +35,21 @@
 
 /* --------------------------------------------------------------- */
 
-#include "fn.h"
+typedef struct fn_tileheader_t fn_tileheader_t;
+typedef struct fn_tile_t fn_tile_t;
 
 /* --------------------------------------------------------------- */
 
-typedef struct {
+#include "fn.h"
+#include "fn_environment.h"
+
+/* --------------------------------------------------------------- */
+
+struct fn_tileheader_t {
     Uint8 tiles;
     Uint8 width;
     Uint8 height;
-} fn_tileheader_t;
+};
 
 /* --------------------------------------------------------------- */
 
@@ -53,11 +59,9 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h);
 
 SDL_Surface * fn_tile_load(
         int fd,
-        Uint8 pixelsize,
-        Uint32 flags,
-        SDL_PixelFormat * format,
+        fn_environment_t * env,
         fn_tileheader_t * h,
-        Uint8 transparent_enable
+        Uint8 transparent
         );
 
 /* --------------------------------------------------------------- */

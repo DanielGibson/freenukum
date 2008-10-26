@@ -37,6 +37,7 @@
 
 #include "fn_inputbox.h"
 #include "fn_tilecache.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
@@ -50,9 +51,7 @@ typedef enum fn_inputbox_answer_t {
 /**
  * Display an inputbox and get the result.
  *
- * @param  pixelsize   The pixelsize.
- * @param  tilecache   The tilecache.
- * @param  screen      The screen on which to display the inputbox.
+ * @param  env         The environment.
  * @param  msg         The message to display.
  * @param  answer      The buffer for the answer.
  *                     This must be already allocated with
@@ -63,9 +62,7 @@ typedef enum fn_inputbox_answer_t {
  *          fn_inputbox_answer_quit if the user pressed escape.
  */
 fn_inputbox_answer_t fn_inputbox_show(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     char * msg,
     char * answer,
     Uint8 answer_len);

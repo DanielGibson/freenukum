@@ -39,6 +39,7 @@ typedef struct fn_hero_t fn_hero_t;
 
 /* --------------------------------------------------------------- */
 
+#include "fn_environment.h"
 #include "fn_tilecache.h"
 #include "fn_actor.h"
 #include "fn_list.h"
@@ -60,6 +61,11 @@ typedef struct fn_hero_t fn_hero_t;
  * Our hero.
  */
 struct fn_hero_t {
+  /**
+   * The environment of the game.
+   */
+  fn_environment_t * env;
+
   /**
    * The direction to which the hero moves.
    */
@@ -156,11 +162,6 @@ struct fn_hero_t {
   fn_list_t * hurtingactors;
 
   /**
-   * Draw collision bounds for debugging.
-   */
-  Uint8 draw_collision_bounds;
-
-  /**
    * Indicates if the hero just turned around.
    */
   Uint8 turned_around;
@@ -182,16 +183,12 @@ typedef void (*fn_hero_changed_f)(fn_hero_t *);
  *
  * @param  hero        The hero.
  * @param  target      The target surface.
- * @param  tilecache   The tilecache to use.
- * @param  pixelsize   The pixelsize.
  * @param  level       The level to which the hero is blit.
  *                     Can be NULL in order to blit without a level.
  */
 void fn_hero_blit(
     fn_hero_t * hero,
     SDL_Surface * target,
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
     fn_level_t * level);
 
 /* --------------------------------------------------------------- */
@@ -238,16 +235,29 @@ void fn_hero_update_animation(
 /* --------------------------------------------------------------- */
 
 /**
- * Initialize a hero.
+ * Create a hero.
  *
- * @param  hero  The hero that is to be initialized.
- * @param  x     The initial x position of our hero (in pixels)
- * @param  y     The initial x position of our hero (in pixels)
+ * @return The newly created hero.
  */
-void fn_hero_init(
-    fn_hero_t * hero,
-    Uint32 x,
-    Uint32 y);
+fn_hero_t * fn_hero_create();
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Delete a hero.
+ *
+ * @param  hero  The hero to delete.
+ */
+void fn_hero_delete(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Reset all values of a hero to default.
+ *
+ * @param  hero  The hero to reset.
+ */
+void fn_hero_reset(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 
@@ -523,18 +533,6 @@ Uint8 fn_hero_get_fetched_letter(fn_hero_t * hero);
  * Set the last fetched letter.
  */
 void fn_hero_set_fetched_letter(fn_hero_t * hero, Uint8 letter);
-
-/* --------------------------------------------------------------- */
-
-/**
- * Enable or disable the debug drawing of collision bounds
- * for a hero.
- *
- * @param  hero    The hero.
- * @param  enable  If 1, enable drawing. If 0, disable drawing.
- */
-void fn_hero_set_draw_collision_bounds(fn_hero_t * hero,
-    Uint8 enable);
 
 /* --------------------------------------------------------------- */
 

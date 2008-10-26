@@ -34,6 +34,7 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_environment.h"
 #include "fn_hero.h"
 #include "fn_game.h"
 #include "fn_borders.h"
@@ -41,13 +42,6 @@
 #include "fn_infobox.h"
 #include "fn_level.h"
 #include "fn_drop.h"
-
-/* --------------------------------------------------------------- */
-
-Uint8  health = FN_NUM_MAXLIFE;
-Uint8  firepower = 1;
-Uint8  inventory = 0x00;
-Uint32 score = 0;
 
 /* --------------------------------------------------------------- */
 
@@ -67,16 +61,9 @@ Uint32 fn_game_timer_triggered(
 /* --------------------------------------------------------------- */
 
 void fn_game_start(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
-    char * datapath,
-    Uint8 episode,
-    fn_settings_t * settings)
+    fn_environment_t * env)
 {
   int res;
-  fn_hero_t hero;
-  fn_hero_init(&hero, 0, 0);
 
   /* Initialize Random Number Generator. */
   srand(time(NULL));
@@ -94,60 +81,36 @@ void fn_game_start(
 
   char filename[30];
 
-  snprintf(filename, 30, "BADGUY.DN%d", episode);
+  snprintf(
+      filename, 30, "BADGUY.DN%d", fn_environment_get_episode(env));
   res = fn_picture_splash_show_with_message(
-      datapath,
+      env,
       filename,
-      (Uint8)pixelsize,
-      screen,
-      tilecache,
       msg1,
       0,
       144);
 
-  snprintf(filename, 30, "DUKE.DN%d", episode);
+  snprintf(
+      filename, 30, "DUKE.DN%d", fn_environment_get_episode(env));
   res = fn_picture_splash_show_with_message(
-      datapath,
+      env,
       filename,
-      (Uint8)pixelsize,
-      screen,
-      tilecache,
       msg2,
       79,
       144);
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_FillRect(screen, NULL, 0);
 
-  fn_borders_blit(
-      screen,
-      tilecache,
-      pixelsize);
+  fn_borders_blit(env);
 
-  fn_borders_blit_life(
-      screen,
-      tilecache,
-      pixelsize,
-      health
-      );
+  fn_borders_blit_life(env);
 
-  fn_borders_blit_score(
-      screen,
-      tilecache,
-      pixelsize,
-      score
-      );
+  fn_borders_blit_score(env);
 
-  fn_borders_blit_firepower(
-      screen,
-      tilecache,
-      pixelsize,
-      firepower);
+  fn_borders_blit_firepower(env);
 
-  fn_borders_blit_inventory(
-      screen,
-      tilecache,
-      pixelsize,
-      inventory);
+  fn_borders_blit_inventory(env);
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
@@ -157,19 +120,14 @@ void fn_game_start(
     int interlevel = 0;
     int success = 1;
 
-    fn_infobox_show(pixelsize,
-        tilecache,
-        screen,
+    fn_infobox_show(env,
         "Get ready FreeNukum,\nyou are going in.\n");
 
     while (success && level < 13) {
       if (interlevel) {
         /* interlevel */
         success = fn_game_start_in_level(2,
-            pixelsize,
-            tilecache,
-            screen,
-            datapath, &hero, episode, settings);
+            env);
         level++;
         if (level == 2) {
           level++;
@@ -178,11 +136,7 @@ void fn_game_start(
       } else {
         /* real level */
         success = fn_game_start_in_level(level,
-            pixelsize,
-            tilecache,
-            screen,
-            datapath, &hero,
-            episode, settings);
+            env);
         interlevel = 1;
       }
     }
@@ -197,13 +151,7 @@ void fn_game_start(
 
 int fn_game_start_in_level(
     int levelnumber,
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
-    char * datapath,
-    fn_hero_t * hero,
-    Uint8 episode,
-    fn_settings_t * settings)
+    fn_environment_t * env)
 {
   int returnvalue = 0;
   int fd = 0;
@@ -213,20 +161,13 @@ int fn_game_start_in_level(
   SDL_Event event;
   int res = 0;
   int doupdate = 1;
-  Uint8 draw_collision_bounds = 0;
 
-  fn_settings_get_bool(settings, "draw_collision_bounds",
-      &draw_collision_bounds);
+  fn_hero_t * hero = fn_environment_get_hero(env);
 
-  SDL_Surface * level = SDL_CreateRGBSurface(
-            screen->flags,
-            FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-            FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-            screen->format->BitsPerPixel,
-            0,
-            0,
-            0,
-            0);
+  SDL_Surface * level = fn_environment_create_surface(
+      env,
+      FN_TILE_WIDTH * FN_LEVEL_WIDTH,
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
 
   SDL_Surface * backdrop = NULL;;
   SDL_TimerID tick = 0;
@@ -266,8 +207,12 @@ int fn_game_start_in_level(
   }
 
   char backdropfile[1024];
-  snprintf(backdropfile, 1024, "%s/DROP%d.DN%d",
-      datapath, backdropnumber, episode);
+  snprintf(backdropfile,
+      1024,
+      "%s/DROP%d.DN%d",
+      fn_environment_get_datapath(env),
+      backdropnumber,
+      fn_environment_get_episode(env));
   fd = open(backdropfile, O_RDONLY);
 
   if (fd == -1)
@@ -278,9 +223,7 @@ int fn_game_start_in_level(
     fn_tileheader_t h;
     fn_tile_loadheader(fd, &h);
     backdrop = fn_drop_load(fd,
-        pixelsize,
-        screen->flags,
-        screen->format);
+        env);
     if (backdrop == NULL) {
       printf("could not load backdrop");
     }
@@ -289,7 +232,9 @@ int fn_game_start_in_level(
 
   char levelfile[1024];
   snprintf(levelfile, 1024, "%s/WORLDAL%X.DN%d",
-      datapath, levelnumber, episode);
+      fn_environment_get_datapath(env),
+      levelnumber,
+      fn_environment_get_episode(env));
   fd = open(levelfile, O_RDONLY);
 
   if (fd == -1)
@@ -299,7 +244,7 @@ int fn_game_start_in_level(
     goto cleanup;
   }
 
-  lv = fn_level_load(fd, pixelsize, tilecache, screen, hero);
+  lv = fn_level_load(fd, env);
   if (lv == NULL)
   {
     close(fd);
@@ -308,10 +253,7 @@ int fn_game_start_in_level(
   }
   close(fd);
 
-  if (draw_collision_bounds) {
-    fn_level_set_draw_collision_bounds(lv, draw_collision_bounds);
-  }
-
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.x = FN_TILE_WIDTH * pixelsize;
   dstrect.y = FN_TILE_HEIGHT * pixelsize;
   dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
@@ -345,10 +287,14 @@ int fn_game_start_in_level(
 
   int updateWholeScreen = 1;
 
+  SDL_Surface * screen =
+    fn_environment_get_screen(env);
+
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
     if (doupdate) {
+      SDL_Surface * screen = fn_environment_get_screen(env);
       fn_level_blit_to_surface(lv,
           level,
           &srcrect,
@@ -431,19 +377,7 @@ int fn_game_start_in_level(
               lv->do_play = 0;
               break;
             case SDLK_f:
-              {
-                Uint8 fullscreen;
-                fn_settings_get_bool(
-                    settings, "fullscreen", &fullscreen);
-
-                int res = SDL_WM_ToggleFullScreen(screen);
-
-                if (res) {
-                  fullscreen = (fullscreen + 1) % 2;
-                  fn_settings_set_bool(
-                      settings, "fullscreen", fullscreen);
-                }
-              }
+              fn_environment_toggle_fullscreen(env);
               break;
             case SDLK_DOWN:
               if (event.key.keysym.mod & KMOD_SHIFT) {
@@ -629,37 +563,22 @@ int fn_game_start_in_level(
               break;
             case fn_event_heroscored:
               fn_borders_blit_score(
-                  screen,
-                  tilecache,
-                  pixelsize,
-                  fn_hero_get_score(hero));
+                  env);
               /* TODO separately update this area. */
               updateWholeScreen = 1;
               break;
             case fn_event_hero_firepower_changed:
-              fn_borders_blit_firepower(
-                  screen,
-                  tilecache,
-                  pixelsize,
-                  fn_hero_get_firepower(hero));
+              fn_borders_blit_firepower(env);
               /* TODO separately update this area. */
               updateWholeScreen = 1;
               break;
             case fn_event_hero_inventory_changed:
-              fn_borders_blit_inventory(
-                  screen,
-                  tilecache,
-                  pixelsize,
-                  fn_hero_get_inventory(hero));
+              fn_borders_blit_inventory(env);
               /* TODO separately update this area. */
               updateWholeScreen = 1;
               break;
             case fn_event_hero_health_changed:
-              fn_borders_blit_life(
-                  screen,
-                  tilecache,
-                  pixelsize,
-                  fn_hero_get_health(hero));
+              fn_borders_blit_life(env);
               /* TODO separately update this area. */
               updateWholeScreen = 1;
               break;

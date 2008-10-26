@@ -79,8 +79,7 @@ void fn_inputfield_pressed_symbol(fn_inputfield_t * field,
 
 void fn_inputfield_blit(fn_inputfield_t * field,
     SDL_Surface * target,
-    fn_tilecache_t * tc,
-    Uint8 pixelsize);
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

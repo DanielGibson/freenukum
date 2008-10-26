@@ -58,16 +58,13 @@ Uint32 animate(Uint32 interval, void * param) {
 
 int main(int argc, char ** argv)
 {
-  SDL_Surface * screen;
-  fn_tilecache_t tc;
-  fn_hero_t hero;
+  fn_environment_t * env = fn_environment_create();
+  fn_environment_load_tilecache(env);
+  fn_hero_t * hero;
 
-  int pixelsize = 2;
   int res;
   SDL_Event event;
 
-  char * homedir;
-  char datapath[1024];
 
   int quit = 0;
 
@@ -75,43 +72,10 @@ int main(int argc, char ** argv)
 
   fn_error_set_handler(fn_error_print_commandline);
 
-  homedir = getenv("HOME");
-  if (homedir == NULL) {
-    fn_error_print("$HOME environment variable is not set.");
-    exit(1);
-  }
-
-  snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
-
-  fn_tilecache_init(&tc, pixelsize);
-
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
-    fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-    exit(1);
-  }
-
-  screen = SDL_SetVideoMode(
-      FN_WINDOW_WIDTH * pixelsize,
-      FN_WINDOW_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
-      FN_SURFACE_FLAGS);
-
-  if (screen == NULL) {
-    fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-    exit(1);
-  }
-
-  res = fn_tilecache_loadtiles(
-      &tc, screen->flags, screen->format, datapath);
-  if (res == -1) {
-    printf("Could not load tiles.\n");
-    printf("Copy the original game files to %s.\n", datapath);
-    exit(1);
-  }
-
   /* here comes the hero!!!!! */
-  fn_hero_init(&hero, 0, 0);
-  fn_hero_blit(&hero, screen, &tc, pixelsize, NULL);
+  hero = fn_hero_create(0, 0);
+  SDL_Surface * screen = fn_environment_get_screen(env);
+  fn_hero_blit(hero, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   timer = SDL_AddTimer(250, animate, NULL);
@@ -126,9 +90,9 @@ int main(int argc, char ** argv)
         case SDL_USEREVENT:
           if (event.user.code == EVENT_CODE_TIMER) {
             SDL_FillRect(screen, NULL, 0);
-            fn_hero_update_animation(&hero);
-            fn_hero_next_animationframe(&hero);
-            fn_hero_blit(&hero, screen, &tc, pixelsize, NULL);
+            fn_hero_update_animation(hero);
+            fn_hero_next_animationframe(hero);
+            fn_hero_blit(hero, screen, NULL);
             SDL_UpdateRect(screen, 0, 0, 0, 0);
           }
           break;
@@ -143,26 +107,26 @@ int main(int argc, char ** argv)
             case SDLK_LEFT:
               if (event.key.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_RIGHT) {
-                  fn_hero_set_direction(&hero,
+                  fn_hero_set_direction(hero,
                       fn_horizontal_direction_right);
                 } else {
-                  fn_hero_set_direction(&hero,
+                  fn_hero_set_direction(hero,
                       fn_horizontal_direction_left);
                 }
-                fn_hero_set_motion(&hero, FN_HERO_MOTION_WALKING);
+                fn_hero_set_motion(hero, FN_HERO_MOTION_WALKING);
               } else if (event.key.type == SDL_KEYUP) {
-                fn_hero_set_motion(&hero, FN_HERO_MOTION_NONE);
+                fn_hero_set_motion(hero, FN_HERO_MOTION_NONE);
               }
               break;
             case SDLK_LCTRL:
             case SDLK_RCTRL:
               if (event.key.type == SDL_KEYDOWN) {
-                fn_hero_jump(&hero);
+                fn_hero_jump(hero);
               }
               break;
             case SDLK_LALT:
             case SDLK_RALT:
-              fn_hero_set_flying(&hero, FN_HERO_FLYING_FALSE);
+              fn_hero_set_flying(hero, FN_HERO_FLYING_FALSE);
               break;
             default:
               /* do nothing, ignoring other keys. */

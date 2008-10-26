@@ -41,56 +41,17 @@
 int main(int argc, char ** argv)
 {
   SDL_Surface * screen;
-  fn_tilecache_t tc;
   
-  int pixelsize = 3;
-
   SDL_Event event;
-
-  char * homedir;
-  char datapath[1024];
 
   int res;
 
   fn_error_set_handler(fn_error_print_commandline);
 
-  homedir = getenv("HOME");
-  if (homedir == NULL) {
-    fn_error_print("$HOME environment variable is not set.");
-    exit(1);
-  }
+  fn_environment_t * env = fn_environment_create();
+  fn_environment_check_for_episodes(env);
 
-  snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
-
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-    fn_error_printf(1024, "Could not initialize SDL: %s", SDL_GetError());
-    exit(1);
-  }
-
-  screen = SDL_SetVideoMode(
-      FN_WINDOW_WIDTH * pixelsize,
-      FN_WINDOW_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
-      FN_SURFACE_FLAGS);
-  if (screen == NULL) {
-    fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
-    exit(1);
-  }
-
-  fn_tilecache_init(&tc, (Uint8)pixelsize);
-  res = fn_tilecache_loadtiles(&tc,
-      screen->flags,
-      screen->format,
-      datapath);
-  if (res == -1) {
-    fn_error_printf(1024, "Could not load tiles.\n"
-        "Copy the original game files to %s", datapath);
-    exit(1);
-  }
-
-  fn_borders_blit(screen,
-      &tc,
-      pixelsize);
+  fn_borders_blit(env);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (1)

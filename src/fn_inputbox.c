@@ -33,9 +33,7 @@
 /* --------------------------------------------------------------- */
 
 fn_inputbox_answer_t fn_inputbox_show(
-    Uint8 pixelsize,
-    fn_tilecache_t * tilecache,
-    SDL_Surface * screen,
+    fn_environment_t * env,
     char * msg,
     char * answer,
     Uint8 answer_len)
@@ -64,24 +62,10 @@ fn_inputbox_answer_t fn_inputbox_show(
   }
   sprintf(walker, "\n\n\nOK (Enter)   Abort (Esc)\n");
 
-  msgbox = fn_msgbox(
-      pixelsize,
-      screen->flags,
-      screen->format,
-      tilecache,
-      buffer);
+  msgbox = fn_msgbox(env, buffer);
 
-  inputfield_surface = SDL_CreateRGBSurface(
-      screen->flags,
-      FN_FONT_WIDTH * pixelsize * answer_len,
-      FN_FONT_HEIGHT * pixelsize,
-      screen->format->BitsPerPixel,
-      0,
-      0,
-      0,
-      0
-      );
-  SDL_FillRect(inputfield_surface, NULL, 0);
+  SDL_Surface * screen = fn_environment_get_screen(env);
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   dstrect.x = ((screen->w) - (msgbox->w))/2;
   dstrect.y = ((screen->h) - (msgbox->h))/2;
@@ -105,7 +89,7 @@ fn_inputbox_answer_t fn_inputbox_show(
       answer_len);
 
   fn_inputfield_blit(inputfield, inputfield_surface,
-      tilecache, pixelsize);
+      env);
   SDL_BlitSurface(inputfield_surface, NULL, msgbox,
       &inputfield_rect);
   SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
@@ -211,7 +195,7 @@ fn_inputbox_answer_t fn_inputbox_show(
               break;
           }
           fn_inputfield_blit(inputfield, inputfield_surface,
-              tilecache, pixelsize);
+              env);
           SDL_BlitSurface(inputfield_surface, NULL, msgbox,
               &inputfield_rect);
           SDL_BlitSurface(msgbox, NULL, screen, &dstrect);

@@ -37,19 +37,17 @@
 #include "fn_error.h"
 #include "fn_error_cmdline.h"
 #include "fn_picture.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 int main(int argc, char ** argv)
 {
-  SDL_Surface * screen;
   SDL_Surface * picture;
 
-  SDL_Event event;
+  fn_environment_t * env = fn_environment_create();
 
-  char * homedir;
-  char datapath[1024];
-  char picturepath[1024];
+  SDL_Event event;
 
   int res;
 
@@ -62,46 +60,12 @@ int main(int argc, char ** argv)
 
   fn_error_set_handler(fn_error_print_commandline);
 
-  homedir = getenv("HOME");
-  if (homedir == NULL) {
-    fn_error_print("$HOME environment variable is not set.");
-    exit(1);
-  }
-
-  snprintf(datapath, 1024, "%s%s", homedir, "/.freenukum/data/");
-
-  snprintf(picturepath, 1024, "%s%s", datapath, "DN.DN1");
-
-  fd = open(picturepath, O_RDONLY);
-  if (fd == -1) {
-    fn_error_printf(1024, "Error reading file %s: %s", picturepath, strerror(errno));
-    fn_error_printf(1024, "Copy the original game files to %s.", datapath);
-    exit(1);
-  }
-
-  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
-    fn_error_printf(1024, "Can't init SDL: %s", SDL_GetError());
-    exit(1);
-  }
-
-  screen = SDL_SetVideoMode(
-      FN_WINDOW_WIDTH * pixelsize,
-      FN_WINDOW_HEIGHT * pixelsize,
-      FN_COLOR_DEPTH,
-      FN_SURFACE_FLAGS);
-
-  if (screen == NULL) {
-    fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
-    exit(1);
-  }
-
   picture = fn_picture_load(
       fd,
-      pixelsize,
-      screen->flags,
-      screen->format);
+      env);
   close(fd);
 
+  SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_BlitSurface(picture, NULL, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 

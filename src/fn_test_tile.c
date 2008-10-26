@@ -39,7 +39,8 @@
 int main(int argc, char ** argv)
 {
     int fd;
-    Uint8 pixelsize = 2;
+    fn_environment_t * env = fn_environment_create();
+    fn_environment_load_tilecache(env);
     SDL_Event event;
     int res = 0;
     int quit = 0;
@@ -70,17 +71,8 @@ int main(int argc, char ** argv)
     fn_tileheader_t h;
     fn_tile_loadheader(fd, &h);
  
-    screen = SDL_SetVideoMode(
-            h.width * 8 * h.tiles * pixelsize,
-            h.height * pixelsize,
-            FN_COLOR_DEPTH,
-            FN_SURFACE_FLAGS);
-
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-        return -1;
-    }
+    screen = fn_environment_get_screen(env);
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
     SDL_Rect r;
     r.x = 0;
@@ -91,7 +83,7 @@ int main(int argc, char ** argv)
     while (i != h.tiles)
     {
         tile = fn_tile_load(
-            fd, pixelsize, screen->flags, screen->format, &h, 0);
+            fd, env, &h, 0);
         SDL_BlitSurface(tile, NULL, screen, &r);
         SDL_FreeSurface(tile);
         i++;

@@ -39,33 +39,29 @@
 
 /* --------------------------------------------------------------- */
 
-void fn_tilecache_init(
-        fn_tilecache_t * tc,
-        Uint8 pixelsize)
+fn_tilecache_t * fn_tilecache_create()
 {
-    size_t i;
-    for(i = 0; i != FN_TILECACHE_SIZE; i++)
-    {
-        tc->tiles[i] = NULL;
-    }
-    tc->pixelsize = pixelsize;
-    tc->size = 0;
+  fn_tilecache_t * tc = malloc(sizeof(fn_tilecache_t));
+  size_t i;
+  for(i = 0; i != FN_TILECACHE_SIZE; i++)
+  {
+    tc->tiles[i] = NULL;
+  }
+  tc->size = 0;
+  return tc;
 }
 
 /* --------------------------------------------------------------- */
 
-int fn_tilecache_loadtiles(
-        fn_tilecache_t * tc,
-        Uint32 flags,
-        SDL_PixelFormat * format,
-        char * directory
-        )
+int fn_tilecache_loadtiles(fn_tilecache_t * tc,
+    fn_environment_t * env)
 {
     int fd;
     size_t i = 0;
     char * path;
     int res;
     fn_tileheader_t header;
+    char * directory = fn_environment_get_datapath(env);
 
     Uint8 transparent[] = {
       1,
@@ -156,7 +152,7 @@ int fn_tilecache_loadtiles(
         0
     };
 
-    path = malloc(strlen(directory) + 12);
+    path = malloc(strlen(directory) + 15);
 
     if (path == NULL)
     {
@@ -165,27 +161,28 @@ int fn_tilecache_loadtiles(
 
     while (files[i] != 0)
     {
-        strcpy(path, directory);
-        fd = open(strcat(path, files[i]), O_RDONLY);
+        snprintf(path, strlen(directory) + 15, "%s/%s",
+            directory, files[i]);
+        fd = open(path, O_RDONLY);
         if (fd == -1)
         {
-            return -1;
-        }
+          printf("Failed to open file %s\n", path);
+        } else {
 
-        fn_tile_loadheader(fd, &header);
-        res =
-          fn_tilecache_loadfile(tc,
-              flags,
-              format,
-              fd,
-              size[i],
-              &header,
-              transparent[i]);
-        close(fd);
+          fn_tile_loadheader(fd, &header);
+          res =
+            fn_tilecache_loadfile(tc,
+                env,
+                fd,
+                size[i],
+                &header,
+                transparent[i]);
+          close(fd);
 
-        if (res != 0)
-        {
-            return -1;
+          if (res != 0)
+          {
+            printf("Failed loading file %s\n", path);
+          }
         }
         i++;
     }
@@ -198,8 +195,7 @@ int fn_tilecache_loadtiles(
 
 int fn_tilecache_loadfile(
         fn_tilecache_t * tc,
-        Uint32 flags,
-        SDL_PixelFormat * format,
+        fn_environment_t * env,
         int fd,
         size_t num_tiles,
         fn_tileheader_t * header,
@@ -209,14 +205,17 @@ int fn_tilecache_loadfile(
     {
         tc->tiles[tc->size] =
           fn_tile_load(fd,
-              tc->pixelsize,
-              flags,
-              format,
+              env,
               header,
               transparent);
         if (tc->tiles[tc->size] == NULL)
         {
             return -1;
+        } else {
+          SDL_UpdateRect(tc->tiles[tc->size],
+              0, 0,
+              tc->tiles[tc->size]->w,
+              tc->tiles[tc->size]->h);
         }
         tc->size++;
         num_tiles--;

@@ -37,14 +37,12 @@
 
 #include "fn_object.h"
 #include "fn_tilecache.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 SDL_Surface * fn_msgbox(
-    Uint8 pixelsize,
-    Uint32 flags,
-    SDL_PixelFormat * format,
-    fn_tilecache_t * tilecache,
+    fn_environment_t * env,
     char * text);
 
 /* --------------------------------------------------------------- */

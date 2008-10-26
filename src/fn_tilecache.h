@@ -36,38 +36,38 @@
 
 /* --------------------------------------------------------------- */
 
-#include "fn.h"
-#include "fn_tile.h"
+typedef struct fn_tilecache_t fn_tilecache_t;
 
 /* --------------------------------------------------------------- */
 
-typedef struct {
+#include "fn.h"
+#include "fn_tile.h"
+#include "fn_environment.h"
+
+/* --------------------------------------------------------------- */
+
+struct fn_tilecache_t {
     SDL_Surface * tiles[FN_TILECACHE_SIZE];
     Uint8 pixelsize;
     ssize_t size;
-} fn_tilecache_t;
+};
 
 /* --------------------------------------------------------------- */
 
-void fn_tilecache_init(
-        fn_tilecache_t * tc,
-        Uint8 pixelsize);
+fn_tilecache_t * fn_tilecache_create();
 
 /* --------------------------------------------------------------- */
 
 int fn_tilecache_loadtiles(
         fn_tilecache_t * tc,
-        Uint32 flags,
-        SDL_PixelFormat * format,
-        char * directory
+        fn_environment_t * env
         );
 
 /* --------------------------------------------------------------- */
 
 int fn_tilecache_loadfile(
         fn_tilecache_t * tc,
-        Uint32 flags,
-        SDL_PixelFormat * format,
+        fn_environment_t * env,
         int fd,
         size_t num_tiles,
         fn_tileheader_t * header,

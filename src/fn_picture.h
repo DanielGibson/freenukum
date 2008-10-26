@@ -38,16 +38,17 @@
 
 /* --------------------------------------------------------------- */
 
+#include "fn_environment.h"
+
+/* --------------------------------------------------------------- */
+
 /**
  * Load a picture from a picture file.
  *
  * @param  fd            The opened file descriptor to the file.
- * @param  pixelsize     The size of one original pixel.
- * @param  flags         sdl flags for CreateRGBSurface.
- * @param  format        The SDL pixel format
+ * @param  env           The game environment.
  */
-SDL_Surface * fn_picture_load(int fd, Uint8 pixelsize,
-    Uint32 flags, SDL_PixelFormat * format);
+SDL_Surface * fn_picture_load(int fd, fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

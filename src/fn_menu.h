@@ -92,10 +92,7 @@ void fn_menu_free(fn_menu_t * menu);
 
 char fn_menu_get_choice(
     fn_menu_t * menu,
-    fn_tilecache_t * tilecache,
-    Uint8 pixelsize,
-    SDL_Surface * screen
-    );
+    fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
