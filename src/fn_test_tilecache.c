@@ -96,6 +96,7 @@ int main(int argc, char ** argv)
   SDL_Event event;
   fn_environment_t * env;
   env = fn_environment_create();
+  fn_environment_set_pixelsize(env, 1);
   fn_environment_load_tilecache(env);
 
   fn_error_set_handler(fn_error_print_commandline);
