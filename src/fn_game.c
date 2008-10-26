@@ -99,6 +99,9 @@ void fn_game_start(
       79,
       144);
 
+  fn_hero_t * hero = fn_environment_get_hero(env);
+  fn_hero_reset(hero);
+
   SDL_Surface * screen = fn_environment_get_screen(env);
   SDL_FillRect(screen, NULL, 0);
 
