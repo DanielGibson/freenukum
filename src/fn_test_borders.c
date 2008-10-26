@@ -40,8 +40,6 @@
 
 int main(int argc, char ** argv)
 {
-  SDL_Surface * screen;
-  
   SDL_Event event;
 
   int res;
@@ -50,6 +48,9 @@ int main(int argc, char ** argv)
 
   fn_environment_t * env = fn_environment_create();
   fn_environment_check_for_episodes(env);
+  fn_environment_load_tilecache(env);
+
+  SDL_Surface * screen = fn_environment_get_screen(env);
 
   fn_borders_blit(env);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
