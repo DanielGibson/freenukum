@@ -282,6 +282,27 @@ char fn_menu_get_choice(fn_menu_t * menu,
               break;
           }
           break;
+        case SDL_MOUSEMOTION:
+          {
+            int x = (event.motion.x - destrect.x) / pixelsize
+              - FN_FONT_WIDTH * 3;
+            int y = (event.motion.y - destrect.y) / pixelsize
+              - FN_FONT_HEIGHT * (textrows + 1);
+            if (x > 0 && x < FN_FONT_WIDTH * menu->width) {
+              int menuitem = y / FN_FONT_HEIGHT;
+              if (menuitem >= 0 && menuitem < menu->num_entries) {
+                i = 0;
+                iter = fn_list_first(menu->entries);
+                while (i < menuitem) {
+                  iter = fn_list_next(iter);
+                  i++;
+                }
+                menu->currententry = iter;
+                updateWholeMenu = 1;
+              }
+            }
+          }
+          break;
         case SDL_MOUSEBUTTONDOWN:
           if (event.button.button == SDL_BUTTON_LEFT) {
             /* we only use left mouse button in the menu */
