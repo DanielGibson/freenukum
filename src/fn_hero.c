@@ -38,13 +38,28 @@
 
 /* --------------------------------------------------------------- */
 
-fn_hero_t * fn_hero_create(
-    Uint32 x,
-    Uint32 y)
+fn_hero_t * fn_hero_create()
 {
   fn_hero_t * hero = malloc(sizeof(fn_hero_t));
-  fn_hero_set_x(hero, x - FN_HALFTILE_WIDTH);
-  fn_hero_set_y(hero, y - FN_TILE_HEIGHT);
+
+  fn_hero_reset(hero);
+
+  return hero;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_delete(fn_hero_t * hero)
+{
+  free(hero); hero = NULL;
+}
+
+/* --------------------------------------------------------------- */
+
+void fn_hero_reset(fn_hero_t * hero)
+{
+  fn_hero_set_x(hero, 0);
+  fn_hero_set_y(hero, 0);
 
   hero->position.w = FN_TILE_WIDTH;
   hero->position.h = FN_TILE_HEIGHT * 2;
@@ -75,15 +90,6 @@ fn_hero_t * fn_hero_create(
   hero->turned_around = 0;
 
   hero->is_moving_horizontally = 0;
-
-  return hero;
-}
-
-/* --------------------------------------------------------------- */
-
-void fn_hero_delete(fn_hero_t * hero)
-{
-  free(hero); hero = NULL;
 }
 
 /* --------------------------------------------------------------- */
@@ -107,12 +113,14 @@ void fn_hero_enterlevel(
   hero->animationframe = 0;
   hero->num_animationframes = 1;
 
-  hero->inventory &= (
+  Uint8 inventory = fn_hero_get_inventory(hero);
+  inventory &= (
       ~FN_INVENTORY_KEY_RED &
       ~FN_INVENTORY_KEY_GREEN &
       ~FN_INVENTORY_KEY_BLUE &
       ~FN_INVENTORY_KEY_PINK
       );
+  fn_hero_set_inventory(hero, inventory);
   hero->hidden = 0;
   hero->fetchedletter = 0;
 }

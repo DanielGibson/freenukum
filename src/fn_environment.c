@@ -137,10 +137,6 @@ fn_environment_t * fn_environment_create()
   env->tilecache = NULL;
   env->episode = 1;
   env->num_episodes = 0;
-  env->health = FN_NUM_MAXLIFE;
-  env->firepower = 1;
-  env->inventory = 0x00;
-  env->score = 0;
   env->hero = fn_hero_create(0, 0);
 
   /* create all the path variables */
@@ -525,28 +521,28 @@ SDL_Surface * fn_environment_get_tile(fn_environment_t * env,
 
 Uint8 fn_environment_get_health(fn_environment_t * env)
 {
-  return env->health;
+  return fn_hero_get_health(env->hero);
 }
 
 /* --------------------------------------------------------------- */
 
 Uint8 fn_environment_get_firepower(fn_environment_t * env)
 {
-  return env->firepower;
+  return fn_hero_get_firepower(env->hero);
 }
 
 /* --------------------------------------------------------------- */
 
 Uint8 fn_environment_get_inventory(fn_environment_t * env)
 {
-  return env->inventory;
+  return fn_hero_get_inventory(env->hero);
 }
 
 /* --------------------------------------------------------------- */
 
 Uint32 fn_environment_get_score(fn_environment_t * env)
 {
-  return env->score;
+  return fn_hero_get_score(env->hero);
 }
 
 /* --------------------------------------------------------------- */

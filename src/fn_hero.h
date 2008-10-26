@@ -237,12 +237,9 @@ void fn_hero_update_animation(
 /**
  * Create a hero.
  *
- * @param  x     The initial x position of our hero (in pixels)
- * @param  y     The initial x position of our hero (in pixels)
+ * @return The newly created hero.
  */
-fn_hero_t * fn_hero_create(
-    Uint32 x,
-    Uint32 y);
+fn_hero_t * fn_hero_create();
 
 /* --------------------------------------------------------------- */
 
@@ -252,6 +249,15 @@ fn_hero_t * fn_hero_create(
  * @param  hero  The hero to delete.
  */
 void fn_hero_delete(fn_hero_t * hero);
+
+/* --------------------------------------------------------------- */
+
+/**
+ * Reset all values of a hero to default.
+ *
+ * @param  hero  The hero to reset.
+ */
+void fn_hero_reset(fn_hero_t * hero);
 
 /* --------------------------------------------------------------- */
 

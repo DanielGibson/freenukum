@@ -114,26 +114,6 @@ struct fn_environment_t {
   Uint8 num_episodes;
 
   /**
-   * The health of the hero.
-   */
-  Uint8 health;
-
-  /**
-   * The firepower of the hero.
-   */
-  Uint8 firepower;
-
-  /**
-   * The inventory of the hero.
-   */
-  Uint8 inventory;
-
-  /**
-   * The score of the player.
-   */
-  Uint32 score;
-
-  /**
    * The hero.
    */
   fn_hero_t * hero;
