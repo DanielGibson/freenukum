@@ -73,7 +73,7 @@ int main(int argc, char ** argv)
   fn_error_set_handler(fn_error_print_commandline);
 
   /* here comes the hero!!!!! */
-  hero = fn_hero_create(0, 0);
+  hero = fn_hero_create(env);
   SDL_Surface * screen = fn_environment_get_screen(env);
   fn_hero_blit(hero, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);

@@ -27,6 +27,7 @@
  *******************************************************************/
 
 #include <SDL.h>
+#include <assert.h>
 
 /* --------------------------------------------------------------- */
 
@@ -38,10 +39,12 @@
 
 /* --------------------------------------------------------------- */
 
-fn_hero_t * fn_hero_create()
+fn_hero_t * fn_hero_create(fn_environment_t * env)
 {
   fn_hero_t * hero = malloc(sizeof(fn_hero_t));
 
+  assert(env != NULL);
+  hero->env = env;
   fn_hero_reset(hero);
 
   return hero;
@@ -142,7 +145,7 @@ void fn_hero_blit(fn_hero_t * hero,
     return;
   }
 
-  fn_environment_t * env = fn_level_get_environment(level);
+  fn_environment_t * env = hero->env;
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   dstrect.x = pixelsize * (fn_hero_get_x(hero) - FN_HALFTILE_WIDTH);

@@ -78,7 +78,6 @@ int main(int argc, char ** argv)
     char * homedir;
     char tilespath[1024];
     char levelfile[1024];
-    fn_hero_create(0, 0);
     fn_environment_t * env = fn_environment_create();
     fn_environment_load_tilecache(env);
 

@@ -237,9 +237,11 @@ void fn_hero_update_animation(
 /**
  * Create a hero.
  *
+ * @param  env  The environment for the hero.
+ *
  * @return The newly created hero.
  */
-fn_hero_t * fn_hero_create();
+fn_hero_t * fn_hero_create(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
