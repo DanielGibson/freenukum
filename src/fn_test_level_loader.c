@@ -69,17 +69,19 @@ int main(int argc, char ** argv)
 {
     fn_level_t * lv = NULL;
     int fd;
-    Uint8 pixelsize = 1;
     int quit = 0;
     int res;
     SDL_Surface * screen;
     SDL_Surface * level;
     SDL_Event event;
     char * homedir;
-    char tilespath[1024];
     char levelfile[1024];
     fn_environment_t * env = fn_environment_create();
+    fn_environment_set_pixelsize(env, 1);
     fn_environment_load_tilecache(env);
+    fn_environment_check_for_episodes(env);
+
+    Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
     int argok = 0;
     char levelnumber;
@@ -114,8 +116,6 @@ int main(int argc, char ** argv)
       exit(1);
     }
 
-    snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
-
     snprintf(levelfile, 1024, "%s/.freenukum/data/WORLDAL%c.DN1",
         homedir, levelnumber);
 
@@ -129,23 +129,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1)
-    {
-        fprintf(stderr, "Can't init SDL: %s\n", SDL_GetError());
-        return -1;
-    }
-
-    screen = SDL_SetVideoMode(
-            1000,
-            700,
-            FN_COLOR_DEPTH,
-            FN_SURFACE_FLAGS);
-
-    if (screen == NULL)
-    {
-        fprintf(stderr, "Can't set video mode: %s\n", SDL_GetError());
-        return -1;
-    }
+    screen = fn_environment_get_screen(env);
 
     lv = fn_level_load(fd, env);
     if (lv == NULL)
@@ -158,16 +142,9 @@ int main(int argc, char ** argv)
     close(fd);
 
 
-    level = SDL_CreateRGBSurface(
-            screen->flags,
-            FN_TILE_WIDTH * pixelsize * FN_LEVEL_WIDTH,
-            FN_TILE_HEIGHT * pixelsize * FN_LEVEL_HEIGHT,
-            screen->format->BitsPerPixel,
-            0,
-            0,
-            0,
-            0);
-
+    level = fn_environment_create_surface(env,
+        FN_TILE_WIDTH * FN_LEVEL_WIDTH,
+        FN_TILE_HEIGHT * FN_LEVEL_WIDTH);
 
     SDL_WM_SetCaption("FreeNukum Level Tester", "");
 

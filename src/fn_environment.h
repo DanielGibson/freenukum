@@ -174,6 +174,19 @@ Uint8 fn_environment_get_pixelsize(fn_environment_t * env);
 /* --------------------------------------------------------------- */
 
 /**
+ * Set the pixelsize for the environment.
+ *
+ * @param  env        The environment.
+ * @param  pixelsize  The pixelsize. It must be a number from
+ *                    1 to 10. If an invalid number is passed,
+ *                    the pixelsize is reset to 1.
+ */
+void fn_environment_set_pixelsize(fn_environment_t * env,
+    Uint8 pixelsize);
+
+/* --------------------------------------------------------------- */
+
+/**
  * Get the information if the environment is in fullscreen mode.
  *
  * @param  env  The environment.

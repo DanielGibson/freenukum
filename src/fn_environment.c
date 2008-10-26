@@ -431,6 +431,18 @@ Uint8 fn_environment_get_pixelsize(fn_environment_t * env)
 
 /* --------------------------------------------------------------- */
 
+void fn_environment_set_pixelsize(fn_environment_t * env,
+    Uint8 pixelsize)
+{
+  if (pixelsize > 10 || pixelsize < 1) {
+    env->pixelsize = 1;
+  } else {
+    env->pixelsize = pixelsize;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
 Uint8 fn_environment_get_fullscreen(fn_environment_t * env)
 {
   return env->fullscreen;
