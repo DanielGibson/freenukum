@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 /* --------------------------------------------------------------- */
 
@@ -70,7 +71,7 @@ fn_menu_t * fn_menu_create(char * text)
 
   menu->text = text;
   menu->entries = NULL;
-  menu->currententry = NULL;
+  menu->currententry = 0;
   menu->num_entries = 0;
   menu->width = 0;
 
@@ -200,7 +201,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
           env,
           entry->name
           );
-      if (iter == menu->currententry) {
+      if (i == menu->currententry) {
         targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
         pointrect.y = targetrect.y + destrect.y;
         SDL_BlitSurface(
@@ -242,7 +243,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
         case SDL_KEYDOWN:
           switch(event.key.keysym.sym) {
             case SDLK_RETURN:
-              entry = (fn_menuentry_t *)menu->currententry->data;
+              entry = fn_menu_get_current_entry(menu);
               choice = entry->shortcut;
               choice_made = 1;
               break;
@@ -250,22 +251,17 @@ char fn_menu_get_choice(fn_menu_t * menu,
               choice_made = 1;
               break;
             case SDLK_DOWN:
-              menu->currententry = fn_list_next(menu->currententry);
-              if (menu->currententry == fn_list_last(menu->entries)) {
-                menu->currententry = fn_list_first(menu->entries);
-              }
-              entry = (fn_menuentry_t *)menu->currententry->data;
+              menu->currententry++;
+              menu->currententry %= menu->num_entries;
+              entry = fn_menu_get_current_entry(menu);
               updateWholeMenu = 1;
               break;
             case SDLK_UP:
-              if (menu->currententry == fn_list_first(menu->entries)) {
-                menu->currententry = fn_list_previous(
-                    menu->entries, fn_list_last(menu->entries));
-              } else {
-                menu->currententry = fn_list_previous(
-                    menu->entries, menu->currententry);
+              if (menu->currententry == 0) {
+                menu->currententry = menu->num_entries;
               }
-              entry = (fn_menuentry_t *)menu->currententry->data;
+              menu->currententry--;
+              entry = fn_menu_get_current_entry(menu);
               updateWholeMenu = 1;
               break;
             default:
@@ -291,13 +287,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
             if (x > 0 && x < FN_FONT_WIDTH * menu->width) {
               int menuitem = y / FN_FONT_HEIGHT;
               if (menuitem >= 0 && menuitem < menu->num_entries) {
-                i = 0;
-                iter = fn_list_first(menu->entries);
-                while (i < menuitem) {
-                  iter = fn_list_next(iter);
-                  i++;
-                }
-                menu->currententry = iter;
+                menu->currententry = menuitem;
                 updateWholeMenu = 1;
               }
             }
@@ -362,10 +352,25 @@ void fn_menu_append_entry(
   menu->width = MAX(menu->width, strlen(name));
 
   menu->entries = fn_list_append(menu->entries, entry);
-  if (menu->currententry == NULL) {
-    menu->currententry = menu->entries;
-  }
   menu->num_entries++;
+}
+
+/* --------------------------------------------------------------- */
+
+fn_menuentry_t * fn_menu_get_current_entry(
+    fn_menu_t * menu)
+{
+  Uint16 i = 0;
+  fn_list_t * iter = fn_list_first(menu->entries);
+
+  assert(menu->currententry < menu->num_entries);
+
+  while (i < menu->currententry) {
+    iter = fn_list_next(iter);
+    i++;
+  }
+  fn_menuentry_t * ret = (fn_menuentry_t *)iter->data;
+  return ret;
 }
 
 /* --------------------------------------------------------------- */

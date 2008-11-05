@@ -69,7 +69,7 @@ typedef struct fn_menu_t {
   /**
    * The currently active entry.
    */
-  fn_list_t * currententry;
+  Uint16 currententry;
   /**
    * The number of entries.
    */
@@ -101,6 +101,11 @@ void fn_menu_append_entry(
     char shortcut,
     char * name,
     char value);
+
+/* --------------------------------------------------------------- */
+
+fn_menuentry_t * fn_menu_get_current_entry(
+    fn_menu_t * menu);
 
 /* --------------------------------------------------------------- */
 
