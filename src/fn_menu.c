@@ -179,62 +179,67 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   int updateWholeMenu = 0;
   int updateWholeScreen = 1;
+  int changed = 1;
 
   int choice_made = 0;
   while (!choice_made) {
 
     fn_list_t * iter = NULL;
-    SDL_BlitSurface(box, NULL, target, NULL);
-    i = 0;
-    for (iter = fn_list_first(menu->entries);
-        iter != fn_list_last(menu->entries);
-        iter = fn_list_next(iter))
-    {
-      targetrect.w = FN_FONT_WIDTH * pixelsize * menu->width;
-      targetrect.x = FN_FONT_WIDTH * pixelsize * 3;
-      targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + textrows + 1);
-      targetrect.h = FN_FONT_HEIGHT * pixelsize;
-      entry = (fn_menuentry_t *)iter->data;
-      fn_text_print(
-          target,
-          &targetrect,
-          env,
-          entry->name
-          );
-      if (i == menu->currententry) {
-        targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
-        pointrect.y = targetrect.y + destrect.y;
-        SDL_BlitSurface(
-            fn_environment_get_tile(
-              env,
-              OBJ_POINT + animationframe),
-            NULL,
-            target,
-            &targetrect);
-      }
-      i++;
-    }
-
     SDL_Surface * screen = fn_environment_get_screen(env);
-    SDL_BlitSurface(target, NULL,
-        screen, &destrect);
-    if (updateWholeScreen) {
-      SDL_UpdateRect(screen, 0, 0, 0, 0);
-      updateWholeMenu = 0;
-      updateWholeScreen = 0;
-    } else if (updateWholeMenu) {
-      SDL_UpdateRect(screen,
-          destrect.x,
-          destrect.y,
-          destrect.w,
-          destrect.h);
-      updateWholeMenu = 0;
-    } else {
-      SDL_UpdateRect(screen,
-          pointrect.x,
-          pointrect.y,
-          pointrect.w,
-          pointrect.h);
+
+    if (changed) {
+      SDL_BlitSurface(box, NULL, target, NULL);
+      i = 0;
+      for (iter = fn_list_first(menu->entries);
+          iter != fn_list_last(menu->entries);
+          iter = fn_list_next(iter))
+      {
+        targetrect.w = FN_FONT_WIDTH * pixelsize * menu->width;
+        targetrect.x = FN_FONT_WIDTH * pixelsize * 3;
+        targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + textrows + 1);
+        targetrect.h = FN_FONT_HEIGHT * pixelsize;
+        entry = (fn_menuentry_t *)iter->data;
+        fn_text_print(
+            target,
+            &targetrect,
+            env,
+            entry->name
+            );
+        if (i == menu->currententry) {
+          targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
+          pointrect.y = targetrect.y + destrect.y;
+          SDL_BlitSurface(
+              fn_environment_get_tile(
+                env,
+                OBJ_POINT + animationframe),
+              NULL,
+              target,
+              &targetrect);
+        }
+        i++;
+      }
+
+      SDL_BlitSurface(target, NULL,
+          screen, &destrect);
+      if (updateWholeScreen) {
+        SDL_UpdateRect(screen, 0, 0, 0, 0);
+        updateWholeMenu = 0;
+        updateWholeScreen = 0;
+      } else if (updateWholeMenu) {
+        SDL_UpdateRect(screen,
+            destrect.x,
+            destrect.y,
+            destrect.w,
+            destrect.h);
+        updateWholeMenu = 0;
+      } else {
+        SDL_UpdateRect(screen,
+            pointrect.x,
+            pointrect.y,
+            pointrect.w,
+            pointrect.h);
+      }
+      changed = 0;
     }
 
     res = SDL_WaitEvent(&event);
@@ -323,6 +328,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
           /* timer tick */
           animationframe++;
           animationframe %= 4;
+          changed = 1;
           break;
         default:
           /* ignore other events */
