@@ -55,6 +55,22 @@ if test "x$have_libzip" = "xyes"; then
   LIBS="$LIBS $LIBZIP_LIBS"
 fi
 
+dnl #
+dnl # Check for gobject
+dnl #
+PKG_CHECK_MODULES(GOBJECT, gobject-2.0,
+                  [have_gobject="yes"],
+                  [have_gobject="no"])
+if test "x$have_gobject" = "xno"; then
+  AC_MSG_ERROR([
+      gobject missing.
+      You have to install the gobject development package.
+      ])
+else
+  CFLAGS="$CFLAGS $GOBJECT_CFLAGS"
+  LIBS="$LIBS $GOBJECT_LIBS"
+fi
+
 dnl #---------------------------------------------------------------
 
 AC_PROG_CC
@@ -73,7 +89,7 @@ fi
 AC_CHECK_PROG(CONVERT, convert, "yes", "no", [$PATH])
 AM_CONDITIONAL(CREATEICONS, test x"$CONVERT" = xyes)
 
-CFLAGS="$CFLAGS "`sdl-config --cflags`
+CFLAGS="$CFLAGS `sdl-config --cflags`"
 LIBS="$LIBS `sdl-config --libs`"
 
 AC_CONFIG_HEADER(src/config.h)

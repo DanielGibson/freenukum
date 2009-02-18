@@ -62,6 +62,7 @@
 #include "fn_game.h"
 #include "fn_data.h"
 #include "fn_environment.h"
+#include "fntile.h"
 
 /* --------------------------------------------------------------- */
 
@@ -75,12 +76,21 @@ int main(int argc, char ** argv)
 
   /* TODO move this into fn_environment. */
   char backgroundfile[10] = "DN.DN1";
-
 /* --------------------------------------------------------------- */
 
   fn_error_set_handler(fn_error_print_commandline);
 
   fn_environment_t * env = fn_environment_create();
+
+/* --------------------------------------------------------------- */
+
+  g_type_init();
+
+  FnTile * tile = fn_tile_new_with_environment(32, 32, env);
+  g_object_unref(tile);
+  return 0;
+
+/* --------------------------------------------------------------- */
 
   /* check if all data is present */
   int episodes = fn_environment_check_for_episodes(env);
