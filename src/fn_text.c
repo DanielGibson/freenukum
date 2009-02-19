@@ -49,7 +49,7 @@ void fn_text_printletter(
     tilenr = c - ' ' + FONT_ASCII_UPPERCASE;
   else
     tilenr = c - 'a' + FONT_ASCII_LOWERCASE;
-  fn_tile_blit_to_sdl_surface(
+  fn_texture_blit_to_sdl_surface(
       fn_environment_get_tile(env, tilenr),
       NULL,
       target,

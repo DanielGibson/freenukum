@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Tile
+ * File:    Texture
  *
  * *****************************************************************
  *
@@ -32,11 +32,11 @@
 
 #include "fn.h"
 #include "fn_environment.h"
-#include "fntile.h"
+#include "fntexture.h"
 
 /* =============================================================== */
 
-struct _FnTilePrivate
+struct _FnTexturePrivate
 {
   guint width;
   guint height;
@@ -46,8 +46,8 @@ struct _FnTilePrivate
 
 /* =============================================================== */
 
-#define FN_TILE_GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((o), FN_TYPE_TILE, FnTilePrivate))
+#define FN_TEXTURE_GET_PRIVATE(o) \
+  (G_TYPE_INSTANCE_GET_PRIVATE((o), FN_TYPE_TEXTURE, FnTexturePrivate))
 
 /* =============================================================== */
 
@@ -61,17 +61,17 @@ enum {
 /* =============================================================== */
 
 static void
-fn_tile_init(FnTile * tile);
+fn_texture_init(FnTexture * texture);
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_class_init(FnTileClass * c);
+fn_texture_class_init(FnTextureClass * c);
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_set_property(
+fn_texture_set_property(
     GObject * object,
     guint prop_id,
     const GValue * value,
@@ -80,7 +80,7 @@ fn_tile_set_property(
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_get_property(
+fn_texture_get_property(
     GObject * object,
     guint prop_id,
     GValue * value,
@@ -88,40 +88,40 @@ fn_tile_get_property(
 
 /* =============================================================== */
 
-GType fn_tile_get_type(void)
+GType fn_texture_get_type(void)
 {
-  static GType fn_tile_type = 0;
+  static GType fn_texture_type = 0;
 
-  if (!fn_tile_type)
+  if (!fn_texture_type)
   {
-    const GTypeInfo fn_tile_info =
+    const GTypeInfo fn_texture_info =
     {
-      sizeof(FnTileClass),
+      sizeof(FnTextureClass),
       NULL,
       NULL,
-      (GClassInitFunc)fn_tile_class_init,
+      (GClassInitFunc)fn_texture_class_init,
       NULL,
       NULL,
-      sizeof(FnTile),
+      sizeof(FnTexture),
       0,
-      (GInstanceInitFunc)fn_tile_init
+      (GInstanceInitFunc)fn_texture_init
     };
 
-    fn_tile_type =
+    fn_texture_type =
       g_type_register_static(
           G_TYPE_OBJECT,
-          "FnTile",
-          &fn_tile_info,
+          "FnTexture",
+          &fn_texture_info,
           0);
   }
 
-  return fn_tile_type;
+  return fn_texture_type;
 }
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_class_init(FnTileClass * c)
+fn_texture_class_init(FnTextureClass * c)
 {
   GObjectClass * g_object_class;
 
@@ -131,18 +131,18 @@ fn_tile_class_init(FnTileClass * c)
 
   g_object_class = G_OBJECT_CLASS(c);
 
-  g_type_class_add_private(c, sizeof(FnTilePrivate));
+  g_type_class_add_private(c, sizeof(FnTexturePrivate));
 
-  g_object_class->set_property = fn_tile_set_property;
-  g_object_class->get_property = fn_tile_get_property;
+  g_object_class->set_property = fn_texture_set_property;
+  g_object_class->get_property = fn_texture_get_property;
 
   width_param = g_param_spec_uint(
       "width",
       "Width",
-      "The width (in pixels) of the tile",
+      "The width (in pixels) of the texture",
       0,
       G_MAXUINT,
-      FN_TILE_WIDTH,
+      FN_TEXTURE_DEFAULT_WIDTH,
       G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_STATIC_STRINGS |
       G_PARAM_WRITABLE
@@ -156,10 +156,10 @@ fn_tile_class_init(FnTileClass * c)
   height_param = g_param_spec_uint(
       "height",
       "Height",
-      "The height (in pixels) of the tile",
+      "The height (in pixels) of the texture",
       0,
       G_MAXUINT,
-      FN_TILE_HEIGHT,
+      FN_TEXTURE_DEFAULT_HEIGHT,
       G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_STATIC_STRINGS |
       G_PARAM_WRITABLE
@@ -187,61 +187,61 @@ fn_tile_class_init(FnTileClass * c)
 
 /* =============================================================== */
 
-FnTile * fn_tile_new_with_environment(
+FnTexture * fn_texture_new_with_environment(
     guint width,
     guint height,
     fn_environment_t * env
     )
 {
   /* TODO remove this function once environment is obsolete,
-   * and replace it with fn_tile_new */
-  FnTile * tile = g_object_new(
-      FN_TYPE_TILE,
+   * and replace it with fn_texture_new */
+  FnTexture * texture = g_object_new(
+      FN_TYPE_TEXTURE,
       "width", width,
       "height", height,
       "environment", env,
       NULL
       );
-  return tile;
+  return texture;
 }
 
 /* =============================================================== */
 
 static void
-fn_tile_init(FnTile * tile)
+fn_texture_init(FnTexture * texture)
 {
-  tile->priv = FN_TILE_GET_PRIVATE(tile);
+  texture->priv = FN_TEXTURE_GET_PRIVATE(texture);
 }
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_set_property(
+fn_texture_set_property(
     GObject * object,
     guint prop_id,
     const GValue * value,
     GParamSpec * pspec)
 {
-  FnTile * tile = FN_TILE(object);
+  FnTexture * texture = FN_TEXTURE(object);
 
   switch(prop_id) {
     case PROP_WIDTH:
       /* TODO write width setter function */
-      tile->priv->width = g_value_get_uint(value);
+      texture->priv->width = g_value_get_uint(value);
       break;
 
     case PROP_HEIGHT:
       /* TODO write height setter function */
-      tile->priv->height = g_value_get_uint(value);
+      texture->priv->height = g_value_get_uint(value);
       break;
 
     case PROP_ENVIRONMENT:
       /* TODO write environment setter function */
-      tile->priv->env = g_value_get_pointer(value);
+      texture->priv->env = g_value_get_pointer(value);
       break;
 
     case PROP_DATA:
-      fn_tile_set_data(tile, g_value_get_pointer(value));
+      fn_texture_set_data(texture, g_value_get_pointer(value));
       break;
 
     default:
@@ -253,28 +253,28 @@ fn_tile_set_property(
 /* --------------------------------------------------------------- */
 
 static void
-fn_tile_get_property(
+fn_texture_get_property(
     GObject * object,
     guint prop_id,
     GValue * value,
     GParamSpec * pspec)
 {
-  FnTile * tile = FN_TILE(object);
+  FnTexture * texture = FN_TEXTURE(object);
 
   switch(prop_id) {
     case PROP_WIDTH:
       /* TODO write width getter function */
-      g_value_set_uint(value, tile->priv->width);
+      g_value_set_uint(value, texture->priv->width);
       break;
 
     case PROP_HEIGHT:
       /* TODO write height getter function */
-      g_value_set_uint(value, tile->priv->height);
+      g_value_set_uint(value, texture->priv->height);
       break;
 
     case PROP_ENVIRONMENT:
       /* TODO write environment getter function */
-      g_value_set_pointer(value, tile->priv->env);
+      g_value_set_pointer(value, texture->priv->env);
       break;
 
     default:
@@ -286,12 +286,12 @@ fn_tile_get_property(
 /* =============================================================== */
 
 void
-fn_tile_set_data(
-    FnTile * tile,
+fn_texture_set_data(
+    FnTexture * texture,
     guchar * data)
 {
-  g_return_if_fail(FN_IS_TILE(tile));
-  FnTilePrivate * priv = tile->priv;
+  g_return_if_fail(FN_IS_TEXTURE(texture));
+  FnTexturePrivate * priv = texture->priv;
   Uint32 transparent = fn_environment_get_transparent(priv->env);
   SDL_Surface * surface = fn_environment_create_surface(
       priv->env,
@@ -343,14 +343,14 @@ fn_tile_set_data(
 /* =============================================================== */
 
 void
-fn_tile_blit_to_sdl_surface(
-    FnTile * tile,
+fn_texture_blit_to_sdl_surface(
+    FnTexture * texture,
     SDL_Rect * srcrect,
     SDL_Surface * destination,
     SDL_Rect * dstrect)
 {
-  g_return_if_fail(FN_IS_TILE(tile));
-  FnTilePrivate * priv = tile->priv;
+  g_return_if_fail(FN_IS_TEXTURE(texture));
+  FnTexturePrivate * priv = texture->priv;
   SDL_Surface * src = priv->surface;
 
   SDL_BlitSurface(src, srcrect, destination, dstrect);

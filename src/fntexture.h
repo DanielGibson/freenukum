@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Tile
+ * File:    Texture
  *
  * *****************************************************************
  *
@@ -26,8 +26,8 @@
  *
  *******************************************************************/
 
-#ifndef FNTILE_H
-#define FNTILE_H
+#ifndef FNTEXTURE_H
+#define FNTEXTURE_H
 
 /* =============================================================== */
 
@@ -44,42 +44,47 @@ G_BEGIN_DECLS
 
 /* =============================================================== */
 
-typedef struct _FnTilePrivate FnTilePrivate;
+#define FN_TEXTURE_DEFAULT_WIDTH 32
+#define FN_TEXTURE_DEFAULT_HEIGHT 32
 
 /* =============================================================== */
 
-typedef struct _FnTile {
+typedef struct _FnTexturePrivate FnTexturePrivate;
+
+/* =============================================================== */
+
+typedef struct _FnTexture {
   GObject g_object_instance;
-  FnTilePrivate * priv;
-} FnTile;
+  FnTexturePrivate * priv;
+} FnTexture;
 
 /* =============================================================== */
 
-typedef struct _FnTileClass {
+typedef struct _FnTextureClass {
   GObjectClass g_object_class;
-} FnTileClass;
+} FnTextureClass;
 
 /* =============================================================== */
 
-#define FN_TYPE_TILE (fn_tile_get_type())
-#define FN_TILE(o) \
-  (G_TYPE_CHECK_INSTANCE_CAST((o), FN_TYPE_TILE, FnTile))
-#define FN_TILE_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_CAST((c), FN_TYPE_TILE, FnTileClass))
-#define FN_IS_TILE(o) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_TILE))
-#define FN_IS_TILE_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_TILE))
-#define FN_TILE_GET_CLASS(o) \
-  (G_TYPE_INSTANCE_GET_CLASS((o), FN_TYPE_TILE, FnTileClass))
+#define FN_TYPE_TEXTURE (fn_texture_get_type())
+#define FN_TEXTURE(o) \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), FN_TYPE_TEXTURE, FnTexture))
+#define FN_TEXTURE_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_CAST((c), FN_TYPE_TEXTURE, FnTextureClass))
+#define FN_IS_TEXTURE(o) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_TEXTURE))
+#define FN_IS_TEXTURE_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_TEXTURE))
+#define FN_TEXTURE_GET_CLASS(o) \
+  (G_TYPE_INSTANCE_GET_CLASS((o), FN_TYPE_TEXTURE, FnTextureClass))
 
 /* =============================================================== */
 
-GType fn_tile_get_type(void);
+GType fn_texture_get_type(void);
 
 /* =============================================================== */
 
-FnTile * fn_tile_new_with_environment(
+FnTexture * fn_texture_new_with_environment(
     guint width,
     guint height,
     fn_environment_t * env
@@ -88,15 +93,15 @@ FnTile * fn_tile_new_with_environment(
 /* =============================================================== */
 
 void
-fn_tile_set_data(
-    FnTile * tile,
+fn_texture_set_data(
+    FnTexture * texture,
     guchar * data);
 
 /* =============================================================== */
 
 void
-fn_tile_blit_to_sdl_surface(
-    FnTile * tile,
+fn_texture_blit_to_sdl_surface(
+    FnTexture * texture,
     SDL_Rect * srcrect,
     SDL_Surface * destination,
     SDL_Rect * dstrect);
@@ -107,4 +112,4 @@ G_END_DECLS
 
 /* =============================================================== */
 
-#endif /* FNTILE_H */
+#endif /* FNTEXTURE_H */

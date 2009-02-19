@@ -34,7 +34,7 @@
 #include "fn_draw.h"
 #include "fn_tile.h"
 #include "fn_drop.h"
-#include "fntile.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -45,7 +45,7 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
     size_t num_read = 0;
     fn_tileheader_t h;
 
-    FnTile * tile;
+    FnTexture * tile;
 
     Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
@@ -69,7 +69,7 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
             env,
             &h,
             FALSE);
-        fn_tile_blit_to_sdl_surface(tile, NULL, drop, &r);
+        fn_texture_blit_to_sdl_surface(tile, NULL, drop, &r);
         g_object_unref(tile);
         r.x += 16 * pixelsize;
         if (r.x == 16 * FN_DROP_WIDTH * pixelsize)

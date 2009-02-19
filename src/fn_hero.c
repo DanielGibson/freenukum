@@ -136,7 +136,7 @@ void fn_hero_blit(fn_hero_t * hero,
 {
   SDL_Rect dstrect;
   int tilenr;
-  FnTile * tile;
+  FnTexture * tile;
 
   if (hero->hidden) {
     return;
@@ -163,20 +163,20 @@ void fn_hero_blit(fn_hero_t * hero,
   }
 
   tile = fn_environment_get_tile(env, tilenr);
-  fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
+  fn_texture_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
   dstrect.x += dstrect.w;
   tile = fn_environment_get_tile(env, tilenr+1);
-  fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
+  fn_texture_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
   dstrect.x -= dstrect.w;
   dstrect.y += dstrect.h;
   tile = fn_environment_get_tile(env, tilenr+2);
-  fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
+  fn_texture_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
   dstrect.x += dstrect.w;
   tile = fn_environment_get_tile(env, tilenr+3);
-  fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
+  fn_texture_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
   if (fn_environment_get_draw_collision_bounds(env)) {
     fn_collision_rect_draw(target, pixelsize, &(hero->position));

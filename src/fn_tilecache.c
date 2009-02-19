@@ -231,7 +231,7 @@ void fn_tilecache_destroy(fn_tilecache_t * tc)
 
 /* --------------------------------------------------------------- */
 
-FnTile * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos)
+FnTexture * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos)
 {
     return tc->tiles[pos];
 }

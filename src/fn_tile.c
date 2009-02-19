@@ -36,7 +36,7 @@
 #include "fn_tile.h"
 #include "fn_draw.h"
 #include "fn.h"
-#include "fntile.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -47,7 +47,7 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h)
 
 /* --------------------------------------------------------------- */
 
-FnTile * fn_tile_load(
+FnTexture * fn_tile_load(
     int fd,
     fn_environment_t * env,
     fn_tileheader_t * h,
@@ -56,7 +56,7 @@ FnTile * fn_tile_load(
   guint width = h->width * 8;
   guint height = h->height;
 
-  FnTile * tile = fn_tile_new_with_environment(
+  FnTexture * tile = fn_texture_new_with_environment(
       width,
       height,
       env);
@@ -110,7 +110,7 @@ FnTile * fn_tile_load(
     num_read++;
   }
 
-  fn_tile_set_data(tile, data);
+  fn_texture_set_data(tile, data);
 
   g_free(data);
   return tile;

@@ -42,13 +42,13 @@ typedef struct fn_tilecache_t fn_tilecache_t;
 
 #include "fn.h"
 #include "fn_tile.h"
-#include "fntile.h"
+#include "fntexture.h"
 #include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
 struct fn_tilecache_t {
-    FnTile * tiles[FN_TILECACHE_SIZE];
+    FnTexture * tiles[FN_TILECACHE_SIZE];
     Uint8 pixelsize;
     ssize_t size;
 };
@@ -81,7 +81,7 @@ void fn_tilecache_destroy(
 
 /* --------------------------------------------------------------- */
 
-FnTile * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos);
+FnTexture * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos);
 
 /* --------------------------------------------------------------- */
 
