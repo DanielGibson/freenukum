@@ -68,6 +68,8 @@
 
 int main(int argc, char ** argv)
 {
+  g_type_init();
+
   int res = 0; /* results are stored here */
 
   int retval = 1; /* The return value from the program. */
@@ -81,14 +83,6 @@ int main(int argc, char ** argv)
   fn_error_set_handler(fn_error_print_commandline);
 
   fn_environment_t * env = fn_environment_create();
-
-/* --------------------------------------------------------------- */
-
-  g_type_init();
-
-  FnTile * tile = fn_tile_new_with_environment(32, 32, env);
-  g_object_unref(tile);
-  return 0;
 
 /* --------------------------------------------------------------- */
 
