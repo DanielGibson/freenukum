@@ -204,7 +204,7 @@ int fn_tilecache_loadfile(
     while(num_tiles > 0)
     {
         tc->tiles[tc->size] =
-          fn_tile_load(fd,
+          fn_tile_load_to_sdl(fd,
               env,
               header,
               transparent);

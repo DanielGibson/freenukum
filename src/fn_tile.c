@@ -36,6 +36,7 @@
 #include "fn_tile.h"
 #include "fn_draw.h"
 #include "fn.h"
+#include "fntile.h"
 
 /* --------------------------------------------------------------- */
 
@@ -46,7 +47,70 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h)
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_tile_load(
+FnTile * fn_tile_load(
+    int fd,
+    fn_environment_t * env,
+    fn_tileheader_t * h)
+{
+  FnTile * tile = fn_tile_new_with_environment(
+      h->width,
+      h->height,
+      env);
+  guchar * data = g_new(guchar, h->width * h->height * 4);
+
+  guchar readbuf[5];
+
+  guint num_loads = h->width * h->height / 8;
+  guint num_read = 0;
+  guchar * iter = data;
+
+  while (num_read < num_loads)
+  {
+    read(fd, readbuf, 5);
+    guchar opaque_row = readbuf[0];
+    guchar blue_row   = readbuf[1];
+    guchar green_row  = readbuf[2];
+    guchar red_row    = readbuf[3];
+    guchar bright_row = readbuf[4];
+
+    guchar i = 0;
+
+    for (i = 0; i < 8; i++) {
+      guchar bright_pixel = ((bright_row >> (7-i)) & 1);
+      guchar red_pixel    = ((red_row    >> (7-i)) & 1);
+      guchar green_pixel  = ((green_row  >> (7-i)) & 1);
+      guchar blue_pixel   = ((blue_row   >> (7-i)) & 1);
+      guchar opaque_pixel = ((opaque_row >> (7-i)) & 1);
+      guchar ugly_yellow  = (
+          red_pixel == 1 &&
+          green_pixel == 1 &&
+          blue_pixel == 0 &&
+          bright_pixel == 1) ? 1 : 0;
+
+      guchar * red    = iter;
+      guchar * green  = iter + 1;
+      guchar * blue   = iter + 2;
+      guchar * opaque = iter + 3;
+
+      *red =    red_pixel    * 0x54 * (2 + bright_pixel);
+      *green =  green_pixel  * 0x54 * (2 + bright_pixel - ugly_yellow);
+      *blue  =  blue_pixel   * 0x54 * (2 + bright_pixel);
+      *opaque = opaque_pixel * 0xFF;
+      iter += 4;
+    }
+
+    num_read++;
+  }
+
+  fn_tile_set_data(tile, data);
+
+  g_free(data);
+  return tile;
+}
+
+/* --------------------------------------------------------------- */
+
+SDL_Surface * fn_tile_load_to_sdl(
         int fd,
         fn_environment_t * env,
         fn_tileheader_t * h,

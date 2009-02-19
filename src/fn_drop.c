@@ -63,7 +63,7 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
 
     while(num_read != num_loads)
     {
-        tile = fn_tile_load(fd,
+        tile = fn_tile_load_to_sdl(fd,
             env,
             &h,
             0);

@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
     size_t i = 0;
     while (i != h.tiles)
     {
-        tile = fn_tile_load(
+        tile = fn_tile_load_to_sdl(
             fd, env, &h, 0);
         SDL_BlitSurface(tile, NULL, screen, &r);
         SDL_FreeSurface(tile);

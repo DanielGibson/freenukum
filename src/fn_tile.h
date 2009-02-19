@@ -57,7 +57,7 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h);
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_tile_load(
+SDL_Surface * fn_tile_load_to_sdl(
         int fd,
         fn_environment_t * env,
         fn_tileheader_t * h,
