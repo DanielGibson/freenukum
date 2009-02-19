@@ -20,7 +20,6 @@ objectsources = fn.h \
                 fn_game.h           fn_game.c \
                 fn_hero.h           fn_hero.c \
                 fn_infobox.h        fn_infobox.c \
-                fn_item.h           fn_item.c \
                 fn_level.h          fn_level.c \
                 fn_mainmenu.h       fn_mainmenu.c \
                 fn_msgbox.h         fn_msgbox.c \
