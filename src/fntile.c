@@ -343,7 +343,7 @@ fn_tile_set_data(
 /* =============================================================== */
 
 void
-FnTileBlitToSdlSurface(
+fn_tile_blit_to_sdl_surface(
     FnTile * tile,
     SDL_Rect * srcrect,
     SDL_Surface * destination,

@@ -69,7 +69,7 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
             env,
             &h,
             FALSE);
-        FnTileBlitToSdlSurface(tile, NULL, drop, &r);
+        fn_tile_blit_to_sdl_surface(tile, NULL, drop, &r);
         g_object_unref(tile);
         r.x += 16 * pixelsize;
         if (r.x == 16 * FN_DROP_WIDTH * pixelsize)

@@ -40,7 +40,7 @@
 void fn_borders_blit_tile(
     fn_environment_t * env,
     SDL_Surface * target,
-    SDL_Surface * tile,
+    FnTile * tile,
     int x,
     int y)
 {
@@ -48,7 +48,7 @@ void fn_borders_blit_tile(
   SDL_Rect dstrect;
   dstrect.x = FN_HALFTILE_WIDTH * pixelsize * x;
   dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * y;
-  SDL_BlitSurface(
+  fn_tile_blit_to_sdl_surface(
       tile,
       NULL,
       target,

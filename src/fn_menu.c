@@ -208,7 +208,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
         if (i == menu->currententry) {
           targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
           pointrect.y = targetrect.y + destrect.y;
-          SDL_BlitSurface(
+          fn_tile_blit_to_sdl_surface(
               fn_environment_get_tile(
                 env,
                 OBJ_POINT + animationframe),

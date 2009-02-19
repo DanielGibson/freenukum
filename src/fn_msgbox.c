@@ -118,7 +118,7 @@ SDL_Surface * fn_msgbox(
       else continue;
       r.x = j * pixelsize * FN_FONT_WIDTH;
       r.y = i * pixelsize * FN_FONT_HEIGHT;
-      SDL_BlitSurface(
+      fn_tile_blit_to_sdl_surface(
           fn_environment_get_tile(env, tilenr),
           NULL,
           msgbox,

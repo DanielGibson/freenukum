@@ -41,6 +41,7 @@ typedef struct fn_environment_t fn_environment_t;
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
+#include "fntile.h"
 #include "fn_settings.h"
 #include "fn_tilecache.h"
 #include "fn_hero.h"
@@ -298,7 +299,7 @@ void fn_environment_set_episode(fn_environment_t * env,
  * @return  The tile. If no tile exists at pos, or no tilecache is
  *          loaded, NULL is returned.
  */
-SDL_Surface * fn_environment_get_tile(fn_environment_t * env,
+FnTile * fn_environment_get_tile(fn_environment_t * env,
     size_t pos);
 
 /* --------------------------------------------------------------- */

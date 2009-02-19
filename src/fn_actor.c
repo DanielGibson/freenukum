@@ -267,14 +267,14 @@ void fn_actor_function_simpleanimation_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_simpleanimation_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -393,14 +393,14 @@ void fn_actor_function_redball_jumping_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -500,14 +500,14 @@ void fn_actor_function_redball_lying_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -645,14 +645,14 @@ void fn_actor_function_robot_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -852,21 +852,20 @@ void fn_actor_function_tankbot_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   
-  tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame/2) * 2);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame/2) * 2 + 1);
   destrect.x += pixelsize * FN_TILE_WIDTH;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1049,7 +1048,7 @@ void fn_actor_function_firewheelbot_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   
   tile = fn_tilecache_get_tile(tc,
@@ -1060,23 +1059,23 @@ void fn_actor_function_firewheelbot_blit(fn_actor_t * actor)
   destrect.y = (actor->position.y - FN_TILE_HEIGHT) * pixelsize;
   destrect.w = FN_TILE_WIDTH * 2 * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame) * 4 + 1);
   destrect.x += pixelsize * FN_TILE_WIDTH;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.x -= pixelsize * FN_TILE_WIDTH;
   destrect.y += pixelsize * FN_TILE_HEIGHT;
   tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame) * 4 + 2);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.x += pixelsize * FN_TILE_WIDTH;
   tile = fn_tilecache_get_tile(tc,
       data->tile + (data->current_frame) * 4 + 3);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1265,14 +1264,14 @@ void fn_actor_function_wallcrawler_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1483,7 +1482,7 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   destrect.x = actor->position.x * pixelsize;
@@ -1497,7 +1496,7 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
       i < actor->position.h - FN_TILE_HEIGHT;
       i += FN_HALFTILE_HEIGHT) {
     destrect.y += FN_HALFTILE_HEIGHT * pixelsize;
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   }
 
   tile = fn_tilecache_get_tile(tc,
@@ -1506,7 +1505,7 @@ void fn_actor_function_lift_blit(fn_actor_t * actor)
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
 }
 
@@ -1642,18 +1641,18 @@ void fn_actor_function_acme_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc, data->tile+1);
   destrect.x += FN_TILE_WIDTH * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1834,9 +1833,9 @@ void fn_actor_function_fire_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile0 = NULL;
-  SDL_Surface * tile1 = NULL;
-  SDL_Surface * tile2 = NULL;
+  FnTile * tile0 = NULL;
+  FnTile * tile1 = NULL;
+  FnTile * tile2 = NULL;
 
   switch(data->state)
   {
@@ -1877,11 +1876,11 @@ void fn_actor_function_fire_blit(fn_actor_t * actor)
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile0, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile0, NULL, target, &destrect);
   destrect.x += FN_TILE_WIDTH * pixelsize;
-  SDL_BlitSurface(tile1, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile1, NULL, target, &destrect);
   destrect.x += FN_TILE_WIDTH * pixelsize;
-  SDL_BlitSurface(tile2, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile2, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -1974,7 +1973,7 @@ void fn_actor_function_mill_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
@@ -1983,7 +1982,7 @@ void fn_actor_function_mill_blit(fn_actor_t * actor)
 
   int i = 0;
   for (i = 0; i < (actor->position.h / FN_TILE_HEIGHT); i++) {
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
     destrect.y += FN_TILE_HEIGHT * pixelsize;
   }
 }
@@ -2142,14 +2141,14 @@ void fn_actor_function_accesscard_slot_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_access_card_slot_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -2334,22 +2333,22 @@ void fn_actor_function_glove_slot_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   Uint8 adder = (data->current_frame == 0 ? 0 : 1);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + adder);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.x -= FN_TILE_WIDTH * pixelsize;
   tile = fn_tilecache_get_tile(tc, data->tile + 2);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.x += 2 * FN_TILE_WIDTH * pixelsize;
   tile = fn_tilecache_get_tile(tc, data->tile + 3);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -2757,14 +2756,14 @@ void fn_actor_function_item_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_item_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -2979,14 +2978,14 @@ void fn_actor_function_soda_flying_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc, ANIM_SODAFLY +
+  FnTile * tile = fn_tilecache_get_tile(tc, ANIM_SODAFLY +
       (actor->position.y/FN_HALFTILE_HEIGHT) % 4);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 
@@ -3078,7 +3077,7 @@ void fn_actor_function_balloon_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile;
+  FnTile * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   destrect.x = actor->position.x * pixelsize;
@@ -3091,13 +3090,13 @@ void fn_actor_function_balloon_blit(fn_actor_t * actor)
   } else {
     tile = fn_tilecache_get_tile(tc, OBJ_BALLOON);
   }
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.y += FN_TILE_HEIGHT * pixelsize;
 
   tile = fn_tilecache_get_tile(tc,
       OBJ_BALLOON + 1 + data->current_frame / 3);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -3182,7 +3181,7 @@ void fn_actor_function_teleporter_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile;
+  FnTile * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   destrect.x = actor->position.x * pixelsize;
@@ -3199,7 +3198,7 @@ void fn_actor_function_teleporter_blit(fn_actor_t * actor)
       tile = fn_tilecache_get_tile(tc,
           ANIM_TELEPORTER1 + i * 3 + j
           );
-      SDL_BlitSurface(tile, NULL, target, &destrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
     }
   }
 }
@@ -3318,14 +3317,14 @@ void fn_actor_function_singleanimation_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_singleanimation_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -3425,7 +3424,7 @@ void fn_actor_function_particle_blit(fn_actor_t * actor)
   fn_actor_particle_data_t * data = actor->data;
 
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc, data->tile);
+  FnTile * tile = fn_tilecache_get_tile(tc, data->tile);
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
@@ -3433,7 +3432,7 @@ void fn_actor_function_particle_blit(fn_actor_t * actor)
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -3512,36 +3511,36 @@ void fn_actor_function_rocket_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc, OBJ_ROCKET);
+  FnTile * tile = fn_tilecache_get_tile(tc, OBJ_ROCKET);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = (actor->position.y - FN_TILE_HEIGHT * 3) * pixelsize;
   destrect.w = FN_TILE_WIDTH * pixelsize;
   destrect.h = FN_TILE_HEIGHT * pixelsize;
 
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 1);
   destrect.y += FN_TILE_HEIGHT * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   destrect.y += FN_TILE_HEIGHT * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   destrect.y += FN_TILE_HEIGHT * pixelsize;
 
   tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 2);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 3);
   destrect.x -= FN_TILE_WIDTH * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   destrect.x += FN_TILE_WIDTH * 2 * pixelsize;
   tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 4);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   if (data->state == fn_actor_rocket_state_flying) {
     destrect.x -= FN_TILE_WIDTH * pixelsize;
     destrect.y += FN_TILE_HEIGHT * pixelsize;
     tile = fn_tilecache_get_tile(tc, OBJ_ROCKET + 6);
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   }
 }
 
@@ -3697,14 +3696,14 @@ void fn_actor_bomb_blit(fn_actor_t * actor)
     SDL_Surface * target = fn_level_get_surface(actor->level);
     SDL_Rect destrect;
     fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-    SDL_Surface * tile = fn_tilecache_get_tile(tc,
+    FnTile * tile = fn_tilecache_get_tile(tc,
         data->tile + data->current_frame);
     Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
     destrect.x = actor->position.x * pixelsize;
     destrect.y = actor->position.y * pixelsize;
     destrect.w = actor->position.w * pixelsize;
     destrect.h = actor->position.h * pixelsize;
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   }
 }
 
@@ -3794,14 +3793,14 @@ void fn_actor_bombfire_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -3890,14 +3889,14 @@ void fn_actor_function_explosion_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_explosion_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -3926,7 +3925,7 @@ void fn_actor_function_camera_blit(fn_actor_t * actor)
   fn_hero_t * hero = fn_level_get_hero(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile;
+  FnTile * tile;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   size_t x = fn_hero_get_x(hero);
@@ -3944,7 +3943,7 @@ void fn_actor_function_camera_blit(fn_actor_t * actor)
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -4117,14 +4116,14 @@ void fn_actor_function_score_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_score_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + (data->countdown % 2));
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -4267,7 +4266,7 @@ void fn_actor_function_unstablefloor_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   destrect.x = actor->position.x * pixelsize;
@@ -4279,7 +4278,7 @@ void fn_actor_function_unstablefloor_blit(fn_actor_t * actor)
   for (i = 0; i < (actor->position.w / FN_TILE_WIDTH); i++) {
     tile = fn_tilecache_get_tile(tc,
         data->tile + i % 2);
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
     destrect.x += FN_TILE_WIDTH * pixelsize;
   }
 }
@@ -4312,7 +4311,7 @@ void fn_actor_function_expandingfloor_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc, SOLID_EXPANDINGFLOOR);
+  FnTile * tile = fn_tilecache_get_tile(tc, SOLID_EXPANDINGFLOOR);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
   destrect.x = actor->position.x * pixelsize;
@@ -4322,7 +4321,7 @@ void fn_actor_function_expandingfloor_blit(fn_actor_t * actor)
 
   int i = 0;
   for (i = 0; i < (actor->position.w / FN_TILE_WIDTH); i++) {
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
     destrect.x += FN_TILE_WIDTH * pixelsize;
   }
 }
@@ -4452,7 +4451,7 @@ void fn_actor_function_conveyor_blit(fn_actor_t * actor)
 
   Uint16 i = 0;
 
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       SOLID_CONVEYORBELT_LEFTEND + data->current_frame);
 
   for (i = actor->position.x; i < actor->position.x + actor->position.w; i+= FN_TILE_WIDTH) {
@@ -4463,7 +4462,7 @@ void fn_actor_function_conveyor_blit(fn_actor_t * actor)
           SOLID_CONVEYORBELT_RIGHTEND + data->current_frame);
     }
 
-    SDL_BlitSurface(tile, NULL, target, &destrect);
+    fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
     tile = fn_tilecache_get_tile(tc,
         SOLID_CONVEYORBELT_CENTER + data->current_frame % 2);
@@ -4503,7 +4502,7 @@ void fn_actor_function_surveillancescreen_blit(fn_actor_t * actor)
 {
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -4513,11 +4512,11 @@ void fn_actor_function_surveillancescreen_blit(fn_actor_t * actor)
   destrect.h = actor->position.h * pixelsize;
 
   tile = fn_tilecache_get_tile(tc, ANIM_BADGUYSCREEN);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   destrect.x += FN_TILE_WIDTH * pixelsize;
   tile = fn_tilecache_get_tile(tc, ANIM_BADGUYSCREEN + 1);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -4625,14 +4624,14 @@ void fn_actor_function_hostileshot_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -4666,7 +4665,7 @@ void fn_actor_function_notebook_blit(fn_actor_t * actor)
 {
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -4676,7 +4675,7 @@ void fn_actor_function_notebook_blit(fn_actor_t * actor)
   destrect.h = actor->position.h * pixelsize;
 
   tile = fn_tilecache_get_tile(tc, OBJ_NOTE);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -4816,25 +4815,25 @@ void fn_actor_function_exitdoor_blit(fn_actor_t * actor)
       0,
       0,
       0);
-  SDL_Surface * part = fn_tilecache_get_tile(tc,
+  FnTile * part = fn_tilecache_get_tile(tc,
       data->tile + data->counter * 4);
-  SDL_BlitSurface(part, NULL, tile, &destrect);
+  fn_tile_blit_to_sdl_surface(part, NULL, tile, &destrect);
 
   destrect.x += pixelsize * FN_TILE_WIDTH;
   part = fn_tilecache_get_tile(tc,
     data->tile + data->counter * 4 + 1);
-  SDL_BlitSurface(part, NULL, tile, &destrect);
+  fn_tile_blit_to_sdl_surface(part, NULL, tile, &destrect);
 
   destrect.x = 0;
   destrect.y += pixelsize * FN_TILE_HEIGHT;
   part = fn_tilecache_get_tile(tc,
     data->tile + data->counter * 4 + 2);
-  SDL_BlitSurface(part, NULL, tile, &destrect);
+  fn_tile_blit_to_sdl_surface(part, NULL, tile, &destrect);
 
   destrect.x += pixelsize * FN_TILE_WIDTH;
   part = fn_tilecache_get_tile(tc,
     data->tile + data->counter * 4 + 3);
-  SDL_BlitSurface(part, NULL, tile, &destrect);
+  fn_tile_blit_to_sdl_surface(part, NULL, tile, &destrect);
 
 
   destrect.x = actor->position.x * pixelsize;
@@ -4954,7 +4953,7 @@ void fn_actor_function_door_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_door_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->counter);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -4963,7 +4962,7 @@ void fn_actor_function_door_blit(fn_actor_t * actor)
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
 
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5047,7 +5046,7 @@ void fn_actor_function_keyhole_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -5075,7 +5074,7 @@ void fn_actor_function_keyhole_blit(fn_actor_t * actor)
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
 
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5212,7 +5211,7 @@ void fn_actor_function_key_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
@@ -5238,7 +5237,7 @@ void fn_actor_function_key_blit(fn_actor_t * actor)
       return;
       break;
   }
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5267,7 +5266,7 @@ void fn_actor_function_shootable_wall_blit(fn_actor_t * actor)
 {
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
 
@@ -5277,9 +5276,9 @@ void fn_actor_function_shootable_wall_blit(fn_actor_t * actor)
   destrect.h = actor->position.h * pixelsize;
 
   tile = fn_tilecache_get_tile(tc, 0x8C0/0x20);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
   tile = fn_tilecache_get_tile(tc, 0x1800/0x20);
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5367,14 +5366,14 @@ void fn_actor_function_access_card_door_blit(fn_actor_t * actor)
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
   fn_actor_accesscard_door_data_t * data = actor->data;
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame);
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5480,7 +5479,7 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
   SDL_Surface * target = fn_level_get_surface(actor->level);
   SDL_Rect destrect;
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
   fn_actor_spike_data_t * data = actor->data;
   destrect.x = actor->position.x * pixelsize;
@@ -5509,7 +5508,7 @@ void fn_actor_function_spikes_blit(fn_actor_t * actor)
       return;
       break;
   }
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */
@@ -5653,18 +5652,18 @@ void fn_actor_function_fan_blit(fn_actor_t * actor)
   fn_tilecache_t * tc = fn_level_get_tilecache(actor->level);
 
   Uint8 pixelsize = fn_level_get_pixelsize(actor->level);
-  SDL_Surface * tile = fn_tilecache_get_tile(tc,
+  FnTile * tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame * 2);
   destrect.x = actor->position.x * pixelsize;
   destrect.y = actor->position.y * pixelsize;
   destrect.w = actor->position.w * pixelsize;
   destrect.h = actor->position.h * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 
   tile = fn_tilecache_get_tile(tc,
       data->tile + data->current_frame * 2 + 1);
   destrect.y += FN_TILE_HEIGHT * pixelsize;
-  SDL_BlitSurface(tile, NULL, target, &destrect);
+  fn_tile_blit_to_sdl_surface(tile, NULL, target, &destrect);
 }
 
 /* --------------------------------------------------------------- */

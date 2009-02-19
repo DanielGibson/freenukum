@@ -520,7 +520,7 @@ void fn_environment_set_episode(fn_environment_t * env,
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_environment_get_tile(fn_environment_t * env,
+FnTile * fn_environment_get_tile(fn_environment_t * env,
     size_t pos)
 {
   if (env->tilecache == NULL) {

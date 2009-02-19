@@ -774,7 +774,7 @@ fn_level_t * fn_level_load(int fd,
 
   Uint16 y = 0;
   Uint16 x = 0;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   for (y = 0; y < FN_LEVEL_HEIGHT; y++) {
     for (x = 0; x < FN_LEVEL_WIDTH; x++) {
       tilenr = fn_level_get_tile(lv, x, y);
@@ -783,7 +783,7 @@ fn_level_t * fn_level_load(int fd,
         r.x = x * FN_TILE_WIDTH * pixelsize;
         r.y = y * FN_TILE_WIDTH * pixelsize;
         tile = fn_environment_get_tile(env, tilenr);
-        SDL_BlitSurface(tile, NULL, lv->surface_fixed, &r);
+        fn_tile_blit_to_sdl_surface(tile, NULL, lv->surface_fixed, &r);
       }
     }
   }

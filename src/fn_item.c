@@ -59,7 +59,7 @@ void fn_item_blit(
     SDL_Surface * target)
 {
   SDL_Rect dstrect;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   dstrect.x = item->x * item->pixelsize * FN_HALFTILE_WIDTH;
   dstrect.y = item->y * item->pixelsize * FN_HALFTILE_HEIGHT;
   dstrect.w = FN_TILE_WIDTH * item->pixelsize;
@@ -70,175 +70,175 @@ void fn_item_blit(
     case FN_ITEM_TYPE_BOX_GREY_EMPTY:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_BOOTS:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_CLAMPS:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_GUN:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_BOMB:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_RED_SODA:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_RED);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_RED_CHICKEN:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_RED);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_FOOTBALL:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_JOYSTICK:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_DISK:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_GLOVE:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_BALLOON:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_FULL_LIFE:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_FLAG:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_BLUE_RADIO:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_BLUE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_ACCESS_CARD:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_D:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_U:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_K:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_BOX_GREY_E:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_BOX_GREY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_FOOTBALL:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_FOOTBALL);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_CHICKEN_SINGLE:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_CHICKEN_SINGLE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_CHICKEN_DOUBLE:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_CHICKEN_DOUBLE);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_SODA:
       tile = fn_tilecache_get_tile(item->tilecache,
           ANIM_SODA);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_SODA_FLYING:
       tile = fn_tilecache_get_tile(item->tilecache,
           ANIM_SODAFLY);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_DISK:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_DISK);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_JOYSTICK:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_JOYSTICK);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_FLAG:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_FLAG);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_ITEM_TYPE_RADIO:
       tile = fn_tilecache_get_tile(item->tilecache,
           OBJ_RADIO);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     default:

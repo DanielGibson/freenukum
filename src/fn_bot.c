@@ -110,7 +110,7 @@ void fn_bot_free(fn_bot_t * bot)
 void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
 {
   SDL_Rect dstrect;
-  SDL_Surface * tile = NULL;
+  FnTile * tile = NULL;
   fn_environment_t * env = bot->environment;
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
   dstrect.x = bot->x * pixelsize * FN_HALFTILE_WIDTH;
@@ -131,26 +131,26 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
       {
         tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 2);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
         dstrect.x += FN_TILE_WIDTH * pixelsize;
 
         tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 3);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
         dstrect.x -= FN_TILE_WIDTH * pixelsize;
         dstrect.y -= FN_TILE_HEIGHT * pixelsize;
 
         tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 0);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
 
         dstrect.x += FN_TILE_WIDTH * pixelsize;
 
         tile = fn_environment_get_tile(env,
             ANIM_FOOTBOT + 1);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       }
       /* TODO */
       break;
@@ -174,23 +174,23 @@ void fn_bot_blit(fn_bot_t * bot, SDL_Surface * target)
       {
         tile = fn_environment_get_tile(env,
             ANIM_CARBOT);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
         dstrect.x += FN_TILE_WIDTH * pixelsize;
         tile = fn_environment_get_tile(env,
             ANIM_CARBOT + 1);
-        SDL_BlitSurface(tile, NULL, target, &dstrect);
+        fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       }
       break;
     case FN_BOT_TYPE_WALLCRAWLER_LEFT:
       tile = fn_environment_get_tile(env,
           ANIM_WALLCRAWLERBOT_LEFT);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_BOT_TYPE_WALLCRAWLER_RIGHT:
       tile = fn_environment_get_tile(env,
           ANIM_WALLCRAWLERBOT_RIGHT);
-      SDL_BlitSurface(tile, NULL, target, &dstrect);
+      fn_tile_blit_to_sdl_surface(tile, NULL, target, &dstrect);
       /* TODO */
       break;
     case FN_BOT_TYPE_DRPROTON:

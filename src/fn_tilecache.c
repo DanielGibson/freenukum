@@ -204,7 +204,7 @@ int fn_tilecache_loadfile(
     while(num_tiles > 0)
     {
         tc->tiles[tc->size] =
-          fn_tile_load_to_sdl(fd,
+          fn_tile_load(fd,
               env,
               header,
               transparent);
@@ -212,10 +212,13 @@ int fn_tilecache_loadfile(
         {
             return -1;
         } else {
+          /*
+             TODO check if this is needed
           SDL_UpdateRect(tc->tiles[tc->size],
               0, 0,
               tc->tiles[tc->size]->w,
               tc->tiles[tc->size]->h);
+              */
         }
         tc->size++;
         num_tiles--;
@@ -230,13 +233,13 @@ void fn_tilecache_destroy(fn_tilecache_t * tc)
     while (tc->size > 0)
     {
         tc->size--;
-        SDL_FreeSurface(tc->tiles[tc->size]);
+        g_object_unref(tc->tiles[tc->size]);
     }
 }
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos)
+FnTile * fn_tilecache_get_tile(fn_tilecache_t * tc, size_t pos)
 {
     return tc->tiles[pos];
 }
