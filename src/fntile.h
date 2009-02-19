@@ -31,6 +31,7 @@
 
 /* =============================================================== */
 
+#include <SDL.h>
 #include <glib-object.h>
 
 /* =============================================================== */
@@ -90,6 +91,15 @@ void
 fn_tile_set_data(
     FnTile * tile,
     guchar * data);
+
+/* =============================================================== */
+
+void
+FnTileBlitToSdlSurface(
+    FnTile * tile,
+    SDL_Rect * srcrect,
+    SDL_Surface * destination,
+    SDL_Rect * dstrect);
 
 /* =============================================================== */
 

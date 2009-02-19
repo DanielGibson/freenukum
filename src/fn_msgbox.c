@@ -36,7 +36,7 @@
 
 /* --------------------------------------------------------------- */
 
-#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
+#define MAXVAL(X,Y) ((X) > (Y) ? (X) : (Y))
 
 /* --------------------------------------------------------------- */
 
@@ -66,7 +66,7 @@ void fn_msgbox_get_text_information(
 
   while (*walker != '\0') {
     Uint8 current_line_len = fn_msgbox_get_line_length(walker);
-    *columns = MAX(*columns, current_line_len);
+    *columns = MAXVAL(*columns, current_line_len);
     (*rows)++;
 
     walker += current_line_len;

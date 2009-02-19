@@ -31,8 +31,8 @@
 /* =============================================================== */
 
 #include "fn.h"
-#include "fntile.h"
 #include "fn_environment.h"
+#include "fntile.h"
 
 /* =============================================================== */
 
@@ -211,8 +211,6 @@ static void
 fn_tile_init(FnTile * tile)
 {
   tile->priv = FN_TILE_GET_PRIVATE(tile);
-
-  g_print("setting private data\n");
 }
 
 /* --------------------------------------------------------------- */
@@ -230,19 +228,16 @@ fn_tile_set_property(
     case PROP_WIDTH:
       /* TODO write width setter function */
       tile->priv->width = g_value_get_uint(value);
-      g_print("setting width\n");
       break;
 
     case PROP_HEIGHT:
       /* TODO write height setter function */
       tile->priv->height = g_value_get_uint(value);
-      g_print("setting height\n");
       break;
 
     case PROP_ENVIRONMENT:
       /* TODO write environment setter function */
       tile->priv->env = g_value_get_pointer(value);
-      g_print("setting env\n");
       break;
 
     case PROP_DATA:
@@ -304,43 +299,61 @@ fn_tile_set_data(
       priv->height);
 
   guint i = 0;
+  guint j = 0;
   guchar * iter = data;
+
+  guchar pixelsize = fn_environment_get_pixelsize(priv->env);
 
   SDL_Rect r;
   r.x = 0;
   r.y = 0;
-  r.w = 1;
-  r.h = 1;
+  r.w = pixelsize;
+  r.h = pixelsize;
 
   SDL_PixelFormat * fmt = surface->format;
   Uint32 color;
 
-  for (i = 0; i < priv->width * priv->height; i++) {
-    guchar red = iter[0];
-    guchar green = iter[1];
-    guchar blue = iter[2];
-    guchar opaque = iter[3];
+  for (i = 0; i < priv->height; i++)
+  {
+    for (j = 0; j < priv->width; j++)
+    {
+      guchar red    = iter[0];
+      guchar green  = iter[1];
+      guchar blue   = iter[2];
+      guchar opaque = iter[3];
 
-    if (opaque > 0) {
-      color = transparent;
-    } else {
-      color = SDL_MapRGB(fmt, red, green, blue);
+      if (opaque == 0) {
+        color = transparent;
+      } else {
+        color = SDL_MapRGB(fmt, red, green, blue);
+      }
+
+      r.x = j * pixelsize;
+      r.y = i * pixelsize;
+
+      SDL_FillRect(surface, &r, color);
+
+      iter += 4;
     }
-
-    SDL_FillRect(surface, &r, color);
-
-    r.x++;
-
-    if (r.x == priv->width) {
-      r.x = 0;
-      r.y++;
-    }
-
-    iter += 4;
-  };
+  }
 
   priv->surface = surface;
 }
 
 /* =============================================================== */
 
+void
+FnTileBlitToSdlSurface(
+    FnTile * tile,
+    SDL_Rect * srcrect,
+    SDL_Surface * destination,
+    SDL_Rect * dstrect)
+{
+  /* TODO check for right gobject type of tile */
+  FnTilePrivate * priv = tile->priv;
+  SDL_Surface * src = priv->surface;
+
+  SDL_BlitSurface(src, srcrect, destination, dstrect);
+}
+
+/* =============================================================== */

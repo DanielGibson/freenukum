@@ -50,17 +50,22 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h)
 FnTile * fn_tile_load(
     int fd,
     fn_environment_t * env,
-    fn_tileheader_t * h)
+    fn_tileheader_t * h,
+    gboolean has_transparency)
 {
+  guint width = h->width * 8;
+  guint height = h->height;
+
   FnTile * tile = fn_tile_new_with_environment(
-      h->width,
-      h->height,
+      width,
+      height,
       env);
-  guchar * data = g_new(guchar, h->width * h->height * 4);
+
+  guchar * data = g_new(guchar, width * height * 4);
 
   guchar readbuf[5];
 
-  guint num_loads = h->width * h->height / 8;
+  guint num_loads = width * height / 8;
   guint num_read = 0;
   guchar * iter = data;
 
@@ -80,21 +85,24 @@ FnTile * fn_tile_load(
       guchar red_pixel    = ((red_row    >> (7-i)) & 1);
       guchar green_pixel  = ((green_row  >> (7-i)) & 1);
       guchar blue_pixel   = ((blue_row   >> (7-i)) & 1);
-      guchar opaque_pixel = ((opaque_row >> (7-i)) & 1);
+      guchar opaque_pixel = (
+          has_transparency ?
+          ((opaque_row >> (7-i)) & 1) :
+          1);
       guchar ugly_yellow  = (
           red_pixel == 1 &&
           green_pixel == 1 &&
           blue_pixel == 0 &&
-          bright_pixel == 1) ? 1 : 0;
+          bright_pixel == 0) ? 1 : 0;
 
       guchar * red    = iter;
       guchar * green  = iter + 1;
       guchar * blue   = iter + 2;
       guchar * opaque = iter + 3;
 
-      *red =    red_pixel    * 0x54 * (2 + bright_pixel);
-      *green =  green_pixel  * 0x54 * (2 + bright_pixel - ugly_yellow);
-      *blue  =  blue_pixel   * 0x54 * (2 + bright_pixel);
+      *red =    0x54 * (red_pixel   * 2 + bright_pixel);
+      *green =  0x54 * (green_pixel * 2 + bright_pixel - ugly_yellow);
+      *blue  =  0x54 * (blue_pixel  * 2 + bright_pixel);
       *opaque = opaque_pixel * 0xFF;
       iter += 4;
     }

@@ -42,6 +42,7 @@ typedef struct fn_tile_t fn_tile_t;
 
 #include "fn.h"
 #include "fn_environment.h"
+#include "fntile.h"
 
 /* --------------------------------------------------------------- */
 
@@ -54,6 +55,14 @@ struct fn_tileheader_t {
 /* --------------------------------------------------------------- */
 
 int fn_tile_loadheader(int fd, fn_tileheader_t * h);
+
+/* --------------------------------------------------------------- */
+
+FnTile * fn_tile_load(
+    int fd,
+    fn_environment_t * env,
+    fn_tileheader_t * h,
+    gboolean has_transparency);
 
 /* --------------------------------------------------------------- */
 

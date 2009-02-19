@@ -38,7 +38,7 @@
 
 /* --------------------------------------------------------------- */
 
-#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
+#define MAXVAL(X,Y) ((X) > (Y) ? (X) : (Y))
 
 /* --------------------------------------------------------------- */
 
@@ -118,7 +118,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   fn_msgbox_get_text_information(menu->text, &textcols, &textrows);
 
-  textcols = MAX(textcols, menu->width);
+  textcols = MAXVAL(textcols, menu->width);
 
   char * placeholder =
     malloc((menu->num_entries + textrows) * textcols + 4);
@@ -355,7 +355,7 @@ void fn_menu_append_entry(
 {
   fn_menuentry_t * entry = fn_menuentry_create(shortcut, name, value); 
 
-  menu->width = MAX(menu->width, strlen(name));
+  menu->width = MAXVAL(menu->width, strlen(name));
 
   menu->entries = fn_list_append(menu->entries, entry);
   menu->num_entries++;
