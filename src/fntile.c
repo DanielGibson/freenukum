@@ -290,7 +290,7 @@ fn_tile_set_data(
     FnTile * tile,
     guchar * data)
 {
-  /* TODO check if object is really of FnTile type */
+  g_return_if_fail(FN_IS_TILE(tile));
   FnTilePrivate * priv = tile->priv;
   Uint32 transparent = fn_environment_get_transparent(priv->env);
   SDL_Surface * surface = fn_environment_create_surface(
@@ -349,7 +349,7 @@ fn_tile_blit_to_sdl_surface(
     SDL_Surface * destination,
     SDL_Rect * dstrect)
 {
-  /* TODO check for right gobject type of tile */
+  g_return_if_fail(FN_IS_TILE(tile));
   FnTilePrivate * priv = tile->priv;
   SDL_Surface * src = priv->surface;
 
