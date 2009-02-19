@@ -8,7 +8,7 @@ INCLUDES = \
 objectsources = fn.h \
                 fn_object.h \
                 fntexture.h         fntexture.c \
-                fn_actor.h          fn_actor.c \
+                fn_level_actor.h    fn_level_actor.c \
                 fn_menu.h           fn_menu.c \
                 fn_borders.h        fn_borders.c \
                 fn_bot.h            fn_bot.c \

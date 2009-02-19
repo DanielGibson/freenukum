@@ -190,7 +190,7 @@ fn_level_t * fn_shot_get_level(fn_shot_t * shot);
  *
  * @return 1 if they overlap, otherwise 0.
  */
-Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor);
+Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -202,7 +202,7 @@ Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor);
  *
  * @return 1 if they touch, otherwise 0.
  */
-Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_actor_t * actor);
+Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 

@@ -26,13 +26,13 @@
  *
  *******************************************************************/
 
-#ifndef FN_ACTOR_H
-#define FN_ACTOR_H
+#ifndef FN_LEVEL_ACTOR_H
+#define FN_LEVEL_ACTOR_H
 
 /* --------------------------------------------------------------- */
 
-typedef struct fn_actor_t fn_actor_t;
-typedef enum fn_actor_type_e fn_actor_type_e;
+typedef struct fn_level_actor_t fn_level_actor_t;
+typedef enum fn_level_actor_type_e fn_level_actor_type_e;
 
 /* --------------------------------------------------------------- */
 
@@ -47,156 +47,156 @@ typedef enum fn_actor_type_e fn_actor_type_e;
 /**
  * The actor types.
  */
-enum fn_actor_type_e {
-  FN_ACTOR_FIREWHEELBOT,
-  FN_ACTOR_FLAMEGNOMEBOT,
-  FN_ACTOR_FLYINGBOT,
-  FN_ACTOR_FOOTBOT,
-  FN_ACTOR_HELICOPTERBOT,
-  FN_ACTOR_RABBITOIDBOT,
-  FN_ACTOR_REDBALL_JUMPING,
-  FN_ACTOR_REDBALL_LYING,
-  FN_ACTOR_ROBOT,
-  FN_ACTOR_ROBOT_DISAPPEARING,
-  FN_ACTOR_SNAKEBOT,
-  FN_ACTOR_TANKBOT,
-  FN_ACTOR_WALLCRAWLERBOT_LEFT,
-  FN_ACTOR_WALLCRAWLERBOT_RIGHT,
-  FN_ACTOR_DRPROTON,
-  FN_ACTOR_CAMERA,
-  FN_ACTOR_EXPLOSION,
-  FN_ACTOR_FIRE,
-  FN_ACTOR_DUSTCLOUD,
-  FN_ACTOR_STEAM,
-  FN_ACTOR_PARTICLE_PINK,
-  FN_ACTOR_PARTICLE_BLUE,
-  FN_ACTOR_PARTICLE_WHITE,
-  FN_ACTOR_PARTICLE_GREEN,
-  FN_ACTOR_ROCKET,
-  FN_ACTOR_BOMB,
-  FN_ACTOR_BOMBFIRE,
-  FN_ACTOR_WATER,
-  FN_ACTOR_EXITDOOR,
-  FN_ACTOR_NOTEBOOK,
-  FN_ACTOR_SURVEILLANCESCREEN,
-  FN_ACTOR_HOSTILESHOT_LEFT,
-  FN_ACTOR_HOSTILESHOT_RIGHT,
-  FN_ACTOR_SODA,
-  FN_ACTOR_SODA_FLYING,
-  FN_ACTOR_UNSTABLEFLOOR,
-  FN_ACTOR_EXPANDINGFLOOR,
-  FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND,
-  FN_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND,
-  FN_ACTOR_FAN_LEFT,
-  FN_ACTOR_FAN_RIGHT,
-  FN_ACTOR_BROKENWALL_BACKGROUND,
-  FN_ACTOR_STONE_BACKGROUND,
-  FN_ACTOR_TELEPORTER1,
-  FN_ACTOR_TELEPORTER2,
-  FN_ACTOR_FENCE_BACKGROUND,
-  FN_ACTOR_STONEWINDOW_BACKGROUND,
-  FN_ACTOR_WINDOWLEFT_BACKGROUND,
-  FN_ACTOR_WINDOWRIGHT_BACKGROUND,
-  FN_ACTOR_SCREEN,
-  FN_ACTOR_BOX_GREY_EMPTY,
-  FN_ACTOR_BOX_GREY_BOOTS,
-  FN_ACTOR_BOOTS,
-  FN_ACTOR_BOX_GREY_CLAMPS,
-  FN_ACTOR_CLAMPS,
-  FN_ACTOR_BOX_GREY_GUN,
-  FN_ACTOR_GUN,
-  FN_ACTOR_BOX_GREY_BOMB,
-  FN_ACTOR_BOX_RED_SODA,
-  FN_ACTOR_BOX_RED_CHICKEN,
-  FN_ACTOR_CHICKEN_SINGLE,
-  FN_ACTOR_CHICKEN_DOUBLE,
-  FN_ACTOR_BOX_BLUE_FOOTBALL,
-  FN_ACTOR_FOOTBALL,
-  FN_ACTOR_FLAG,
-  FN_ACTOR_BOX_BLUE_JOYSTICK,
-  FN_ACTOR_JOYSTICK,
-  FN_ACTOR_BOX_BLUE_DISK,
-  FN_ACTOR_DISK,
-  FN_ACTOR_BOX_BLUE_BALLOON,
-  FN_ACTOR_BALLOON,
-  FN_ACTOR_BOX_GREY_GLOVE,
-  FN_ACTOR_GLOVE,
-  FN_ACTOR_BOX_GREY_FULL_LIFE,
-  FN_ACTOR_FULL_LIFE,
-  FN_ACTOR_BOX_BLUE_FLAG,
-  FN_ACTOR_BLUE_FLAG,
-  FN_ACTOR_BOX_BLUE_RADIO,
-  FN_ACTOR_RADIO,
-  FN_ACTOR_BOX_GREY_ACCESS_CARD,
-  FN_ACTOR_ACCESS_CARD,
-  FN_ACTOR_BOX_GREY_LETTER_D,
-  FN_ACTOR_LETTER_D,
-  FN_ACTOR_BOX_GREY_LETTER_U,
-  FN_ACTOR_LETTER_U,
-  FN_ACTOR_BOX_GREY_LETTER_K,
-  FN_ACTOR_LETTER_K,
-  FN_ACTOR_BOX_GREY_LETTER_E,
-  FN_ACTOR_LETTER_E,
-  FN_ACTOR_ACCESS_CARD_SLOT,
-  FN_ACTOR_GLOVE_SLOT,
-  FN_ACTOR_KEY_RED,
-  FN_ACTOR_KEYHOLE_RED,
-  FN_ACTOR_DOOR_RED,
-  FN_ACTOR_KEY_BLUE,
-  FN_ACTOR_KEYHOLE_BLUE,
-  FN_ACTOR_DOOR_BLUE,
-  FN_ACTOR_KEY_PINK,
-  FN_ACTOR_KEYHOLE_PINK,
-  FN_ACTOR_DOOR_PINK,
-  FN_ACTOR_KEY_GREEN,
-  FN_ACTOR_KEYHOLE_GREEN,
-  FN_ACTOR_DOOR_GREEN,
-  FN_ACTOR_SHOOTABLE_WALL,
-  FN_ACTOR_LIFT,
-  FN_ACTOR_ACME,
-  FN_ACTOR_FIRE_RIGHT,
-  FN_ACTOR_FIRE_LEFT,
-  FN_ACTOR_MILL,
-  FN_ACTOR_LASERBEAM,
-  FN_ACTOR_ACCESS_CARD_DOOR,
-  FN_ACTOR_SPIKES_UP,
-  FN_ACTOR_SPIKES_DOWN,
-  FN_ACTOR_SPIKE,
-  FN_ACTOR_SCORE_100,
-  FN_ACTOR_SCORE_200,
-  FN_ACTOR_SCORE_500,
-  FN_ACTOR_SCORE_1000,
-  FN_ACTOR_SCORE_2000,
-  FN_ACTOR_SCORE_5000,
-  FN_ACTOR_SCORE_10000,
-  FN_ACTOR_SCORE_BONUS_1_LEFT,
-  FN_ACTOR_SCORE_BONUS_1_RIGHT,
-  FN_ACTOR_SCORE_BONUS_2_LEFT,
-  FN_ACTOR_SCORE_BONUS_2_RIGHT,
-  FN_ACTOR_SCORE_BONUS_3_LEFT,
-  FN_ACTOR_SCORE_BONUS_3_RIGHT,
-  FN_ACTOR_SCORE_BONUS_4_LEFT,
-  FN_ACTOR_SCORE_BONUS_4_RIGHT,
-  FN_ACTOR_SCORE_BONUS_5_LEFT,
-  FN_ACTOR_SCORE_BONUS_5_RIGHT,
-  FN_ACTOR_SCORE_BONUS_6_LEFT,
-  FN_ACTOR_SCORE_BONUS_6_RIGHT,
-  FN_ACTOR_SCORE_BONUS_7_LEFT,
-  FN_ACTOR_SCORE_BONUS_7_RIGHT,
-  FN_ACTOR_BLUE_LIGHT_BACKGROUND1,
-  FN_ACTOR_BLUE_LIGHT_BACKGROUND2,
-  FN_ACTOR_BLUE_LIGHT_BACKGROUND3,
-  FN_ACTOR_BLUE_LIGHT_BACKGROUND4,
-  FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND,
-  FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND,
-  FN_ACTOR_RED_FLASHLIGHT_BACKGROUND,
-  FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND,
-  FN_ACTOR_KEYPANEL_BACKGROUND,
-  FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND,
-  FN_ACTOR_UPARROW_BACKGROUND,
-  FN_ACTOR_GREEN_POISON_BACKGROUND,
-  FN_ACTOR_LAVA_BACKGROUND,
-  FN_ACTOR_NUM_TYPES,
+enum fn_level_actor_type_e {
+  FN_LEVEL_ACTOR_FIREWHEELBOT,
+  FN_LEVEL_ACTOR_FLAMEGNOMEBOT,
+  FN_LEVEL_ACTOR_FLYINGBOT,
+  FN_LEVEL_ACTOR_FOOTBOT,
+  FN_LEVEL_ACTOR_HELICOPTERBOT,
+  FN_LEVEL_ACTOR_RABBITOIDBOT,
+  FN_LEVEL_ACTOR_REDBALL_JUMPING,
+  FN_LEVEL_ACTOR_REDBALL_LYING,
+  FN_LEVEL_ACTOR_ROBOT,
+  FN_LEVEL_ACTOR_ROBOT_DISAPPEARING,
+  FN_LEVEL_ACTOR_SNAKEBOT,
+  FN_LEVEL_ACTOR_TANKBOT,
+  FN_LEVEL_ACTOR_WALLCRAWLERBOT_LEFT,
+  FN_LEVEL_ACTOR_WALLCRAWLERBOT_RIGHT,
+  FN_LEVEL_ACTOR_DRPROTON,
+  FN_LEVEL_ACTOR_CAMERA,
+  FN_LEVEL_ACTOR_EXPLOSION,
+  FN_LEVEL_ACTOR_FIRE,
+  FN_LEVEL_ACTOR_DUSTCLOUD,
+  FN_LEVEL_ACTOR_STEAM,
+  FN_LEVEL_ACTOR_PARTICLE_PINK,
+  FN_LEVEL_ACTOR_PARTICLE_BLUE,
+  FN_LEVEL_ACTOR_PARTICLE_WHITE,
+  FN_LEVEL_ACTOR_PARTICLE_GREEN,
+  FN_LEVEL_ACTOR_ROCKET,
+  FN_LEVEL_ACTOR_BOMB,
+  FN_LEVEL_ACTOR_BOMBFIRE,
+  FN_LEVEL_ACTOR_WATER,
+  FN_LEVEL_ACTOR_EXITDOOR,
+  FN_LEVEL_ACTOR_NOTEBOOK,
+  FN_LEVEL_ACTOR_SURVEILLANCESCREEN,
+  FN_LEVEL_ACTOR_HOSTILESHOT_LEFT,
+  FN_LEVEL_ACTOR_HOSTILESHOT_RIGHT,
+  FN_LEVEL_ACTOR_SODA,
+  FN_LEVEL_ACTOR_SODA_FLYING,
+  FN_LEVEL_ACTOR_UNSTABLEFLOOR,
+  FN_LEVEL_ACTOR_EXPANDINGFLOOR,
+  FN_LEVEL_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND,
+  FN_LEVEL_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND,
+  FN_LEVEL_ACTOR_FAN_LEFT,
+  FN_LEVEL_ACTOR_FAN_RIGHT,
+  FN_LEVEL_ACTOR_BROKENWALL_BACKGROUND,
+  FN_LEVEL_ACTOR_STONE_BACKGROUND,
+  FN_LEVEL_ACTOR_TELEPORTER1,
+  FN_LEVEL_ACTOR_TELEPORTER2,
+  FN_LEVEL_ACTOR_FENCE_BACKGROUND,
+  FN_LEVEL_ACTOR_STONEWINDOW_BACKGROUND,
+  FN_LEVEL_ACTOR_WINDOWLEFT_BACKGROUND,
+  FN_LEVEL_ACTOR_WINDOWRIGHT_BACKGROUND,
+  FN_LEVEL_ACTOR_SCREEN,
+  FN_LEVEL_ACTOR_BOX_GREY_EMPTY,
+  FN_LEVEL_ACTOR_BOX_GREY_BOOTS,
+  FN_LEVEL_ACTOR_BOOTS,
+  FN_LEVEL_ACTOR_BOX_GREY_CLAMPS,
+  FN_LEVEL_ACTOR_CLAMPS,
+  FN_LEVEL_ACTOR_BOX_GREY_GUN,
+  FN_LEVEL_ACTOR_GUN,
+  FN_LEVEL_ACTOR_BOX_GREY_BOMB,
+  FN_LEVEL_ACTOR_BOX_RED_SODA,
+  FN_LEVEL_ACTOR_BOX_RED_CHICKEN,
+  FN_LEVEL_ACTOR_CHICKEN_SINGLE,
+  FN_LEVEL_ACTOR_CHICKEN_DOUBLE,
+  FN_LEVEL_ACTOR_BOX_BLUE_FOOTBALL,
+  FN_LEVEL_ACTOR_FOOTBALL,
+  FN_LEVEL_ACTOR_FLAG,
+  FN_LEVEL_ACTOR_BOX_BLUE_JOYSTICK,
+  FN_LEVEL_ACTOR_JOYSTICK,
+  FN_LEVEL_ACTOR_BOX_BLUE_DISK,
+  FN_LEVEL_ACTOR_DISK,
+  FN_LEVEL_ACTOR_BOX_BLUE_BALLOON,
+  FN_LEVEL_ACTOR_BALLOON,
+  FN_LEVEL_ACTOR_BOX_GREY_GLOVE,
+  FN_LEVEL_ACTOR_GLOVE,
+  FN_LEVEL_ACTOR_BOX_GREY_FULL_LIFE,
+  FN_LEVEL_ACTOR_FULL_LIFE,
+  FN_LEVEL_ACTOR_BOX_BLUE_FLAG,
+  FN_LEVEL_ACTOR_BLUE_FLAG,
+  FN_LEVEL_ACTOR_BOX_BLUE_RADIO,
+  FN_LEVEL_ACTOR_RADIO,
+  FN_LEVEL_ACTOR_BOX_GREY_ACCESS_CARD,
+  FN_LEVEL_ACTOR_ACCESS_CARD,
+  FN_LEVEL_ACTOR_BOX_GREY_LETTER_D,
+  FN_LEVEL_ACTOR_LETTER_D,
+  FN_LEVEL_ACTOR_BOX_GREY_LETTER_U,
+  FN_LEVEL_ACTOR_LETTER_U,
+  FN_LEVEL_ACTOR_BOX_GREY_LETTER_K,
+  FN_LEVEL_ACTOR_LETTER_K,
+  FN_LEVEL_ACTOR_BOX_GREY_LETTER_E,
+  FN_LEVEL_ACTOR_LETTER_E,
+  FN_LEVEL_ACTOR_ACCESS_CARD_SLOT,
+  FN_LEVEL_ACTOR_GLOVE_SLOT,
+  FN_LEVEL_ACTOR_KEY_RED,
+  FN_LEVEL_ACTOR_KEYHOLE_RED,
+  FN_LEVEL_ACTOR_DOOR_RED,
+  FN_LEVEL_ACTOR_KEY_BLUE,
+  FN_LEVEL_ACTOR_KEYHOLE_BLUE,
+  FN_LEVEL_ACTOR_DOOR_BLUE,
+  FN_LEVEL_ACTOR_KEY_PINK,
+  FN_LEVEL_ACTOR_KEYHOLE_PINK,
+  FN_LEVEL_ACTOR_DOOR_PINK,
+  FN_LEVEL_ACTOR_KEY_GREEN,
+  FN_LEVEL_ACTOR_KEYHOLE_GREEN,
+  FN_LEVEL_ACTOR_DOOR_GREEN,
+  FN_LEVEL_ACTOR_SHOOTABLE_WALL,
+  FN_LEVEL_ACTOR_LIFT,
+  FN_LEVEL_ACTOR_ACME,
+  FN_LEVEL_ACTOR_FIRE_RIGHT,
+  FN_LEVEL_ACTOR_FIRE_LEFT,
+  FN_LEVEL_ACTOR_MILL,
+  FN_LEVEL_ACTOR_LASERBEAM,
+  FN_LEVEL_ACTOR_ACCESS_CARD_DOOR,
+  FN_LEVEL_ACTOR_SPIKES_UP,
+  FN_LEVEL_ACTOR_SPIKES_DOWN,
+  FN_LEVEL_ACTOR_SPIKE,
+  FN_LEVEL_ACTOR_SCORE_100,
+  FN_LEVEL_ACTOR_SCORE_200,
+  FN_LEVEL_ACTOR_SCORE_500,
+  FN_LEVEL_ACTOR_SCORE_1000,
+  FN_LEVEL_ACTOR_SCORE_2000,
+  FN_LEVEL_ACTOR_SCORE_5000,
+  FN_LEVEL_ACTOR_SCORE_10000,
+  FN_LEVEL_ACTOR_SCORE_BONUS_1_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_1_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_2_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_2_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_3_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_3_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_4_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_4_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_5_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_5_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_6_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_6_RIGHT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_7_LEFT,
+  FN_LEVEL_ACTOR_SCORE_BONUS_7_RIGHT,
+  FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND1,
+  FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND2,
+  FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND3,
+  FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND4,
+  FN_LEVEL_ACTOR_TEXT_ON_SCREEN_BACKGROUND,
+  FN_LEVEL_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND,
+  FN_LEVEL_ACTOR_RED_FLASHLIGHT_BACKGROUND,
+  FN_LEVEL_ACTOR_BLUE_FLASHLIGHT_BACKGROUND,
+  FN_LEVEL_ACTOR_KEYPANEL_BACKGROUND,
+  FN_LEVEL_ACTOR_RED_ROTATIONLIGHT_BACKGROUND,
+  FN_LEVEL_ACTOR_UPARROW_BACKGROUND,
+  FN_LEVEL_ACTOR_GREEN_POISON_BACKGROUND,
+  FN_LEVEL_ACTOR_LAVA_BACKGROUND,
+  FN_LEVEL_ACTOR_NUM_TYPES,
 };
 
 /* --------------------------------------------------------------- */
@@ -205,7 +205,7 @@ enum fn_actor_type_e {
 /**
  * The actor struct.
  */
-struct fn_actor_t {
+struct fn_level_actor_t {
   /**
    * The level inside which the actor is located.
    */
@@ -214,7 +214,7 @@ struct fn_actor_t {
   /**
    * The type of the actor.
    */
-  fn_actor_type_e type;
+  fn_level_actor_type_e type;
 
   /**
    * The current position of the actor.
@@ -265,8 +265,8 @@ struct fn_actor_t {
  *
  * @return  The newly created actor.
  */
-fn_actor_t * fn_actor_create(fn_level_t * level,
-    fn_actor_type_e type,
+fn_level_actor_t * fn_level_actor_create(fn_level_t * level,
+    fn_level_actor_type_e type,
     Uint16 x,
     Uint16 y);
 
@@ -277,7 +277,7 @@ fn_actor_t * fn_actor_create(fn_level_t * level,
  *
  * @param  actor  The actor to delete.
  */
-void fn_actor_free(fn_actor_t * actor);
+void fn_level_actor_free(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -288,7 +288,7 @@ void fn_actor_free(fn_actor_t * actor);
  *
  * @return Non-zero if the hero touches, otherwise zero.
  */
-int fn_actor_touches_hero(fn_actor_t * actor);
+int fn_level_actor_touches_hero(fn_level_actor_t * actor);
 
 
 /* --------------------------------------------------------------- */
@@ -299,7 +299,7 @@ int fn_actor_touches_hero(fn_actor_t * actor);
  *
  * @param  actor  The actor.
  */
-void fn_actor_check_hero_touch(fn_actor_t * actor);
+void fn_level_actor_check_hero_touch(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -308,7 +308,7 @@ void fn_actor_check_hero_touch(fn_actor_t * actor);
  *
  * @param  actor  The actor which got touched.
  */
-void fn_actor_hero_touch_start(fn_actor_t * actor);
+void fn_level_actor_hero_touch_start(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -317,7 +317,7 @@ void fn_actor_hero_touch_start(fn_actor_t * actor);
  *
  * @param  actor  The actor which got touched.
  */
-void fn_actor_hero_touch_end(fn_actor_t * actor);
+void fn_level_actor_hero_touch_end(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -328,7 +328,7 @@ void fn_actor_hero_touch_end(fn_actor_t * actor);
  *
  * @return 1 if the hero can interact with the actor, otherwise 0.
  */
-Uint8 fn_actor_hero_can_interact(fn_actor_t * actor);
+Uint8 fn_level_actor_hero_can_interact(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -338,7 +338,7 @@ Uint8 fn_actor_hero_can_interact(fn_actor_t * actor);
  *
  * @param  actor  The actor with whom the player interacts.
  */
-void fn_actor_hero_interact_start(fn_actor_t * actor);
+void fn_level_actor_hero_interact_start(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -348,7 +348,7 @@ void fn_actor_hero_interact_start(fn_actor_t * actor);
  *
  * @param  actor  The actor with whom the player interacts.
  */
-void fn_actor_hero_interact_stop(fn_actor_t * actor);
+void fn_level_actor_hero_interact_stop(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -360,7 +360,7 @@ void fn_actor_hero_interact_stop(fn_actor_t * actor);
  *
  * @return  Zero if the actor died, otherwise a non-zero value.
  */
-int fn_actor_act(fn_actor_t * actor);
+int fn_level_actor_act(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -369,7 +369,7 @@ int fn_actor_act(fn_actor_t * actor);
  *
  * @param  actor  The actor.
  */
-void fn_actor_blit(fn_actor_t * actor);
+void fn_level_actor_blit(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -380,7 +380,7 @@ void fn_actor_blit(fn_actor_t * actor);
  *
  * @return 1 if the actor absorbs the shot, otherwise 0.
  */
-Uint8 fn_actor_shot(fn_actor_t * actor);
+Uint8 fn_level_actor_shot(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -391,7 +391,7 @@ Uint8 fn_actor_shot(fn_actor_t * actor);
  *
  * @return  The x coordinate.
  */
-Uint16 fn_actor_get_x(fn_actor_t * actor);
+Uint16 fn_level_actor_get_x(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -402,7 +402,7 @@ Uint16 fn_actor_get_x(fn_actor_t * actor);
  *
  * @return  The y coordinate.
  */
-Uint16 fn_actor_get_y(fn_actor_t * actor);
+Uint16 fn_level_actor_get_y(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -413,7 +413,7 @@ Uint16 fn_actor_get_y(fn_actor_t * actor);
  *
  * @return  The width.
  */
-Uint16 fn_actor_get_w(fn_actor_t * actor);
+Uint16 fn_level_actor_get_w(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -424,7 +424,7 @@ Uint16 fn_actor_get_w(fn_actor_t * actor);
  *
  * @return  The height.
  */
-Uint16 fn_actor_get_h(fn_actor_t * actor);
+Uint16 fn_level_actor_get_h(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -435,7 +435,7 @@ Uint16 fn_actor_get_h(fn_actor_t * actor);
  *
  * @return 1 if the actor can get shot, otherwise 0.
  */
-Uint8 fn_actor_can_get_shot(fn_actor_t * actor);
+Uint8 fn_level_actor_can_get_shot(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -446,7 +446,7 @@ Uint8 fn_actor_can_get_shot(fn_actor_t * actor);
  *
  * @return 1 if the actor is in foreground, otherwise 0.
  */
-Uint8 fn_actor_in_foreground(fn_actor_t * actor);
+Uint8 fn_level_actor_in_foreground(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -457,7 +457,7 @@ Uint8 fn_actor_in_foreground(fn_actor_t * actor);
  *
  * @return A rectangle containing the current position of the actor.
  */
-SDL_Rect * fn_actor_get_position(fn_actor_t * actor);
+SDL_Rect * fn_level_actor_get_position(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -468,7 +468,7 @@ SDL_Rect * fn_actor_get_position(fn_actor_t * actor);
  * @param  visibility  If 1 set the actor visible,
  *                     if 0 set it invisible.
  */
-void fn_actor_set_visible(fn_actor_t * actor, Uint8 visibility);
+void fn_level_actor_set_visible(fn_level_actor_t * actor, Uint8 visibility);
 
 /* --------------------------------------------------------------- */
 
@@ -479,8 +479,8 @@ void fn_actor_set_visible(fn_actor_t * actor, Uint8 visibility);
  *
  * @return 1 if the actor is visible, 0 if invisible.
  */
-Uint8 fn_actor_is_visible(fn_actor_t * actor);
+Uint8 fn_level_actor_is_visible(fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
-#endif /* FN_ACTOR_H */
+#endif /* FN_LEVEL_ACTOR_H */

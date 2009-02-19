@@ -41,7 +41,7 @@ typedef struct fn_hero_t fn_hero_t;
 
 #include "fn_environment.h"
 #include "fn_tilecache.h"
-#include "fn_actor.h"
+#include "fn_level_actor.h"
 #include "fn_list.h"
 
 /* --------------------------------------------------------------- */
@@ -481,7 +481,7 @@ Uint64 fn_hero_get_score(fn_hero_t * hero);
  * @param  actor  The actor.
  */
 void fn_hero_increase_hurting_actors(fn_hero_t * hero,
-    fn_actor_t * actor);
+    fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 
@@ -493,7 +493,7 @@ void fn_hero_increase_hurting_actors(fn_hero_t * hero,
  * @param  actor  The actor.
  */
 void fn_hero_decrease_hurting_actors(fn_hero_t * hero,
-    fn_actor_t * actor);
+    fn_level_actor_t * actor);
 
 /* --------------------------------------------------------------- */
 

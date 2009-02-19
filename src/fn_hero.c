@@ -725,7 +725,7 @@ Uint64 fn_hero_get_score(fn_hero_t * hero)
 /* --------------------------------------------------------------- */
 
 void fn_hero_increase_hurting_actors(fn_hero_t * hero,
-    fn_actor_t * actor)
+    fn_level_actor_t * actor)
 {
   hero->hurtingactors = fn_list_append(hero->hurtingactors,
       actor);
@@ -734,7 +734,7 @@ void fn_hero_increase_hurting_actors(fn_hero_t * hero,
 /* --------------------------------------------------------------- */
 
 void fn_hero_decrease_hurting_actors(fn_hero_t * hero,
-    fn_actor_t * actor)
+    fn_level_actor_t * actor)
 {
   hero->hurtingactors = fn_list_remove_all(hero->hurtingactors,
       actor);

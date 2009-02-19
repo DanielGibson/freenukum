@@ -157,17 +157,17 @@ fn_level_t * fn_shot_get_level(fn_shot_t * shot)
 
 /* --------------------------------------------------------------- */
 
-Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_actor_t * actor)
+Uint8 fn_shot_overlaps_actor(fn_shot_t * shot, fn_level_actor_t * actor)
 {
-  SDL_Rect * actorpos = fn_actor_get_position(actor);
+  SDL_Rect * actorpos = fn_level_actor_get_position(actor);
   return fn_collision_overlap_rect_rect(actorpos, &(shot->position));
 }
 
 /* --------------------------------------------------------------- */
 
-Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_actor_t * actor)
+Uint8 fn_shot_touches_actor(fn_shot_t * shot, fn_level_actor_t * actor)
 {
-  SDL_Rect * actorpos = fn_actor_get_position(actor);
+  SDL_Rect * actorpos = fn_level_actor_get_position(actor);
   return fn_collision_touch_rect_rect(actorpos, &(shot->position));
 }
 
@@ -197,11 +197,11 @@ void fn_shot_push(fn_shot_t * shot, Sint16 offset)
     for (iter = fn_list_first(shot->level->actors);
         iter != NULL && shot->countdown != 1;
         iter = fn_list_next(iter)) {
-      fn_actor_t * actor = (fn_actor_t *)iter->data;
+      fn_level_actor_t * actor = (fn_level_actor_t *)iter->data;
 
-      if (fn_actor_can_get_shot(actor) &&
+      if (fn_level_actor_can_get_shot(actor) &&
           fn_shot_touches_actor(shot, actor) &&
-          fn_actor_shot(actor)) {
+          fn_level_actor_shot(actor)) {
         shot->countdown = 1;
       }
     }
@@ -211,7 +211,7 @@ void fn_shot_push(fn_shot_t * shot, Sint16 offset)
       shot->countdown = 1;
 
       fn_level_add_actor(shot->level,
-          FN_ACTOR_EXPLOSION,
+          FN_LEVEL_ACTOR_EXPLOSION,
           shot->position.x + shot->position.w / 2 - FN_HALFTILE_WIDTH,
           shot->position.y);
     }

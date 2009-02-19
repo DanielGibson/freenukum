@@ -32,7 +32,7 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_level.h"
-#include "fn_actor.h"
+#include "fn_level_actor.h"
 #include "fn_hero.h"
 #include "fn_object.h"
 #include "fn_collision.h"
@@ -98,60 +98,60 @@ fn_level_t * fn_level_load(int fd,
     switch(tilenr) {
       case 0x0080: /* written text on black screen */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_TEXT_ON_SCREEN_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_TEXT_ON_SCREEN_BACKGROUND, x, y);
         break;
       case 0x0100: /* blue high voltage flash */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_HIGH_VOLTAGE_FLASH_BACKGROUND, x, y);
         break;
       case 0x0180: /* red flash light */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_RED_FLASHLIGHT_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_RED_FLASHLIGHT_BACKGROUND, x, y);
         break;
       case 0x0200: /* blue high voltage flash */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BLUE_FLASHLIGHT_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_BLUE_FLASHLIGHT_BACKGROUND, x, y);
         break;
       case 0x0280: /* key panel on the wall */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEYPANEL_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_KEYPANEL_BACKGROUND, x, y);
         break;
       case 0x0300: /* red rotation light */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_RED_ROTATIONLIGHT_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_RED_ROTATIONLIGHT_BACKGROUND, x, y);
         break;
       case 0x0380: /* flashing up arrow */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_UPARROW_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_UPARROW_BACKGROUND, x, y);
         break;
       case 0x0400: /* background blinking blue box */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BLUE_LIGHT_BACKGROUND1, x, y);
+            FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND1, x, y);
         break;
       case 0x0420: /* background blinking blue box */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BLUE_LIGHT_BACKGROUND2, x, y);
+            FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND2, x, y);
         break;
       case 0x0440: /* background blinking blue box */
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_BLUE_LIGHT_BACKGROUND3, x, y);
+          FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND3, x, y);
         break;
       case 0x0460: /* background blinking blue box */
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_BLUE_LIGHT_BACKGROUND4, x, y);
+          FN_LEVEL_ACTOR_BLUE_LIGHT_BACKGROUND4, x, y);
         break;
       case 0x0480: /* background green poison liquid */
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_GREEN_POISON_BACKGROUND, x, y);
+          FN_LEVEL_ACTOR_GREEN_POISON_BACKGROUND, x, y);
         break;
       case 0x0500: /* background lava */
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_LAVA_BACKGROUND, x, y);
+          FN_LEVEL_ACTOR_LAVA_BACKGROUND, x, y);
         break;
       case 0x1800: /* solid wall which can be shot */
         lv->tiles[y][x] = 0x17E0/0x20;
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_SHOOTABLE_WALL, x, y);
+          FN_LEVEL_ACTOR_SHOOTABLE_WALL, x, y);
         break;
       case 0x1C00: /* center conveyor */
         lv->tiles[y][x] = SOLID_BLACK; 
@@ -159,7 +159,7 @@ fn_level_t * fn_level_load(int fd,
 
         /*
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_CONVEYOR_RIGHTMOVING_CENTER, x, y);
+          FN_LEVEL_ACTOR_CONVEYOR_RIGHTMOVING_CENTER, x, y);
           */
         break;
       case 0x3000: /* grey box, empty */
@@ -167,12 +167,12 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_BOX_GREY_EMPTY, x, y);
+          FN_LEVEL_ACTOR_BOX_GREY_EMPTY, x, y);
         break;
       case 0x3001: /* lift */
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-          FN_ACTOR_LIFT, x, y);
+          FN_LEVEL_ACTOR_LIFT, x, y);
         break;
       case 0x3002: /* left end of left-moving conveyor */
         lv->tiles[y][x] = SOLID_CONVEYORBELT_LEFTEND;
@@ -182,7 +182,7 @@ fn_level_t * fn_level_load(int fd,
         lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND, x, y);
+            FN_LEVEL_ACTOR_CONVEYOR_LEFTMOVING_RIGHTEND, x, y);
         break;
       case 0x3004: /* left end of right-moving conveyor */
         lv->tiles[y][x] = SOLID_CONVEYORBELT_LEFTEND;
@@ -192,47 +192,47 @@ fn_level_t * fn_level_load(int fd,
         lv->tiles[y][x] = SOLID_BLACK; 
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND, x, y);
+            FN_LEVEL_ACTOR_CONVEYOR_RIGHTMOVING_RIGHTEND, x, y);
         break;
       case 0x3006: /* grey box with boots inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_BOOTS, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_BOOTS, x, y);
         break;
       case 0x3007: /* rocket which gets started if shot
                     * and leaves a blue box with a balloon */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ROCKET, x, y);
+            FN_LEVEL_ACTOR_ROCKET, x, y);
         break;
       case 0x3008: /* grey box with clamps inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_CLAMPS, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_CLAMPS, x, y);
         break;
       case 0x3009: /* fire burning to the right */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FIRE_RIGHT, x, y);
+            FN_LEVEL_ACTOR_FIRE_RIGHT, x, y);
         break;
       case 0x300A: /* fire burning to the left */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FIRE_LEFT, x, y);
+            FN_LEVEL_ACTOR_FIRE_LEFT, x, y);
         break;
       case 0x300b: /* flying techbot */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FLYINGBOT, x, y);
+            FN_LEVEL_ACTOR_FLYINGBOT, x, y);
         break;
       case 0x300c: /* footbot */
         if (x > 0) {
@@ -247,43 +247,43 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_TANKBOT, x, y);
+            FN_LEVEL_ACTOR_TANKBOT, x, y);
         break;
       case 0x300e: /* fire wheel bot */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FIREWHEELBOT, x, y);
+            FN_LEVEL_ACTOR_FIREWHEELBOT, x, y);
         break;
       case 0x300F: /* grey box with gun inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_GUN, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_GUN, x, y);
         break;
       case 0x3010: /* robot */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ROBOT, x, y);
+            FN_LEVEL_ACTOR_ROBOT, x, y);
         break;
       case 0x3011: /* exit door */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_EXITDOOR, x, y-1);
+            FN_LEVEL_ACTOR_EXITDOOR, x, y-1);
         break;
       case 0x3012: /* grey box with bomb inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_BOMB, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_BOMB, x, y);
         break;
       case 0x3013: /* bot consisting of several white-blue balls */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SNAKEBOT, x, y);
+            FN_LEVEL_ACTOR_SNAKEBOT, x, y);
         break;
       case 0x3014: /* water mirroring everything that is above */
         if (x > 0) {
@@ -291,91 +291,91 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_WATER, x, y);
+            FN_LEVEL_ACTOR_WATER, x, y);
         break;
       case 0x3015: /* red box with soda inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_RED_SODA, x, y);
+            FN_LEVEL_ACTOR_BOX_RED_SODA, x, y);
         break;
       case 0x3016: /* crab bot crawling along wall left of him */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_WALLCRAWLERBOT_LEFT, x, y);
+            FN_LEVEL_ACTOR_WALLCRAWLERBOT_LEFT, x, y);
         break;
       case 0x3017: /* crab bot crawling along wall right of him */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_WALLCRAWLERBOT_RIGHT, x, y);
+            FN_LEVEL_ACTOR_WALLCRAWLERBOT_RIGHT, x, y);
         break;
       case 0x3018: /* red box with chicken inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_RED_CHICKEN, x, y);
+            FN_LEVEL_ACTOR_BOX_RED_CHICKEN, x, y);
         break;
       case 0x3019: /* floor that breaks on second jump onto it */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_UNSTABLEFLOOR, x, y);
+            FN_LEVEL_ACTOR_UNSTABLEFLOOR, x, y);
         break;
       case 0x301a: /* horizontal laser beam which gets deactivated when mill is shot */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_LASERBEAM, x, y);
+            FN_LEVEL_ACTOR_LASERBEAM, x, y);
         break;
       case 0x301b: /* fan wheel mounted on right wall blowing to the left */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FAN_LEFT, x, y);
+            FN_LEVEL_ACTOR_FAN_LEFT, x, y);
         break;
       case 0x301c: /* fan wheel mounted on left wall blowing to the right*/
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FAN_RIGHT, x, y);
+            FN_LEVEL_ACTOR_FAN_RIGHT, x, y);
         break;
       case 0x301d: /* blue box with football insdie */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_FOOTBALL, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_FOOTBALL, x, y);
         break;
       case 0x301e: /* blue box with joystick inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_JOYSTICK, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_JOYSTICK, x, y);
         break;
       case 0x301f: /* blue box with disk inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_DISK, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_DISK, x, y);
         break;
       case 0x3020: /* grey box with glove inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_GLOVE, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_GLOVE, x, y);
         break;
       case 0x3021: /* laser beam which is deactivated by access card */
         if (x > 0) {
@@ -383,21 +383,21 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ACCESS_CARD_DOOR, x, y);
+            FN_LEVEL_ACTOR_ACCESS_CARD_DOOR, x, y);
         break;
       case 0x3022: /* helicopter */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_HELICOPTERBOT, x, y);
+            FN_LEVEL_ACTOR_HELICOPTERBOT, x, y);
         break;
       case 0x3023: /* blue box with balloon inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_BALLOON, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_BALLOON, x, y);
         break;
       case 0x3024: /* camera */
         /*
@@ -406,7 +406,7 @@ fn_level_t * fn_level_load(int fd,
         }
         */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_CAMERA, x, y);
+            FN_LEVEL_ACTOR_CAMERA, x, y);
         break;
       case 0x3025: /* broken wall background */
         /* take the part from one above */
@@ -414,7 +414,7 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BROKENWALL_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_BROKENWALL_BACKGROUND, x, y);
         break;
       case 0x3026: /* left end of background stone wall */
         /* TODO */
@@ -424,14 +424,14 @@ fn_level_t * fn_level_load(int fd,
         break;
       case 0x3028: /* window inside background stone wall */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_STONEWINDOW_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_STONEWINDOW_BACKGROUND, x, y);
         break;
       case 0x3029: /* grey box with full life */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_FULL_LIFE, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_FULL_LIFE, x, y);
         break;
       case 0x302a: /* "ACME" brick that comes falling down */
         if (x > 0) {
@@ -439,50 +439,50 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ACME, x, y);
+            FN_LEVEL_ACTOR_ACME, x, y);
         break;
       case 0x302b: /* rotating mill that can kill duke on touch */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_MILL, x, y);
+            FN_LEVEL_ACTOR_MILL, x, y);
         break;
       case 0x302c: /* single spike standing out of the floor */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SPIKE, x, y);
+            FN_LEVEL_ACTOR_SPIKE, x, y);
         break;
       case 0x302d: /* blue box with flag inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_FLAG, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_FLAG, x, y);
         break;
       case 0x302e: /* blue box with radio inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_BLUE_RADIO, x, y);
+            FN_LEVEL_ACTOR_BOX_BLUE_RADIO, x, y);
         break;
       case 0x302f: /* teleporter station */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_TELEPORTER1, x, y);
+            FN_LEVEL_ACTOR_TELEPORTER1, x, y);
         break;
       case 0x3030: /* teleporter station */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_TELEPORTER2, x, y);
+            FN_LEVEL_ACTOR_TELEPORTER2, x, y);
         break;
       case 0x3031: /* jumping mines */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_REDBALL_JUMPING, x, y);
+            FN_LEVEL_ACTOR_REDBALL_JUMPING, x, y);
         break;
       case 0x3032: /* we found our hero! */
         fn_hero_enterlevel(hero,
@@ -496,138 +496,138 @@ fn_level_t * fn_level_load(int fd,
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_ACCESS_CARD, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_ACCESS_CARD, x, y);
         break;
       case 0x3034: /* slot for access card */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_ACCESS_CARD_SLOT, x, y);
+            FN_LEVEL_ACTOR_ACCESS_CARD_SLOT, x, y);
         break;
       case 0x3035: /* slot for glove */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_GLOVE_SLOT, x, y);
+            FN_LEVEL_ACTOR_GLOVE_SLOT, x, y);
         break;
       case 0x3036: /* floor which expands to right by access of glove slot */
         fn_level_set_solid(lv, x, y, 1);
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_EXPANDINGFLOOR, x, y);
+            FN_LEVEL_ACTOR_EXPANDINGFLOOR, x, y);
         break;
       case 0x3037: /* grey box with a D inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_LETTER_D, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_LETTER_D, x, y);
         break;
       case 0x3038: /* grey box with a U inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_LETTER_U, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_LETTER_U, x, y);
         break;
       case 0x3039: /* grey box with a K inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-              FN_ACTOR_BOX_GREY_LETTER_K, x, y);
+              FN_LEVEL_ACTOR_BOX_GREY_LETTER_K, x, y);
         break;
       case 0x303a: /* grey box with a E inside */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_BOX_GREY_LETTER_E, x, y);
+            FN_LEVEL_ACTOR_BOX_GREY_LETTER_E, x, y);
         break;
       case 0x303b: /* bunny bot */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_RABBITOIDBOT, x, y);
+            FN_LEVEL_ACTOR_RABBITOIDBOT, x, y);
         break;
       case 0x303c: /* fire gnome */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FLAMEGNOMEBOT, x, y);
+            FN_LEVEL_ACTOR_FLAMEGNOMEBOT, x, y);
         break;
       case 0x303d: /* fence with backdrop 1 behind it */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FENCE_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_FENCE_BACKGROUND, x, y);
         break;
       case 0x303e: /* window - left part */
         lv->tiles[y][x] = 0;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_WINDOWLEFT_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_WINDOWLEFT_BACKGROUND, x, y);
         break;
       case 0x303f: /* window - right part */
         lv->tiles[y][x] = 0;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_WINDOWRIGHT_BACKGROUND, x, y);
+            FN_LEVEL_ACTOR_WINDOWRIGHT_BACKGROUND, x, y);
         break;
       case 0x3040: /* the notebook */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_NOTEBOOK, x, y);
+            FN_LEVEL_ACTOR_NOTEBOOK, x, y);
         break;
       case 0x3041: /* the surveillance screen */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SURVEILLANCESCREEN, x, y);
+            FN_LEVEL_ACTOR_SURVEILLANCESCREEN, x, y);
         break;
       case 0x3043: /* dr proton -the final opponent */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DRPROTON, x, y);
+            FN_LEVEL_ACTOR_DRPROTON, x, y);
         break;
       case 0x3044: /* red key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEY_RED, x, y);
+            FN_LEVEL_ACTOR_KEY_RED, x, y);
         break;
       case 0x3045: /* green key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEY_GREEN, x, y);
+            FN_LEVEL_ACTOR_KEY_GREEN, x, y);
         break;
       case 0x3046: /* blue key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEY_BLUE, x, y);
+            FN_LEVEL_ACTOR_KEY_BLUE, x, y);
         break;
       case 0x3047: /* pink key */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEY_PINK, x, y);
+            FN_LEVEL_ACTOR_KEY_PINK, x, y);
         break;
       case 0x3048: /* red keyhole */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEYHOLE_RED, x, y);
+            FN_LEVEL_ACTOR_KEYHOLE_RED, x, y);
         break;
       case 0x3049: /* green keyhole */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEYHOLE_GREEN, x, y);
+            FN_LEVEL_ACTOR_KEYHOLE_GREEN, x, y);
         break;
       case 0x304a: /* blue keyhole */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEYHOLE_BLUE, x, y);
+            FN_LEVEL_ACTOR_KEYHOLE_BLUE, x, y);
         break;
       case 0x304b: /* pink keyhole */
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_KEYHOLE_PINK, x, y);
+            FN_LEVEL_ACTOR_KEYHOLE_PINK, x, y);
         break;
       case 0x304c: /* red door */
         if (x > 0) {
@@ -635,7 +635,7 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DOOR_RED, x, y);
+            FN_LEVEL_ACTOR_DOOR_RED, x, y);
         break;
       case 0x304d: /* green door */
         if (x > 0) {
@@ -643,7 +643,7 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DOOR_GREEN, x, y);
+            FN_LEVEL_ACTOR_DOOR_GREEN, x, y);
         break;
       case 0x304e: /* blue door */
         if (x > 0) {
@@ -651,7 +651,7 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DOOR_BLUE, x, y);
+            FN_LEVEL_ACTOR_DOOR_BLUE, x, y);
         break;
       case 0x304f: /* pink door */
         if (x > 0) {
@@ -659,77 +659,77 @@ fn_level_t * fn_level_load(int fd,
         }
         lv->solid[y][x] = 1;
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DOOR_PINK, x, y);
+            FN_LEVEL_ACTOR_DOOR_PINK, x, y);
         break;
       case 0x3050: /* football on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FOOTBALL, x, y);
+            FN_LEVEL_ACTOR_FOOTBALL, x, y);
         break;
       case 0x3051: /* single chicken on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_CHICKEN_SINGLE, x, y);
+            FN_LEVEL_ACTOR_CHICKEN_SINGLE, x, y);
         break;
       case 0x3052: /* soda on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SODA, x, y);
+            FN_LEVEL_ACTOR_SODA, x, y);
         break;
       case 0x3053: /* a disk on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_DISK, x, y);
+            FN_LEVEL_ACTOR_DISK, x, y);
         break;
       case 0x3054: /* a joystick on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_JOYSTICK, x, y);
+            FN_LEVEL_ACTOR_JOYSTICK, x, y);
         break;
       case 0x3055: /* a flag on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_FLAG, x, y);
+            FN_LEVEL_ACTOR_FLAG, x, y);
         break;
       case 0x3056: /* a radio on its own */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_RADIO, x, y);
+            FN_LEVEL_ACTOR_RADIO, x, y);
         break;
       case 0x3057: /* the red mine lying on the ground */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_REDBALL_LYING, x, y);
+            FN_LEVEL_ACTOR_REDBALL_LYING, x, y);
         break;
       case 0x3058: /* spikes showing up */
         if (y > 0) {
           lv->tiles[y][x] = lv->tiles[y-1][x];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SPIKES_UP, x, y);
+            FN_LEVEL_ACTOR_SPIKES_UP, x, y);
         break;
       case 0x3059: /* spikes showing down */
         if (x > 0) {
           lv->tiles[y][x] = lv->tiles[y][x-1];
         }
         fn_level_add_initial_actor(lv,
-            FN_ACTOR_SPIKES_DOWN, x, y);
+            FN_LEVEL_ACTOR_SPIKES_DOWN, x, y);
         break;
       default:
         if (tilenr / 0x20 >= SOLID_END) {
@@ -746,12 +746,12 @@ fn_level_t * fn_level_load(int fd,
   /* Put the correct tile behind the cameras. */
   fn_list_t * cameras =
     fn_level_get_items_of_type(lv,
-        FN_ACTOR_CAMERA);
+        FN_LEVEL_ACTOR_CAMERA);
   fn_list_t * iter = NULL;
   for (iter = fn_list_first(cameras);
       iter != fn_list_last(cameras);
       iter = fn_list_next(iter)) {
-    fn_actor_t * camera = iter->data;
+    fn_level_actor_t * camera = iter->data;
     Uint16 cameray = camera->position.y / FN_TILE_HEIGHT;
     Uint16 camerax = camera->position.x / FN_TILE_WIDTH;
     lv->tiles[cameray][camerax] =
@@ -817,7 +817,7 @@ void fn_level_free(fn_level_t * lv)
       iter != fn_list_last(lv->actors);
       iter = fn_list_next(iter)) {
     if (iter->data != NULL) {
-      fn_actor_free((fn_actor_t *)iter->data);
+      fn_level_actor_free((fn_level_actor_t *)iter->data);
       iter->data = NULL;
     }
   }
@@ -951,21 +951,21 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   for (iter = fn_list_first(lv->actors);
       iter != NULL;
       iter = fn_list_next(iter)) {
-    fn_actor_t * actor = (fn_actor_t *)iter->data;
+    fn_level_actor_t * actor = (fn_level_actor_t *)iter->data;
 
     if (actor != NULL) {
-      Uint16 xl = fn_actor_get_x(actor) / FN_TILE_WIDTH;
-      Uint16 yt = fn_actor_get_y(actor) / FN_TILE_HEIGHT;
-      Uint16 xr = xl + fn_actor_get_w(actor) / FN_TILE_WIDTH;
-      Uint16 yb = yt + fn_actor_get_h(actor) / FN_TILE_HEIGHT;
+      Uint16 xl = fn_level_actor_get_x(actor) / FN_TILE_WIDTH;
+      Uint16 yt = fn_level_actor_get_y(actor) / FN_TILE_HEIGHT;
+      Uint16 xr = xl + fn_level_actor_get_w(actor) / FN_TILE_WIDTH;
+      Uint16 yb = yt + fn_level_actor_get_h(actor) / FN_TILE_HEIGHT;
 
       if (xr > x_start && yb > y_start && xl < x_end && yt < y_end) {
-        fn_actor_set_visible(actor, 1);
-        if (!fn_actor_in_foreground(actor)) {
-          fn_actor_blit(actor);
+        fn_level_actor_set_visible(actor, 1);
+        if (!fn_level_actor_in_foreground(actor)) {
+          fn_level_actor_blit(actor);
         }
       } else {
-        fn_actor_set_visible(actor, 0);
+        fn_level_actor_set_visible(actor, 0);
       }
     }
   }
@@ -979,11 +979,11 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   for (iter = fn_list_first(lv->actors);
       iter != NULL;
       iter = fn_list_next(iter)) {
-    fn_actor_t * actor = (fn_actor_t *)iter->data;
+    fn_level_actor_t * actor = (fn_level_actor_t *)iter->data;
 
-    if (actor != NULL && fn_actor_is_visible(actor)) {
-      if (fn_actor_in_foreground(actor)) {
-        fn_actor_blit(actor);
+    if (actor != NULL && fn_level_actor_is_visible(actor)) {
+      if (fn_level_actor_in_foreground(actor)) {
+        fn_level_actor_blit(actor);
       }
     }
   }
@@ -1100,16 +1100,16 @@ int fn_level_act(fn_level_t * lv) {
   for (iter = fn_list_first(lv->actors);
       iter != NULL;
       iter = fn_list_next(iter)) {
-    fn_actor_t * actor = (fn_actor_t *)iter->data;
+    fn_level_actor_t * actor = (fn_level_actor_t *)iter->data;
 
     if  (actor->acts_while_invisible || actor->is_visible) {
       sum++;
-      res = fn_actor_act(actor);
+      res = fn_level_actor_act(actor);
       if (res == 0) {
         /* set the cleanup flag and free the memory */
         cleanup = 1;
         iter->data = NULL;
-        fn_actor_free(actor); actor = NULL;
+        fn_level_actor_free(actor); actor = NULL;
       }
     }
   }
@@ -1131,7 +1131,7 @@ int fn_level_act(fn_level_t * lv) {
 void fn_level_hero_interact_stop(fn_level_t * lv)
 {
   if (lv->interactor != NULL) {
-    fn_actor_hero_interact_stop(lv->interactor);
+    fn_level_actor_hero_interact_stop(lv->interactor);
   }
   lv->interactor = NULL;
 }
@@ -1144,20 +1144,20 @@ void fn_level_hero_interact_start(fn_level_t * lv)
   for (iter = fn_list_first(lv->actors);
       iter != NULL;
       iter = fn_list_next(iter)) {
-    fn_actor_t * actor = (fn_actor_t *)iter->data;
+    fn_level_actor_t * actor = (fn_level_actor_t *)iter->data;
 
-    if (fn_actor_hero_can_interact(actor)) {
+    if (fn_level_actor_hero_can_interact(actor)) {
 
       fn_hero_t * hero = fn_level_get_hero(lv);
       SDL_Rect * heropos = fn_hero_get_position(hero);
 
       if (fn_collision_touch_rect_rect(heropos,
-            fn_actor_get_position(actor)))
+            fn_level_actor_get_position(actor)))
       {
         fn_level_hero_interact_stop(lv);
 
         lv->interactor = actor;
-        fn_actor_hero_interact_start(actor);
+        fn_level_actor_hero_interact_start(actor);
         return;
       }
     }
@@ -1166,12 +1166,12 @@ void fn_level_hero_interact_start(fn_level_t * lv)
 
 /* --------------------------------------------------------------- */
 
-fn_actor_t * fn_level_add_actor(fn_level_t * lv,
-    fn_actor_type_e type,
+fn_level_actor_t * fn_level_add_actor(fn_level_t * lv,
+    fn_level_actor_type_e type,
     Uint16 x,
     Uint16 y)
 {
-  fn_actor_t * actor = fn_actor_create(lv, type, x, y);
+  fn_level_actor_t * actor = fn_level_actor_create(lv, type, x, y);
   lv->actors = fn_list_append(lv->actors, actor);
 
   return actor;
@@ -1179,12 +1179,12 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
 
 /* --------------------------------------------------------------- */
 
-fn_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
-    fn_actor_type_e type,
+fn_level_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
+    fn_level_actor_type_e type,
     Uint16 x,
     Uint16 y)
 {
-  fn_actor_t * actor = fn_level_add_actor(
+  fn_level_actor_t * actor = fn_level_add_actor(
       lv,
       type,
       x * FN_TILE_WIDTH,
@@ -1226,19 +1226,19 @@ void fn_level_add_particle_firework(fn_level_t * lv,
   for (i = 0; i < num_particles; i++) {
     switch(i % 4) {
       case 0:
-        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_PINK,
+        fn_level_add_actor(lv, FN_LEVEL_ACTOR_PARTICLE_PINK,
             x, y);
         break;
       case 1:
-        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_BLUE,
+        fn_level_add_actor(lv, FN_LEVEL_ACTOR_PARTICLE_BLUE,
             x, y);
         break;
       case 2:
-        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_WHITE,
+        fn_level_add_actor(lv, FN_LEVEL_ACTOR_PARTICLE_WHITE,
             x, y);
         break;
       case 3:
-        fn_level_add_actor(lv, FN_ACTOR_PARTICLE_GREEN,
+        fn_level_add_actor(lv, FN_LEVEL_ACTOR_PARTICLE_GREEN,
             x, y);
         break;
       default:
@@ -1265,14 +1265,14 @@ void fn_level_fire_shot(fn_level_t * lv)
 /* --------------------------------------------------------------- */
 
 fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
-    fn_actor_type_e type)
+    fn_level_actor_type_e type)
 {
   fn_list_t * ret = NULL;
   fn_list_t * iter = NULL;
   for (iter = fn_list_first(lv->actors);
       iter != fn_list_last(lv->actors);
       iter = fn_list_next(iter)) {
-    fn_actor_t * actor = iter->data;
+    fn_level_actor_t * actor = iter->data;
     if (actor->type == type) {
       ret = fn_list_append(ret, actor);
     }

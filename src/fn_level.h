@@ -41,7 +41,7 @@ typedef struct fn_level_t fn_level_t;
  * not yet defined there.
  */
 #include "fn_hero.h"
-#include "fn_actor.h"
+#include "fn_level_actor.h"
 #include "fn_shot.h"
 #include "fn_bot.h"
 #include "fn_list.h"
@@ -122,7 +122,7 @@ struct fn_level_t {
   /**
    * The actor with which the hero interacts.
    */
-  fn_actor_t * interactor;
+  fn_level_actor_t * interactor;
 };
 
 /* --------------------------------------------------------------- */
@@ -331,8 +331,8 @@ void fn_level_hero_interact_stop(fn_level_t * lv);
  *
  * @return  The newly created actor.
  */
-fn_actor_t * fn_level_add_actor(fn_level_t * lv,
-    fn_actor_type_e type,
+fn_level_actor_t * fn_level_add_actor(fn_level_t * lv,
+    fn_level_actor_type_e type,
     Uint16 x,
     Uint16 y);
 
@@ -351,8 +351,8 @@ fn_actor_t * fn_level_add_actor(fn_level_t * lv,
  *
  * @return  The newly created actor.
  */
-fn_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
-    fn_actor_type_e type,
+fn_level_actor_t * fn_level_add_initial_actor(fn_level_t * lv,
+    fn_level_actor_type_e type,
     Uint16 x,
     Uint16 y);
 
@@ -393,7 +393,7 @@ void fn_level_fire_shot(fn_level_t * lv);
  *         call fn_list_free on it in order to free the memory.
  */
 fn_list_t * fn_level_get_items_of_type(fn_level_t * lv,
-    fn_actor_type_e type);
+    fn_level_actor_type_e type);
 
 /* --------------------------------------------------------------- */
 
