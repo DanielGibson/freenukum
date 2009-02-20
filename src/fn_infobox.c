@@ -47,17 +47,19 @@ void fn_infobox_show(
       env,
       msg);
 
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+
   SDL_Surface * screen = fn_environment_get_screen(env);
-  dstrect.x = ((screen->w) - (fn_texture_get_width(msgbox)))/2;
-  dstrect.y = ((screen->h) - (fn_texture_get_height(msgbox)))/2;
-  dstrect.w = fn_texture_get_width(msgbox);
-  dstrect.h = fn_texture_get_height(msgbox);
+  dstrect.x =
+    ((screen->w) - (fn_texture_get_width(msgbox) * pixelsize))/2;
+  dstrect.y =
+    ((screen->h) - (fn_texture_get_height(msgbox) * pixelsize))/2;
+  dstrect.w = fn_texture_get_width(msgbox) * pixelsize;
+  dstrect.h = fn_texture_get_height(msgbox) * pixelsize;
 
   /* backup the background */
-  temp = SDL_CreateRGBSurface(screen->flags,
-      dstrect.w, dstrect.h,
-      screen->format->BitsPerPixel,
-      0, 0, 0, 0);
+  temp = fn_environment_create_surface(env,
+      fn_texture_get_width(msgbox), fn_texture_get_height(msgbox));
   SDL_BlitSurface(screen, &dstrect, temp, NULL);
 
   fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
