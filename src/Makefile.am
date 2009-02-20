@@ -13,7 +13,6 @@ objectsources = fn.h \
                 fn_menu.h           fn_menu.c \
                 fn_borders.h        fn_borders.c \
                 fn_bot.h            fn_bot.c \
-                fn_draw.h           fn_draw.c \
                 fn_drop.h           fn_drop.c \
                 fn_effect.h         fn_effect.c \
                 fn_error.h          fn_error.c \
@@ -44,7 +43,6 @@ freenukum_SOURCES = $(objectsources) \
 if TESTPROGRAMS
 noinst_PROGRAMS = fn_test_tilecache \
                   fn_test_borders \
-                  fn_test_draw \
                   fn_test_drop \
                   fn_test_effect \
                   fn_test_error \
@@ -65,9 +63,6 @@ fn_test_tilecache_SOURCES      = fn_test_tilecache.c \
                                  $(objectsources)
 
 fn_test_borders_SOURCES        = fn_test_borders.c \
-                                 $(objectsources)
-
-fn_test_draw_SOURCES           = fn_test_draw.c \
                                  $(objectsources)
 
 fn_test_drop_SOURCES           = fn_test_drop.c \

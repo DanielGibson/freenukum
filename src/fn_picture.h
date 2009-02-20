@@ -39,6 +39,7 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_environment.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -48,7 +49,7 @@
  * @param  fd            The opened file descriptor to the file.
  * @param  env           The game environment.
  */
-SDL_Surface * fn_picture_load(int fd, fn_environment_t * env);
+FnTexture * fn_picture_load(int fd, fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

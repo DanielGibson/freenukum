@@ -43,7 +43,7 @@
 
 int main(int argc, char ** argv)
 {
-  SDL_Surface * picture;
+  FnTexture * picture;
 
   fn_environment_t * env = fn_environment_create();
 
@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
   close(fd);
 
   SDL_Surface * screen = fn_environment_get_screen(env);
-  SDL_BlitSurface(picture, NULL, screen, NULL);
+  fn_texture_blit_to_sdl_surface(picture, NULL, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (quit == 0) {

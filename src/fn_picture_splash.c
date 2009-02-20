@@ -70,7 +70,7 @@ int fn_picture_splash_show_with_message(
   int fd;
   int res;
   SDL_Event event;
-  SDL_Surface * picture;
+  FnTexture * picture;
 
   char * datapath = fn_environment_get_datapath(env);
   path = malloc(strlen(datapath) + strlen(filename) + 1);
@@ -88,7 +88,7 @@ int fn_picture_splash_show_with_message(
   picture = fn_picture_load(fd, env);
 
   SDL_Surface * screen = fn_environment_get_screen(env);
-  SDL_BlitSurface(picture, NULL, screen, NULL);
+  fn_texture_blit_to_sdl_surface(picture, NULL, screen, NULL);
 
 
   if (fn_environment_tilecache_loaded(env) && msg != NULL) {
@@ -107,7 +107,7 @@ int fn_picture_splash_show_with_message(
   }
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);
-  SDL_FreeSurface(picture);
+  g_object_unref(picture);
 
   while (1) {
     res = SDL_WaitEvent(&event);

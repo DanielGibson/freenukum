@@ -32,87 +32,90 @@
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
-#include "fn_draw.h"
 #include "fn_picture.h"
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_picture_load(int fd, 
+FnTexture * fn_picture_load(int fd, 
     fn_environment_t * env)
 {
-    SDL_Surface * picture;
-    SDL_Rect r;
-    size_t num_read = 0;
+    FnTexture * picture;
+    guint i = 0;
+    guint j = 0;
 
-    picture = fn_environment_create_surface(
-        env,
+    picture = fn_texture_new_with_environment(
         FN_WINDOW_WIDTH,
-        FN_WINDOW_HEIGHT
+        FN_WINDOW_HEIGHT,
+        env
         );
 
-    size_t num_loads = FN_PICTURE_WIDTH * FN_PICTURE_HEIGHT;
-    size_t i = 0;
+    guint num_loads = FN_PICTURE_WIDTH * FN_PICTURE_HEIGHT;
 
-    fn_byterow_t br[num_loads];
-    char readbuf[num_loads];
+    guchar * data = g_new0(guchar,
+        FN_PICTURE_WIDTH * FN_PICTURE_HEIGHT * 4 * 8);
+    guchar * data_pos = data;
+    guchar readbuf[num_loads];
 
-    Uint8 pixelsize = fn_environment_get_pixelsize(env);
-
-    r.x = 0;
-    r.y = 0;
-    r.w = 8 * pixelsize;
-    r.h = 1 * pixelsize;
-
-    while(i != 5)
-    {
-        /* only read the first four cycles, we use the
-         * fifth one to set transparency to off
-         * and to draw the picture
-         */
-        if (i < 5)
-        {
-            read(fd, readbuf, num_loads);
-        }
-        while (num_read != num_loads)
-        {
-            switch(i)
-            {
-                case 0:
-                    (br+num_read)->blue     = readbuf[num_read];
-                    break;
-                case 1:
-                    (br+num_read)->green    = readbuf[num_read];
-                    break;
-                case 2:
-                    (br+num_read)->red      = readbuf[num_read];
-                    break;
-                case 3:
-                    (br+num_read)->brighten = readbuf[num_read];
-                    break;
-                case 4:
-                    (br+num_read)->trans    = 0xFF;
-                    fn_draw_byterow(
-                            picture,
-                            r,
-                            br+num_read,
-                            0,
-                            pixelsize);
-                    r.x += 8 * pixelsize;
-                    if (r.x == FN_WINDOW_WIDTH * pixelsize)
-                    {
-                        r.x = 0;
-                        r.y += pixelsize;
-                    }
-                    break;
-                default:
-                    /* Do nothing here */
-                    break;
-            }
-            num_read++;
-        }
-        num_read = 0;
-        i++;
+    /* read blue */
+    read(fd, readbuf, num_loads);
+    data_pos = data + 2;
+    for(i = 0; i < num_loads; i++) {
+      for (j = 0; j < 8; j++) {
+        guchar blue_pixel = ((readbuf[i] >> (7 -j)) & 1);
+        *data_pos += blue_pixel * 0x54 * 2;
+        data_pos += 4;
+      }
     }
+
+    /* read green */
+    read(fd, readbuf, num_loads);
+    data_pos = data + 1;
+    for(i = 0; i < num_loads; i++) {
+      for (j = 0; j < 8; j++) {
+        guchar green_pixel = ((readbuf[i] >> (7 -j)) & 1);
+        *data_pos += green_pixel * 0x54 * 2;
+        data_pos += 4;
+      }
+    }
+
+    /* read red */
+    read(fd, readbuf, num_loads);
+    data_pos = data;
+    for(i = 0; i < num_loads; i++) {
+      for (j = 0; j < 8; j++) {
+        guchar red_pixel = ((readbuf[i] >> (7 -j)) & 1);
+        *data_pos += red_pixel * 0x54 * 2;
+        data_pos += 4;
+      }
+    }
+
+    /* read brighten, and set pixels opaque */
+    read(fd, readbuf, num_loads);
+    data_pos = data;
+    for(i = 0; i < num_loads; i++) {
+      for (j = 0; j < 8; j++) {
+        guchar bright_pixel = ((readbuf[i] >> (7 -j)) & 1);
+
+        /* brighten red */
+        *data_pos += bright_pixel * 0x54;
+        data_pos++;
+
+        /* brighten blue */
+        *data_pos += bright_pixel * 0x54;
+        data_pos++;
+
+        /* brighten green */
+        *data_pos += bright_pixel * 0x54;
+        data_pos++;
+
+        /* set opaque */
+        *data_pos = 0xFF;
+        data_pos++;
+      }
+    }
+
+    fn_texture_set_data(picture, data);
+
     return picture;
 }
 

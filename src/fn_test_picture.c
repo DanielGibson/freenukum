@@ -40,6 +40,8 @@
 
 int main(int argc, char ** argv)
 {
+    g_type_init();
+
     int fd;
     int res;
     int quit = 0;
@@ -59,17 +61,17 @@ int main(int argc, char ** argv)
     fd = open(argv[1], O_RDONLY);
 
     SDL_Surface * screen;
-    SDL_Surface * picture;
+    FnTexture * picture;
 
     screen = fn_environment_get_screen(env);
 
     picture = fn_picture_load(
         fd, env);
 
-    SDL_BlitSurface(picture, NULL, screen, NULL);
+    fn_texture_blit_to_sdl_surface(picture, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
 
-    SDL_FreeSurface(picture);
+    g_object_unref(picture);
 
     while (quit == 0)
     {
