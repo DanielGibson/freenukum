@@ -33,6 +33,7 @@
 /* --------------------------------------------------------------- */
 
 #include "fn_tile.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -60,7 +61,7 @@ int main(int argc, char ** argv)
     fd = open(argv[1], O_RDONLY);
 
     SDL_Surface * screen;
-    SDL_Surface * tile;
+    FnTexture * tile;
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
     {
@@ -82,10 +83,10 @@ int main(int argc, char ** argv)
     size_t i = 0;
     while (i != h.tiles)
     {
-        tile = fn_tile_load_to_sdl(
+        tile = fn_tile_load(
             fd, env, &h, 0);
-        SDL_BlitSurface(tile, NULL, screen, &r);
-        SDL_FreeSurface(tile);
+        fn_texture_blit_to_sdl_surface(tile, NULL, screen, &r);
+        g_object_unref(tile);
         i++;
         r.x += 8 * h.width * pixelsize;
         r.y = 0;

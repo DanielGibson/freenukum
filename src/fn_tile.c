@@ -34,7 +34,6 @@
 
 #include "fn_object.h"
 #include "fn_tile.h"
-#include "fn_draw.h"
 #include "fn.h"
 #include "fntexture.h"
 
@@ -114,66 +113,6 @@ FnTexture * fn_tile_load(
 
   g_free(data);
   return tile;
-}
-
-/* --------------------------------------------------------------- */
-
-SDL_Surface * fn_tile_load_to_sdl(
-        int fd,
-        fn_environment_t * env,
-        fn_tileheader_t * h,
-        Uint8 transparent)
-{
-    SDL_Surface * tile;
-    SDL_Rect r;
-    size_t num_read = 0;
-    fn_byterow_t br = {0, 0, 0, 0, 0};
-    char readbuf[5];
-
-    Uint8 pixelsize = fn_environment_get_pixelsize(env);
-
-    tile = fn_environment_create_surface(
-        env,
-        h->width * 8,
-        h->height);
-
-    size_t num_loads = h->width * h->height;
-    
-    r.x = 0;
-    r.y = 0;
-    r.w = 8 * pixelsize;
-    r.h = 1 * pixelsize;
-
-    Uint32 transparent_color = (
-        transparent ?
-        fn_environment_get_transparent(env) :
-        0);
-
-
-    while (num_read < num_loads)
-    {
-        read(fd, readbuf, 5);
-        br.trans  = readbuf[0];
-        br.blue   = readbuf[1];
-        br.green  = readbuf[2];
-        br.red    = readbuf[3];
-        br.brighten = readbuf[4];
-        fn_draw_byterow(
-                tile,
-                r,
-                &br,
-                transparent_color,
-                pixelsize);
-        r.x += 8 * pixelsize;
-        r.x %= (8 * h->width * pixelsize);
-
-
-        if (r.x == 0)
-            r.y += pixelsize;
-        num_read++;
-    }
-
-    return tile;
 }
 
 /* --------------------------------------------------------------- */

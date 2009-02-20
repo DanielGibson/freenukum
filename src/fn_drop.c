@@ -31,7 +31,6 @@
 
 /* --------------------------------------------------------------- */
 
-#include "fn_draw.h"
 #include "fn_tile.h"
 #include "fn_drop.h"
 #include "fntexture.h"

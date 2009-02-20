@@ -37,7 +37,6 @@
 
 /* --------------------------------------------------------------- */
 
-#include "fn_draw.h"
 #include "fn_picture.h"
 #include "fn_picture_splash.h"
 #include "fn_error.h"
