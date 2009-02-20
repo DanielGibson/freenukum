@@ -202,6 +202,7 @@ FnTexture * fn_texture_new_with_environment(
       "environment", env,
       NULL
       );
+  fn_texture_set_data_zero(texture);
   return texture;
 }
 
@@ -286,6 +287,25 @@ fn_texture_get_property(
 /* =============================================================== */
 
 void
+fn_texture_set_data_zero(
+    FnTexture * texture)
+{
+  g_return_if_fail(FN_IS_TEXTURE(texture));
+  FnTexturePrivate * priv = texture->priv;
+  SDL_Surface * surface = fn_environment_create_surface(
+      priv->env,
+      priv->width,
+      priv->height);
+  SDL_FillRect(
+      surface,
+      NULL,
+      0);
+  priv->surface = surface;
+}
+
+/* =============================================================== */
+
+void
 fn_texture_set_data(
     FnTexture * texture,
     guchar * data)
@@ -354,6 +374,59 @@ fn_texture_blit_to_sdl_surface(
   SDL_Surface * src = priv->surface;
 
   SDL_BlitSurface(src, srcrect, destination, dstrect);
+}
+
+/* =============================================================== */
+
+void
+fn_texture_clone_to_texture(
+    FnTexture * source,
+    FnGeometry * sourcegeometry,
+    FnTexture * target,
+    FnGeometry * targetgeometry)
+{
+  g_return_if_fail(FN_IS_TEXTURE(source));
+  g_return_if_fail(FN_IS_TEXTURE(target));
+  if (sourcegeometry != NULL) {
+    g_return_if_fail(FN_IS_GEOMETRY(sourcegeometry));
+  }
+  if (targetgeometry != NULL) {
+    g_return_if_fail(FN_IS_GEOMETRY(targetgeometry));
+  }
+
+  FnTexturePrivate * sourcepriv = source->priv;
+  FnTexturePrivate * targetpriv = target->priv;
+
+  SDL_Rect * sourcerect = NULL;
+  if (sourcegeometry != NULL) {
+    sourcerect = g_malloc0(sizeof(SDL_Rect));
+    fn_geometry_get_data(sourcegeometry,
+        (gint  *) &(sourcerect->x),
+        (gint  *) &(sourcerect->y),
+        (guint *) &(sourcerect->w),
+        (guint *) &(sourcerect->h));
+  }
+
+  SDL_Rect * targetrect = NULL;
+  if (targetgeometry != NULL) {
+    targetrect = g_malloc0(sizeof(SDL_Rect));
+    fn_geometry_get_data(targetgeometry,
+        (gint  *) &(targetrect->x),
+        (gint  *) &(targetrect->y),
+        (guint *) &(targetrect->w),
+        (guint *) &(targetrect->h));
+  }
+
+  SDL_BlitSurface(
+      sourcepriv->surface, sourcerect,
+      targetpriv->surface, targetrect);
+
+  if (sourcerect != NULL) {
+    g_free(sourcerect);
+  }
+  if (targetrect != NULL) {
+    g_free(targetrect);
+  }
 }
 
 /* =============================================================== */

@@ -36,6 +36,7 @@
 #include "fn.h"
 #include "fn_tile.h"
 #include "fn_environment.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -63,7 +64,7 @@ int main(int argc, char ** argv)
     fd = open(argv[1], O_RDONLY);
 
     SDL_Surface * screen;
-    SDL_Surface * drop;
+    FnTexture * drop;
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1)
     {
@@ -87,10 +88,10 @@ int main(int argc, char ** argv)
 
     drop = fn_drop_load(fd, env);
 
-    SDL_BlitSurface(drop, NULL, screen, NULL);
+    fn_texture_blit_to_sdl_surface(drop, NULL, screen, NULL);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
     
-    SDL_FreeSurface(drop);
+    g_object_unref(drop);
 
     while (quit == 0)
     {

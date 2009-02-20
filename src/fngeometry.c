@@ -134,12 +134,12 @@ fn_geometry_class_init(FnGeometryClass * c)
   g_object_class->set_property = fn_geometry_set_property;
   g_object_class->get_property = fn_geometry_get_property;
 
-  x_param = g_param_spec_uint(
+  x_param = g_param_spec_int(
       "x",
       "X",
       "The x coordinate (in pixels)",
-      0,
-      G_MAXUINT,
+      G_MININT,
+      G_MAXINT,
       0,
       G_PARAM_STATIC_STRINGS |
       G_PARAM_READWRITE
@@ -150,12 +150,12 @@ fn_geometry_class_init(FnGeometryClass * c)
       PROP_X,
       x_param);
 
-  y_param = g_param_spec_uint(
+  y_param = g_param_spec_int(
       "y",
       "Y",
       "The y coordinate (in pixels)",
-      0,
-      G_MAXUINT,
+      G_MININT,
+      G_MAXINT,
       0,
       G_PARAM_STATIC_STRINGS |
       G_PARAM_READWRITE

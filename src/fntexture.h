@@ -36,6 +36,7 @@
 
 /* =============================================================== */
 
+#include "fngeometry.h"
 #include "fn_environment.h"
 
 /* =============================================================== */
@@ -93,6 +94,12 @@ FnTexture * fn_texture_new_with_environment(
 /* =============================================================== */
 
 void
+fn_texture_set_data_zero(
+    FnTexture * texture);
+
+/* =============================================================== */
+
+void
 fn_texture_set_data(
     FnTexture * texture,
     guchar * data);
@@ -105,6 +112,18 @@ fn_texture_blit_to_sdl_surface(
     SDL_Rect * srcrect,
     SDL_Surface * destination,
     SDL_Rect * dstrect);
+
+/* =============================================================== */
+
+/* TODO write documentation that sourcegeometry as well
+   as targetgeometry can be NULL.
+   */
+void
+fn_texture_clone_to_texture(
+    FnTexture * source,
+    FnGeometry * sourcegeometry,
+    FnTexture * target,
+    FnGeometry * targetgeometry);
 
 /* =============================================================== */
 

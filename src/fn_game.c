@@ -172,7 +172,7 @@ int fn_game_start_in_level(
       FN_TILE_WIDTH * FN_LEVEL_WIDTH,
       FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
 
-  SDL_Surface * backdrop = NULL;;
+  FnTexture * backdrop = NULL;;
   SDL_TimerID tick = 0;
   int backdropnumber = 0;
 
@@ -609,7 +609,7 @@ int fn_game_start_in_level(
 
 cleanup:
   if (backdrop != NULL) {
-    SDL_FreeSurface(backdrop);
+    g_object_unref(backdrop);
   }
   if (lv != NULL) {
     returnvalue = lv->levelpassed;

@@ -46,6 +46,7 @@ typedef struct fn_level_t fn_level_t;
 #include "fn_bot.h"
 #include "fn_list.h"
 #include "fn_environment.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -232,8 +233,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
     SDL_Rect * sourcerect,
-    SDL_Surface * backdrop1,
-    SDL_Surface * backdrop2);
+    FnTexture * backdrop1,
+    FnTexture * backdrop2);
 
 /* --------------------------------------------------------------- */
 

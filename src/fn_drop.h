@@ -37,6 +37,7 @@
 
 #include "fn.h"
 #include "fn_environment.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -47,7 +48,7 @@
  *
  * @return The loaded backrdop.
  */
-SDL_Surface * fn_drop_load(int fd, fn_environment_t * env);
+FnTexture * fn_drop_load(int fd, fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

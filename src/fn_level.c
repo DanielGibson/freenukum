@@ -886,8 +886,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
     SDL_Surface * target,
     SDL_Rect * targetrect,
     SDL_Rect * sourcerect,
-    SDL_Surface * backdrop1,
-    SDL_Surface * backdrop2)
+    FnTexture * backdrop1,
+    FnTexture * backdrop2)
 {
   int x_start = 0;
   int x_end = FN_LEVEL_WIDTH;
@@ -904,7 +904,8 @@ void fn_level_blit_to_surface(fn_level_t * lv,
   SDL_FillRect(lv->surface, sourcerect, 0);
   */
   if (backdrop1 != NULL) {
-    SDL_BlitSurface(backdrop1, NULL, lv->surface, sourcerect);
+    fn_texture_blit_to_sdl_surface(
+        backdrop1, NULL, lv->surface, sourcerect);
   } else {
     SDL_FillRect(lv->surface, sourcerect, 0);
   }

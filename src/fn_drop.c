@@ -35,13 +35,14 @@
 #include "fn_tile.h"
 #include "fn_drop.h"
 #include "fntexture.h"
+#include "fngeometry.h"
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
+FnTexture * fn_drop_load(int fd, fn_environment_t * env)
 {
-    SDL_Surface * drop;
-    SDL_Rect r;
+    FnTexture * drop;
+    FnGeometry * geometry;
     size_t num_read = 0;
     fn_tileheader_t h;
 
@@ -49,19 +50,22 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
 
     Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
-    drop = fn_environment_create_surface(env,
-            FN_DROP_WIDTH * FN_TILE_WIDTH,
-            FN_DROP_HEIGHT * FN_TILE_WIDTH);
+    drop = fn_texture_new_with_environment(
+        FN_DROP_WIDTH * FN_TILE_WIDTH,
+        FN_DROP_HEIGHT * FN_TILE_HEIGHT,
+        env);
 
     size_t num_loads = FN_DROP_WIDTH *  FN_DROP_HEIGHT;
 
-    r.x=0;
-    r.y=0;
-    r.w=FN_TILE_WIDTH * pixelsize;
-    r.h=FN_TILE_HEIGHT * pixelsize;
+    gint  x      = 0;
+    gint  y      = 0;
+    guint width  = FN_TILE_WIDTH  * pixelsize;
+    guint height = FN_TILE_HEIGHT * pixelsize;
 
     h.width = 2;
     h.height = 16;
+
+    geometry = fn_geometry_new(x, y, width, height);
 
     while(num_read != num_loads)
     {
@@ -69,14 +73,16 @@ SDL_Surface * fn_drop_load(int fd, fn_environment_t * env)
             env,
             &h,
             FALSE);
-        fn_texture_blit_to_sdl_surface(tile, NULL, drop, &r);
+        fn_texture_clone_to_texture(tile, NULL, drop, geometry);
         g_object_unref(tile);
-        r.x += 16 * pixelsize;
-        if (r.x == 16 * FN_DROP_WIDTH * pixelsize)
+        x += 16 * pixelsize;
+        if (x == 16 * FN_DROP_WIDTH * pixelsize)
         {
-            r.x = 0;
-            r.y += 16 * pixelsize;
+            x = 0;
+            y += 16 * pixelsize;
         }
+        fn_geometry_set_x(geometry, x);
+        fn_geometry_set_y(geometry, y);
         num_read++;
     }
 
