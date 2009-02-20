@@ -26,7 +26,6 @@
  *
  *******************************************************************/
 
-#include <SDL.h>
 #include <string.h>
 
 /* --------------------------------------------------------------- */
@@ -34,12 +33,13 @@
 #include "fn_text.h"
 #include "fn_tilecache.h"
 #include "fn_object.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_text_printletter(
-    SDL_Surface * target,
-    SDL_Rect * r,
+    FnTexture * target,
+    FnGeometry * r,
     fn_environment_t * env,
     char c)
 {
@@ -49,7 +49,7 @@ void fn_text_printletter(
     tilenr = c - ' ' + FONT_ASCII_UPPERCASE;
   else
     tilenr = c - 'a' + FONT_ASCII_LOWERCASE;
-  fn_texture_blit_to_sdl_surface(
+  fn_texture_clone_to_texture(
       fn_environment_get_tile(env, tilenr),
       NULL,
       target,
@@ -59,40 +59,44 @@ void fn_text_printletter(
 /* --------------------------------------------------------------- */
 
 void fn_text_print(
-    SDL_Surface * target,
-    SDL_Rect * r,
+    FnTexture * target,
+    FnGeometry * r,
     fn_environment_t * env,
     char * text)
 {
-  SDL_Rect dstrect;
+  FnGeometry * dstrect;
 
   char * walker;
   char * end;
 
-  if (r != NULL)
-    memcpy(&dstrect, r, sizeof(SDL_Rect));
-  else {
-    dstrect.x = 0;
-    dstrect.y = 0;
+  if (r != NULL) {
+    dstrect = fn_geometry_clone(r);
+  } else {
+    dstrect = fn_geometry_new(0, 0, 0, 0);
   }
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  dstrect.w = pixelsize * FN_FONT_WIDTH;
-  dstrect.h = pixelsize * FN_FONT_HEIGHT;
+
+  fn_geometry_set_width(dstrect, pixelsize * FN_FONT_WIDTH);
+  fn_geometry_set_height(dstrect, pixelsize * FN_FONT_HEIGHT);
 
   end = text + strlen(text);
 
   for (walker = text; walker < end; walker++) {
     if (*walker == '\n') {
-      dstrect.x = r->x;
-      dstrect.y += pixelsize * FN_FONT_HEIGHT;
+      fn_geometry_set_x(dstrect, fn_geometry_get_x(r));
+      gint y = fn_geometry_get_y(dstrect);
+      fn_geometry_set_y(dstrect, y + pixelsize * FN_FONT_HEIGHT);
     } else {
-      fn_text_printletter(target,
-          &dstrect,
+      fn_text_printletter(
+          target,
+          dstrect,
           env,
           *walker);
-      dstrect.x += pixelsize * FN_FONT_WIDTH;
+      gint x = fn_geometry_get_x(dstrect);
+      fn_geometry_set_x(dstrect, x + pixelsize * FN_FONT_WIDTH);
     }
   }
+  g_object_unref(dstrect);
 }
 
 /* --------------------------------------------------------------- */

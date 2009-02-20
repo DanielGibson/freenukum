@@ -37,20 +37,22 @@
 
 #include "fn_tilecache.h"
 #include "fn_environment.h"
+#include "fntexture.h"
+#include "fngeometry.h"
 
 /* --------------------------------------------------------------- */
 
 void fn_text_printletter(
-    SDL_Surface * target,
-    SDL_Rect * r,
+    FnTexture * target,
+    FnGeometry * r,
     fn_environment_t * env,
     char c);
 
 /* --------------------------------------------------------------- */
 
 void fn_text_print(
-    SDL_Surface * target,
-    SDL_Rect * r,
+    FnTexture * target,
+    FnGeometry * r,
     fn_environment_t * env,
     char * text);
 

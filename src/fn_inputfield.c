@@ -126,23 +126,22 @@ void fn_inputfield_pressed_symbol(fn_inputfield_t * field,
 /* --------------------------------------------------------------- */
 
 void fn_inputfield_blit(fn_inputfield_t * field,
-    SDL_Surface * target,
+    FnTexture * target,
     fn_environment_t * env
     )
 {
-  Uint32 cursorcolor = SDL_MapRGB(target->format,
-      0x88, 0x88, 0x88);
-  SDL_FillRect(target, NULL, 0);
+  fn_texture_fill_area(target, NULL, 0, 0, 0);
   fn_text_print(target, NULL, env,
       field->data);
-  SDL_Rect cursorrect;
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  cursorrect.x = field->cursor * FN_FONT_WIDTH * pixelsize -
-    pixelsize / 2;
-  cursorrect.y = pixelsize;
-  cursorrect.w = pixelsize;
-  cursorrect.h = (FN_FONT_HEIGHT - 2) * pixelsize;
-  SDL_FillRect(target, &cursorrect, cursorcolor);
+  FnGeometry * cursorrect =
+    fn_geometry_new(
+        field->cursor * FN_FONT_WIDTH * pixelsize - pixelsize / 2,
+        pixelsize,
+        pixelsize,
+        (FN_FONT_HEIGHT - 2) * pixelsize);
+
+  fn_texture_fill_area(target, cursorrect, 0x88, 0x88, 0x88);
 }
 
 /* --------------------------------------------------------------- */

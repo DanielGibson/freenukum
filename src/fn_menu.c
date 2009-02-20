@@ -137,25 +137,33 @@ char fn_menu_get_choice(fn_menu_t * menu,
   }
   *walker = '\0';
 
-  SDL_Surface * box = fn_msgbox(
+  FnTexture * box = fn_msgbox(
       env,
       placeholder);
   free(placeholder);
 
-  SDL_Surface * target =
-    fn_environment_create_surface_with_aboslute_size(env,
-      box->w,
-      box->h);
+  guint box_width = fn_texture_get_width(box);
+  guint box_height = fn_texture_get_height(box);
 
-  SDL_Rect targetrect;
+  FnTexture * target =
+    fn_texture_new_with_environment(
+        box_width,
+        box_height,
+        env);
+
+  FnGeometry * targetrect;
+
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   fn_menuentry_t * entry = NULL;
 
   SDL_Rect destrect;
-  destrect.x = ((fn_environment_get_screen(env)->w)-(target->w))/2;
-  destrect.y = ((fn_environment_get_screen(env)->h)-(target->h))/2;
-  destrect.w = target->w;
-  destrect.h = target->h;
+  destrect.x =
+    ((fn_environment_get_screen(env)->w) - (box_width * pixelsize)) / 2;
+  destrect.y =
+    ((fn_environment_get_screen(env)->h)-(box_height * pixelsize))/2;
+  destrect.w = box_width;
+  destrect.h = box_height;
 
   char choice = '\0';
   SDL_Event event;
@@ -168,8 +176,6 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   SDL_TimerID tick = 0;
   tick = SDL_AddTimer(80, fn_menu_timer_triggered, 0);
-
-  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
   SDL_Rect pointrect;
   pointrect.x = FN_FONT_WIDTH * pixelsize + destrect.x;
@@ -188,38 +194,45 @@ char fn_menu_get_choice(fn_menu_t * menu,
     SDL_Surface * screen = fn_environment_get_screen(env);
 
     if (changed) {
-      SDL_BlitSurface(box, NULL, target, NULL);
+      fn_texture_clone_to_texture(box, NULL, target, NULL);
       i = 0;
       for (iter = fn_list_first(menu->entries);
           iter != fn_list_last(menu->entries);
           iter = fn_list_next(iter))
       {
-        targetrect.w = FN_FONT_WIDTH * pixelsize * menu->width;
-        targetrect.x = FN_FONT_WIDTH * pixelsize * 3;
-        targetrect.y = FN_FONT_HEIGHT * pixelsize * (i + textrows + 1);
-        targetrect.h = FN_FONT_HEIGHT * pixelsize;
+        targetrect = fn_geometry_new(
+            FN_FONT_WIDTH * pixelsize * 3,
+            FN_FONT_HEIGHT * pixelsize * (i + textrows + 1),
+            FN_FONT_WIDTH * pixelsize * menu->width,
+            FN_FONT_HEIGHT * pixelsize
+            );
+
         entry = (fn_menuentry_t *)iter->data;
         fn_text_print(
             target,
-            &targetrect,
+            targetrect,
             env,
             entry->name
             );
         if (i == menu->currententry) {
-          targetrect.x -= FN_FONT_WIDTH * pixelsize * 2;
-          pointrect.y = targetrect.y + destrect.y;
-          fn_texture_blit_to_sdl_surface(
+          fn_geometry_set_x(targetrect,
+              fn_geometry_get_x(targetrect) -
+              FN_FONT_WIDTH * pixelsize * 2);
+          pointrect.y = fn_geometry_get_y(targetrect) + destrect.y;
+          fn_texture_clone_to_texture(
               fn_environment_get_tile(
                 env,
                 OBJ_POINT + animationframe),
               NULL,
               target,
-              &targetrect);
+              targetrect);
         }
         i++;
+
+        g_object_unref(targetrect);
       }
 
-      SDL_BlitSurface(target, NULL,
+      fn_texture_blit_to_sdl_surface(target, NULL,
           screen, &destrect);
       if (updateWholeScreen) {
         SDL_UpdateRect(screen, 0, 0, 0, 0);
@@ -339,8 +352,8 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   SDL_EnableKeyRepeat(0, 0);
   SDL_RemoveTimer(tick);
-  SDL_FreeSurface(target);
-  SDL_FreeSurface(box);
+  g_object_unref(target);
+  g_object_unref(box);
 
   return choice;
 }

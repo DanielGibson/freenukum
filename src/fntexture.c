@@ -430,3 +430,56 @@ fn_texture_clone_to_texture(
 }
 
 /* =============================================================== */
+
+guint
+fn_texture_get_width(FnTexture * texture)
+{
+  g_return_val_if_fail(FN_IS_TEXTURE(texture), 0);
+  return texture->priv->width;
+}
+
+/* =============================================================== */
+
+guint
+fn_texture_get_height(FnTexture * texture)
+{
+  g_return_val_if_fail(FN_IS_TEXTURE(texture), 0);
+  return texture->priv->height;
+}
+
+/* =============================================================== */
+
+void
+fn_texture_fill_area(
+    FnTexture * texture,
+    FnGeometry * area,
+    guchar red,
+    guchar green,
+    guchar blue)
+{
+  g_return_if_fail(FN_IS_TEXTURE(texture));
+  if (area != NULL) {
+    g_return_if_fail(FN_IS_GEOMETRY(area));
+  }
+
+  gint x;
+  gint y;
+  guint width;
+  guint height;
+
+  if (area != NULL) {
+    fn_geometry_get_data(area, &x, &y, &width, &height);
+  } else {
+    x = 0;
+    y = 0;
+    width = fn_texture_get_width(texture);
+    height = fn_texture_get_height(texture);
+  }
+  SDL_Rect rect = { x, y, width, height };
+
+  Uint32 cursorcolor = SDL_MapRGB(
+      texture->priv->surface->format, red, green, blue);
+  SDL_FillRect(texture->priv->surface, &rect, cursorcolor);
+}
+
+/* =============================================================== */

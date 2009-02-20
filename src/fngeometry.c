@@ -416,3 +416,14 @@ fn_geometry_get_data(
 }
 
 /* =============================================================== */
+
+FnGeometry *
+fn_geometry_clone(FnGeometry * geometry)
+{
+  g_return_val_if_fail(FN_IS_GEOMETRY(geometry), NULL);
+  FnGeometryPrivate * priv = geometry->priv;
+  return fn_geometry_new(
+      priv->x, priv->y, priv->width, priv->height);
+}
+
+/* =============================================================== */

@@ -33,6 +33,7 @@
 #include "fn.h"
 #include "fn_msgbox.h"
 #include "fn_text.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -78,17 +79,17 @@ void fn_msgbox_get_text_information(
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_msgbox(
+FnTexture * fn_msgbox(
     fn_environment_t * env,
     char * text
     )
 {
   Uint16 columns = 0;
   Uint16 rows = 0;
-  SDL_Surface * msgbox;
+  FnTexture * msgbox;
   Uint8 i, j;
   int tilenr;
-  SDL_Rect r;
+  FnGeometry * r = fn_geometry_new(0, 0, 0, 0);
 
   fn_msgbox_get_text_information(
       text,
@@ -96,12 +97,11 @@ SDL_Surface * fn_msgbox(
       &rows);
 
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  msgbox = fn_environment_create_surface(
-      env,
+  msgbox = fn_texture_new_with_environment(
       FN_FONT_WIDTH * (columns + 2),
-      FN_FONT_HEIGHT * (rows + 2));
-  r.w = pixelsize * FN_TILE_WIDTH;
-  r.h = pixelsize * FN_TILE_HEIGHT;
+      FN_FONT_HEIGHT * (rows + 2),
+      env
+      );
 
   for (i = 0; i <= rows; i++) {
     for (j = 0; j <= columns; j++) {
@@ -116,23 +116,28 @@ SDL_Surface * fn_msgbox(
       else if (i % 2 == 0  && j == columns) tilenr = BORD_BLUE_RIGHT;
       else if (i % 2 == 0  && j % 2 == 0)   tilenr = BORD_BLUE_MIDDLE;
       else continue;
-      r.x = j * pixelsize * FN_FONT_WIDTH;
-      r.y = i * pixelsize * FN_FONT_HEIGHT;
-      fn_texture_blit_to_sdl_surface(
+
+      fn_geometry_set_data(r,
+          j * pixelsize * FN_FONT_WIDTH,
+          i * pixelsize * FN_FONT_HEIGHT,
+          pixelsize * FN_FONT_WIDTH,
+          pixelsize * FN_FONT_HEIGHT);
+      fn_texture_clone_to_texture(
           fn_environment_get_tile(env, tilenr),
           NULL,
           msgbox,
-          &r);
+          r);
     }
   }
 
-  r.w = pixelsize * FN_FONT_WIDTH;
-  r.h = pixelsize * FN_FONT_HEIGHT;
-  r.x = pixelsize * FN_FONT_WIDTH;
-  r.y = pixelsize * FN_FONT_HEIGHT;
+  fn_geometry_set_data(r,
+      pixelsize * FN_FONT_WIDTH,
+      pixelsize * FN_FONT_HEIGHT,
+      pixelsize * FN_FONT_WIDTH,
+      pixelsize * FN_FONT_HEIGHT);
 
   fn_text_print(msgbox,
-      &r,
+      r,
       env,
       text);
   

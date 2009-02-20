@@ -39,8 +39,9 @@
 
 int main(int argc, char ** argv)
 {
+    g_type_init();
     SDL_Surface * screen;
-    SDL_Surface * msgbox;
+    FnTexture * msgbox;
     int res;
     int quit = 0;
     SDL_Event event;
@@ -81,8 +82,8 @@ int main(int argc, char ** argv)
         env,
         msg);
 
-    SDL_BlitSurface(msgbox, NULL, screen, NULL);
-    SDL_FreeSurface(msgbox);
+    fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, NULL);
+    g_object_unref(msgbox);
     SDL_UpdateRect(screen, 0, 0, 0, 0);
 
     while (quit == 0)

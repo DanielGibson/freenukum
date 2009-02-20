@@ -31,17 +31,14 @@
 
 /* --------------------------------------------------------------- */
 
-#include <SDL.h>
-
-/* --------------------------------------------------------------- */
-
 #include "fn_object.h"
 #include "fn_tilecache.h"
 #include "fn_environment.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
-SDL_Surface * fn_msgbox(
+FnTexture * fn_msgbox(
     fn_environment_t * env,
     char * text);
 

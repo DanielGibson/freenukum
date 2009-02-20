@@ -232,15 +232,16 @@ void fn_borders_blit_life(
 void fn_borders_blit_score(
     fn_environment_t * env)
 {
-  SDL_Surface * scoresurface;
+  FnTexture * scoresurface;
   SDL_Rect dstrect;
 
   char scoretext[FN_SCORE_DIGITS+1];
 
-  scoresurface = fn_environment_create_surface(
-      env,
+  scoresurface = fn_texture_new_with_environment(
       FN_FONT_WIDTH * FN_SCORE_DIGITS,
-      FN_FONT_HEIGHT);
+      FN_FONT_HEIGHT,
+      env
+      );
 
   sprintf(scoretext, "%08llu",
       (long long unsigned int)fn_environment_get_score(env));
@@ -264,8 +265,8 @@ void fn_borders_blit_score(
   dstrect.h = FN_TILE_HEIGHT * pixelsize;
 
   SDL_Surface * screen = fn_environment_get_screen(env);
-  SDL_BlitSurface(scoresurface, NULL, screen, &dstrect);
-  SDL_FreeSurface(scoresurface);
+  fn_texture_blit_to_sdl_surface(scoresurface, NULL, screen, &dstrect);
+  g_object_unref(scoresurface);
 }
 
 /* --------------------------------------------------------------- */

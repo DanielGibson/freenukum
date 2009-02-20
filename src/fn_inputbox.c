@@ -38,12 +38,12 @@ fn_inputbox_answer_t fn_inputbox_show(
     char * answer,
     Uint8 answer_len)
 {
-  SDL_Surface * msgbox = NULL;
+  FnTexture * msgbox = NULL;
   SDL_Surface * temp = NULL;
-  SDL_Surface * inputfield_surface = NULL;
+  FnTexture * inputfield_surface = NULL;
 
   SDL_Rect dstrect;
-  SDL_Rect inputfield_rect;
+  FnGeometry * inputfield_rect;
 
   int i = 0;
   int res = 0;
@@ -63,23 +63,27 @@ fn_inputbox_answer_t fn_inputbox_show(
   sprintf(walker, "\n\n\nOK (Enter)   Abort (Esc)\n");
 
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  inputfield_surface = fn_environment_create_surface(env,
+  inputfield_surface = fn_texture_new_with_environment(
       FN_FONT_WIDTH * answer_len,
-      FN_FONT_HEIGHT);
+      FN_FONT_HEIGHT,
+      env
+      );
 
   msgbox = fn_msgbox(env, buffer);
 
   SDL_Surface * screen = fn_environment_get_screen(env);
 
-  dstrect.x = ((screen->w) - (msgbox->w))/2;
-  dstrect.y = ((screen->h) - (msgbox->h))/2;
-  dstrect.w = msgbox->w;
-  dstrect.h = msgbox->h;
+  dstrect.x = ((screen->w) - (fn_texture_get_width(msgbox)))/2;
+  dstrect.y = ((screen->h) - (fn_texture_get_height(msgbox)))/2;
+  dstrect.w = fn_texture_get_width(msgbox);
+  dstrect.h = fn_texture_get_height(msgbox);
 
-  inputfield_rect.w = inputfield_surface->w;
-  inputfield_rect.h = inputfield_surface->h;
-  inputfield_rect.x = FN_FONT_WIDTH * pixelsize;
-  inputfield_rect.y = msgbox->h - FN_FONT_HEIGHT * 4 * pixelsize;
+  inputfield_rect = fn_geometry_new(
+      FN_FONT_WIDTH * pixelsize,
+      fn_texture_get_height(msgbox) - FN_FONT_HEIGHT * 4 * pixelsize,
+      fn_texture_get_width(inputfield_surface),
+      fn_texture_get_height(inputfield_surface)
+      );
 
   /* backup the background */
   temp = SDL_CreateRGBSurface(screen->flags,
@@ -94,9 +98,9 @@ fn_inputbox_answer_t fn_inputbox_show(
 
   fn_inputfield_blit(inputfield, inputfield_surface,
       env);
-  SDL_BlitSurface(inputfield_surface, NULL, msgbox,
-      &inputfield_rect);
-  SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
+  fn_texture_clone_to_texture(inputfield_surface, NULL, msgbox,
+      inputfield_rect);
+  fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (1) {
@@ -181,16 +185,16 @@ fn_inputbox_answer_t fn_inputbox_show(
             case SDLK_RETURN:
               SDL_BlitSurface(temp, NULL, screen, &dstrect);
               SDL_FreeSurface(temp);
-              SDL_FreeSurface(msgbox);
+              g_object_unref(msgbox);
               fn_inputfield_free(inputfield);
-              SDL_FreeSurface(inputfield_surface);
+              g_object_unref(inputfield_surface);
               return fn_inputbox_answer_ok;
               break;
             case SDLK_ESCAPE:
               SDL_BlitSurface(temp, NULL, screen, &dstrect);
               SDL_FreeSurface(temp);
-              SDL_FreeSurface(msgbox);
-              SDL_FreeSurface(inputfield_surface);
+              g_object_unref(msgbox);
+              g_object_unref(inputfield_surface);
               fn_inputfield_free(inputfield);
               return fn_inputbox_answer_quit;
               break;
@@ -200,9 +204,9 @@ fn_inputbox_answer_t fn_inputbox_show(
           }
           fn_inputfield_blit(inputfield, inputfield_surface,
               env);
-          SDL_BlitSurface(inputfield_surface, NULL, msgbox,
-              &inputfield_rect);
-          SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
+          fn_texture_clone_to_texture(inputfield_surface, NULL, msgbox,
+              inputfield_rect);
+          fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
           SDL_UpdateRect(screen, 0, 0, 0, 0);
           break;
         case SDL_VIDEOEXPOSE:

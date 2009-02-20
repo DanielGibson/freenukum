@@ -141,6 +141,11 @@ fn_geometry_get_width(FnGeometry * geometry);
 guint
 fn_geometry_get_height(FnGeometry * geometry);
 
+/* --------------------------------------------------------------- */
+
+FnGeometry *
+fn_geometry_clone(FnGeometry * geometry);
+
 /* =============================================================== */
 
 G_END_DECLS

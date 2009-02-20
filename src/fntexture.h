@@ -127,6 +127,30 @@ fn_texture_clone_to_texture(
 
 /* =============================================================== */
 
+guint
+fn_texture_get_width(
+    FnTexture * texture);
+
+/* =============================================================== */
+
+guint
+fn_texture_get_height(
+    FnTexture * texture);
+
+/* =============================================================== */
+
+/* TODO for api-documentation: area can be NULL, in that case
+   the whole texture is filled with the color */
+void
+fn_texture_fill_area(
+    FnTexture * texture,
+    FnGeometry * area,
+    guchar red,
+    guchar green,
+    guchar blue);
+
+/* =============================================================== */
+
 G_END_DECLS
 
 /* =============================================================== */

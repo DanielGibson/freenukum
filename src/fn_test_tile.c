@@ -39,6 +39,7 @@
 
 int main(int argc, char ** argv)
 {
+    g_type_init();
     int fd;
     fn_environment_t * env = fn_environment_create();
     fn_environment_load_tilecache(env);

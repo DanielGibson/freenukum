@@ -92,7 +92,7 @@ int fn_picture_splash_show_with_message(
 
 
   if (fn_environment_tilecache_loaded(env) && msg != NULL) {
-    SDL_Surface * msgbox;
+    FnTexture * msgbox;
     SDL_Rect dstrect;
 
     msgbox = fn_msgbox(env,
@@ -102,8 +102,8 @@ int fn_picture_splash_show_with_message(
     dstrect.x = x * pixelsize;
     dstrect.y = y * pixelsize;
 
-    SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
-    SDL_FreeSurface(msgbox);
+    fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
+    g_object_unref(msgbox);
   }
 
   SDL_UpdateRect(screen, 0, 0, 0, 0);

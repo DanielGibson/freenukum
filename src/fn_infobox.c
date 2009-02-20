@@ -35,7 +35,7 @@ void fn_infobox_show(
     fn_environment_t * env,
     char * msg)
 {
-  SDL_Surface * msgbox;
+  FnTexture * msgbox;
   SDL_Surface * temp;
   SDL_Rect dstrect;
 
@@ -48,10 +48,10 @@ void fn_infobox_show(
       msg);
 
   SDL_Surface * screen = fn_environment_get_screen(env);
-  dstrect.x = ((screen->w) - (msgbox->w))/2;
-  dstrect.y = ((screen->h) - (msgbox->h))/2;
-  dstrect.w = msgbox->w;
-  dstrect.h = msgbox->h;
+  dstrect.x = ((screen->w) - (fn_texture_get_width(msgbox)))/2;
+  dstrect.y = ((screen->h) - (fn_texture_get_height(msgbox)))/2;
+  dstrect.w = fn_texture_get_width(msgbox);
+  dstrect.h = fn_texture_get_height(msgbox);
 
   /* backup the background */
   temp = SDL_CreateRGBSurface(screen->flags,
@@ -60,8 +60,8 @@ void fn_infobox_show(
       0, 0, 0, 0);
   SDL_BlitSurface(screen, &dstrect, temp, NULL);
 
-  SDL_BlitSurface(msgbox, NULL, screen, &dstrect);
-  SDL_FreeSurface(msgbox);
+  fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
+  g_object_unref(msgbox);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
   while (1) {
