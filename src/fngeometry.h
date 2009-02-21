@@ -143,6 +143,16 @@ fn_geometry_get_height(FnGeometry * geometry);
 
 /* --------------------------------------------------------------- */
 
+void
+fn_geometry_add_x(FnGeometry * geometry, gint x_to_add);
+
+/* --------------------------------------------------------------- */
+
+void
+fn_geometry_add_y(FnGeometry * geometry, gint y_to_add);
+
+/* --------------------------------------------------------------- */
+
 FnGeometry *
 fn_geometry_clone(FnGeometry * geometry);
 

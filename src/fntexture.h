@@ -94,12 +94,6 @@ FnTexture * fn_texture_new_with_environment(
 /* =============================================================== */
 
 void
-fn_texture_set_data_zero(
-    FnTexture * texture);
-
-/* =============================================================== */
-
-void
 fn_texture_set_data(
     FnTexture * texture,
     guchar * data);

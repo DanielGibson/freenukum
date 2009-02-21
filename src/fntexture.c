@@ -70,6 +70,24 @@ fn_texture_class_init(FnTextureClass * c);
 
 /* --------------------------------------------------------------- */
 
+static GObject *
+fn_texture_constructor(
+    GType                   gtype,
+    guint                   n_properties,
+    GObjectConstructParam * properties);
+
+/* --------------------------------------------------------------- */
+
+static void
+fn_texture_dispose(GObject * gobject);
+
+/* --------------------------------------------------------------- */
+
+static void
+fn_texture_finalize(GObject * gobject);
+
+/* --------------------------------------------------------------- */
+
 static void
 fn_texture_set_property(
     GObject * object,
@@ -88,6 +106,7 @@ fn_texture_get_property(
 
 /* =============================================================== */
 
+/*
 GType fn_texture_get_type(void)
 {
   static GType fn_texture_type = 0;
@@ -117,6 +136,7 @@ GType fn_texture_get_type(void)
 
   return fn_texture_type;
 }
+*/
 
 /* --------------------------------------------------------------- */
 
@@ -135,6 +155,9 @@ fn_texture_class_init(FnTextureClass * c)
 
   g_object_class->set_property = fn_texture_set_property;
   g_object_class->get_property = fn_texture_get_property;
+  g_object_class->constructor  = fn_texture_constructor;
+  g_object_class->dispose      = fn_texture_dispose;
+  g_object_class->finalize     = fn_texture_finalize;
 
   width_param = g_param_spec_uint(
       "width",
@@ -202,7 +225,6 @@ FnTexture * fn_texture_new_with_environment(
       "environment", env,
       NULL
       );
-  fn_texture_set_data_zero(texture);
   return texture;
 }
 
@@ -286,12 +308,24 @@ fn_texture_get_property(
 
 /* =============================================================== */
 
-void
-fn_texture_set_data_zero(
-    FnTexture * texture)
+G_DEFINE_TYPE(FnTexture, fn_texture, G_TYPE_OBJECT);
+
+/* =============================================================== */
+
+static GObject *
+fn_texture_constructor(
+    GType                   gtype,
+    guint                   n_properties,
+    GObjectConstructParam * properties)
 {
-  g_return_if_fail(FN_IS_TEXTURE(texture));
+  GObject * obj;
+  GObjectClass * parent_class = G_OBJECT_CLASS(fn_texture_parent_class);
+
+  obj = parent_class->constructor(gtype, n_properties, properties);
+
+  FnTexture * texture = FN_TEXTURE(obj);
   FnTexturePrivate * priv = texture->priv;
+
   SDL_Surface * surface = fn_environment_create_surface(
       priv->env,
       priv->width,
@@ -300,7 +334,29 @@ fn_texture_set_data_zero(
       surface,
       NULL,
       0);
-  priv->surface = surface;
+
+  texture->priv->surface = surface;
+
+  return obj;
+}
+
+/* =============================================================== */
+
+static void
+fn_texture_dispose(GObject * gobject)
+{
+}
+
+/* =============================================================== */
+
+static void
+fn_texture_finalize(GObject * gobject)
+{
+  FnTexture * texture = FN_TEXTURE(gobject);
+
+  SDL_FreeSurface(texture->priv->surface);
+
+  G_OBJECT_CLASS(fn_texture_parent_class)->finalize(gobject);
 }
 
 /* =============================================================== */
@@ -313,10 +369,7 @@ fn_texture_set_data(
   g_return_if_fail(FN_IS_TEXTURE(texture));
   FnTexturePrivate * priv = texture->priv;
   Uint32 transparent = fn_environment_get_transparent(priv->env);
-  SDL_Surface * surface = fn_environment_create_surface(
-      priv->env,
-      priv->width,
-      priv->height);
+  SDL_Surface * surface = priv->surface;
 
   guint i = 0;
   guint j = 0;
@@ -483,3 +536,4 @@ fn_texture_fill_area(
 }
 
 /* =============================================================== */
+
