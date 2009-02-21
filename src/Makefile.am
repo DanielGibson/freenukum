@@ -10,6 +10,8 @@ objectsources = fn.h \
 								fnactor.h           fnactor.c \
 								fnactorgroup.h      fnactorgroup.c \
                 fngeometry.h        fngeometry.c \
+								fngraphics.h        fngraphics.c \
+								fnscreen.h          fnscreen.c \
                 fntexture.h         fntexture.c \
                 fn_level_actor.h    fn_level_actor.c \
                 fn_menu.h           fn_menu.c \
