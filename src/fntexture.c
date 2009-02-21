@@ -176,6 +176,10 @@ fn_texture_class_init(FnTextureClass * c)
 
 /* =============================================================== */
 
+G_DEFINE_TYPE(FnTexture, fn_texture, G_TYPE_OBJECT);
+
+/* =============================================================== */
+
 FnTexture * fn_texture_new_with_environment(
     guint width,
     guint height,
@@ -271,10 +275,6 @@ fn_texture_get_property(
       break;
   }
 }
-
-/* =============================================================== */
-
-G_DEFINE_TYPE(FnTexture, fn_texture, G_TYPE_OBJECT);
 
 /* =============================================================== */
 
