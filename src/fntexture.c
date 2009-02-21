@@ -106,40 +106,6 @@ fn_texture_get_property(
 
 /* =============================================================== */
 
-/*
-GType fn_texture_get_type(void)
-{
-  static GType fn_texture_type = 0;
-
-  if (!fn_texture_type)
-  {
-    const GTypeInfo fn_texture_info =
-    {
-      sizeof(FnTextureClass),
-      NULL,
-      NULL,
-      (GClassInitFunc)fn_texture_class_init,
-      NULL,
-      NULL,
-      sizeof(FnTexture),
-      0,
-      (GInstanceInitFunc)fn_texture_init
-    };
-
-    fn_texture_type =
-      g_type_register_static(
-          G_TYPE_OBJECT,
-          "FnTexture",
-          &fn_texture_info,
-          0);
-  }
-
-  return fn_texture_type;
-}
-*/
-
-/* --------------------------------------------------------------- */
-
 static void
 fn_texture_class_init(FnTextureClass * c)
 {
