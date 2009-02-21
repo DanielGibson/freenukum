@@ -71,7 +71,7 @@ fn_inputbox_answer_t fn_inputbox_show(
 
   msgbox = fn_msgbox(env, buffer);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
 
   dstrect.x = ((screen->w) - (fn_texture_get_width(msgbox)))/2;
   dstrect.y = ((screen->h) - (fn_texture_get_height(msgbox)))/2;

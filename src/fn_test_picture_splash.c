@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
 
   fn_error_set_handler(fn_error_print_commandline);
 
-  screen = fn_environment_get_screen(env);
+  screen = fn_environment_get_screen_sdl(env);
 
   res = fn_picture_splash_show(env, "DN.DN1");
   

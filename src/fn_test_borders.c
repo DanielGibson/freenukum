@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
   fn_environment_check_for_episodes(env);
   fn_environment_load_tilecache(env);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
 
   fn_borders_blit(env);
   SDL_UpdateRect(screen, 0, 0, 0, 0);

@@ -102,7 +102,7 @@ void fn_game_start(
   fn_hero_t * hero = fn_environment_get_hero(env);
   fn_hero_reset(hero);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
   SDL_FillRect(screen, NULL, 0);
 
   fn_borders_blit(env);
@@ -291,13 +291,13 @@ int fn_game_start_in_level(
   int updateWholeScreen = 1;
 
   SDL_Surface * screen =
-    fn_environment_get_screen(env);
+    fn_environment_get_screen_sdl(env);
 
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
     if (doupdate) {
-      SDL_Surface * screen = fn_environment_get_screen(env);
+      SDL_Surface * screen = fn_environment_get_screen_sdl(env);
       fn_level_blit_to_surface(lv,
           level,
           &srcrect,

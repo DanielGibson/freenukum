@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
 
     snprintf(tilespath, 1024, "%s%s", homedir, "/.freenukum/data/");
 
-    screen = fn_environment_get_screen(env);
+    screen = fn_environment_get_screen_sdl(env);
 
     msgbox = fn_msgbox(
         env,

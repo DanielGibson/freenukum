@@ -87,7 +87,7 @@ int fn_picture_splash_show_with_message(
 
   picture = fn_picture_load(fd, env);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
   fn_texture_blit_to_sdl_surface(picture, NULL, screen, NULL);
 
 

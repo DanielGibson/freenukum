@@ -74,7 +74,7 @@ int main(int argc, char ** argv)
 
   /* here comes the hero!!!!! */
   hero = fn_hero_create(env);
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
   fn_hero_blit(hero, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 

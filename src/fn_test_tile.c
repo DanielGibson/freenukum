@@ -73,7 +73,7 @@ int main(int argc, char ** argv)
     fn_tileheader_t h;
     fn_tile_loadheader(fd, &h);
  
-    screen = fn_environment_get_screen(env);
+    screen = fn_environment_get_screen_sdl(env);
     Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
     SDL_Rect r;

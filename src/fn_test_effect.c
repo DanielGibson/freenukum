@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
       env);
   close(fd);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
   fn_texture_blit_to_sdl_surface(picture, NULL, screen, NULL);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 

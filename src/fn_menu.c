@@ -159,9 +159,9 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   SDL_Rect destrect;
   destrect.x =
-    ((fn_environment_get_screen(env)->w) - (box_width * pixelsize)) / 2;
+    ((fn_environment_get_screen_sdl(env)->w) - (box_width * pixelsize)) / 2;
   destrect.y =
-    ((fn_environment_get_screen(env)->h)-(box_height * pixelsize))/2;
+    ((fn_environment_get_screen_sdl(env)->h)-(box_height * pixelsize))/2;
   destrect.w = box_width;
   destrect.h = box_height;
 
@@ -191,7 +191,7 @@ char fn_menu_get_choice(fn_menu_t * menu,
   while (!choice_made) {
 
     fn_list_t * iter = NULL;
-    SDL_Surface * screen = fn_environment_get_screen(env);
+    SDL_Surface * screen = fn_environment_get_screen_sdl(env);
 
     if (changed) {
       fn_texture_clone_to_texture(box, NULL, target, NULL);

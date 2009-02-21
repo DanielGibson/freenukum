@@ -40,7 +40,7 @@ int main(int argc, char ** argv) {
   fn_environment_t * env = fn_environment_create();
   fn_environment_load_tilecache(env);
 
-  screen = fn_environment_get_screen(env);
+  screen = fn_environment_get_screen_sdl(env);
 
   fn_menu_t * menu = fn_menu_create("Testmenu\nTest\nTest\n\n");
   fn_menu_append_entry(menu, 's', "S)tart game", 's');

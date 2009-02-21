@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
     SDL_Surface * screen;
     FnTexture * picture;
 
-    screen = fn_environment_get_screen(env);
+    screen = fn_environment_get_screen_sdl(env);
 
     picture = fn_picture_load(
         fd, env);

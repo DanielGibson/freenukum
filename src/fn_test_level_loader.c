@@ -129,7 +129,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    screen = fn_environment_get_screen(env);
+    screen = fn_environment_get_screen_sdl(env);
 
     lv = fn_level_load(fd, env);
     if (lv == NULL)

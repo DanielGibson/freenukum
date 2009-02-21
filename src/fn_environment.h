@@ -264,7 +264,7 @@ SDL_Surface * fn_environment_create_surface_with_aboslute_size(
  *
  * @return  The screen.
  */
-SDL_Surface * fn_environment_get_screen(fn_environment_t * env);
+SDL_Surface * fn_environment_get_screen_sdl(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

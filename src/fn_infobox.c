@@ -49,7 +49,7 @@ void fn_infobox_show(
 
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
-  SDL_Surface * screen = fn_environment_get_screen(env);
+  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
   dstrect.x =
     ((screen->w) - (fn_texture_get_width(msgbox) * pixelsize))/2;
   dstrect.y =
