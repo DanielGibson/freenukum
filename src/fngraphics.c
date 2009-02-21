@@ -38,6 +38,7 @@ struct _FnGraphicsPrivate
 {
   FnScreen * screen;
   gboolean fullscreen;
+  gboolean initialized;
 };
 
 /* =============================================================== */
@@ -178,8 +179,15 @@ fn_graphics_constructor(
   FnGraphicsPrivate * priv;
   priv = graphics->priv;
 
+  priv->initialized = FALSE;
+
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
+    return;
+  }
   /* TODO initialize SDL */
   /* TODO create reference to screen */
+
+  priv->initialized = TRUE;
 
   return obj;
 }
