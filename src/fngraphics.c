@@ -118,6 +118,17 @@ G_DEFINE_TYPE(FnGraphics, fn_graphics, G_TYPE_OBJECT);
 
 /* =============================================================== */
 
+FnGraphics *
+fn_graphics_new()
+{
+  FnGraphics * graphics = g_object_new(
+      FN_TYPE_GRAPHICS,
+      NULL);
+  return graphics;
+}
+
+/* =============================================================== */
+
 static void
 fn_graphics_init(FnGraphics * graphics)
 {
@@ -182,9 +193,11 @@ fn_graphics_constructor(
   priv->initialized = FALSE;
 
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
-    return;
+    return obj;
   }
-  /* TODO initialize SDL */
+
+  g_print("Initialized graphics\n");
+
   /* TODO create reference to screen */
 
   priv->initialized = TRUE;
@@ -205,6 +218,7 @@ fn_graphics_dispose(GObject * gobject)
 static void
 fn_graphics_finalize(GObject * gobject)
 {
+  SDL_Quit();
 }
 
 /* --------------------------------------------------------------- */

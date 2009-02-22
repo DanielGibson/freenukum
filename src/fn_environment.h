@@ -42,6 +42,7 @@ typedef struct fn_environment_t fn_environment_t;
 
 #include "fn.h"
 #include "fntexture.h"
+#include "fngraphics.h"
 #include "fn_settings.h"
 #include "fn_tilecache.h"
 #include "fn_hero.h"
@@ -118,6 +119,11 @@ struct fn_environment_t {
    * The hero.
    */
   fn_hero_t * hero;
+
+  /**
+   * The graphics backend.
+   */
+  FnGraphics * graphics;
 };
 
 /* --------------------------------------------------------------- */
