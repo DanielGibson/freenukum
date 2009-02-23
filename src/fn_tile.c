@@ -48,7 +48,7 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h)
 
 FnTexture * fn_tile_load(
     int fd,
-    FnGraphicsOptions * options,
+    FnGraphicOptions * graphic_options,
     fn_tileheader_t * h,
     gboolean has_transparency)
 {
@@ -58,7 +58,7 @@ FnTexture * fn_tile_load(
   FnTexture * tile = fn_texture_new_with_options(
       width,
       height,
-      options);
+      graphic_options);
 
   guchar * data = g_new(guchar, width * height * 4);
 

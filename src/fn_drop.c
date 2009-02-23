@@ -40,52 +40,56 @@
 
 FnTexture * fn_drop_load(int fd, fn_environment_t * env)
 {
-    FnTexture * drop;
-    FnGeometry * geometry;
-    size_t num_read = 0;
-    fn_tileheader_t h;
+  FnGraphicOptions * graphic_options;
+  FnTexture * drop;
+  FnGeometry * geometry;
+  size_t num_read = 0;
+  fn_tileheader_t h;
 
-    FnTexture * tile;
+  FnTexture * tile;
 
-    Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  Uint8 pixelsize = fn_environment_get_pixelsize(env);
 
-    drop = fn_texture_new_with_environment(
-        FN_DROP_WIDTH * FN_TILE_WIDTH,
-        FN_DROP_HEIGHT * FN_TILE_HEIGHT,
-        env);
+  graphic_options = fn_environment_get_graphic_options(env);
 
-    size_t num_loads = FN_DROP_WIDTH *  FN_DROP_HEIGHT;
+  drop = fn_texture_new_with_options(
+      FN_DROP_WIDTH * FN_TILE_WIDTH,
+      FN_DROP_HEIGHT * FN_TILE_HEIGHT,
+      graphic_options);
 
-    gint  x      = 0;
-    gint  y      = 0;
-    guint width  = FN_TILE_WIDTH  * pixelsize;
-    guint height = FN_TILE_HEIGHT * pixelsize;
+  size_t num_loads = FN_DROP_WIDTH *  FN_DROP_HEIGHT;
 
-    h.width = 2;
-    h.height = 16;
+  gint  x      = 0;
+  gint  y      = 0;
+  guint width  = FN_TILE_WIDTH  * pixelsize;
+  guint height = FN_TILE_HEIGHT * pixelsize;
 
-    geometry = fn_geometry_new(x, y, width, height);
+  h.width = 2;
+  h.height = 16;
 
-    while(num_read != num_loads)
+  geometry = fn_geometry_new(x, y, width, height);
+
+  while(num_read != num_loads)
+  {
+    tile = fn_tile_load(
+        fd,
+        graphic_options,
+        &h,
+        FALSE);
+    fn_texture_clone_to_texture(tile, NULL, drop, geometry);
+    g_object_unref(tile);
+    x += 16 * pixelsize;
+    if (x == 16 * FN_DROP_WIDTH * pixelsize)
     {
-        tile = fn_tile_load(fd,
-            env,
-            &h,
-            FALSE);
-        fn_texture_clone_to_texture(tile, NULL, drop, geometry);
-        g_object_unref(tile);
-        x += 16 * pixelsize;
-        if (x == 16 * FN_DROP_WIDTH * pixelsize)
-        {
-            x = 0;
-            y += 16 * pixelsize;
-        }
-        fn_geometry_set_x(geometry, x);
-        fn_geometry_set_y(geometry, y);
-        num_read++;
+      x = 0;
+      y += 16 * pixelsize;
     }
+    fn_geometry_set_x(geometry, x);
+    fn_geometry_set_y(geometry, y);
+    num_read++;
+  }
 
-    return drop;
+  return drop;
 }
 
 /* --------------------------------------------------------------- */

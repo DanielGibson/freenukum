@@ -119,11 +119,11 @@ G_DEFINE_TYPE(FnGraphics, fn_graphics, G_TYPE_OBJECT);
 /* =============================================================== */
 
 FnGraphics *
-fn_graphics_new(gboolean fullscreen)
+fn_graphics_new_with_options(FnGraphicOptions * options)
 {
   FnGraphics * graphics = g_object_new(
       FN_TYPE_GRAPHICS,
-      "fullscreen", fullscreen,
+      "graphic_options", options,
       NULL);
   return graphics;
 }
@@ -252,4 +252,22 @@ fn_graphics_is_initialized(FnGraphics * graphics)
   FnGraphicsPrivate * priv = graphics->priv;
 
   return priv->initialized;
+}
+
+/* --------------------------------------------------------------- */
+
+void
+fn_graphics_toggle_fullscreen(FnGraphics * graphics)
+{
+  g_return_if_fail(FN_IS_GRAPHICS(graphics));
+
+  FnGraphicsPrivate * priv = graphics->priv;
+
+  if (priv->screen == NULL) {
+    return;
+  }
+
+  fn_screen_toggle_fullscreen(priv->screen);
+
+  return;
 }

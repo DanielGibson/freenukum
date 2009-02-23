@@ -72,12 +72,12 @@ struct fn_level_t {
   /**
    * The surface which contains the always fixed tiles.
    */
-  SDL_Surface * surface_fixed;
+  FnTexture * texture_fixed;
 
   /**
    * The surface for blitting the level.
    */
-  SDL_Surface * surface;
+  FnTexture * texture;
 
   /**
    * The environment in which the level runs.
@@ -223,16 +223,17 @@ void fn_level_set_solid(fn_level_t * lv, int x, int y, Uint8 solid);
  * Blit the current state of the level to an SDL Surface.
  *
  * @param  lv         The level to blit.
- * @param  target     The target SDL Surface.
+ * @param  target     The target texture.
  * @param  targetrect The target area to which to blit.
  * @param  sourcerect The source rectangle.
  * @param  backdrop1  The first backdrop type.
  * @param  backdrop2  The second backdrop type.
  */
-void fn_level_blit_to_surface(fn_level_t * lv,
-    SDL_Surface * target,
-    SDL_Rect * targetrect,
-    SDL_Rect * sourcerect,
+void fn_level_blit_to_texture(
+    fn_level_t * lv,
+    FnTexture * texture,
+    FnGeometry * targetrect,
+    FnGeometry * sourcerect,
     FnTexture * backdrop1,
     FnTexture * backdrop2);
 

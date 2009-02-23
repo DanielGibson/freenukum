@@ -96,11 +96,14 @@ FnTexture * fn_msgbox(
       &columns,
       &rows);
 
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
+
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  msgbox = fn_texture_new_with_environment(
+  msgbox = fn_texture_new_with_options(
       FN_FONT_WIDTH * (columns + 2),
       FN_FONT_HEIGHT * (rows + 2),
-      env
+      graphic_options
       );
 
   for (i = 0; i <= rows; i++) {

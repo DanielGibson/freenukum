@@ -42,6 +42,8 @@
 fn_level_t * fn_level_load(int fd,
     fn_environment_t * env)
 {
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
   size_t i = 0;
   fn_level_t * lv = malloc(sizeof(fn_level_t));
   memset(lv, 0, sizeof(fn_level_t));
@@ -64,15 +66,15 @@ fn_level_t * fn_level_load(int fd,
 
   lv->do_play = 1;
 
-  lv->surface_fixed = fn_environment_create_surface(
-      env,
+  lv->texture_fixed = fn_texture_new_with_options(
       FN_TILE_WIDTH * FN_LEVEL_WIDTH,
-      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT,
+      graphic_options);
 
-  lv->surface = fn_environment_create_surface(
-      env,
+  lv->texture = fn_texture_new_with_options(
       FN_TILE_WIDTH * FN_LEVEL_WIDTH,
-      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT,
+      graphic_options);
 
   while (i != FN_LEVEL_HEIGHT * FN_LEVEL_WIDTH)
   {

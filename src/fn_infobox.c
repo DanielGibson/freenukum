@@ -36,8 +36,7 @@ void fn_infobox_show(
     char * msg)
 {
   FnTexture * msgbox;
-  SDL_Surface * temp;
-  SDL_Rect dstrect;
+  FnGeometry * destrect;
 
   int res;
 
@@ -47,43 +46,42 @@ void fn_infobox_show(
       env,
       msg);
 
-  Uint8 pixelsize = fn_environment_get_pixelsize(env);
+  FnScreen * screen = fn_environment_get_screen(env);
 
-  SDL_Surface * screen = fn_environment_get_screen_sdl(env);
-  dstrect.x =
-    ((screen->w) - (fn_texture_get_width(msgbox) * pixelsize))/2;
-  dstrect.y =
-    ((screen->h) - (fn_texture_get_height(msgbox) * pixelsize))/2;
-  dstrect.w = fn_texture_get_width(msgbox) * pixelsize;
-  dstrect.h = fn_texture_get_height(msgbox) * pixelsize;
+  destrect = fn_geometry_new(
+      (fn_screen_get_width(screen) - fn_texture_get_width(msgbox)) /
+      2,
+      (fn_screen_get_height(screen) - fn_texture_get_height(msgbox)) /
+      2,
+      fn_texture_get_width(msgbox),
+      fn_texture_get_height(msgbox));
 
   /* backup the background */
-  temp = fn_environment_create_surface(env,
-      fn_texture_get_width(msgbox), fn_texture_get_height(msgbox));
-  SDL_BlitSurface(screen, &dstrect, temp, NULL);
+  fn_screen_snapshot_push(screen);
 
-  fn_texture_blit_to_sdl_surface(msgbox, NULL, screen, &dstrect);
+  fn_screen_clone_texture(screen, destrect,
+      msgbox, NULL);
+  g_object_unref(destrect);
   g_object_unref(msgbox);
-  SDL_UpdateRect(screen, 0, 0, 0, 0);
+
+  fn_screen_update(screen);
 
   while (1) {
     res = SDL_WaitEvent(&event);
     if (res == 1) {
       switch(event.type) {
         case SDL_KEYDOWN:
-          SDL_BlitSurface(temp, NULL, screen, &dstrect);
-          SDL_FreeSurface(temp);
+          fn_screen_snapshot_pop(screen);
           return;
           break;
         case SDL_MOUSEBUTTONDOWN:
           if (event.button.button == SDL_BUTTON_LEFT) {
-            SDL_BlitSurface(temp, NULL, screen, &dstrect);
-            SDL_FreeSurface(temp);
+            fn_screen_snapshot_pop(screen);
             return;
           }
           break;
         case SDL_VIDEOEXPOSE:
-          SDL_UpdateRect(screen, 0, 0, 0, 0);
+          fn_screen_update(screen);
           break;
         default:
           /* ignore other events */

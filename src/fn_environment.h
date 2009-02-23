@@ -388,6 +388,11 @@ fn_environment_get_graphic_options(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 
+FnScreen *
+fn_environment_get_screen(fn_environment_t * env);
+
+/* --------------------------------------------------------------- */
+
 fn_hero_t * fn_environment_get_hero(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */

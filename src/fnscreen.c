@@ -27,6 +27,7 @@
  *******************************************************************/
 
 #include <SDL.h>
+#include <glib.h>
 
 /* =============================================================== */
 
@@ -42,6 +43,7 @@ struct _FnScreenPrivate
   guint scale;
   guint bpp;
   guint sdl_flags;
+  GQueue * snapshot_stack;
 };
 
 /* =============================================================== */
@@ -302,6 +304,8 @@ fn_screen_constructor(
         priv->sdl_flags
         );
 
+  priv->snapshot_stack = g_queue_new();
+
   return obj;
 }
 
@@ -310,6 +314,13 @@ fn_screen_constructor(
 static void
 fn_screen_dispose(GObject * gobject)
 {
+  g_return_if_fail(FN_IS_SCREEN(gobject));
+  FnScreen * screen = FN_SCREEN(gobject);
+  FnScreenPrivate * priv = screen->priv;
+  if (priv->snapshot_stack != NULL) {
+    g_queue_free(priv->snapshot_stack);
+    priv->snapshot_stack = NULL;
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -328,8 +339,11 @@ fn_screen_finalize(GObject * gobject)
 /* =============================================================== */
 
 FnScreen *
-fn_screen_new_with_defaults()
+fn_screen_new_with_options(FnGraphicOptions * options)
 {
+  /* TODO set transparent color:
+  env->transparent = SDL_MapRGB(env->screen->format, 100, 1, 1);
+   * */
   FnScreen * screen = g_object_new(
       FN_TYPE_SCREEN,
       NULL);
@@ -391,6 +405,92 @@ fn_screen_clone_texture(
   if (targetrect != NULL) {
     g_free(targetrect);
   }
+}
+
+/* =============================================================== */
+
+void
+fn_screen_toggle_fullscreen(FnScreen * screen)
+{
+  g_return_if_fail(FN_IS_SCREEN(screen));
+
+  FnScreenPrivate * priv = screen->priv;
+
+  int res;
+  res = SDL_WM_ToggleFullScreen(priv->surface);
+
+  /* TODO store result inside settings */
+}
+
+/* =============================================================== */
+
+void
+fn_screen_update(FnScreen * screen)
+{
+  g_return_if_fail(FN_IS_SCREEN(screen));
+
+  FnScreenPrivate * priv = screen->priv;
+
+  SDL_UpdateRect(priv->surface, 0, 0, 0, 0);
+}
+
+/* =============================================================== */
+
+void
+fn_screen_snapshot_push(FnScreen * screen)
+{
+  g_return_if_fail(FN_IS_SCREEN(screen));
+  FnScreenPrivate * priv = screen->priv;
+
+  SDL_Surface * snapshot =
+    SDL_CreateRGBSurface(
+        priv->surface->flags,
+        priv->surface->w,
+        priv->surface->h,
+        priv->surface->format->BitsPerPixel,
+        priv->surface->format->Rmask,
+        priv->surface->format->Gmask,
+        priv->surface->format->Bmask,
+        priv->surface->format->Amask);
+  SDL_BlitSurface(priv->surface, NULL, snapshot, NULL);
+  g_queue_push_head(priv->snapshot_stack, snapshot);
+}
+
+/* =============================================================== */
+
+void
+fn_screen_snapshot_pop(FnScreen * screen)
+{
+  g_return_if_fail(FN_IS_SCREEN(screen));
+  FnScreenPrivate * priv = screen->priv;
+
+  if (!g_queue_is_empty(priv->snapshot_stack)) {
+    SDL_Surface * snapshot = g_queue_pop_head(priv->snapshot_stack);
+    SDL_BlitSurface(snapshot, NULL, priv->surface, NULL);
+    SDL_FreeSurface(snapshot); snapshot = NULL;
+  }
+}
+
+/* =============================================================== */
+
+guint
+fn_screen_get_width(FnScreen * screen)
+{
+  g_return_val_if_fail(FN_IS_SCREEN(screen), 0);
+  FnScreenPrivate * priv = screen->priv;
+
+  return priv->surface->w;
+}
+
+/* =============================================================== */
+
+guint
+fn_screen_get_height(FnScreen * screen)
+{
+  g_return_val_if_fail(FN_IS_SCREEN(screen), 0);
+  FnScreenPrivate * priv = screen->priv;
+
+  return priv->surface->h;
 }
 
 /* =============================================================== */

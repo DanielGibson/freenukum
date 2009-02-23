@@ -41,6 +41,8 @@ fn_inputbox_answer_t fn_inputbox_show(
   FnTexture * msgbox = NULL;
   SDL_Surface * temp = NULL;
   FnTexture * inputfield_surface = NULL;
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
 
   SDL_Rect dstrect;
   FnGeometry * inputfield_rect;
@@ -63,10 +65,10 @@ fn_inputbox_answer_t fn_inputbox_show(
   sprintf(walker, "\n\n\nOK (Enter)   Abort (Esc)\n");
 
   Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  inputfield_surface = fn_texture_new_with_environment(
+  inputfield_surface = fn_texture_new_with_options(
       FN_FONT_WIDTH * answer_len,
       FN_FONT_HEIGHT,
-      env
+      graphic_options
       );
 
   msgbox = fn_msgbox(env, buffer);

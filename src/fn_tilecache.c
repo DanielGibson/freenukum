@@ -201,21 +201,23 @@ int fn_tilecache_loadfile(
         fn_tileheader_t * header,
         Uint8 transparent)
 {
-    while(num_tiles > 0)
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
+  while(num_tiles > 0)
+  {
+    tc->tiles[tc->size] =
+      fn_tile_load(fd,
+          graphic_options,
+          header,
+          transparent);
+    if (tc->tiles[tc->size] == NULL)
     {
-        tc->tiles[tc->size] =
-          fn_tile_load(fd,
-              env,
-              header,
-              transparent);
-        if (tc->tiles[tc->size] == NULL)
-        {
-            return -1;
-        }
-        tc->size++;
-        num_tiles--;
+      return -1;
     }
-    return 0;
+    tc->size++;
+    num_tiles--;
+  }
+  return 0;
 }
 
 /* --------------------------------------------------------------- */

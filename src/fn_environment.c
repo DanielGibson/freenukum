@@ -238,20 +238,7 @@ fn_environment_t * fn_environment_create()
   env->graphic_options =
     fn_graphic_options_new_with_defaults();
 
-  /*
-  env->screen = SDL_SetVideoMode(
-      FN_WINDOW_WIDTH * env->pixelsize,
-      FN_WINDOW_HEIGHT * env->pixelsize,
-      FN_COLOR_DEPTH,
-      env->videoflags);
-  if (env->screen == NULL) {
-    fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
-    return env;
-  }
-  */
   env->screen = fn_graphics_get_screen(env->graphics);
-
-  env->transparent = SDL_MapRGB(env->screen->format, 100, 1, 1);
 
   SDL_WM_SetCaption("Freenukum " VERSION, "Freenukum " VERSION);
 
@@ -463,11 +450,7 @@ Uint8 fn_environment_get_fullscreen(fn_environment_t * env)
 
 void fn_environment_toggle_fullscreen(fn_environment_t * env)
 {
-  int res = SDL_WM_ToggleFullScreen(env->screen);
-  if (res) {
-    env->fullscreen = (env->fullscreen + 1) % 2;
-    fn_settings_set_bool(env->settings, "fullscreen", env->fullscreen);
-  }
+  fn_graphic_toggle_fullscreen(env->graphics);
 }
 
 /* --------------------------------------------------------------- */

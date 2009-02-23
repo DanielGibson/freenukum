@@ -159,18 +159,20 @@ int fn_game_start_in_level(
   int returnvalue = 0;
   int fd = 0;
   fn_level_t * lv = NULL;
-  SDL_Rect dstrect;
-  SDL_Rect srcrect;
+  FnGeometry * dstrect;
+  FnGeometry * srcrect;
   SDL_Event event;
   int res = 0;
   int doupdate = 1;
 
   fn_hero_t * hero = fn_environment_get_hero(env);
 
-  SDL_Surface * level = fn_environment_create_surface(
-      env,
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
+  FnTexture * level = fn_texture_new_with_options(
       FN_TILE_WIDTH * FN_LEVEL_WIDTH,
-      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT);
+      FN_TILE_HEIGHT * FN_LEVEL_HEIGHT,
+      graphic_options);
 
   FnTexture * backdrop = NULL;;
   SDL_TimerID tick = 0;
@@ -256,23 +258,30 @@ int fn_game_start_in_level(
   }
   close(fd);
 
-  Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  dstrect.x = FN_TILE_WIDTH * pixelsize;
-  dstrect.y = FN_TILE_HEIGHT * pixelsize;
-  dstrect.w = (FN_LEVELWINDOW_WIDTH + 2) * pixelsize * FN_TILE_WIDTH;
-  dstrect.h = (FN_LEVELWINDOW_HEIGHT + 2) * pixelsize * FN_TILE_HEIGHT;
+  dstrect = fn_geometry_new(
+      FN_TILE_WIDTH,
+      FN_TILE_HEIGHT,
+      (FN_LEVELWINDOW_WIDTH + 2) * FN_TILE_WIDTH,
+      (FN_LEVELWINDOW_HEIGHT + 2) * FN_TILE_HEIGHT);
 
-  srcrect.x = (fn_hero_get_x(hero)+FN_TILE_WIDTH) * pixelsize -
-    dstrect.w / 2;
-  srcrect.y = fn_hero_get_y(hero) * pixelsize - dstrect.h / 2;
-  if (srcrect.x < 0) {
-    srcrect.x = 0;
+  gint x =
+    fn_hero_get_x(hero) +
+    FN_TILE_WIDTH -
+    fn_geometry_get_width(dstrect);
+  if (x < 0) {
+    x = 0;
   }
-  if (srcrect.y < 0) {
-    srcrect.y = 0;
+  gint y =
+    fn_hero_get_y(hero) -
+    fn_geometry_get_height(dstrect) / 2;
+  if (y < 0) {
+    y = 0;
   }
-  srcrect.w = FN_LEVELWINDOW_WIDTH * pixelsize * FN_TILE_WIDTH;
-  srcrect.h = FN_LEVELWINDOW_HEIGHT * pixelsize * FN_TILE_HEIGHT;
+  srcrect = fn_geometry_new(
+      x,
+      y,
+      FN_LEVELWINDOW_WIDTH * FN_TILE_WIDTH,
+      FN_LEVELWINDOW_HEIGHT * FN_TILE_HEIGHT);
 
   tick = SDL_AddTimer(80, fn_game_timer_triggered, 0);
 
@@ -290,31 +299,22 @@ int fn_game_start_in_level(
 
   int updateWholeScreen = 1;
 
-  SDL_Surface * screen =
-    fn_environment_get_screen_sdl(env);
+  FnScreen * screen =
+    fn_environment_get_screen(env);
 
   /* The mainloop of the level */
   while (fn_level_keep_on_playing(lv))
   {
     if (doupdate) {
-      SDL_Surface * screen = fn_environment_get_screen_sdl(env);
-      fn_level_blit_to_surface(lv,
+      fn_level_blit_to_texture(
+          lv,
           level,
-          &srcrect,
-          &srcrect,
+          srcrect,
+          srcrect,
           backdrop,
           NULL);
-      SDL_BlitSurface(level, &srcrect, screen, &dstrect);
-      if (updateWholeScreen) {
-        SDL_UpdateRect(screen, 0, 0, 0, 0);
-        updateWholeScreen = 0;
-      } else {
-        SDL_UpdateRect(screen,
-            dstrect.x,
-            dstrect.y,
-            dstrect.w,
-            dstrect.h);
-      }
+      fn_screen_clone_texture(screen, dstrect, level, srcrect);
+
       doupdate = 0;
     }
 
@@ -384,17 +384,20 @@ int fn_game_start_in_level(
               break;
             case SDLK_DOWN:
               if (event.key.keysym.mod & KMOD_SHIFT) {
-                if (srcrect.y + srcrect.h
-                    < FN_LEVEL_HEIGHT * pixelsize * FN_TILE_HEIGHT) {
-                  srcrect.y += pixelsize * FN_HALFTILE_HEIGHT;
+                gint y = fn_geometry_get_y(srcrect);
+                guint height = fn_geometry_get_height(srcrect);
+                if (y + height
+                    < FN_LEVEL_HEIGHT * FN_TILE_HEIGHT) {
+                  fn_geometry_set_y(srcrect, y + FN_HALFTILE_HEIGHT);
                 }
               }
               doupdate = 1;
               break;
             case SDLK_UP:
               if (event.key.keysym.mod & KMOD_SHIFT) {
-                if (srcrect.y > 0) {
-                  srcrect.y -= pixelsize * FN_HALFTILE_HEIGHT;
+                gint y = fn_geometry_get_y(srcrect);
+                if (y > 0) {
+                  fn_geometry_set_y(srcrect, y - FN_HALFTILE_HEIGHT);
                 }
               } else {
                 fn_level_hero_interact_start(lv);
@@ -403,8 +406,9 @@ int fn_game_start_in_level(
               break;
             case SDLK_LEFT:
               if (event.key.keysym.mod & KMOD_SHIFT) {
-                if (srcrect.x > 0) {
-                  srcrect.x -= pixelsize * FN_HALFTILE_WIDTH;
+                gint x = fn_geometry_get_x(srcrect);
+                if (x > 0) {
+                  fn_geometry_set_x(srcrect, x - FN_HALFTILE_WIDTH);
                 }
               } else {
                 directions |= FNK_LEFT_ENABLED;
@@ -421,9 +425,11 @@ int fn_game_start_in_level(
               break;
             case SDLK_RIGHT:
               if (event.key.keysym.mod & KMOD_SHIFT) {
-                if (srcrect.x + srcrect.w
-                    < FN_LEVEL_WIDTH * pixelsize * FN_TILE_WIDTH) {
-                  srcrect.x += pixelsize * FN_HALFTILE_WIDTH;
+                gint x = fn_geometry_get_x(srcrect);
+                guint width = fn_geometry_get_width(srcrect);
+                if (x + width
+                    < FN_LEVEL_WIDTH * FN_TILE_WIDTH) {
+                  fn_geometry_set_x(srcrect, x + FN_HALFTILE_WIDTH);
                 }
               } else {
                 directions |= FNK_RIGHT_ENABLED;
@@ -525,7 +531,8 @@ int fn_game_start_in_level(
               break;
           }
         case SDL_VIDEOEXPOSE:
-          SDL_UpdateRect(screen, 0, 0, 0, 0);
+          /* TODO update screen rect */
+          fn_screen_update(fn_environment_get_screen(env));
           break;
         case SDL_USEREVENT:
           switch(event.user.code) {
@@ -536,31 +543,36 @@ int fn_game_start_in_level(
             case fn_event_heromoved:
               {
                 SDL_Rect * heropos = fn_hero_get_position(hero);
-                srcrect.x = pixelsize *
-                  (heropos->x + heropos->w / 2 -
-                   FN_LEVELWINDOW_WIDTH * FN_TILE_WIDTH / 2);
-                if (srcrect.x < 0) {
-                  srcrect.x = 0;
+                gint x =
+                    heropos->x + heropos->w / 2 -
+                    FN_LEVELWINDOW_WIDTH * FN_TILE_WIDTH / 2;
+                if (x < 0) {
+                  x = 0;
                 }
-                srcrect.y = pixelsize *
-                  (heropos->y -
-                   FN_LEVELWINDOW_HEIGHT * FN_TILE_HEIGHT / 2);
-                if (srcrect.y < 0) {
-                  srcrect.y = 0;
+                fn_geometry_set_x(srcrect, x);
+
+                gint y =
+                  heropos->y - FN_LEVEL_HEIGHT * FN_TILE_HEIGHT / 2;
+                if (y < 0) {
+                  y = 0;
                 }
-                if (srcrect.x + srcrect.w >
-                    FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize)
+                fn_geometry_set_y(srcrect, y);
+
+                guint width = fn_geometry_get_width(srcrect);
+
+                if (x + width >
+                    FN_LEVEL_WIDTH * FN_TILE_WIDTH)
                 {
-                  srcrect.x =
-                    FN_LEVEL_WIDTH * FN_TILE_WIDTH * pixelsize -
-                    srcrect.w;
+                  fn_geometry_set_x(srcrect,
+                      FN_LEVEL_WIDTH * FN_TILE_WIDTH - width);
                 }
-                if (srcrect.y + srcrect.h >
-                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize)
+
+                guint height = fn_geometry_get_height(srcrect);
+                if (y + height >
+                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT)
                 {
-                  srcrect.y =
-                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT * pixelsize -
-                    srcrect.h;
+                  fn_geometry_set_y(srcrect,
+                    FN_LEVEL_HEIGHT * FN_TILE_HEIGHT - height);
                 }
               }
               break;
@@ -616,7 +628,7 @@ cleanup:
     fn_level_free(lv);
   }
   SDL_RemoveTimer(tick);
-  SDL_FreeSurface(level);
+  g_object_unref(level);
 
   return returnvalue;
 }
