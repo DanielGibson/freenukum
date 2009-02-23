@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Game Screen
+ * File:    Texture Factory
  *
  * *****************************************************************
  *
@@ -26,8 +26,8 @@
  *
  *******************************************************************/
 
-#ifndef FNSCREEN_H
-#define FNSCREEN_H
+#ifndef FNTEXTUREFACTORY_H
+#define FNTEXTUREFACTORY_H
 
 /* =============================================================== */
 
@@ -35,9 +35,8 @@
 
 /* =============================================================== */
 
+#include "fngraphicoptions.h"
 #include "fntexture.h"
-#include "fngeometry.h"
-#include "fnactor.h"
 
 /* =============================================================== */
 
@@ -45,57 +44,61 @@ G_BEGIN_DECLS
 
 /* =============================================================== */
 
-typedef struct _FnScreenPrivate FnScreenPrivate;
+typedef struct _FnTextureFactoryPrivate FnTextureFactoryPrivate;
 
 /* =============================================================== */
 
-typedef struct _FnScreen {
-  FnActor fn_actor_instance;
-  FnScreenPrivate * priv;
-} FnScreen;
+typedef struct _FnTextureFactory {
+  GObject g_object_instance;
+  FnTextureFactoryPrivate * priv;
+} FnTextureFactory;
 
 /* =============================================================== */
 
-typedef struct _FnScreenClass {
-  FnActorClass fn_actor_class;
-} FnScreenClass;
+typedef struct _FnTextureFactoryClass {
+  GObjectClass g_object_class;
+} FnTextureFactoryClass;
 
 /* =============================================================== */
 
-#define FN_TYPE_SCREEN (fn_screen_get_type())
-#define FN_SCREEN(o) \
-  (G_TYPE_CHECK_INSTANCE_CAST((o), FN_TYPE_SCREEN, FnScreen))
-#define FN_SCREEN_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_CAST((c), FN_TYPE_SCREEN, FnScreenClass))
-#define FN_IS_SCREEN(o) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_SCREEN))
-#define FN_IS_SCREEN_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_SCREEN))
-#define FN_SCREEN_GET_CLASS(o) \
+#define FN_TYPE_TEXTURE_FACTORY (fn_texture_factory_get_type())
+#define FN_TEXTURE_FACTORY(o) \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), \
+                              FN_TYPE_TEXTURE_FACTORY, \
+                              FnTextureFactory))
+#define FN_TEXTURE_FACTORY_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_CAST((c), \
+                           FN_TYPE_TEXTURE_FACTORY, \
+                           FnTextureFactoryClass))
+#define FN_IS_TEXTURE_FACTORY(o) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_TEXTURE_FACTORY))
+#define FN_IS_TEXTURE_FACTORY_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_TEXTURE_FACTORY))
+#define FN_TEXTURE_FACTORY_GET_CLASS(o) \
   (G_TYPE_INSTANCE_GET_CLASS( \
                               (o), \
-                              FN_TYPE_SCREEN, \
-                              FnScreenClass))
+                              FN_TYPE_TEXTURE_FACTORY, \
+                              FnTextureFactoryClass))
 
 /* =============================================================== */
 
-GType fn_screen_get_type(void);
+GType fn_texture_factory_get_type(void);
 
 /* =============================================================== */
 
-FnScreen * fn_screen_new_with_defaults();
+FnTextureFactory * fn_texture_factory_new_with_options(
+    FnGraphicOptions * options);
 
 /* =============================================================== */
 
-void
-fn_screen_clone_texture(
-    FnScreen * screen, FnGeometry * screengeometry,
-    FnTexture * source, FnGeometry * sourcegeometry);
+FnTexture * fn_texture_factory_produce_texture(
+    guint pixel_width,
+    guint pixel_height
+    );
 
 /* =============================================================== */
 
 G_END_DECLS
 
 /* =============================================================== */
-
-#endif /* FNSCREEN_H */
+#endif /* FNTEXTUREFACTORY_H */

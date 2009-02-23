@@ -229,8 +229,16 @@ fn_environment_t * fn_environment_create()
     env->videoflags |= SDL_FULLSCREEN;
   }
 
-  env->graphics = fn_graphics_new(FALSE);
+  env->graphics = fn_graphics_new();
 
+  if (!fn_graphics_is_initialized(env->graphics)) {
+    g_printerr("Can't initialize graphics.\n");
+  }
+
+  env->graphic_options =
+    fn_graphic_options_new_with_defaults();
+
+  /*
   env->screen = SDL_SetVideoMode(
       FN_WINDOW_WIDTH * env->pixelsize,
       FN_WINDOW_HEIGHT * env->pixelsize,
@@ -240,6 +248,8 @@ fn_environment_t * fn_environment_create()
     fn_error_printf(1024, "Can't set video mode: %s", SDL_GetError());
     return env;
   }
+  */
+  env->screen = fn_graphics_get_screen(env->graphics);
 
   env->transparent = SDL_MapRGB(env->screen->format, 100, 1, 1);
 
@@ -266,7 +276,7 @@ void fn_environment_delete(fn_environment_t * env)
     fn_tilecache_destroy(env->tilecache); env->tilecache = NULL;
   }
   if (env->screen != NULL) {
-    SDL_FreeSurface(env->screen); env->screen = NULL;
+    g_object_unref(env->screen); env->screen = NULL;
   }
   if (env->hero != NULL) {
     fn_hero_delete(env->hero); env->hero = NULL;
@@ -598,6 +608,14 @@ Uint8 fn_environment_store_settings(fn_environment_t * env)
         env->configfilepath, strerror(errno));
   }
   return res;
+}
+
+/* --------------------------------------------------------------- */
+
+FnGraphicOptions *
+fn_environment_get_graphic_options(fn_environment_t * env)
+{
+  return env->graphic_options;
 }
 
 /* --------------------------------------------------------------- */

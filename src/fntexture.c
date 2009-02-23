@@ -31,8 +31,8 @@
 /* =============================================================== */
 
 #include "fn.h"
-#include "fn_environment.h"
 #include "fntexture.h"
+#include "fngraphicoptions.h"
 
 /* =============================================================== */
 
@@ -41,7 +41,7 @@ struct _FnTexturePrivate
   guint width;
   guint height;
   SDL_Surface * surface;
-  fn_environment_t * env;
+  FnGraphicOptions * graphic_options;
 };
 
 /* =============================================================== */
@@ -54,7 +54,7 @@ struct _FnTexturePrivate
 enum {
   PROP_WIDTH = 1,
   PROP_HEIGHT,
-  PROP_ENVIRONMENT,
+  PROP_GRAPHIC_OPTIONS,
   PROP_DATA
 };
 
@@ -113,7 +113,7 @@ fn_texture_class_init(FnTextureClass * c)
 
   GParamSpec * width_param;
   GParamSpec * height_param;
-  GParamSpec * environment_param;
+  GParamSpec * graphic_options_param;
 
   g_object_class = G_OBJECT_CLASS(c);
 
@@ -159,10 +159,10 @@ fn_texture_class_init(FnTextureClass * c)
       PROP_HEIGHT,
       height_param);
 
-  environment_param = g_param_spec_pointer(
-      "environment",
-      "Environment",
-      "The environment struct",
+  graphic_options_param = g_param_spec_pointer(
+      "graphic_options",
+      "GraphicOptions",
+      "The graphics options",
       G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_STATIC_STRINGS |
       G_PARAM_WRITABLE
@@ -170,8 +170,8 @@ fn_texture_class_init(FnTextureClass * c)
 
   g_object_class_install_property(
       G_OBJECT_CLASS(g_object_class),
-      PROP_ENVIRONMENT,
-      environment_param);
+      PROP_GRAPHIC_OPTIONS,
+      graphic_options_param);
 }
 
 /* =============================================================== */
@@ -180,10 +180,10 @@ G_DEFINE_TYPE(FnTexture, fn_texture, G_TYPE_OBJECT);
 
 /* =============================================================== */
 
-FnTexture * fn_texture_new_with_environment(
+FnTexture * fn_texture_new_with_options(
     guint width,
     guint height,
-    fn_environment_t * env
+    FnGraphicOptions * options
     )
 {
   /* TODO remove this function once environment is obsolete,
@@ -192,7 +192,7 @@ FnTexture * fn_texture_new_with_environment(
       FN_TYPE_TEXTURE,
       "width", width,
       "height", height,
-      "environment", env,
+      "graphic_options", options,
       NULL
       );
   return texture;
@@ -228,9 +228,9 @@ fn_texture_set_property(
       texture->priv->height = g_value_get_uint(value);
       break;
 
-    case PROP_ENVIRONMENT:
+    case PROP_GRAPHIC_OPTIONS:
       /* TODO write environment setter function */
-      texture->priv->env = g_value_get_pointer(value);
+      texture->priv->graphic_options = g_value_get_pointer(value);
       break;
 
     case PROP_DATA:
@@ -265,9 +265,9 @@ fn_texture_get_property(
       g_value_set_uint(value, texture->priv->height);
       break;
 
-    case PROP_ENVIRONMENT:
+    case PROP_GRAPHIC_OPTIONS:
       /* TODO write environment getter function */
-      g_value_set_pointer(value, texture->priv->env);
+      g_value_set_pointer(value, texture->priv->graphic_options);
       break;
 
     default:
@@ -292,14 +292,32 @@ fn_texture_constructor(
   FnTexture * texture = FN_TEXTURE(obj);
   FnTexturePrivate * priv = texture->priv;
 
-  SDL_Surface * surface = fn_environment_create_surface(
-      priv->env,
-      priv->width,
-      priv->height);
+  guint scale =
+    fn_graphic_options_get_scale(priv->graphic_options);
+  guint sdl_flags =
+    fn_graphic_options_get_sdl_flags(priv->graphic_options);
+  guint bpp =
+    fn_graphic_options_get_bpp(priv->graphic_options);
+  guint transparent =
+    fn_graphic_options_get_transparent(priv->graphic_options);
+
+  SDL_Surface * surface =
+    SDL_CreateRGBSurface(
+        sdl_flags,
+        priv->width * scale,
+        priv->height * scale,
+        bpp,
+        0,
+        0,
+        0,
+        0);
+
+  SDL_SetColorKey(surface, SDL_SRCCOLORKEY, transparent);
+
   SDL_FillRect(
       surface,
       NULL,
-      0);
+      transparent);
 
   texture->priv->surface = surface;
 
@@ -334,14 +352,16 @@ fn_texture_set_data(
 {
   g_return_if_fail(FN_IS_TEXTURE(texture));
   FnTexturePrivate * priv = texture->priv;
-  Uint32 transparent = fn_environment_get_transparent(priv->env);
+  Uint32 transparent =
+    fn_graphic_options_get_transparent(priv->graphic_options);
   SDL_Surface * surface = priv->surface;
 
   guint i = 0;
   guint j = 0;
   guchar * iter = data;
 
-  guchar pixelsize = fn_environment_get_pixelsize(priv->env);
+  guchar pixelsize =
+    fn_graphic_options_get_scale(priv->graphic_options);
 
   SDL_Rect r;
   r.x = 0;

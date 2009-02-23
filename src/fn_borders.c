@@ -39,27 +39,29 @@
 
 void fn_borders_blit_tile(
     fn_environment_t * env,
-    SDL_Surface * target,
+    FnTexture * target,
     FnTexture * tile,
     int x,
     int y)
 {
-  Uint8 pixelsize = fn_environment_get_pixelsize(env);
-  SDL_Rect dstrect;
-  dstrect.x = FN_HALFTILE_WIDTH * pixelsize * x;
-  dstrect.y = FN_HALFTILE_HEIGHT * pixelsize * y;
-  fn_texture_blit_to_sdl_surface(
+  FnGeometry * dstrect;
+  dstrect = fn_geometry_new(
+      FN_HALFTILE_WIDTH * x,
+      FN_HALFTILE_HEIGHT * y,
+      0,
+      0);
+  fn_texture_clone_to_texture(
       tile,
       NULL,
       target,
-      &dstrect);
+      dstrect);
 }
 
 /* --------------------------------------------------------------- */
 
 void fn_borders_blit_array(
     fn_environment_t * env,
-    SDL_Surface * target,
+    FnTexture * target,
     int * borders,
     Uint8 width,
     Uint8 height,

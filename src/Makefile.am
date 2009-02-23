@@ -11,6 +11,7 @@ objectsources = fn.h \
 								fnactorgroup.h      fnactorgroup.c \
                 fngeometry.h        fngeometry.c \
 								fngraphics.h        fngraphics.c \
+								fngraphicoptions.h  fngraphicoptions.c \
 								fnscreen.h          fnscreen.c \
                 fntexture.h         fntexture.c \
                 fn_level_actor.h    fn_level_actor.c \

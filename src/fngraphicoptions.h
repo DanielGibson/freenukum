@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Texture
+ * File:    Graphic Options
  *
  * *****************************************************************
  *
@@ -26,18 +26,12 @@
  *
  *******************************************************************/
 
-#ifndef FNTEXTURE_H
-#define FNTEXTURE_H
+#ifndef FNGRAPHICOPTIONS_H
+#define FNGRAPHICOPTIONS_H
 
 /* =============================================================== */
 
-#include <SDL.h>
 #include <glib-object.h>
-
-/* =============================================================== */
-
-#include "fngeometry.h"
-#include "fngraphicoptions.h"
 
 /* =============================================================== */
 
@@ -45,103 +39,69 @@ G_BEGIN_DECLS
 
 /* =============================================================== */
 
-#define FN_TEXTURE_DEFAULT_WIDTH 32
-#define FN_TEXTURE_DEFAULT_HEIGHT 32
+typedef struct _FnGraphicOptionsPrivate FnGraphicOptionsPrivate;
 
 /* =============================================================== */
 
-typedef struct _FnTexturePrivate FnTexturePrivate;
-
-/* =============================================================== */
-
-typedef struct _FnTexture {
+typedef struct _FnGraphicOptions {
   GObject g_object_instance;
-  FnTexturePrivate * priv;
-} FnTexture;
+  FnGraphicOptionsPrivate * priv;
+} FnGraphicOptions;
 
 /* =============================================================== */
 
-typedef struct _FnTextureClass {
+typedef struct _FnGraphicOptionsClass {
   GObjectClass g_object_class;
-} FnTextureClass;
+} FnGraphicOptionsClass;
 
 /* =============================================================== */
 
-#define FN_TYPE_TEXTURE (fn_texture_get_type())
-#define FN_TEXTURE(o) \
-  (G_TYPE_CHECK_INSTANCE_CAST((o), FN_TYPE_TEXTURE, FnTexture))
-#define FN_TEXTURE_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_CAST((c), FN_TYPE_TEXTURE, FnTextureClass))
-#define FN_IS_TEXTURE(o) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_TEXTURE))
-#define FN_IS_TEXTURE_CLASS(c) \
-  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_TEXTURE))
-#define FN_TEXTURE_GET_CLASS(o) \
-  (G_TYPE_INSTANCE_GET_CLASS((o), FN_TYPE_TEXTURE, FnTextureClass))
+#define FN_TYPE_GRAPHIC_OPTIONS (fn_graphic_options_get_type())
+#define FN_GRAPHIC_OPTIONS(o) \
+  (G_TYPE_CHECK_INSTANCE_CAST((o), \
+                              FN_TYPE_GRAPHIC_OPTIONS, \
+                              FnGraphicOptions))
+#define FN_GRAPHIC_OPTIONS_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_CAST((c), \
+                           FN_TYPE_GRAPHIC_OPTIONS, \
+                           FnGraphicOptionsClass))
+#define FN_IS_GRAPHIC_OPTIONS(o) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((o), FN_TYPE_GRAPHIC_OPTIONS))
+#define FN_IS_GRAPHIC_OPTIONS_CLASS(c) \
+  (G_TYPE_CHECK_CLASS_TYPE((c), FN_TYPE_GRAPHIC_OPTIONS))
+#define FN_GRAPHIC_OPTIONS_GET_CLASS(o) \
+  (G_TYPE_INSTANCE_GET_CLASS( \
+                              (o), \
+                              FN_TYPE_GRAPHIC_OPTIONS, \
+                              FnGraphicOptionsClass))
 
 /* =============================================================== */
 
-GType fn_texture_get_type(void);
+GType fn_graphic_options_get_type(void);
 
 /* =============================================================== */
 
-FnTexture * fn_texture_new_with_options(
-    guint width,
-    guint height,
-    FnGraphicOptions * options
-    );
-
-/* =============================================================== */
-
-void
-fn_texture_set_data(
-    FnTexture * texture,
-    guchar * data);
-
-/* =============================================================== */
-
-void
-fn_texture_blit_to_sdl_surface(
-    FnTexture * texture,
-    SDL_Rect * srcrect,
-    SDL_Surface * destination,
-    SDL_Rect * dstrect);
-
-/* =============================================================== */
-
-/* TODO write documentation that sourcegeometry as well
-   as targetgeometry can be NULL.
-   */
-void
-fn_texture_clone_to_texture(
-    FnTexture * source,
-    FnGeometry * sourcegeometry,
-    FnTexture * target,
-    FnGeometry * targetgeometry);
+FnGraphicOptions * fn_graphic_options_new_with_defaults();
 
 /* =============================================================== */
 
 guint
-fn_texture_get_width(
-    FnTexture * texture);
+fn_graphic_options_get_scale(FnGraphicOptions * options);
 
 /* =============================================================== */
 
 guint
-fn_texture_get_height(
-    FnTexture * texture);
+fn_graphic_options_get_sdl_flags(FnGraphicOptions * options);
 
 /* =============================================================== */
 
-/* TODO for api-documentation: area can be NULL, in that case
-   the whole texture is filled with the color */
-void
-fn_texture_fill_area(
-    FnTexture * texture,
-    FnGeometry * area,
-    guchar red,
-    guchar green,
-    guchar blue);
+guint
+fn_graphic_options_get_bpp(FnGraphicOptions * options);
+
+/* =============================================================== */
+
+guint
+fn_graphic_options_get_transparent(FnGraphicOptions * options);
 
 /* =============================================================== */
 
@@ -149,4 +109,4 @@ G_END_DECLS
 
 /* =============================================================== */
 
-#endif /* FNTEXTURE_H */
+#endif /* FNGRAPHICOPTIONS_H */

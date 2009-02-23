@@ -41,11 +41,11 @@ typedef struct fn_environment_t fn_environment_t;
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
-#include "fntexture.h"
 #include "fngraphics.h"
 #include "fn_settings.h"
 #include "fn_tilecache.h"
 #include "fn_hero.h"
+#include "fntexture.h"
 
 /* --------------------------------------------------------------- */
 
@@ -98,7 +98,7 @@ struct fn_environment_t {
   /**
    * SDL screen
    */
-  SDL_Surface * screen;
+  FnScreen * screen;
 
   /**
    * The tilecache.
@@ -124,6 +124,11 @@ struct fn_environment_t {
    * The graphics backend.
    */
   FnGraphics * graphics;
+
+  /**
+   * The graphic options.
+   */
+  FnGraphicOptions * graphic_options;
 };
 
 /* --------------------------------------------------------------- */
@@ -375,6 +380,11 @@ Uint8 fn_environment_tilecache_loaded(fn_environment_t * env);
 /* --------------------------------------------------------------- */
 
 Uint8 fn_environment_store_settings(fn_environment_t * env);
+
+/* --------------------------------------------------------------- */
+
+FnGraphicOptions *
+fn_environment_get_graphic_options(fn_environment_t * env);
 
 /* --------------------------------------------------------------- */
 

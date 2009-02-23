@@ -36,6 +36,7 @@
 /* =============================================================== */
 
 #include "fnscreen.h"
+#include "fntexturefactory.h"
 
 /* =============================================================== */
 
@@ -83,6 +84,21 @@ GType fn_graphics_get_type(void);
 
 FnGraphics *
 fn_graphics_new();
+
+/* =============================================================== */
+
+FnScreen *
+fn_graphics_get_screen(FnGraphics * graphics);
+
+/* =============================================================== */
+
+gboolean
+fn_graphics_is_initialized(FnGraphics * graphics);
+
+/* =============================================================== */
+
+FnTextureFactory *
+fn_graphics_get_texture_factory(FnGraphics * graphics);
 
 /* =============================================================== */
 

@@ -144,12 +144,15 @@ char fn_menu_get_choice(fn_menu_t * menu,
 
   guint box_width = fn_texture_get_width(box);
   guint box_height = fn_texture_get_height(box);
+  
+  FnGraphicOptions * graphic_options =
+    fn_environment_get_graphic_options(env);
 
   FnTexture * target =
-    fn_texture_new_with_environment(
+    fn_texture_new_with_options(
         box_width,
         box_height,
-        env);
+        graphic_options);
 
   FnGeometry * targetrect;
 

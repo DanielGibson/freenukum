@@ -41,8 +41,8 @@ typedef struct fn_tile_t fn_tile_t;
 /* --------------------------------------------------------------- */
 
 #include "fn.h"
-#include "fn_environment.h"
 #include "fntexture.h"
+#include "fn_environment.h"
 
 /* --------------------------------------------------------------- */
 
@@ -60,18 +60,9 @@ int fn_tile_loadheader(int fd, fn_tileheader_t * h);
 
 FnTexture * fn_tile_load(
     int fd,
-    fn_environment_t * env,
+    FnGraphicOptions * options,
     fn_tileheader_t * h,
     gboolean has_transparency);
-
-/* --------------------------------------------------------------- */
-
-SDL_Surface * fn_tile_load_to_sdl(
-        int fd,
-        fn_environment_t * env,
-        fn_tileheader_t * h,
-        Uint8 transparent
-        );
 
 /* --------------------------------------------------------------- */
 

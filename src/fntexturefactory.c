@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  * Project: FreeNukum 2D Jump'n Run
- * File:    Graphics subsystem
+ * File:    Texture Factory
  *
  * *****************************************************************
  *
@@ -26,43 +26,44 @@
  *
  *******************************************************************/
 
-#include <SDL.h>
+/* =============================================================== */
+
+#include "fntexturefactory.h"
 
 /* =============================================================== */
 
-#include "fngraphics.h"
-
-/* =============================================================== */
-
-struct _FnGraphicsPrivate
+struct _FnTextureFactoryPrivate
 {
-  FnScreen * screen;
-  gboolean fullscreen;
-  gboolean initialized;
+  FnGraphicOptions * options;
 };
 
 /* =============================================================== */
 
-#define FN_GRAPHICS_GET_PRIVATE(o) \
-  (G_TYPE_INSTANCE_GET_PRIVATE(\
-                               (o), \
-                               FN_TYPE_GRAPHICS, \
-                               FnGraphicsPrivate))
+enum {
+  PROP_GRAPHIC_OPTIONS = 1
+};
 
 /* =============================================================== */
 
+#define FN_TEXTURE_FACTORY_GET_PRIVATE(o) \
+  (G_TYPE_INSTANCE_GET_PRIVATE(\
+                               (o), \
+                               FN_TYPE_TEXTURE_FACTORY, \
+                               FnTextureFactoryPrivate))
+/* =============================================================== */
+
 static void
-fn_graphics_init(FnGraphics * graphics);
+fn_texture_factory_init(FnTextureFactory * factory);
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_class_init(FnGraphicsClass * c);
+fn_texture_factory_class_init(FnTextureFactoryClass * c);
 
 /* --------------------------------------------------------------- */
 
 static GObject *
-fn_graphics_constructor(
+fn_texture_factory_constructor(
     GType                   gtype,
     guint                   n_properties,
     GObjectConstructParam * properties);
@@ -70,83 +71,91 @@ fn_graphics_constructor(
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_dispose(GObject * gobject);
+fn_texture_factory_dispose(GObject * gobject);
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_finalize(GObject * gobject);
+fn_texture_factory_finalize(GObject * gobject);
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_set_property(
+fn_texture_factory_set_property(
     GObject * object,
     guint prop_id,
     const GValue * value,
     GParamSpec * pspec);
+
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_get_property(
+fn_texture_factory_get_property(
     GObject * object,
     guint prop_id,
     GValue * value,
     GParamSpec * pspec);
 
-/* =============================================================== */
+/* --------------------------------------------------------------- */
 
 static void
-fn_graphics_class_init(FnGraphicsClass * c)
+fn_texture_factory_class_init(FnTextureFactoryClass * c)
 {
   GObjectClass * g_object_class;
 
+  GParamSpec * graphic_options_param;
+
   g_object_class = G_OBJECT_CLASS(c);
 
-  g_type_class_add_private(c, sizeof(FnGraphicsPrivate));
+  g_type_class_add_private(c, sizeof(FnTextureFactoryPrivate));
 
-  g_object_class->set_property = fn_graphics_set_property;
-  g_object_class->get_property = fn_graphics_get_property;
-  g_object_class->constructor  = fn_graphics_constructor;
-  g_object_class->dispose      = fn_graphics_dispose;
-  g_object_class->finalize     = fn_graphics_finalize;
+  g_object_class->set_property = fn_texture_factory_set_property;
+  g_object_class->get_property = fn_texture_factory_get_property;
+  g_object_class->constructor  = fn_texture_factory_constructor;
+  g_object_class->dispose      = fn_texture_factory_dispose;
+  g_object_class->finalize     = fn_texture_factory_finalize;
+
+  graphic_options_param = g_param_spec_pointer(
+      "graphic_options",
+      "GraphicOptions",
+      "The graphic options used to produce new textures",
+      G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_STATIC_STRINGS |
+      G_PARAM_READWRITE
+      );
+
+  g_object_class_install_property(
+      g_object_class,
+      PROP_GRAPHIC_OPTIONS,
+      graphic_options_param);
 }
 
 /* =============================================================== */
 
-G_DEFINE_TYPE(FnGraphics, fn_graphics, G_TYPE_OBJECT);
-
-/* =============================================================== */
-
-FnGraphics *
-fn_graphics_new(gboolean fullscreen)
-{
-  FnGraphics * graphics = g_object_new(
-      FN_TYPE_GRAPHICS,
-      "fullscreen", fullscreen,
-      NULL);
-  return graphics;
-}
+G_DEFINE_TYPE(
+    FnTextureFactory,
+    fn_texture_factory,
+    FN_TYPE_TEXTURE_FACTORY);
 
 /* =============================================================== */
 
 static void
-fn_graphics_init(FnGraphics * graphics)
+fn_texture_factory_init(FnTextureFactory * factory)
 {
-  graphics->priv = FN_GRAPHICS_GET_PRIVATE(graphics);
+  factory->priv = FN_TEXTURE_FACTORY_GET_PRIVATE(factory);
 }
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_set_property(
+fn_texture_factory_set_property(
     GObject * object,
     guint prop_id,
     const GValue * value,
     GParamSpec * pspec)
 {
-  FnGraphics * graphics;
-  graphics = FN_GRAPHICS(object);
+  FnTextureFactory * factory;
+  factory = FN_TEXTURE_FACTORY(object);
 
   switch(prop_id) {
     default:
@@ -157,14 +166,14 @@ fn_graphics_set_property(
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_get_property(
+fn_texture_factory_get_property(
     GObject * object,
     guint prop_id,
     GValue * value,
     GParamSpec * pspec)
 {
-  FnGraphics * graphics;
-  graphics = FN_GRAPHICS(object);
+  FnTextureFactory * factory;
+  factory = FN_TEXTURE_FACTORY(object);
 
   switch(prop_id) {
     default:
@@ -175,31 +184,21 @@ fn_graphics_get_property(
 /* --------------------------------------------------------------- */
 
 static GObject *
-fn_graphics_constructor(
+fn_texture_factory_constructor(
     GType                   gtype,
     guint                   n_properties,
     GObjectConstructParam * properties)
 {
   GObject * obj;
   GObjectClass * parent_class =
-    G_OBJECT_CLASS(fn_graphics_parent_class);
+    G_OBJECT_CLASS(fn_texture_factory_parent_class);
 
   obj = parent_class->constructor(gtype, n_properties, properties);
 
-  FnGraphics * graphics;
-  graphics = FN_GRAPHICS(obj);
-  FnGraphicsPrivate * priv;
-  priv = graphics->priv;
-
-  priv->initialized = FALSE;
-
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1) {
-    return obj;
-  }
-
-  /* TODO create reference to screen */
-
-  priv->initialized = TRUE;
+  FnTextureFactory * factory;
+  factory = FN_TEXTURE_FACTORY(obj);
+  FnTextureFactoryPrivate * priv;
+  priv = factory->private;
 
   return obj;
 }
@@ -207,49 +206,33 @@ fn_graphics_constructor(
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_dispose(GObject * gobject)
+fn_texture_factory_dispose(GObject * gobject)
 {
-  FnGraphics * graphics = FN_GRAPHICS(gobject);
-
-  FnGraphicsPrivate * priv = graphics->priv;
-
-  if (priv->screen) {
-    g_object_unref(priv->screen);
-    priv->screen = NULL;
-  }
 }
 
 /* --------------------------------------------------------------- */
 
 static void
-fn_graphics_finalize(GObject * gobject)
+fn_texture_factory_finalize(GObject * gobject)
 {
-  SDL_Quit();
 }
 
 /* =============================================================== */
 
-FnScreen *
-fn_graphics_get_screen(FnGraphics * graphics)
+FnTexture *
+fn_texture_factory_produce_texture(FnTextureFactory * factory,
+    guint width,
+    guint height)
 {
-  g_return_val_if_fail(FN_IS_GRAPHICS(graphics), NULL);
-  FnGraphicsPrivate * priv = graphics->priv;
+  g_return_val_if_fail(FN_IS_TEXTURE_FACTORY(factory), NULL);
 
-  if (priv->screen == NULL) {
-    priv->screen =
-      fn_screen_new_with_defaults();
-  }
+  FnTextureFactoryPrivate * priv = factory->priv;
 
-  return g_object_ref(priv->screen);
+  FnTexture * texture = fn_texture_new_with_options(
+      priv->graphic_options,
+      width,
+      height);
+  return texture;
 }
 
 /* --------------------------------------------------------------- */
-
-gboolean
-fn_graphics_is_initialized(FnGraphics * graphics)
-{
-  g_return_val_if_fail(FN_IS_GRAPHICS(graphics), FALSE);
-  FnGraphicsPrivate * priv = graphics->priv;
-
-  return priv->initialized;
-}
