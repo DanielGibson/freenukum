@@ -1,3 +1,12 @@
+This is a git mirror of the (old, abandoned) FreeNukum bazaar repo at https://launchpad.net/freenukum/trunk - apparently in a broken state, maybe don't use the last commits.. 
+
+*However*, note that the original author picked up the project up again,
+see https://gitlab.com/silwol/freenukum
+So if you're interested in the project, that's the place to look for current development.
+
+
+====== (original README:) ======
+
 Freenukum
 
 For information on how to compile Freenukum, see the file 'INSTALL'.
